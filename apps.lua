@@ -105,7 +105,7 @@ function control_temperature()
   if (measured_temperature ~= nil) then -- so, filter the value
     TEMPERATURE = TEMPERATURE - TEMPERATURE/TEMPERATURE_NSAMPLES
     TEMPERATURE = TEMPERATURE + measured_temperature/TEMPERATURE_NSAMPLES
-    audit("CTRL TEMP", TEMPERATURE)
+    audit("CTRL TEMP", string.format("%02.2f",TEMPERATURE))
     if (measured_temperature > TEMPERATURE) then
       fan(1)
     else

@@ -1,5 +1,5 @@
 -- load credentials, 'SSID' and 'PASSWORD' declared and initialize in there
-dofile(".credentials")
+dofile("credentials.lua")
 
 function startup()
     if file.open("init.lua") == nil then
@@ -23,9 +23,9 @@ wifi_got_ip_event = function(T)
   -- Note: Having an IP address does not mean there is internet access!
   -- Internet connectivity can be determined with net.dns.resolve().
   print("Wifi connection is ready! IP address is: "..T.IP)
-  print("Startup will resume momentarily, you have 5 seconds to abort.")
+  print("Startup will resume momentarily, you have 3 seconds to abort.")
   print("Waiting...")
-  tmr.create():alarm(5000, tmr.ALARM_SINGLE, startup)
+  tmr.create():alarm(3000, tmr.ALARM_SINGLE, startup)
 end
 
 wifi_disconnect_event = function(T)

@@ -39,11 +39,10 @@ https://github.com/kmpm/nodemcu-uploader/blob/master/doc/USAGE.md
 ```bash
 nodemcu-uploader node restart
 nodemcu-uploader file list
-nodemcu-uploader file remove foo.lua
-nodemcu-uploader upload .credentials
-nodemcu-uploader upload init.lua
-nodemcu-uploader upload apps.lua
+nodemcu-uploader file remove *
+nodemcu-uploader upload credentials.lua init.lua apps.lua
 nodemcu-uploader terminal
+node.restart()
 dofile("apps.lua")
 ```
 
