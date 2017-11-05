@@ -49,14 +49,14 @@ function tempHum(silent)
   status, temp, humi, temp_dec, humi_dec = dht.read(PIN_DHT)
   if status == dht.ERROR_CHECKSUM then
     audit("DHT", "Checksum error.")
-    return nil,nil
+    return nil,nil,nil,nil
   elseif status == dht.ERROR_TIMEOUT then
     audit("DHT", "Timed out.")
-    return nil,nil
+    return nil,nil,nil,nil
 --  elseif status == dht.OK then
   end
-  audit("DHT", "Temperature:"..temp.."C ".."Humidity:"..humi.."%")
-  return temp, humi
+  audit("DHT", string.format("Temperature: %d.%02dC Humidity: %d.%02d%%",temp,temp_dec,humi,humi_dec))
+  return temp,temp_dec,humi,humi_dec
 end
 
 -- ACTUATOR LIGHT
@@ -101,12 +101,12 @@ fan(0)
 ----------------------
 -- CONTROL TEMPERATURE
 function control_temperature()
-  local measured_temperature, measured_humidity = tempHum()
-  if (measured_temperature ~= nil) then -- so, filter the value
+  local measured_temp = tempHum()
+  if (measured_temp ~= nil) then -- so, filter the value
     TEMPERATURE = TEMPERATURE - TEMPERATURE/TEMPERATURE_NSAMPLES
-    TEMPERATURE = TEMPERATURE + measured_temperature/TEMPERATURE_NSAMPLES
+    TEMPERATURE = TEMPERATURE + measured_temp/TEMPERATURE_NSAMPLES
     audit("CTRL TEMP", string.format("%02.2f",TEMPERATURE))
-    if (measured_temperature > TEMPERATURE) then
+    if (measured_temp > TEMPERATURE) then
       fan(1)
     else
       fan(0)
@@ -142,7 +142,9 @@ srv:listen(80,function(conn)
           end
       end
       audit("WEB SERVER", "receive connection")
-
+      if(_GET.temp ~= nil)then
+            TEMPERATURE = tonumber(_GET.temp)
+      end
       if(_GET.light == "1")then
             light(1)
       elseif(_GET.light == "0")then
@@ -158,10 +160,12 @@ srv:listen(80,function(conn)
       buf = buf.."<html><head><title>babilonia v0.0.21</title>"
       buf = buf.."<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/></head>"
       buf = buf.."<body>"
-      local tempx, humix = tempHum()
+      local temp,temp_dec,humi,humi_dec = tempHum()
+      buf = buf.."<b>DHT</b>:"..string.format("Temperature:%d.%02dC Humidity:%d.%02d%%",temp,temp_dec,humi,humi_dec).."<br />"
       buf = buf.."<b>CTRL TEMP</b>: Calculate temperature:"..string.format("%02.2f",TEMPERATURE).."C<br />"
-      buf = buf.."<b>DHT</b>: Temperature:"..tempx.."C  ".."Humidity:"..humix.."%<br />"
       buf = buf.."<form>"
+      buf = buf.."<label><b>TARGET TEMPERATURE</b>:<label>"
+      buf = buf.."  <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..string.format("%02d",TEMPERATURE).."\" onchange=\"form.submit()\"><br />"
       buf = buf.."<label><b>LIGHT</b>:<label>"
       buf = buf.."  <input type=\"radio\" name=\"light\" value=\"1\" "..(light() == 1 and " checked" or "").." onchange=\"form.submit()\"> On"
       buf = buf.."  <input type=\"radio\" name=\"light\" value=\"0\" "..(light() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off"
