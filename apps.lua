@@ -12,8 +12,10 @@ MASK_CRON_LIGHT_OFF="0 0 * * *" -- 10PM SP time (LocalTime+2H)
 MASK_CRON_SYNC_CLOCK="0 8 * * 0" -- 6AM SP time on Sundays (LocalTime+2H)
 MASK_CRON_DHT="* * * * *"
 
-TEMPERATURE_NSAMPLES = 50 -- https://goo.gl/3bLYao
-TEMPERATURE = 25 -- initial target temperature
+-- default values
+TEMPERATURE_NSAMPLES = 10 -- https://goo.gl/3bLYao
+TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
+TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
 
 ----------------------
 -------- UTILS -------
@@ -103,10 +105,10 @@ fan(0)
 function control_temperature()
   local measured_temp = tempHum()
   if (measured_temp ~= nil) then -- so, filter the value
-    TEMPERATURE = TEMPERATURE - TEMPERATURE/TEMPERATURE_NSAMPLES
-    TEMPERATURE = TEMPERATURE + measured_temp/TEMPERATURE_NSAMPLES
-    audit("CTRL TEMP", string.format("%02.2f",TEMPERATURE))
-    if (measured_temp > TEMPERATURE) then
+    TEMPERATURE_SMA = TEMPERATURE_SMA - TEMPERATURE_SMA/TEMPERATURE_NSAMPLES
+    TEMPERATURE_SMA = TEMPERATURE_SMA + measured_temp/TEMPERATURE_NSAMPLES
+    audit("CONTROL", "Temperature (SMA)"..string.format("%02.2f",TEMPERATURE_SMA).."C")
+    if (TEMPERATURE_SMA > TEMPERATURE_THRESHOLD) then
       fan(1)
     else
       fan(0)
@@ -142,8 +144,9 @@ srv:listen(80,function(conn)
           end
       end
       audit("WEB SERVER", "receive connection")
+
       if(_GET.temp ~= nil)then
-            TEMPERATURE = tonumber(_GET.temp)
+            TEMPERATURE_THRESHOLD = tonumber(_GET.temp)
       end
       if(_GET.light == "1")then
             light(1)
@@ -162,10 +165,10 @@ srv:listen(80,function(conn)
       buf = buf.."<body>"
       local temp,temp_dec,humi,humi_dec = tempHum()
       buf = buf.."<b>DHT</b>:"..string.format("Temperature:%d.%02dC Humidity:%d.%02d%%",temp,temp_dec,humi,humi_dec).."<br />"
-      buf = buf.."<b>CTRL TEMP</b>: Calculate temperature:"..string.format("%02.2f",TEMPERATURE).."C<br />"
+      buf = buf.."<b>CTRL TEMP</b>: Calculate temperature (SMA):"..string.format("%02.2f",TEMPERATURE_SMA).."C<br />"
       buf = buf.."<form>"
-      buf = buf.."<label><b>TARGET TEMPERATURE</b>:<label>"
-      buf = buf.."  <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..string.format("%02d",TEMPERATURE).."\" onchange=\"form.submit()\"><br />"
+      buf = buf.."<label><b>TEMPERATURE THRESHOLD</b>:<label>"
+      buf = buf.."  <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..string.format("%02d",TEMPERATURE_THRESHOLD).."\" onchange=\"form.submit()\"><br />"
       buf = buf.."<label><b>LIGHT</b>:<label>"
       buf = buf.."  <input type=\"radio\" name=\"light\" value=\"1\" "..(light() == 1 and " checked" or "").." onchange=\"form.submit()\"> On"
       buf = buf.."  <input type=\"radio\" name=\"light\" value=\"0\" "..(light() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off"
