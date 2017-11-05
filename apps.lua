@@ -163,10 +163,13 @@ srv:listen(80,function(conn)
       buf = buf.."<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>"
       buf = buf.."</head><body>"
       local temp,temp_dec,humi,humi_dec = tempHum()
+      buf = buf.."<div class=\"panel panel-primary\"><div class=\"panel-heading\">Sensor data</div><div class=\"panel-body\">"
       buf = buf.."<i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>DHT Temperature</b>:"..string.format("%d.%02d",temp,temp_dec).."<i class=\"wi wi-celsius\"></i><br />"
       buf = buf.."<i class=\"wi wi-humidity\"></i>&nbsp;<b>DHT Humidity</b>:"..string.format("%d.%02d%%",humi,humi_dec).."<br />"
+      buf = buf.."</div></div><div class=\"panel panel-warning\"><div class=\"panel-heading\">Calculate data</div><div class=\"panel-body\">"
       buf = buf.."<i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>Temperature (SMA)</b>:"..string.format("%02.2f",TEMPERATURE_SMA).."<i class=\"wi wi-celsius\"></i><br />"
-      buf = buf.."<form>"
+      buf = buf.."</div></div><form>"
+      buf = buf.."<div class=\"panel panel-warning\"><div class=\"panel-heading\">Manual configuration</div><div class=\"panel-body\">"
       buf = buf.."<label><i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>Temperature threshold</b>:</label>"
       buf = buf.."  <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..string.format("%02d",TEMPERATURE_THRESHOLD).."\" onchange=\"form.submit()\"><br />"
       buf = buf.."<label><i class=\"wi wi-day-sunny\"></i>&nbsp;<b>Light</b>:</label>"
@@ -176,7 +179,7 @@ srv:listen(80,function(conn)
       buf = buf.."<label><i class=\"wi wi-strong-wind\"></i>&nbsp;<b>Fan</b>:</label>"
       buf = buf.."  <input type=\"radio\" name=\"fan\" value=\"1\" "..(fan() == 1 and " checked" or "").." onchange=\"form.submit()\"> On"
       buf = buf.."  <input type=\"radio\" name=\"fan\" value=\"0\" "..(fan() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off"
-      buf = buf.."</form></body></html>"
+      buf = buf.."</div></div></form></body></html>"
       client:send(buf)
     end)
     conn:on("sent", function (c) c:close() end)
