@@ -1,12 +1,17 @@
 ----------------------
 ----- VARIABLES ------
 ----------------------
+VERBOSE = true
 SERVER_NTP="pool.ntp.br"
 PIN_DHT, PIN_FAN, PIN_LIGHT = 5, 6, 7
+FMT_TIME="%04d-%02d-%02d %02d:%02d"
 MASK_CRON_LIGHT_ON="0 8 * * *"  -- 6AM SP time (LocalTime+2H)
 MASK_CRON_LIGHT_OFF="0 0 * * *" -- 10PM SP time (LocalTime+2H)
-MASK_CRON_DHT="*/5 * * * *" -- every 5 minutes
-FMT_TIME="%04d-%02d-%02d %02d:%02d"
+
+
+MASK_CRON_DHT="* * * * *" -- https://crontab.guru/
+TEMPERATURE_NSAMPLES = 20
+TEMPERATURE = 25 -- initial target temperature
 
 ----------------------
 -------- UTILS -------
@@ -17,10 +22,12 @@ FMT_TIME="%04d-%02d-%02d %02d:%02d"
 -- @param info Additional information
 -- @return Console log audit
 function audit(func, info)
-  local log=""
-  local tm = rtctime.epoch2cal(rtctime.get())
-  log=string.format(FMT_TIME, tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"])
-  print(log.." ["..func.."] "..info)
+  if (VERBOSE == true) then
+    local log=""
+    local tm = rtctime.epoch2cal(rtctime.get())
+    log=string.format(FMT_TIME, tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"])
+    print(log.." ["..func.."] "..info)
+  end
 end
 
 -- SYNCRONIZE INTERNAL CLOCK (UTC)
@@ -29,7 +36,6 @@ function sync_clock()
     audit("SYNC CLOCK", "")
   end)
 end
-
 --------------------------
 --- SENSOR & ACTUATORS ---
 --------------------------
@@ -37,21 +43,17 @@ end
 -- SENSOR DHT
 -- @return temp Temperature (Celsius)
 -- @return humi Humidity (Percentage)
-function tempHum()
-  local buf = ""
+function tempHum(silent)
   status, temp, humi, temp_dec, humi_dec = dht.read(PIN_DHT)
   if status == dht.ERROR_CHECKSUM then
-    buf = "Checksum error."
-    audit("DHT", buf)
-    return buf,buf
+    audit("DHT", "Checksum error.")
+    return nil,nil
   elseif status == dht.ERROR_TIMEOUT then
-    buf = "Timed out."
-    audit("DHT", buf)
-    return buf,buf
+    audit("DHT", "Timed out.")
+    return nil,nil
 --  elseif status == dht.OK then
   end
-  buf = "Temperature:"..temp.."C ".."Humidity:"..humi.."%"
-  audit("DHT", buf)
+  audit("DHT", "Temperature:"..temp.."C ".."Humidity:"..humi.."%")
   return temp, humi
 end
 
@@ -72,7 +74,7 @@ end
 -- ACTUATOR FAN
 -- @param switch 1 = ON / 0 = OFF
 -- @return 1 = ON / 0 = OFF
-function fan(switch) --
+function fan(switch)
   if (switch == 1) then
     gpio.write(PIN_FAN, gpio.LOW)
     audit("FAN", "ON")
@@ -86,15 +88,36 @@ end
 ----------------------
 ----- INIT SETUP -----
 ----------------------
+sync_clock()
 gpio.mode(PIN_FAN, gpio.OUTPUT)
 gpio.mode(PIN_LIGHT, gpio.OUTPUT)
-sync_clock()
 light(0)
 fan(0)
+
+----------------------
+------ CONTROL -------
+----------------------
+-- CONTROL TEMPERATURE
+function control_temperature()
+  local measured_temperature, measured_humidity = tempHum()
+  if (measured_temperature ~= nil) then -- so, filter the value
+    TEMPERATURE = TEMPERATURE - TEMPERATURE/TEMPERATURE_NSAMPLES
+    TEMPERATURE = TEMPERATURE + measured_temperature/TEMPERATURE_NSAMPLES
+    audit("CTRL TEMP", TEMPERATURE)
+    if (measured_temperature > TEMPERATURE) then
+      fan(1)
+    else
+      fan(0)
+    end
+  end
+end
+-----------------------
+-- SCHEDULE ROUTINES --
+-----------------------
 -- nodemcu time is GMT. Sao Paulo time is GMT-2
 --cron.schedule(MASK_CRON_LIGHT_ON, light(1))
 --cron.schedule(MASK_CRON_LIGHT_OFF, light(0))
---cron.schedule(MASK_CRON_DHT, tempHum())
+cron.schedule(MASK_CRON_DHT, control_temperature)
 --cron.schedule(MASK_CRON_LIGHT_OFF, sync_clock()) -- sporadically sync clock
 
 ----------------------
@@ -127,7 +150,7 @@ srv:listen(80,function(conn)
             fan(0)
       end
       local buf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html>"
-      buf = buf.."<html><head><title>babilonia v0.0.1</title>"
+      buf = buf.."<html><head><title>babilonia v0.0.2</title>"
       buf = buf.."<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/></head>"
       buf = buf.."<body>"
       local tempx, humix = tempHum()
@@ -145,4 +168,3 @@ srv:listen(80,function(conn)
     end)
     conn:on("sent", function (c) c:close() end)
 end)
---  dofile("apps.lua")
