@@ -51,10 +51,10 @@ function tempHum(silent)
   status, temp, humi, temp_dec, humi_dec = dht.read(PIN_DHT)
   if status == dht.ERROR_CHECKSUM then
     audit("DHT", "Checksum error.")
-    return nil,nil,nil,nil
+    return -1,-1,-1,-1
   elseif status == dht.ERROR_TIMEOUT then
     audit("DHT", "Timed out.")
-    return nil,nil,nil,nil
+    return -1,-1,-1,-1
 --  elseif status == dht.OK then
   end
   audit("DHT", string.format("Temperature: %d.%02dC Humidity: %d.%02d%%",temp,temp_dec,humi,humi_dec))
@@ -158,20 +158,22 @@ srv:listen(80,function(conn)
       local buf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html>"
       buf = buf.."<html><head><title>babilonia v0.0.21</title>"
       buf = buf.."<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/>"
+      buf = buf.."<link href=\"https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.css\" rel=\"stylesheet\" />"
       buf = buf.."<link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\" />"
       buf = buf.."<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>"
       buf = buf.."</head><body>"
       local temp,temp_dec,humi,humi_dec = tempHum()
-      buf = buf.."<b>DHT</b>:"..string.format("Temperature:%d.%02dC Humidity:%d.%02d%%",temp,temp_dec,humi,humi_dec).."<br />"
-      buf = buf.."<b>CTRL TEMP</b>: Calculate temperature (SMA):"..string.format("%02.2f",TEMPERATURE_SMA).."C<br />"
+      buf = buf.."<i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>DHT Temperature</b>:"..string.format("%d.%02d",temp,temp_dec).."<i class=\"wi wi-celsius\"></i><br />"
+      buf = buf.."<i class=\"wi wi-humidity\"></i>&nbsp;<b>DHT Humidity</b>:"..string.format("%d.%02d%%",humi,humi_dec).."<br />"
+      buf = buf.."<i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>Temperature (SMA)</b>:"..string.format("%02.2f",TEMPERATURE_SMA).."<i class=\"wi wi-celsius\"></i><br />"
       buf = buf.."<form>"
-      buf = buf.."<label><b>TEMPERATURE THRESHOLD</b>:</label>"
+      buf = buf.."<label><i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>Temperature threshold</b>:</label>"
       buf = buf.."  <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..string.format("%02d",TEMPERATURE_THRESHOLD).."\" onchange=\"form.submit()\"><br />"
-      buf = buf.."<label><b>LIGHT</b>:</label>"
+      buf = buf.."<label><i class=\"wi wi-day-sunny\"></i>&nbsp;<b>Light</b>:</label>"
       buf = buf.."  <input type=\"radio\" name=\"light\" value=\"1\" "..(light() == 1 and " checked" or "").." onchange=\"form.submit()\"> On"
       buf = buf.."  <input type=\"radio\" name=\"light\" value=\"0\" "..(light() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off"
       buf = buf.."<br />"
-      buf = buf.."<label><b>FAN</b>:</label>"
+      buf = buf.."<label><i class=\"wi wi-strong-wind\"></i>&nbsp;<b>Fan</b>:</label>"
       buf = buf.."  <input type=\"radio\" name=\"fan\" value=\"1\" "..(fan() == 1 and " checked" or "").." onchange=\"form.submit()\"> On"
       buf = buf.."  <input type=\"radio\" name=\"fan\" value=\"0\" "..(fan() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off"
       buf = buf.."</form></body></html>"
