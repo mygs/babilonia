@@ -5,12 +5,14 @@ VERBOSE = true
 SERVER_NTP="pool.ntp.br"
 PIN_DHT, PIN_FAN, PIN_LIGHT = 5, 6, 7
 FMT_TIME="%04d-%02d-%02d %02d:%02d"
+
+-- https://crontab.guru/ (nodemcu time is GMT. Sao Paulo time is GMT-2)
 MASK_CRON_LIGHT_ON="0 8 * * *"  -- 6AM SP time (LocalTime+2H)
 MASK_CRON_LIGHT_OFF="0 0 * * *" -- 10PM SP time (LocalTime+2H)
+MASK_CRON_SYNC_CLOCK="0 8 * * 0" -- 6AM SP time on Sundays (LocalTime+2H)
+MASK_CRON_DHT="* * * * *"
 
-
-MASK_CRON_DHT="* * * * *" -- https://crontab.guru/
-TEMPERATURE_NSAMPLES = 20
+TEMPERATURE_NSAMPLES = 50 -- https://goo.gl/3bLYao
 TEMPERATURE = 25 -- initial target temperature
 
 ----------------------
@@ -114,11 +116,14 @@ end
 -----------------------
 -- SCHEDULE ROUTINES --
 -----------------------
--- nodemcu time is GMT. Sao Paulo time is GMT-2
---cron.schedule(MASK_CRON_LIGHT_ON, light(1))
---cron.schedule(MASK_CRON_LIGHT_OFF, light(0))
+cron.schedule(MASK_CRON_LIGHT_ON, function(e)
+  light(1)
+end)
+cron.schedule(MASK_CRON_LIGHT_OFF, function(e)
+  light(0)
+end)
 cron.schedule(MASK_CRON_DHT, control_temperature)
---cron.schedule(MASK_CRON_LIGHT_OFF, sync_clock()) -- sporadically sync clock
+cron.schedule(MASK_CRON_SYNC_CLOCK, sync_clock)
 
 ----------------------
 -- START WEB SERVER --
@@ -150,12 +155,13 @@ srv:listen(80,function(conn)
             fan(0)
       end
       local buf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html>"
-      buf = buf.."<html><head><title>babilonia v0.0.2</title>"
+      buf = buf.."<html><head><title>babilonia v0.0.21</title>"
       buf = buf.."<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/></head>"
       buf = buf.."<body>"
       local tempx, humix = tempHum()
-      buf = buf.."<b>DHT</b>: Temperature:"..tempx.."C  ".."Humidity:"..humix.."%"
-      buf = buf.."<br /><form>"
+      buf = buf.."<b>CTRL TEMP</b>: Calculate temperature:"..string.format("%02.2f",TEMPERATURE).."C<br />"
+      buf = buf.."<b>DHT</b>: Temperature:"..tempx.."C  ".."Humidity:"..humix.."%<br />"
+      buf = buf.."<form>"
       buf = buf.."<label><b>LIGHT</b>:<label>"
       buf = buf.."  <input type=\"radio\" name=\"light\" value=\"1\" "..(light() == 1 and " checked" or "").." onchange=\"form.submit()\"> On"
       buf = buf.."  <input type=\"radio\" name=\"light\" value=\"0\" "..(light() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off"

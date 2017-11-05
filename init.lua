@@ -8,7 +8,7 @@ function startup()
         print("Running")
         file.close("init.lua")
         -- the actual application is stored in 'apps.lua'
-        --dofile("apps.lua")
+        dofile("apps.lua")
     end
 end
 
