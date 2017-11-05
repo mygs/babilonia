@@ -148,17 +148,13 @@ srv:listen(80,function(conn)
       if(_GET.temp ~= nil)then
             TEMPERATURE_THRESHOLD = tonumber(_GET.temp)
       end
-      if(_GET.light == "1")then
-            light(1)
-      elseif(_GET.light == "0")then
-            light(0)
+      if(_GET.light ~= nil)then
+            light(tonumber(_GET.light))
+      end
+      if(_GET.fan ~= nil)then
+            fan(tonumber(_GET.fan))
       end
 
-      if(_GET.fan == "1")then
-            fan(1)
-      elseif(_GET.fan == "0")then
-            fan(0)
-      end
       local buf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html>"
       buf = buf.."<html><head><title>babilonia v0.0.21</title>"
       buf = buf.."<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/></head>"
