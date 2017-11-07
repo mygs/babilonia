@@ -162,14 +162,27 @@ srv:listen(80,function(conn)
       buf = buf.."<link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\" />"
       buf = buf.."<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>"
       buf = buf.."</head><body>"
+
+      -- sensor data
       local temp,temp_dec,humi,humi_dec = tempHum()
-      buf = buf.."<div class=\"panel panel-primary\"><div class=\"panel-heading\">Sensor data</div><div class=\"panel-body\">"
-      buf = buf.."<i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>DHT Temperature</b>:"..string.format("%d.%02d",temp,temp_dec).."<i class=\"wi wi-celsius\"></i><br />"
-      buf = buf.."<i class=\"wi wi-humidity\"></i>&nbsp;<b>DHT Humidity</b>:"..string.format("%d.%02d%%",humi,humi_dec).."<br />"
-      buf = buf.."</div></div><div class=\"panel panel-warning\"><div class=\"panel-heading\">Calculate data</div><div class=\"panel-body\">"
-      buf = buf.."<i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>Temperature (SMA)</b>:"..string.format("%02.2f",TEMPERATURE_SMA).."<i class=\"wi wi-celsius\"></i><br />"
-      buf = buf.."</div></div><form>"
-      buf = buf.."<div class=\"panel panel-warning\"><div class=\"panel-heading\">Manual configuration</div><div class=\"panel-body\">"
+      local tempStr = string.format("%d.%02d",temp,temp_dec)
+      local humiStr = string.format("%d.%02d%%",humi,humi_dec)
+      buf = buf.."<div class=\"panel panel-primary\">"
+      buf = buf.."<div class=\"panel-heading\">Sensor data</div>"
+      buf = buf.."<div class=\"panel-body\">"
+      buf = buf.."<label><i class=\"wi wi-thermometer-exterior\"></i>&nbsp;DHT Temperature</label>"..tempStr.."<i class=\"wi wi-celsius\"></i><br />"
+      buf = buf.."<label><i class=\"wi wi-humidity\"></i>&nbsp;DHT Humidity</label>"..humiStr
+      buf = buf.."</div></div>"
+      -- calculate data
+      buf = buf.."<div class=\"panel panel-info\">"
+      buf = buf.."<div class=\"panel-heading\">Calculate data</div>"
+      buf = buf.."<div class=\"panel-body\">"
+      buf = buf.."<i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>Temperature (SMA)</b>:"..string.format("%02.2f",TEMPERATURE_SMA).."<i class=\"wi wi-celsius\"></i>"
+      buf = buf.."</div></div>"
+      -- manual configuration
+      buf = buf.."<form><div class=\"panel panel-warning\">"
+      buf = buf.."<div class=\"panel-heading\">Manual configuration</div>"
+      buf = buf.."<div class=\"panel-body\">"
       buf = buf.."<label><i class=\"wi wi-thermometer-exterior\"></i>&nbsp;<b>Temperature threshold</b>:</label>"
       buf = buf.."  <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..string.format("%02d",TEMPERATURE_THRESHOLD).."\" onchange=\"form.submit()\"><br />"
       buf = buf.."<label><i class=\"wi wi-day-sunny\"></i>&nbsp;<b>Light</b>:</label>"
