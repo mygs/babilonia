@@ -47,14 +47,37 @@ dofile("apps.lua")
 ```
 ### cross compiling
 ```bash
-./luac.cross -o credentials.lc credentials.lua
+./luac.cross -o config.lc config.lua
 ./luac.cross -o apps.lc apps.lua
 nodemcu-uploader file remove *
-nodemcu-uploader upload apps.lc credentials.lc init.lua
+nodemcu-uploader upload apps.lc config.lc init.lua
 ```
 
-### credentials.lua file
+### config.lua file
 ```lua
+-- Credentials
 SSID = "YOUR SSID"
 PASSWORD = "YOUR PASSWORD"
+
+-- General configurations
+NODEID = "Babilônia X"
+VERBOSE = true
+SERVER_NTP="pool.ntp.br"
+FMT_TIME="%04d-%02d-%02d %02d:%02d"
+
+-- https://crontab.guru/ (nodemcu time is GMT. Sao Paulo time is GMT-2)
+MASK_CRON_LIGHT_ON="0 8 * * *"  -- 6AM SP time (LocalTime+2H)
+MASK_CRON_LIGHT_OFF="0 0 * * *" -- 10PM SP time (LocalTime+2H)
+MASK_CRON_SYNC_CLOCK="0 8 * * 0" -- 6AM SP time on Sundays (LocalTime+2H)
+MASK_CRON_DHT="* * * * *"
+
+-- default values
+TEMPERATURE_NSAMPLES = 10 -- https://goo.gl/3bLYao
+TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
+TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
+
+PIN_DHT   = 5
+PIN_FAN   = 6
+PIN_LIGHT = 7
+
 ```

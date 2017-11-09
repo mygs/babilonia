@@ -1,21 +1,7 @@
 ----------------------
 ----- VARIABLES ------
 ----------------------
-VERBOSE = true
-SERVER_NTP="pool.ntp.br"
-PIN_DHT, PIN_FAN, PIN_LIGHT = 5, 6, 7
-FMT_TIME="%04d-%02d-%02d %02d:%02d"
-
--- https://crontab.guru/ (nodemcu time is GMT. Sao Paulo time is GMT-2)
-MASK_CRON_LIGHT_ON="0 8 * * *"  -- 6AM SP time (LocalTime+2H)
-MASK_CRON_LIGHT_OFF="0 0 * * *" -- 10PM SP time (LocalTime+2H)
-MASK_CRON_SYNC_CLOCK="0 8 * * 0" -- 6AM SP time on Sundays (LocalTime+2H)
-MASK_CRON_DHT="* * * * *"
-
--- default values
-TEMPERATURE_NSAMPLES = 10 -- https://goo.gl/3bLYao
-TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
-TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
+-- check config file
 
 ----------------------
 -------- UTILS -------
@@ -156,7 +142,7 @@ srv:listen(80,function(conn)
       end
 
       local buf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html>"
-      buf = buf.."<html><head><title>babilonia v0.0.1</title>"
+      buf = buf.."<html><head><title>"..NODEID.."</title>"
       buf = buf.."<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/>"
       buf = buf.."<link href=\"https://goo.gl/mvSm33\" rel=\"stylesheet\" />"
       buf = buf.."<link href=\"https://goo.gl/gnD6aH\" rel=\"stylesheet\" />"
@@ -221,14 +207,20 @@ srv:listen(80,function(conn)
       buf = buf.." </div>"
       buf = buf.."</form>"
       -- general information: print cron masks, pins finality, nodemcu ID (put in credentials.lua), etc.
-      local nodeID = "BAZINGA"
       buf = buf.."<div class=\"panel panel-info\">"
       buf = buf.." <div class=\"panel-heading\">General information</div>"
       buf = buf.." <div class=\"panel-body\">"
+
       buf = buf.."  <div class=\"row\">"
       buf = buf.."   <label class=\"col-sm-2 text-right\">Module ID <i class=\"fa fa-id-card\"></i></label>"
-      buf = buf.."   <div class=\"col-sm-1 text-left\">"..nodeID.."</div>"
+      buf = buf.."   <div class=\"col-sm-1 text-left\">"..NODEID.."</div>"
       buf = buf.."  </div>"
+
+      buf = buf.."  <div class=\"row\">"
+      buf = buf.."   <label class=\"col-sm-2 text-right\">SSID <i class=\"fa fa-id-card\"></i></label>"
+      buf = buf.."   <div class=\"col-sm-1 text-left\">"..SSID.."</div>"
+      buf = buf.."  </div>"
+
       buf = buf.." </div>"
       buf = buf.."</div>"
 
