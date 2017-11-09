@@ -45,6 +45,12 @@ nodemcu-uploader terminal
 node.restart()
 dofile("apps.lua")
 ```
+### cross compiling
+```bash
+./luac.cross -o credentials.lc credentials.lua
+./luac.cross -o apps.lc apps.lua
+nodemcu-uploader file remove *
+nodemcu-uploader upload apps.lc credentials.lc init.lua
 
 ### .credentials file
 ```lua

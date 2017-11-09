@@ -1,5 +1,6 @@
 -- load credentials, 'SSID' and 'PASSWORD' declared and initialize in there
-dofile("credentials.lua")
+--dofile("credentials.lua")
+require("credentials")
 
 function startup()
     if file.open("init.lua") == nil then
@@ -8,7 +9,8 @@ function startup()
         print("Running")
         file.close("init.lua")
         -- the actual application is stored in 'apps.lua'
-        dofile("apps.lua")
+        --dofile("apps.lua")
+        require("apps")
     end
 end
 

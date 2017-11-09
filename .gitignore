@@ -1,3 +1,5 @@
+luac.cross
+*.lc
 credentials.lua
 #temp files dir
 sandbox/
