@@ -51,8 +51,9 @@ dofile("apps.lua")
 ./luac.cross -o apps.lc apps.lua
 nodemcu-uploader file remove *
 nodemcu-uploader upload apps.lc credentials.lc init.lua
+```
 
-### .credentials file
+### credentials.lua file
 ```lua
 SSID = "YOUR SSID"
 PASSWORD = "YOUR PASSWORD"

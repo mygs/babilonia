@@ -1,5 +1,4 @@
 -- load credentials, 'SSID' and 'PASSWORD' declared and initialize in there
---dofile("credentials.lua")
 require("credentials")
 
 function startup()
@@ -8,8 +7,7 @@ function startup()
     else
         print("Running")
         file.close("init.lua")
-        -- the actual application is stored in 'apps.lua'
-        --dofile("apps.lua")
+        -- the actual application is stored in 'apps'
         require("apps")
     end
 end
@@ -71,4 +69,3 @@ print("Connecting to WiFi access point...")
 wifi.setmode(wifi.STATION)
 wifi.sta.config({ssid=SSID, pwd=PASSWORD})
 -- wifi.sta.connect() not necessary because config() uses auto-connect=true by default
--- load credentials, 'SSID' and 'PASSWORD' declared and initialize in there
