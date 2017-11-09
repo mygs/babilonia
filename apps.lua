@@ -156,10 +156,11 @@ srv:listen(80,function(conn)
       end
 
       local buf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html>"
-      buf = buf.."<html><head><title>babilonia v0.0.22</title>"
+      buf = buf.."<html><head><title>babilonia v0.0.1</title>"
       buf = buf.."<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/>"
       buf = buf.."<link href=\"https://goo.gl/mvSm33\" rel=\"stylesheet\" />"
       buf = buf.."<link href=\"https://goo.gl/gnD6aH\" rel=\"stylesheet\" />"
+      buf = buf.."<link href=\"https://goo.gl/LTW3E6\" rel=\"stylesheet\" />"
       buf = buf.."<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>"
       buf = buf.."</head><body><div class=\"container\">"
 
@@ -201,7 +202,7 @@ srv:listen(80,function(conn)
       buf = buf.."    <label class=\"col-sm-2 text-right\">Threshold &nbsp; <i class=\"wi wi-thermometer-exterior\"></i></label>"
       buf = buf.."    <div class=\"col-sm-2 text-left\">"
       buf = buf.."     <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..thresholdStr.."\" onchange=\"form.submit()\">"
-      buf = buf.."    </div>"
+      buf = buf.."    <i class=\"wi wi-celsius\"></i></div>"
       buf = buf.."   </div>"
       buf = buf.."   <div class=\"row\">"
       buf = buf.."    <label class=\"col-sm-2 text-right\">Light &nbsp; <i class=\"wi wi-day-sunny\"></i></label>"
@@ -218,7 +219,20 @@ srv:listen(80,function(conn)
       buf = buf.."    </div>"
       buf = buf.."  </div>"
       buf = buf.." </div>"
-      buf = buf.."</form></div></body></html>"
+      buf = buf.."</form>"
+      -- general information: print cron masks, pins finality, nodemcu ID (put in credentials.lua), etc.
+      local nodeID = "BAZINGA"
+      buf = buf.."<div class=\"panel panel-info\">"
+      buf = buf.." <div class=\"panel-heading\">General information</div>"
+      buf = buf.." <div class=\"panel-body\">"
+      buf = buf.."  <div class=\"row\">"
+      buf = buf.."   <label class=\"col-sm-2 text-right\">Module ID <i class=\"fa fa-id-card\"></i></label>"
+      buf = buf.."   <div class=\"col-sm-1 text-left\">"..nodeID.."</div>"
+      buf = buf.."  </div>"
+      buf = buf.." </div>"
+      buf = buf.."</div>"
+
+      buf = buf.."</div></body></html>"
       client:send(buf)
     end)
     conn:on("sent", function (c) c:close() end)

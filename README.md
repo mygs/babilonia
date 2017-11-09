@@ -40,7 +40,7 @@ https://github.com/kmpm/nodemcu-uploader/blob/master/doc/USAGE.md
 nodemcu-uploader node restart
 nodemcu-uploader file list
 nodemcu-uploader file remove *
-nodemcu-uploader upload credentials.lua init.lua apps.lua
+nodemcu-uploader upload apps.lua credentials.lua init.lua
 nodemcu-uploader terminal
 node.restart()
 dofile("apps.lua")
