@@ -212,14 +212,29 @@ srv:listen(80,function(conn)
       buf = buf.." <div class=\"panel-body\">"
 
       buf = buf.."  <div class=\"row\">"
-      buf = buf.."   <label class=\"col-sm-2 text-right\">Module ID <i class=\"fa fa-id-card\"></i></label>"
-      buf = buf.."   <div class=\"col-sm-1 text-left\">"..NODEID.."</div>"
+      buf = buf.."   <label class=\"col-sm-3 text-right\">Module <i class=\"fa fa-id-card\"></i></label>"
+      buf = buf.."   <div class=\"col-sm-3 text-left\">"..NODEID.."</div>"
       buf = buf.."  </div>"
 
       buf = buf.."  <div class=\"row\">"
-      buf = buf.."   <label class=\"col-sm-2 text-right\">SSID <i class=\"fa fa-id-card\"></i></label>"
-      buf = buf.."   <div class=\"col-sm-1 text-left\">"..SSID.."</div>"
+      buf = buf.."   <label class=\"col-sm-3 text-right\">SSID <i class=\"fa fa-wifi\"></i></label>"
+      buf = buf.."   <div class=\"col-sm-3 text-left\">"..SSID.."</div>"
       buf = buf.."  </div>"
+
+--      buf = buf.."  <div class=\"row\">"
+--      buf = buf.."   <label class=\"col-sm-3 text-right\">NTP <i class=\"fa fa-server\"></i></label>"
+--      buf = buf.."   <div class=\"col-sm-3 text-left\">"..SERVER_NTP.."</div>"
+--      buf = buf.."  </div>"
+
+--      buf = buf.."  <div class=\"row\">"
+--      buf = buf.."   <label class=\"col-sm-3 text-right\">Cron Light ON <i class=\"wi wi-day-sunny\"></i></label>"
+--      buf = buf.."   <div class=\"col-sm-3 text-left\">"..MASK_CRON_LIGHT_ON.."</div>"
+--      buf = buf.."  </div>"
+
+--      buf = buf.."  <div class=\"row\">"
+--      buf = buf.."   <label class=\"col-sm-3 text-right\">Cron Light OFF <i class=\"wi wi-night-clear\"></i></label>"
+--      buf = buf.."   <div class=\"col-sm-3 text-left\">"..MASK_CRON_LIGHT_OFF.."</div>"
+--      buf = buf.."  </div>"
 
       buf = buf.." </div>"
       buf = buf.."</div>"
