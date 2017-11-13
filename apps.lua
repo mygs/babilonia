@@ -26,6 +26,7 @@ function sync_clock()
     audit("SYNC CLOCK", "")
   end)
 end
+
 --------------------------
 --- SENSOR & ACTUATORS ---
 --------------------------
@@ -140,107 +141,130 @@ srv:listen(80,function(conn)
       if(_GET.fan ~= nil)then
             fan(tonumber(_GET.fan))
       end
-
-      local buf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html>"
-      buf = buf.."<html><head><title>"..NODEID.."</title>"
-      buf = buf.."<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/>"
-      buf = buf.."<link href=\"https://goo.gl/mvSm33\" rel=\"stylesheet\" />"
-      buf = buf.."<link href=\"https://goo.gl/gnD6aH\" rel=\"stylesheet\" />"
-      buf = buf.."<link href=\"https://goo.gl/LTW3E6\" rel=\"stylesheet\" />"
-      buf = buf.."<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>"
-      buf = buf.."</head><body><div class=\"container\">"
-
+      local header = {}
+      table.insert(header, "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html>")
+      table.insert(header, "<html><head><title>"..NODEID.."</title>")
+      table.insert(header, "<link rel=\"shortcut icon\" type=\"image/png\" href=\"https://goo.gl/b1zr7A\"/>")
+      table.insert(header, "<link href=\"https://goo.gl/mvSm33\" rel=\"stylesheet\" />")
+      table.insert(header, "<link href=\"https://goo.gl/gnD6aH\" rel=\"stylesheet\" />")
+      table.insert(header, "<link href=\"https://goo.gl/LTW3E6\" rel=\"stylesheet\" />")
+      table.insert(header, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>")
+      table.insert(header, "</head><body><div class=\"container\">")
+      header = table.concat(header,"")
+      client:send(header)
+      header = nil
+      collectgarbage("collect")
+      local sensorData = {}
       -- sensor data
       local temp,temp_dec,humi,humi_dec = tempHum()
       local tempStr = string.format("%d.%02d",temp,temp_dec)
       local humiStr = string.format("%d.%02d%%",humi,humi_dec)
-      buf = buf.."<div class=\"panel panel-primary\">"
-      buf = buf.." <div class=\"panel-heading\">Sensor data</div>"
-      buf = buf.." <div class=\"panel-body\">"
-      buf = buf.."  <div class=\"row\">"
-      buf = buf.."   <label class=\"col-sm-2 text-right\">DHT Temperature &nbsp; <i class=\"wi wi-thermometer-exterior\"></i></label>"
-      buf = buf.."   <div class=\"col-sm-1 text-left\">"..tempStr.."<i class=\"wi wi-celsius\"></i></div>"
-      buf = buf.."  </div>"
-      buf = buf.."  <div class=\"row\">"
-      buf = buf.."    <label class=\"col-sm-2 text-right\">DHT Humidity &nbsp; <i class=\"wi wi-humidity\"></i></label>"
-      buf = buf.."    <div class=\"col-sm-1 text-left\">"..humiStr.."</div>"
-      buf = buf.."  </div>"
-      buf = buf.." </div>"
-      buf = buf.."</div>"
+      table.insert(sensorData, "<div class=\"panel panel-primary\">")
+      table.insert(sensorData, " <div class=\"panel-heading\">Sensor data</div>")
+      table.insert(sensorData, " <div class=\"panel-body\">")
+      table.insert(sensorData, "  <div class=\"row\">")
+      table.insert(sensorData, "   <label class=\"col-sm-2 text-right\">DHT Temperature &nbsp; <i class=\"wi wi-thermometer-exterior\"></i></label>")
+      table.insert(sensorData, "   <div class=\"col-sm-1 text-left\">"..tempStr.."<i class=\"wi wi-celsius\"></i></div>")
+      table.insert(sensorData, "  </div>")
+      table.insert(sensorData, "  <div class=\"row\">")
+      table.insert(sensorData, "    <label class=\"col-sm-2 text-right\">DHT Humidity &nbsp; <i class=\"wi wi-humidity\"></i></label>")
+      table.insert(sensorData, "    <div class=\"col-sm-1 text-left\">"..humiStr.."</div>")
+      table.insert(sensorData, "  </div>")
+      table.insert(sensorData, " </div>")
+      table.insert(sensorData, "</div>")
+      sensorData = table.concat(sensorData,"")
+      client:send(sensorData)
+      sensorData = nil
+      collectgarbage("collect")
+      local calcData = {}
       -- calculate data
       local smaStr = string.format("%02.2f",TEMPERATURE_SMA)
-      buf = buf.."<div class=\"panel panel-info\">"
-      buf = buf.." <div class=\"panel-heading\">Calculate data</div>"
-      buf = buf.." <div class=\"panel-body\">"
-      buf = buf.."  <div class=\"row\">"
-      buf = buf.."   <label class=\"col-sm-2 text-right\">Temperature (SMA) &nbsp; <i class=\"wi wi-thermometer-exterior\"></i></label>"
-      buf = buf.."   <div class=\"col-sm-1 text-left\">"..smaStr.."<i class=\"wi wi-celsius\"></i></div>"
-      buf = buf.."  </div>"
-      buf = buf.." </div>"
-      buf = buf.."</div>"
+      table.insert(calcData, "<div class=\"panel panel-info\">")
+      table.insert(calcData, " <div class=\"panel-heading\">Calculate data</div>")
+      table.insert(calcData, " <div class=\"panel-body\">")
+      table.insert(calcData, "  <div class=\"row\">")
+      table.insert(calcData, "   <label class=\"col-sm-2 text-right\">Temperature (SMA) &nbsp; <i class=\"wi wi-thermometer-exterior\"></i></label>")
+      table.insert(calcData, "   <div class=\"col-sm-1 text-left\">"..smaStr.."<i class=\"wi wi-celsius\"></i></div>")
+      table.insert(calcData, "  </div>")
+      table.insert(calcData, " </div>")
+      table.insert(calcData, "</div>")
+      calcData = table.concat(calcData,"")
+      client:send(calcData)
+      calcData = nil
+      collectgarbage("collect")
+      local manualConf = {}
       -- manual configuration
       local thresholdStr = string.format("%02d",TEMPERATURE_THRESHOLD)
-      buf = buf.."<form>"
-      buf = buf.." <div class=\"panel panel-warning\">"
-      buf = buf.."  <div class=\"panel-heading\">Manual configuration</div>"
-      buf = buf.."  <div class=\"panel-body\">"
-      buf = buf.."   <div class=\"row\">"
-      buf = buf.."    <label class=\"col-sm-2 text-right\">Threshold &nbsp; <i class=\"wi wi-thermometer-exterior\"></i></label>"
-      buf = buf.."    <div class=\"col-sm-2 text-left\">"
-      buf = buf.."     <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..thresholdStr.."\" onchange=\"form.submit()\">"
-      buf = buf.."    <i class=\"wi wi-celsius\"></i></div>"
-      buf = buf.."   </div>"
-      buf = buf.."   <div class=\"row\">"
-      buf = buf.."    <label class=\"col-sm-2 text-right\">Light &nbsp; <i class=\"wi wi-day-sunny\"></i></label>"
-      buf = buf.."    <div class=\"col-sm-2 text-left\">"
-      buf = buf.."     <input type=\"radio\" name=\"light\" value=\"1\" "..(light() == 1 and " checked" or "").." onchange=\"form.submit()\"> On"
-      buf = buf.."     <input type=\"radio\" name=\"light\" value=\"0\" "..(light() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off"
-      buf = buf.."    </div>"
-      buf = buf.."   </div>"
-      buf = buf.."   <div class=\"row\">"
-      buf = buf.."    <label class=\"col-sm-2 text-right\">Fan &nbsp; <i class=\"wi wi-strong-wind\"></i></label>"
-      buf = buf.."    <div class=\"col-sm-2 text-left\">"
-      buf = buf.."     <input type=\"radio\" name=\"fan\" value=\"1\" "..(fan() == 1 and " checked" or "").." onchange=\"form.submit()\"> On"
-      buf = buf.."     <input type=\"radio\" name=\"fan\" value=\"0\" "..(fan() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off"
-      buf = buf.."    </div>"
-      buf = buf.."  </div>"
-      buf = buf.." </div>"
-      buf = buf.."</form>"
+      table.insert(manualConf, "<form>")
+      table.insert(manualConf, " <div class=\"panel panel-warning\">")
+      table.insert(manualConf, "  <div class=\"panel-heading\">Manual configuration</div>")
+      table.insert(manualConf, "  <div class=\"panel-body\">")
+      table.insert(manualConf, "   <div class=\"row\">")
+      table.insert(manualConf, "    <label class=\"col-sm-2 text-right\">Threshold &nbsp; <i class=\"wi wi-thermometer-exterior\"></i></label>")
+      table.insert(manualConf, "    <div class=\"col-sm-2 text-left\">")
+      table.insert(manualConf, "     <input type=\"number\" name=\"temp\" min=\"10\" max=\"30\" value=\""..thresholdStr.."\" onchange=\"form.submit()\">")
+      table.insert(manualConf, "    <i class=\"wi wi-celsius\"></i></div>")
+      table.insert(manualConf, "   </div>")
+      table.insert(manualConf, "   <div class=\"row\">")
+      table.insert(manualConf, "    <label class=\"col-sm-2 text-right\">Light &nbsp; <i class=\"wi wi-day-sunny\"></i></label>")
+      table.insert(manualConf, "    <div class=\"col-sm-2 text-left\">")
+      table.insert(manualConf, "     <input type=\"radio\" name=\"light\" value=\"1\" "..(light() == 1 and " checked" or "").." onchange=\"form.submit()\"> On")
+      table.insert(manualConf, "     <input type=\"radio\" name=\"light\" value=\"0\" "..(light() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off")
+      table.insert(manualConf, "    </div>")
+      table.insert(manualConf, "   </div>")
+      table.insert(manualConf, "   <div class=\"row\">")
+      table.insert(manualConf, "    <label class=\"col-sm-2 text-right\">Fan &nbsp; <i class=\"wi wi-strong-wind\"></i></label>")
+      table.insert(manualConf, "    <div class=\"col-sm-2 text-left\">")
+      table.insert(manualConf, "     <input type=\"radio\" name=\"fan\" value=\"1\" "..(fan() == 1 and " checked" or "").." onchange=\"form.submit()\"> On")
+      table.insert(manualConf, "     <input type=\"radio\" name=\"fan\" value=\"0\" "..(fan() == 0 and " checked" or "").." onchange=\"form.submit()\"> Off")
+      table.insert(manualConf, "    </div>")
+      table.insert(manualConf, "  </div>")
+      table.insert(manualConf, "  </div>")
+      table.insert(manualConf, " </div>")
+      table.insert(manualConf, "</form>")
+      manualConf = table.concat(manualConf,"")
+      client:send(manualConf)
+      manualConf = nil
+      collectgarbage("collect")
+      local generalInfo = {}
       -- general information: print cron masks, pins finality, nodemcu ID (put in credentials.lua), etc.
-      buf = buf.."<div class=\"panel panel-info\">"
-      buf = buf.." <div class=\"panel-heading\">General information</div>"
-      buf = buf.." <div class=\"panel-body\">"
+      table.insert(generalInfo, "<div class=\"panel panel-info\">")
+      table.insert(generalInfo, " <div class=\"panel-heading\">General information</div>")
+      table.insert(generalInfo, " <div class=\"panel-body\">")
 
-      buf = buf.."  <div class=\"row\">"
-      buf = buf.."   <label class=\"col-sm-3 text-right\">Module <i class=\"fa fa-id-card\"></i></label>"
-      buf = buf.."   <div class=\"col-sm-3 text-left\">"..NODEID.."</div>"
-      buf = buf.."  </div>"
+      table.insert(generalInfo, "  <div class=\"row\">")
+      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">Module <i class=\"fa fa-id-card\"></i></label>")
+      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..NODEID.."</div>")
+      table.insert(generalInfo, "  </div>")
 
-      buf = buf.."  <div class=\"row\">"
-      buf = buf.."   <label class=\"col-sm-3 text-right\">SSID <i class=\"fa fa-wifi\"></i></label>"
-      buf = buf.."   <div class=\"col-sm-3 text-left\">"..SSID.."</div>"
-      buf = buf.."  </div>"
+      table.insert(generalInfo, "  <div class=\"row\">")
+      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">SSID <i class=\"fa fa-wifi\"></i></label>")
+      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..SSID.."</div>")
+      table.insert(generalInfo, "  </div>")
 
---      buf = buf.."  <div class=\"row\">"
---      buf = buf.."   <label class=\"col-sm-3 text-right\">NTP <i class=\"fa fa-server\"></i></label>"
---      buf = buf.."   <div class=\"col-sm-3 text-left\">"..SERVER_NTP.."</div>"
---      buf = buf.."  </div>"
+      table.insert(generalInfo, "  <div class=\"row\">")
+      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">NTP <i class=\"fa fa-server\"></i></label>")
+      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..SERVER_NTP.."</div>")
+      table.insert(generalInfo, "  </div>")
 
---      buf = buf.."  <div class=\"row\">"
---      buf = buf.."   <label class=\"col-sm-3 text-right\">Cron Light ON <i class=\"wi wi-day-sunny\"></i></label>"
---      buf = buf.."   <div class=\"col-sm-3 text-left\">"..MASK_CRON_LIGHT_ON.."</div>"
---      buf = buf.."  </div>"
+--      table.insert(generalInfo, "  <div class=\"row\">")
+--      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">Cron Light ON <i class=\"wi wi-day-sunny\"></i></label>")
+--      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..MASK_CRON_LIGHT_ON.."</div>")
+--      table.insert(generalInfo, "  </div>")
 
---      buf = buf.."  <div class=\"row\">"
---      buf = buf.."   <label class=\"col-sm-3 text-right\">Cron Light OFF <i class=\"wi wi-night-clear\"></i></label>"
---      buf = buf.."   <div class=\"col-sm-3 text-left\">"..MASK_CRON_LIGHT_OFF.."</div>"
---      buf = buf.."  </div>"
+--      table.insert(bgeneralInfouf, "  <div class=\"row\">")
+--      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">Cron Light OFF <i class=\"wi wi-night-clear\"></i></label>")
+--      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..MASK_CRON_LIGHT_OFF.."</div>")
+--      table.insert(generalInfo, "  </div>")
 
-      buf = buf.." </div>"
-      buf = buf.."</div>"
+      table.insert(generalInfo, " </div>")
+      table.insert(generalInfo, "</div>")
 
-      buf = buf.."</div></body></html>"
-      client:send(buf)
+      table.insert(generalInfo, "</div></body></html>")
+      generalInfo = table.concat(generalInfo,"")
+      client:send(generalInfo)
+      generalInfo = nil
+      collectgarbage("collect")
     end)
     conn:on("sent", function (c) c:close() end)
 end)
