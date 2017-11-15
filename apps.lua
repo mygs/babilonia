@@ -27,6 +27,26 @@ function sync_clock()
   end)
 end
 
+-- UPLOAD DATA TO GOOGLE SPREADSHEET
+function upload(measured_temp, measured_humid, status_fan, status_light)
+  collectgarbage("collect")
+  local parms = {}
+  table.insert(parms, DATAREPO)
+  table.insert(parms, "?tag="..NODEID.."&ct="..TEMPERATURE_SMA)
+  table.insert(parms, "&mt="..measured_temp.."&mh="..measured_humid)
+  table.insert(parms, "&sf="..status_fan.."&sl="..status_light)
+  parms = table.concat(parms,"")
+  print("URL >>> "..parms)
+  http.get(parms, nil, function(code, data)
+      if (code < 0) then
+        audit("UPLOAD","HTTPS request failed")
+      else
+        --print(code, data)
+        audit("UPLOAD","HTTPS request success")
+      end
+    end)
+end
+
 --------------------------
 --- SENSOR & ACTUATORS ---
 --------------------------
@@ -34,7 +54,7 @@ end
 -- SENSOR DHT
 -- @return temp Temperature (Celsius)
 -- @return humi Humidity (Percentage)
-function tempHum(silent)
+function tempHum()
   status, temp, humi, temp_dec, humi_dec = dht.read(PIN_DHT)
   if status == dht.ERROR_CHECKSUM then
     audit("DHT", "Checksum error.")
@@ -42,10 +62,12 @@ function tempHum(silent)
   elseif status == dht.ERROR_TIMEOUT then
     audit("DHT", "Timed out.")
     return -1,-1,-1,-1
---  elseif status == dht.OK then
+  elseif status == dht.OK then
+    audit("DHT", string.format("Temperature: %d.%02dC Humidity: %d.%02d%%",temp,temp_dec,humi,humi_dec))
+    return temp,temp_dec,humi,humi_dec
   end
-  audit("DHT", string.format("Temperature: %d.%02dC Humidity: %d.%02d%%",temp,temp_dec,humi,humi_dec))
-  return temp,temp_dec,humi,humi_dec
+  audit("DHT", "Unknown status")
+  return -1,-1,-1,-1
 end
 
 -- ACTUATOR LIGHT
@@ -90,7 +112,7 @@ fan(0)
 ----------------------
 -- CONTROL TEMPERATURE
 function control_temperature()
-  local measured_temp = tempHum()
+  local measured_temp,measured_temp_dec,measured_humi,measured_humi_dec = tempHum()
   if (measured_temp ~= nil) then -- so, filter the value
     TEMPERATURE_SMA = TEMPERATURE_SMA - TEMPERATURE_SMA/TEMPERATURE_NSAMPLES
     TEMPERATURE_SMA = TEMPERATURE_SMA + measured_temp/TEMPERATURE_NSAMPLES
@@ -100,6 +122,7 @@ function control_temperature()
     else
       fan(0)
     end
+  upload(measured_temp, measured_humi, fan(), light())
   end
 end
 -----------------------
@@ -242,10 +265,10 @@ srv:listen(80,function(conn)
       table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..SSID.."</div>")
       table.insert(generalInfo, "  </div>")
 
-      table.insert(generalInfo, "  <div class=\"row\">")
-      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">NTP <i class=\"fa fa-server\"></i></label>")
-      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..SERVER_NTP.."</div>")
-      table.insert(generalInfo, "  </div>")
+--      table.insert(generalInfo, "  <div class=\"row\">")
+--      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">NTP <i class=\"fa fa-server\"></i></label>")
+--      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..SERVER_NTP.."</div>")
+--      table.insert(generalInfo, "  </div>")
 
 --      table.insert(generalInfo, "  <div class=\"row\">")
 --      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">Cron Light ON <i class=\"wi wi-day-sunny\"></i></label>")
