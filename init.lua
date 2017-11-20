@@ -8,7 +8,9 @@ function startup()
         print("Running")
         file.close("init.lua")
         -- the actual application is stored in 'apps'
+        collectgarbage()
         require("apps")
+        --require("gsheet")
     end
 end
 

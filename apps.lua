@@ -1,9 +1,4 @@
 ----------------------
------ VARIABLES ------
-----------------------
--- check config file
-
-----------------------
 -------- UTILS -------
 ----------------------
 
@@ -25,11 +20,13 @@ function sync_clock()
   sntp.sync(SERVER_NTP, function()
     audit("SYNC CLOCK", "")
   end)
+  SERVER_NTP = nil
+  collectgarbage()
 end
 
 -- UPLOAD DATA TO GOOGLE SPREADSHEET
 function upload(measured_temp, measured_humid, status_fan, status_light)
-  collectgarbage("collect")
+  collectgarbage()
   local parms = {}
   table.insert(parms, DATAREPO)
   table.insert(parms, "?tag="..NODEID.."&ct="..TEMPERATURE_SMA)
@@ -122,7 +119,8 @@ function control_temperature()
     else
       fan(0)
     end
-  upload(measured_temp, measured_humi, fan(), light())
+  --upload(measured_temp, measured_humi, fan(), light())
+  --assert(loadfile("upload.lua"))(measured_temp, measured_humi, fan(), light())
   end
 end
 -----------------------
@@ -135,7 +133,13 @@ cron.schedule(MASK_CRON_LIGHT_OFF, function(e)
   light(0)
 end)
 cron.schedule(MASK_CRON_DHT, control_temperature)
-cron.schedule(MASK_CRON_SYNC_CLOCK, sync_clock)
+--cron.schedule(MASK_CRON_SYNC_CLOCK, sync_clock)
+
+MASK_CRON_LIGHT_ON   = nil
+MASK_CRON_LIGHT_OFF  = nil
+MASK_CRON_DHT        = nil
+MASK_CRON_SYNC_CLOCK = nil
+collectgarbage()
 
 ----------------------
 -- START WEB SERVER --
@@ -176,7 +180,7 @@ srv:listen(80,function(conn)
       header = table.concat(header,"")
       client:send(header)
       header = nil
-      collectgarbage("collect")
+      collectgarbage()
       local sensorData = {}
       -- sensor data
       local temp,temp_dec,humi,humi_dec = tempHum()
@@ -198,7 +202,7 @@ srv:listen(80,function(conn)
       sensorData = table.concat(sensorData,"")
       client:send(sensorData)
       sensorData = nil
-      collectgarbage("collect")
+      collectgarbage()
       local calcData = {}
       -- calculate data
       local smaStr = string.format("%02.2f",TEMPERATURE_SMA)
@@ -214,7 +218,7 @@ srv:listen(80,function(conn)
       calcData = table.concat(calcData,"")
       client:send(calcData)
       calcData = nil
-      collectgarbage("collect")
+      collectgarbage()
       local manualConf = {}
       -- manual configuration
       local thresholdStr = string.format("%02d",TEMPERATURE_THRESHOLD)
@@ -248,7 +252,7 @@ srv:listen(80,function(conn)
       manualConf = table.concat(manualConf,"")
       client:send(manualConf)
       manualConf = nil
-      collectgarbage("collect")
+      collectgarbage()
       local generalInfo = {}
       -- general information: print cron masks, pins finality, nodemcu ID (put in credentials.lua), etc.
       table.insert(generalInfo, "<div class=\"panel panel-info\">")
@@ -265,21 +269,6 @@ srv:listen(80,function(conn)
       table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..SSID.."</div>")
       table.insert(generalInfo, "  </div>")
 
---      table.insert(generalInfo, "  <div class=\"row\">")
---      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">NTP <i class=\"fa fa-server\"></i></label>")
---      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..SERVER_NTP.."</div>")
---      table.insert(generalInfo, "  </div>")
-
---      table.insert(generalInfo, "  <div class=\"row\">")
---      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">Cron Light ON <i class=\"wi wi-day-sunny\"></i></label>")
---      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..MASK_CRON_LIGHT_ON.."</div>")
---      table.insert(generalInfo, "  </div>")
-
---      table.insert(bgeneralInfouf, "  <div class=\"row\">")
---      table.insert(generalInfo, "   <label class=\"col-sm-3 text-right\">Cron Light OFF <i class=\"wi wi-night-clear\"></i></label>")
---      table.insert(generalInfo, "   <div class=\"col-sm-3 text-left\">"..MASK_CRON_LIGHT_OFF.."</div>")
---      table.insert(generalInfo, "  </div>")
-
       table.insert(generalInfo, " </div>")
       table.insert(generalInfo, "</div>")
 
@@ -287,7 +276,7 @@ srv:listen(80,function(conn)
       generalInfo = table.concat(generalInfo,"")
       client:send(generalInfo)
       generalInfo = nil
-      collectgarbage("collect")
+      collectgarbage()
     end)
     conn:on("sent", function (c) c:close() end)
 end)
