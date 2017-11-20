@@ -1,4 +1,5 @@
 luac.cross
 *.lc
+config.lua
 #temp files dir
 sandbox/
