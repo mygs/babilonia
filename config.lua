@@ -20,5 +20,4 @@ PIN_DHT   = 5
 PIN_FAN   = 6
 PIN_LIGHT = 7
 
-
 RATIO_CTRL_UPDATE_UPLOAD = 4 -- X/Y: For each X update, execute Y upload
