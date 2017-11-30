@@ -9,8 +9,11 @@ function startup()
         file.close("init.lua")
         -- the actual application is stored in 'apps'
         collectgarbage()
-        require("apps")
-        --require("gsheet")
+        sntp.sync("pool.ntp.br", function()
+          require("apps")
+        end)
+
+
     end
 end
 
