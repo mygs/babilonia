@@ -1,42 +1,37 @@
 local count_ctrl = 0
-local cron_lightOn;
-local cron_lightOff;
-local cron_ctrl;
 ----------------------
 -------- UTILS -------
 ----------------------
 
 -- UPLOAD DATA TO GOOGLE SPREADSHEET
 function upload(status_dht, measured_temp, measured_humid)
-  collectgarbage()
   local parms = {}
   table.insert(parms, DATAREPO)
   table.insert(parms, "?tag="..NODEID.."&st="..status_dht.."&ct="..TEMPERATURE_SMA)
   table.insert(parms, "&mt="..measured_temp.."&mh="..measured_humid)
   table.insert(parms, "&sf="..fan().."&sl="..light())
   parms = table.concat(parms,"")
-  print("[UPLOAD] URL >>> "..parms)
   http.get(parms, nil, function(code, data)
       if (code < 0) then
-        print("[UPLOAD] HTTPS request failed. Code "..code)
+        print("[UPLOAD] NOK. Code "..code)
       else
-        print("[UPLOAD] HTTPS request success")
+        print("[UPLOAD] OK")
       end
     end)
+  --collectgarbage()
 end
 
 
 -- UPDATE PARAMETERS
 function update()
-  collectgarbage()
   http.get(DATAREPO.."?tag="..NODEID, nil, function(code, data)
       if (code < 0) then
-        print("[UPDATE] HTTPS request failed. Code "..code)
+        print("[UPDATE] NOK. Code "..code)
       else
-        print("[UPDATE] HTTPS request success")
+        print("[UPDATE] OK")
         local RES = {}
         if (data ~= nil)then
-            for k, v in string.gmatch(data, "(%w+):(%w+);*") do
+            for k, v in string.gmatch(data, "(%w+):([^;]*);*") do
                 RES[k] = v
             end
         end
@@ -49,27 +44,21 @@ function update()
         if(RES.temp ~= nil)then
               TEMPERATURE_THRESHOLD = tonumber(RES.temp)
         end
-        if(RES.mclon ~= nil)then
-              cron_lightOn:unschedule()
-              cron_lightOn = cron.schedule(RES.mclon, function(e)
-                light(1)
-              end)
-        end
-        if(RES.mcloff ~= nil)then
-              cron_lightOff:unschedule()
-              cron_lightOff = cron.schedule(RES.mcloff, function(e)
-                light(0)
-              end)
-        end
-        if(RES.mcctrl ~= nil)then
-              cron_ctrl:unschedule()
-              cron_ctrl = cron.schedule(RES.mcctrl, control)
-        end
         if(RES.ruu ~= nil)then
           RATIO_CTRL_UPDATE_UPLOAD = tonumber(RES.ruu)
         end
+        if(RES.mclon ~= nil and RES.mcloff ~= nil and RES.mcctrl ~= nil)then
+          if file.open("mask-cron.lua", "w") then
+            file.writeline('MASK_CRON_LIGHT_ON=\"'..RES.mclon.."\"")
+            file.writeline('MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
+            file.writeline('MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
+            file.close()
+            node.restart()
+          end
+        end
       end
     end)
+    --collectgarbage()
 end
 --------------------------
 --- SENSOR & ACTUATORS ---
@@ -118,14 +107,14 @@ function control()
   if (status == dht.OK) then -- so, filter the value
     TEMPERATURE_SMA = TEMPERATURE_SMA - TEMPERATURE_SMA/TEMPERATURE_NSAMPLES
     TEMPERATURE_SMA = TEMPERATURE_SMA + measured_temp/TEMPERATURE_NSAMPLES
-    print("[CONTROL] Temperature (SMA)"..string.format("%02.2f",TEMPERATURE_SMA).."C")
+    print("[CONTROL] Temp "..string.format("%02.2f",TEMPERATURE_SMA).."C")
     if (TEMPERATURE_SMA > TEMPERATURE_THRESHOLD) then
       fan(1)
     else
       fan(0)
     end
   end
-  if (count_ctrl == RATIO_CTRL_UPDATE_UPLOAD) then
+  if (count_ctrl >= RATIO_CTRL_UPDATE_UPLOAD) then
     upload(status,measured_temp,measured_humi)
     count_ctrl = 1
   else
@@ -136,10 +125,15 @@ end
 -----------------------
 -- SCHEDULE ROUTINES --
 -----------------------
-cron_lightOn = cron.schedule(MASK_CRON_LIGHT_ON, function(e)
+cron.schedule(MASK_CRON_LIGHT_ON, function(e)
   light(1)
 end)
-cron_lightOff = cron.schedule(MASK_CRON_LIGHT_OFF, function(e)
+cron.schedule(MASK_CRON_LIGHT_OFF, function(e)
   light(0)
 end)
-cron_ctrl = cron.schedule(MASK_CRON_CTRL, control)
+cron.schedule(MASK_CRON_CTRL, control)
+
+MASK_CRON_LIGHT_ON = nil
+MASK_CRON_LIGHT_OFF = nil
+MASK_CRON_CTRL = nil
+collectgarbage()

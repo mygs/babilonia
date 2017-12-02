@@ -5,15 +5,12 @@ function startup()
     if file.open("init.lua") == nil then
         print("init.lua deleted or renamed")
     else
-        print("Running")
+        print("Starting Babilonia App")
         file.close("init.lua")
         -- the actual application is stored in 'apps'
-        collectgarbage()
         sntp.sync("pool.ntp.br", function()
           require("apps")
         end)
-
-
     end
 end
 
