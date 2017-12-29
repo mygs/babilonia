@@ -1,14 +1,15 @@
-local count_ctrl = 0
+print("[NODEID] "..NODEID)
+ local count_ctrl = 0
 ----------------------
 -------- UTILS -------
 ----------------------
 
 -- UPLOAD DATA TO GOOGLE SPREADSHEET
-function upload(status_dht, measured_temp, measured_humid)
+function upload(status_dht, measured_temp, measured_humi)
   local parms = {}
   table.insert(parms, DATAREPO)
   table.insert(parms, "?tag="..NODEID.."&st="..status_dht.."&ct="..TEMPERATURE_SMA)
-  table.insert(parms, "&mt="..measured_temp.."&mh="..measured_humid)
+  table.insert(parms, "&mt="..measured_temp.."&mh="..measured_humi)
   table.insert(parms, "&sf="..fan().."&sl="..light())
   parms = table.concat(parms,"")
   http.get(parms, nil, function(code, data)
@@ -53,6 +54,7 @@ function update()
             file.writeline('MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
             file.writeline('MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
             file.close()
+            print("Restarting NODE "..NODEID)
             node.restart()
           end
         end
@@ -103,7 +105,7 @@ fan(0)
 ------ CONTROL -------
 ----------------------
 function control()
-  local status, measured_temp,measured_temp_dec,measured_humi,measured_humi_dec = dht.read(PIN_DHT)
+  local status, measured_temp, measured_temp_dec, measured_humi, measured_humi_dec = dht.read(PIN_DHT)
   if (status == dht.OK) then -- so, filter the value
     TEMPERATURE_SMA = TEMPERATURE_SMA - TEMPERATURE_SMA/TEMPERATURE_NSAMPLES
     TEMPERATURE_SMA = TEMPERATURE_SMA + measured_temp/TEMPERATURE_NSAMPLES
