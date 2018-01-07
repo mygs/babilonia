@@ -14,9 +14,7 @@ function do_mqtt_connect()
       local reqConf = "id="..node.chipid()
       MQTTCLIENT:publish("/online", reqConf, 0, 0)	-- request conf.
 
-      MQTTCLIENT:subscribe({["/cfg"]=0,
-                            ["/cmd"]=1}
-                            ,0,
+      MQTTCLIENT:subscribe("/cmd",0,
       function(conn)
         print("[MQTT CLIENT] Subscribe success")
       end)

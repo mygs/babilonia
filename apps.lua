@@ -23,29 +23,37 @@ end
 
 -- UPDATE PARAMETERS
 -- mclon:0 11 * * *;mcloff:0 20 * * *;mcctrl:* * * * *
--- fan:;light:;temp:24;ruu:4
-function update(conf)
+-- temp:24
+function update(data)
   local RES = {}
-  for k, v in string.gmatch(conf, "(%w+):([^;]*);*") do
+  for k, v in string.gmatch(data, "(%w+):([^;]*);*") do
       RES[k] = v
   end
-  if(RES.fan ~= nil)then
-        fan(tonumber(RES.fan))
-  end
-  if(RES.light ~= nil)then
-        light(tonumber(RES.light))
-  end
-  if(RES.temp ~= nil)then
-        module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
-  end
-  if(RES.mclon ~= nil and RES.mcloff ~= nil and RES.mcctrl ~= nil)then
-    if file.open("mask-cron.lua", "w") then
-      file.writeline('module.MASK_CRON_LIGHT_ON=\"'..RES.mclon.."\"")
-      file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
-      file.writeline('module.MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
-      file.close()
-      print("Restarting NODE "..node.chipid())
-      node.restart()
+  if(RES.id == nil or tonumber(RES.id) == node.chipid())then
+    if(RES.fan ~= nil)then
+          fan(tonumber(RES.fan))
+    end
+    if(RES.light ~= nil)then
+          light(tonumber(RES.light))
+    end
+    if(RES.cmd ~= nil)then
+          control()
+    end
+    if(RES.temp ~= nil)then
+          module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
+    end
+    if(RES.mclon ~= nil and RES.mcloff ~= nil and RES.mcctrl ~= nil)then
+      if file.open("nconfig.lua", "w") then
+        file.writeline('module.LIGHT='..light())
+        file.writeline('module.FAN='..fan())
+        file.writeline('module.TEMPERATURE_THRESHOLD='..module.TEMPERATURE_THRESHOLD)
+        file.writeline('module.MASK_CRON_LIGHT_ON=\"'..RES.mclon.."\"")
+        file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
+        file.writeline('module.MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
+        file.close()
+        print("Restarting NODE "..node.chipid())
+        node.restart()
+      end
     end
   end
 end
@@ -54,13 +62,8 @@ MQTTCLIENT:on("message",
 function(conn, topic, data)
    print("[MQTT CLIENT] Message Received...")
    if(topic ~= nil and data ~= nil) then
-     print("[MQTT CLIENT] Topic: "..topic)
-     print("[MQTT CLIENT] Data: "..data)
-     if(topic == "/cfg") then
-       update(data)
-     end
      if(topic == "/cmd") then
-       print("COMMAND")
+       update(data)
      end
    end
 end)
@@ -79,6 +82,7 @@ function light(switch)
     gpio.write(module.PIN_LIGHT, gpio.HIGH)
     print("[LIGHT] OFF")
   end
+  module.LIGHT = switch
   return 1 - gpio.read(module.PIN_LIGHT)
 end
 
@@ -93,6 +97,7 @@ function fan(switch)
     gpio.write(module.PIN_FAN, gpio.HIGH)
     print("[FAN] OFF")
   end
+  module.FAN = switch
   return 1 - gpio.read(module.PIN_FAN)
 end
 
@@ -101,8 +106,8 @@ end
 ----------------------
 gpio.mode(module.PIN_FAN, gpio.OUTPUT)
 gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
-light(0)
-fan(0)
+light(module.LIGHT)
+fan(module.FAN)
 
 ----------------------
 ------ CONTROL -------

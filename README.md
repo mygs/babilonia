@@ -63,40 +63,45 @@ nodemcu-uploader upload apps.lc config.lc init.lua
 ```lua
 module = {}
 -- Wifi Credentials
-module.SSID = "THE SSID"
-module.PASSWORD = "THE PASSWORD"
+module.SSID = "SSID"
+module.PASSWORD = "PASSWD"
 
 -- MQTT configs
-module.BROKER = "BROKER IP"
+module.BROKER = "IP"
 module.PORT = 1883 -- mosquitto default port
 module.MQTT_STATUS = 1 -- 0 Connected / 1 = Disconnected
 
 module.SLEEP_TIME = 4 -- seconds
 
--- schedules
-if file.exists("mask-cron.lua") then
-  dofile("mask-cron.lua")
-  file.remove("mask-cron.lua")
-else
-  -- https://crontab.guru/ (nodemcu time is GMT. Sao Paulo time is GMT-2)
-  -- default values
-  module.MASK_CRON_LIGHT_ON="0 11 * * *"  -- 9AM SP time (LocalTime+2H)
-  module.MASK_CRON_LIGHT_OFF="0 20 * * *" -- 6PM SP time (LocalTime+2H)
-  module.MASK_CRON_CTRL="* * * * *" -- At every minute
-end
-print("MASK_CRON_LIGHT_ON:"..module.MASK_CRON_LIGHT_ON)
-print("MASK_CRON_LIGHT_OFF:"..module.MASK_CRON_LIGHT_OFF)
-print("MASK_CRON_CTRL:"..module.MASK_CRON_CTRL)
-
--- default values
-module.TEMPERATURE_NSAMPLES = 10
-module.TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
-module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
-
 -- I/O ports
 module.PIN_DHT   = 5
 module.PIN_FAN   = 6
 module.PIN_LIGHT = 7
+
+-- default values
+module.LIGHT = 0
+module.FAN = 0
+module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
+module.TEMPERATURE_NSAMPLES = 10 -- https://goo.gl/3bLYao
+module.TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
+-- https://crontab.guru/ (nodemcu time is GMT. Sao Paulo time is GMT-2)
+module.MASK_CRON_LIGHT_ON="0 11 * * *"  -- 9AM SP time (LocalTime+2H)
+module.MASK_CRON_LIGHT_OFF="0 20 * * *" -- 6PM SP time (LocalTime+2H)
+module.MASK_CRON_CTRL="* * * * *" -- At every minute
+
+-- overwrite variables
+if file.exists("nconfig.lua") then
+  dofile("nconfig.lua")
+  file.remove("nconfig.lua")
+end
+
+print("LIGHT:"..module.LIGHT)
+print("FAN:"..module.FAN)
+print("TEMPERATURE_THRESHOLD:"..module.TEMPERATURE_THRESHOLD)
+print("MASK_CRON_LIGHT_ON:"..module.MASK_CRON_LIGHT_ON)
+print("MASK_CRON_LIGHT_OFF:"..module.MASK_CRON_LIGHT_OFF)
+print("MASK_CRON_CTRL:"..module.MASK_CRON_CTRL)
+
 ```
 ### mqtt reference
 https://nodemcu.readthedocs.io/en/master/en/modules/mqtt/#mqttclient
@@ -113,5 +118,8 @@ mosquitto_sub -h 192.168.1.12 -t "#" -v
 ```
 send message
 ```
-mosquitto_pub -h 192.168.1.12 -t "/conf" -m "Hello MQTT"
+mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "fan:1;light:1;temp:24"
+mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "id:3765036;fan:1;light:1;temp:24"
+mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/7 * * * *"
+mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "id:3765036;mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/7 * * * *"
 ```
