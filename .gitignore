@@ -2,3 +2,5 @@ luac.cross
 *.lc
 config.lua
 *.db
+*.pyc
+__pycache__
