@@ -69,5 +69,6 @@ wifi.eventmon.register(wifi.eventmon.STA_DISCONNECTED, wifi_disconnect_event)
 
 print("Connecting to WiFi access point...")
 wifi.setmode(wifi.STATION)
+wifi.setphymode(wifi.PHYMODE_G)
 wifi.sta.config({ssid=SSID, pwd=PASSWORD})
 -- wifi.sta.connect() not necessary because config() uses auto-connect=true by default
