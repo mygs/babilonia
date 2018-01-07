@@ -1,36 +1,30 @@
-print("[NODEID] "..NODEID)
- local count_ctrl = 0
+print("[NODEID] "..node.chipid())
 ----------------------
 -------- UTILS -------
 ----------------------
 
--- UPLOAD DATA TO GOOGLE SPREADSHEET
-function upload(status_dht, measured_temp, measured_humi)
+function publish(status_dht, measured_temp, measured_humi)
   local parms = {}
-  table.insert(parms, DATAREPO)
-  table.insert(parms, "?tag="..NODEID)
+  table.insert(parms, "id="..node.chipid())
   table.insert(parms, "&st="..status_dht)
-  table.insert(parms, "&ct="..TEMPERATURE_SMA)
+  table.insert(parms, "&ct="..module.TEMPERATURE_SMA)
   table.insert(parms, "&mt="..measured_temp)
   table.insert(parms, "&mh="..measured_humi)
   table.insert(parms, "&sf="..fan())
   table.insert(parms, "&sl="..light())
-  local url = table.concat(parms,"")
-  http.get(url, nil, function(code, data)
-      if (code < 0) then
-        print("[UPLOAD] NOK. Code "..code)
-      else
-        print("[UPLOAD] OK")
-      end
-    end)
+  if(module.MQTT_STATUS == 0)then
+    print("[MQTT CLIENT] Publishing")
+    MQTTCLIENT:publish("/data", table.concat(parms,""), 0, 0)	-- publish
+  else
+    print("[MQTT CLIENT] Tried to publish, but NODE is disconnected")
+  end
 end
 
 
 -- UPDATE PARAMETERS
 function update()
   local parms = {}
-  table.insert(parms, DATAREPO)
-  table.insert(parms, "?tag="..NODEID)
+  table.insert(parms, "?tag="..node.chipid())
   local url = table.concat(parms,"")
   http.get(url, nil, function(code, data)
       if (code < 0) then
@@ -52,18 +46,15 @@ function update()
             light(tonumber(RES.light))
       end
       if(RES.temp ~= nil)then
-            TEMPERATURE_THRESHOLD = tonumber(RES.temp)
-      end
-      if(RES.ruu ~= nil)then
-        RATIO_CTRL_UPDATE_UPLOAD = tonumber(RES.ruu)
+            module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
       end
       if(RES.mclon ~= nil and RES.mcloff ~= nil and RES.mcctrl ~= nil)then
         if file.open("mask-cron.lua", "w") then
-          file.writeline('MASK_CRON_LIGHT_ON=\"'..RES.mclon.."\"")
-          file.writeline('MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
-          file.writeline('MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
+          file.writeline('module.MASK_CRON_LIGHT_ON=\"'..RES.mclon.."\"")
+          file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
+          file.writeline('module.MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
           file.close()
-          print("Restarting NODE "..NODEID)
+          print("Restarting NODE "..node.chipid())
           node.restart()
         end
       end
@@ -78,13 +69,13 @@ end
 -- @return 1 = ON / 0 = OFF
 function light(switch)
   if (switch == 1) then
-    gpio.write(PIN_LIGHT, gpio.LOW)
+    gpio.write(module.PIN_LIGHT, gpio.LOW)
     print("[LIGHT] ON")
   elseif (switch == 0) then
-    gpio.write(PIN_LIGHT, gpio.HIGH)
+    gpio.write(module.PIN_LIGHT, gpio.HIGH)
     print("[LIGHT] OFF")
   end
-  return 1 - gpio.read(PIN_LIGHT)
+  return 1 - gpio.read(module.PIN_LIGHT)
 end
 
 -- ACTUATOR FAN
@@ -92,20 +83,20 @@ end
 -- @return 1 = ON / 0 = OFF
 function fan(switch)
   if (switch == 1) then
-    gpio.write(PIN_FAN, gpio.LOW)
+    gpio.write(module.PIN_FAN, gpio.LOW)
     print("[FAN] ON")
   elseif (switch == 0) then
-    gpio.write(PIN_FAN, gpio.HIGH)
+    gpio.write(module.PIN_FAN, gpio.HIGH)
     print("[FAN] OFF")
   end
-  return 1 - gpio.read(PIN_FAN)
+  return 1 - gpio.read(module.PIN_FAN)
 end
 
 ----------------------
 ----- INIT SETUP -----
 ----------------------
-gpio.mode(PIN_FAN, gpio.OUTPUT)
-gpio.mode(PIN_LIGHT, gpio.OUTPUT)
+gpio.mode(module.PIN_FAN, gpio.OUTPUT)
+gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
 light(0)
 fan(0)
 
@@ -113,39 +104,35 @@ fan(0)
 ------ CONTROL -------
 ----------------------
 function control()
-  collectgarbage()
-  http = nil
-  local status, measured_temp, measured_temp_dec, measured_humi, measured_humi_dec = dht.read(PIN_DHT)
+  --local status, measured_temp, measured_temp_dec, measured_humi, measured_humi_dec = dht.read(module.PIN_DHT)
+  local status = 7
+  local measured_temp = 8
+  local  measured_humi = 9
   if (status == dht.OK) then -- so, filter the value
-    TEMPERATURE_SMA = TEMPERATURE_SMA - TEMPERATURE_SMA/TEMPERATURE_NSAMPLES
-    TEMPERATURE_SMA = TEMPERATURE_SMA + measured_temp/TEMPERATURE_NSAMPLES
-    print("[CONTROL] Temp "..string.format("%02.2f",TEMPERATURE_SMA).."C")
-    if (TEMPERATURE_SMA > TEMPERATURE_THRESHOLD) then
+    module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
+    module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
+    print("[CONTROL] Temp "..string.format("%02.2f",module.TEMPERATURE_SMA).."C")
+    if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
     else
       fan(0)
     end
   end
-  if (count_ctrl >= RATIO_CTRL_UPDATE_UPLOAD) then
-    upload(status,measured_temp,measured_humi)
-    count_ctrl = 1
-  else
-    update()
-    count_ctrl = count_ctrl + 1
-  end
+    publish(status,measured_temp,measured_humi)
 end
 -----------------------
 -- SCHEDULE ROUTINES --
 -----------------------
-cron.schedule(MASK_CRON_LIGHT_ON, function(e)
+cron.schedule(module.MASK_CRON_LIGHT_ON, function(e)
   light(1)
 end)
-cron.schedule(MASK_CRON_LIGHT_OFF, function(e)
+cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e)
   light(0)
 end)
-cron.schedule(MASK_CRON_CTRL, control)
+cron.schedule(module.MASK_CRON_CTRL, control)
 
-MASK_CRON_LIGHT_ON = nil
-MASK_CRON_LIGHT_OFF = nil
-MASK_CRON_CTRL = nil
+-- free memory by destroying local variables
+module.MASK_CRON_LIGHT_ON = nil
+module.MASK_CRON_LIGHT_OFF = nil
+module.MASK_CRON_CTRL = nil
 collectgarbage()
