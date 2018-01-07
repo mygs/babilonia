@@ -15,7 +15,7 @@ function publish_data(status_dht, measured_temp, measured_humi)
   local parms = {}
   table.insert(parms, "id:"..node.chipid())
   table.insert(parms, ";st:"..status_dht)
-  table.insert(parms, ";ct:"..module.TEMPERATURE_SMA)
+  table.insert(parms, ";ct:"..string.format("%02.2f",module.TEMPERATURE_SMA))
   table.insert(parms, ";mt:"..measured_temp)
   table.insert(parms, ";mh:"..measured_humi)
   table.insert(parms, ";sf:"..fan())
@@ -122,10 +122,7 @@ fan(module.FAN)
 ------ CONTROL -------
 ----------------------
 function control()
-  --local status, measured_temp, measured_temp_dec, measured_humi, measured_humi_dec = dht.read(module.PIN_DHT)
-  local status = 7
-  local measured_temp = 8
-  local  measured_humi = 9
+  local status, measured_temp, measured_temp_dec, measured_humi, measured_humi_dec = dht.read(module.PIN_DHT)
   if (status == dht.OK) then -- so, filter the value
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES

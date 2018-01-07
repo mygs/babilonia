@@ -62,16 +62,28 @@ end
 --------------------------------- STARTUP ------------------------------------
 ------------------------------------------------------------------------------
 function startup()
+	sntp.sync(module.SYNC_CLOCK_SERVER,  -- Sync clock for schedule
+		function()
+			print('[SYNC CLOCK] Success')
+			createMqttConnection()
+			print("Starting Babilonia App")
+			-- the actual application is stored in 'apps'
+			require("apps")
+		end,
+		function()
+			print('[SYNC CLOCK] Failed. Trying to Sync again')
+			startup()
+		end,
+		1 -- autorepeat
+		)
+end
+
+function prepare_startup()
     if file.open("init.lua") == nil then
         print("init.lua deleted or renamed")
     else
-        print("Starting Babilonia App")
         file.close("init.lua")
-        -- the actual application is stored in 'apps'
-        sntp.sync("pool.ntp.br", function() -- sntp sync is for schedule
-          createMqttConnection()
-          require("apps")
-        end)
+				startup()
     end
 end
 
@@ -90,7 +102,7 @@ wifi_got_ip_event = function(T)
   print("Wifi connection is ready! IP address is: "..T.IP)
   print("Startup will resume momentarily, you have "..module.SLEEP_TIME.." seconds to abort.")
   print("Waiting...")
-  tmr.create():alarm(module.SLEEP_TIME*1000, tmr.ALARM_SINGLE, startup)
+  tmr.create():alarm(module.SLEEP_TIME*1000, tmr.ALARM_SINGLE, prepare_startup)
 end
 ------------------------------------------------------------------------------
 wifi_disconnect_event = function(T)
