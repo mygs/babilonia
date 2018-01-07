@@ -16,7 +16,9 @@ def on_message(client, userdata, msg):
     topic = msg.topic
     data = str(msg.payload, 'utf-8')
     if topic == "/data":
-        database.insert(data)
+        database.insert_data(data)
+    if topic == "/online":
+        database.retrieve_cfg(data)
 
 
 client = mqtt.Client()
