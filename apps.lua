@@ -2,8 +2,16 @@ print("[NODEID] "..node.chipid())
 ----------------------
 -------- UTILS -------
 ----------------------
+function publish(topic, data)
+  if(module.MQTT_STATUS == 0)then
+    print("[MQTT CLIENT] Publishing")
+    MQTTCLIENT:publish(topic,data, 0, 0)	-- publish
+  else
+    print("[MQTT CLIENT] Tried to publish, but NODE is still disconnected")
+  end
+end
 
-function publish(status_dht, measured_temp, measured_humi)
+function publish_data(status_dht, measured_temp, measured_humi)
   local parms = {}
   table.insert(parms, "id:"..node.chipid())
   table.insert(parms, ";st:"..status_dht)
@@ -12,18 +20,10 @@ function publish(status_dht, measured_temp, measured_humi)
   table.insert(parms, ";mh:"..measured_humi)
   table.insert(parms, ";sf:"..fan())
   table.insert(parms, ";sl:"..light())
-  if(module.MQTT_STATUS == 0)then
-    print("[MQTT CLIENT] Publishing")
-    MQTTCLIENT:publish("/data", table.concat(parms,""), 0, 0)	-- publish
-  else
-    print("[MQTT CLIENT] Tried to publish, but NODE is still disconnected")
-  end
+  publish("/data", table.concat(parms,""))
 end
 
-
 -- UPDATE PARAMETERS
--- mclon:0 11 * * *;mcloff:0 20 * * *;mcctrl:* * * * *
--- temp:24
 function update(data)
   local RES = {}
   for k, v in string.gmatch(data, "(%w+):([^;]*);*") do
@@ -37,8 +37,17 @@ function update(data)
           light(tonumber(RES.light))
     end
     if(RES.cmd ~= nil)then
-          control()
+          local cmd = tonumber(RES.cmd)
+
+          if     cmd == 0 then node.restart()
+          elseif cmd == 1 then control()
+          elseif cmd == 2 then collectgarbage()
+          elseif cmd == 3 then publish("/env", "heap: "..node.heap())
+          elseif cmd == 4 then publish("/env", "info: "..node.info())
+          else                 print("command not found")
+          end
     end
+
     if(RES.temp ~= nil)then
           module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
     end
@@ -82,8 +91,8 @@ function light(switch)
     gpio.write(module.PIN_LIGHT, gpio.HIGH)
     print("[LIGHT] OFF")
   end
-  module.LIGHT = switch
-  return 1 - gpio.read(module.PIN_LIGHT)
+  module.LIGHT = 1 - gpio.read(module.PIN_LIGHT)
+  return module.LIGHT
 end
 
 -- ACTUATOR FAN
@@ -97,8 +106,8 @@ function fan(switch)
     gpio.write(module.PIN_FAN, gpio.HIGH)
     print("[FAN] OFF")
   end
-  module.FAN = switch
-  return 1 - gpio.read(module.PIN_FAN)
+  module.FAN = 1 - gpio.read(module.PIN_FAN)
+  return module.FAN
 end
 
 ----------------------
@@ -127,7 +136,7 @@ function control()
       fan(0)
     end
   end
-    publish(status,measured_temp,measured_humi)
+    publish_data(status,measured_temp,measured_humi)
 end
 -----------------------
 -- SCHEDULE ROUTINES --

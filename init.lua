@@ -4,22 +4,22 @@ MQTTCLIENT = nil
 ------------------------------------------------------------------------------
 ---------------------------------- MQTT --------------------------------------
 ------------------------------------------------------------------------------
--- Establish a connection to the MQTT broker with the configured parameters.
+function conn_pub_sub(client)
+	print ("[MQTT CLIENT] Connected")
+	local reqConf = "id:"..node.chipid()
+	MQTTCLIENT:publish("/online", reqConf, 0, 0)	-- request conf.
+	MQTTCLIENT:subscribe("/cmd",0,
+		function(conn)
+			print("[MQTT CLIENT] Subscribe success")
+		end)
+	module.MQTT_STATUS = 0;
+end
 
+-- Establish a connection to the MQTT broker with the configured parameters.
 function do_mqtt_connect()
 	print("[MQTT CLIENT] Making connection. BROKER:"..module.BROKER..":".. module.PORT)
 	MQTTCLIENT:connect(module.BROKER, module.PORT, 0,
-    function(client)
-      print ("[MQTT CLIENT] Connected")
-      local reqConf = "id="..node.chipid()
-      MQTTCLIENT:publish("/online", reqConf, 0, 0)	-- request conf.
-
-      MQTTCLIENT:subscribe("/cmd",0,
-      function(conn)
-        print("[MQTT CLIENT] Subscribe success")
-      end)
-      module.MQTT_STATUS = 0;
-    end,
+  	conn_pub_sub,
     function(client, reason)
       print("[MQTT CLIENT] Cannot connect. Failed reason: "..reason)
       module.MQTT_STATUS = 1;
@@ -51,18 +51,7 @@ function createMqttConnection()
 
 	-- Set up the event callbacks
 	print("[MQTT CLIENT] Setting up callbacks")
-	MQTTCLIENT:on("connect",
-      function(client)
-        print ("[MQTT CLIENT] Connected")
-        local reqConf = "id="..node.chipid()
-        MQTTCLIENT:publish("/online", reqConf, 0, 0)	-- request conf.
-
-        MQTTCLIENT:subscribe("/conf",0,
-        function(conn)
-          print("[MQTT CLIENT] Subscribe success")
-        end)
-        module.MQTT_STATUS = 0;
-      end)
+	MQTTCLIENT:on("connect", conn_pub_sub)
 	MQTTCLIENT:on("offline", handle_mqtt_error)
 
 	-- Connect to the Broker
