@@ -14,7 +14,7 @@ end
 function publish_data(status_dht, measured_temp, measured_humi)
   local parms = {}
   table.insert(parms, "id:"..node.chipid())
-  table.insert(parms, ";st:"..status_dht)
+  table.insert(parms, ";sd:"..status_dht)
   table.insert(parms, ";ct:"..string.format("%02.2f",module.TEMPERATURE_SMA))
   table.insert(parms, ";mt:"..measured_temp)
   table.insert(parms, ";mh:"..measured_humi)
