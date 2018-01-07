@@ -102,3 +102,16 @@ module.PIN_LIGHT = 7
 https://nodemcu.readthedocs.io/en/master/en/modules/mqtt/#mqttclient
 https://www.foobarflies.io/a-simple-connected-object-with-nodemcu-and-mqtt/
 http://wingsquare.com/blog/setting-up-mqtt-mosquitto-broker-in-ubuntu-linux/
+
+
+
+### mqtt commands
+
+subscribe all topics
+```
+mosquitto_sub -h 192.168.1.12 -t "#" -v
+```
+send message
+```
+mosquitto_pub -h 192.168.1.12 -t "/conf" -m "Hello MQTT"
+```

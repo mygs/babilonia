@@ -5,62 +5,66 @@ print("[NODEID] "..node.chipid())
 
 function publish(status_dht, measured_temp, measured_humi)
   local parms = {}
-  table.insert(parms, "id="..node.chipid())
-  table.insert(parms, "&st="..status_dht)
-  table.insert(parms, "&ct="..module.TEMPERATURE_SMA)
-  table.insert(parms, "&mt="..measured_temp)
-  table.insert(parms, "&mh="..measured_humi)
-  table.insert(parms, "&sf="..fan())
-  table.insert(parms, "&sl="..light())
+  table.insert(parms, "id:"..node.chipid())
+  table.insert(parms, ";st:"..status_dht)
+  table.insert(parms, ";ct:"..module.TEMPERATURE_SMA)
+  table.insert(parms, ";mt:"..measured_temp)
+  table.insert(parms, ";mh:"..measured_humi)
+  table.insert(parms, ";sf:"..fan())
+  table.insert(parms, ";sl:"..light())
   if(module.MQTT_STATUS == 0)then
     print("[MQTT CLIENT] Publishing")
     MQTTCLIENT:publish("/data", table.concat(parms,""), 0, 0)	-- publish
   else
-    print("[MQTT CLIENT] Tried to publish, but NODE is disconnected")
+    print("[MQTT CLIENT] Tried to publish, but NODE is still disconnected")
   end
 end
 
 
 -- UPDATE PARAMETERS
-function update()
-  local parms = {}
-  table.insert(parms, "?tag="..node.chipid())
-  local url = table.concat(parms,"")
-  http.get(url, nil, function(code, data)
-      if (code < 0) then
-        print("[UPDATE] NOK. Code "..code)
-      else
-        print("[UPDATE] OK")
-      end
-
-      local RES = {}
-      if (data ~= nil)then
-          for k, v in string.gmatch(data, "(%w+):([^;]*);*") do
-              RES[k] = v
-          end
-      end
-      if(RES.fan ~= nil)then
-            fan(tonumber(RES.fan))
-      end
-      if(RES.light ~= nil)then
-            light(tonumber(RES.light))
-      end
-      if(RES.temp ~= nil)then
-            module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
-      end
-      if(RES.mclon ~= nil and RES.mcloff ~= nil and RES.mcctrl ~= nil)then
-        if file.open("mask-cron.lua", "w") then
-          file.writeline('module.MASK_CRON_LIGHT_ON=\"'..RES.mclon.."\"")
-          file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
-          file.writeline('module.MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
-          file.close()
-          print("Restarting NODE "..node.chipid())
-          node.restart()
-        end
-      end
-
-    end)
+-- mclon:0 11 * * *;mcloff:0 20 * * *;mcctrl:* * * * *
+-- fan:;light:;temp:24;ruu:4
+function update(conf)
+  local RES = {}
+  for k, v in string.gmatch(conf, "(%w+):([^;]*);*") do
+      RES[k] = v
+  end
+  if(RES.fan ~= nil)then
+        fan(tonumber(RES.fan))
+  end
+  if(RES.light ~= nil)then
+        light(tonumber(RES.light))
+  end
+  if(RES.temp ~= nil)then
+        module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
+  end
+  if(RES.mclon ~= nil and RES.mcloff ~= nil and RES.mcctrl ~= nil)then
+    if file.open("mask-cron.lua", "w") then
+      file.writeline('module.MASK_CRON_LIGHT_ON=\"'..RES.mclon.."\"")
+      file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
+      file.writeline('module.MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
+      file.close()
+      print("Restarting NODE "..node.chipid())
+      node.restart()
+    end
+  end
 end
+
+MQTTCLIENT:on("message",
+function(conn, topic, data)
+   print("[MQTT CLIENT] Message Received...")
+   if(topic ~= nil and data ~= nil) then
+     print("[MQTT CLIENT] Topic: "..topic)
+     print("[MQTT CLIENT] Data: "..data)
+     if(topic == "/cfg") then
+       update(data)
+     end
+     if(topic == "/cmd") then
+       print("COMMAND")
+     end
+   end
+end)
+
 --------------------------
 --- SENSOR & ACTUATORS ---
 --------------------------

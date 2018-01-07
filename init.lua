@@ -11,8 +11,16 @@ function do_mqtt_connect()
 	MQTTCLIENT:connect(module.BROKER, module.PORT, 0,
     function(client)
       print ("[MQTT CLIENT] Connected")
+      local reqConf = "id="..node.chipid()
+      MQTTCLIENT:publish("/online", reqConf, 0, 0)	-- request conf.
+
+      MQTTCLIENT:subscribe({["/cfg"]=0,
+                            ["/cmd"]=1}
+                            ,0,
+      function(conn)
+        print("[MQTT CLIENT] Subscribe success")
+      end)
       module.MQTT_STATUS = 0;
-      --MQTTCLIENT:publish("/nodemcu", "hello world", 0, 0)	-- publish
     end,
     function(client, reason)
       print("[MQTT CLIENT] Cannot connect. Failed reason: "..reason)
@@ -29,7 +37,7 @@ function handle_mqtt_error()
   module.MQTT_STATUS = 1;
 	do_mqtt_connect()
 end
--- makeConn() instantiates the MQTT control object, sets up callbacks,
+-- createMqttConnection() instantiates the MQTT control object, sets up callbacks,
 -- connects to the broker, and then uses the timer to send sensor data.
 -- This is the "main" function in this library. This should be called
 -- from init.lua (which runs on the ESP8266 at boot), but only after
@@ -38,7 +46,7 @@ end
 -- Note: once you call this from init.lua the only way to change the
 -- program on your ESP8266 will be to reflash the NodeCMU firmware!
 
-function makeMqttConn()
+function createMqttConnection()
 	-- Instantiate a global MQTT client object
 	print("[MQTT CLIENT] Instantiating ")
 	MQTTCLIENT = mqtt.Client(module.ID, module.SLEEP_TIME)
@@ -48,14 +56,19 @@ function makeMqttConn()
 	MQTTCLIENT:on("connect",
       function(client)
         print ("[MQTT CLIENT] Connected")
-        MQTTCLIENT:publish("/conf", "id="..node.chipid(), 0, 0)	-- request conf
+        local reqConf = "id="..node.chipid()
+        MQTTCLIENT:publish("/online", reqConf, 0, 0)	-- request conf.
+
+        MQTTCLIENT:subscribe("/conf",0,
+        function(conn)
+          print("[MQTT CLIENT] Subscribe success")
+        end)
         module.MQTT_STATUS = 0;
       end)
 	MQTTCLIENT:on("offline", handle_mqtt_error)
 
 	-- Connect to the Broker
 	do_mqtt_connect()
-
 end
 
 ------------------------------------------------------------------------------
@@ -69,7 +82,7 @@ function startup()
         file.close("init.lua")
         -- the actual application is stored in 'apps'
         sntp.sync("pool.ntp.br", function() -- sntp sync is for schedule
-          makeMqttConn()
+          createMqttConnection()
           require("apps")
         end)
     end
