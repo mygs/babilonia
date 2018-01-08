@@ -15,11 +15,17 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     topic = msg.topic
     data = str(msg.payload, 'utf-8')
+    values = dict(item.split(":") for item in data.split(";"))
+    print ("receive message from NODE "+values['id']+" on topic "+topic)
     if topic == "/data":
-        database.insert_data(data)
+        database.insert_data(values)
     if topic == "/online":
-        database.retrieve_cfg(data)
+        conf = ""
+        if values['rb'] == "0" : # not remote reboot
+            conf = database.retrieve_cfg(values)
+            client.publish("/cmd", conf)
 
+            print("conf="+conf)
 
 client = mqtt.Client()
 client.on_connect = on_connect

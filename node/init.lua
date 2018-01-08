@@ -6,11 +6,14 @@ MQTTCLIENT = nil
 ------------------------------------------------------------------------------
 function conn_pub_sub(client)
 	print ("[MQTT CLIENT] Connected")
-	local reqConf = "id:"..node.chipid()
-	MQTTCLIENT:publish("/online", reqConf, 0, 0)	-- request conf.
+
 	MQTTCLIENT:subscribe("/cmd",0,
 		function(conn)
 			print("[MQTT CLIENT] Subscribe success")
+			local parms = {}
+			table.insert(parms, "id:"..node.chipid())
+			table.insert(parms, ";rb:"..module.REMOTE_REBOOT)
+			MQTTCLIENT:publish("/online", table.concat(parms,""), 0, 0)	-- request conf.
 		end)
 	module.MQTT_STATUS = 0;
 end

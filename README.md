@@ -123,5 +123,7 @@ mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "id:3765036;fan:1;light:1;temp:24"
 mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/7 * * * *"
 mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "id:3765036;mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/2 * * * *"
 mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "id:3765036;cmd:3"
+mosquitto_pub -h 192.168.1.12 -t "/online" -m "id:3765036;rb:0"
+
 
 ```
