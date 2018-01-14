@@ -64,15 +64,16 @@ nodemcu-uploader upload apps.lc config.lc init.lua
 module = {}
 -- Wifi Credentials
 module.SSID = "SSID"
-module.PASSWORD = "PASSWD"
+module.PASSWORD = "PASSWORD"
 
 -- MQTT configs
-module.BROKER = "IP"
+module.BROKER = "MQTT BROKER IP" --nabucodonasor
 module.PORT = 1883 -- mosquitto default port
 module.MQTT_STATUS = 1 -- 0 Connected / 1 = Disconnected
 
 module.SLEEP_TIME = 4 -- seconds
 
+module.SYNC_CLOCK_SERVER = "pool.ntp.br"
 -- I/O ports
 module.PIN_DHT   = 5
 module.PIN_FAN   = 6
@@ -82,7 +83,7 @@ module.PIN_LIGHT = 7
 module.LIGHT = 0
 module.FAN = 0
 module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
-module.TEMPERATURE_NSAMPLES = 10 -- https://goo.gl/3bLYao
+module.TEMPERATURE_NSAMPLES = 10
 module.TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
 -- https://crontab.guru/ (nodemcu time is GMT. Sao Paulo time is GMT-2)
 module.MASK_CRON_LIGHT_ON="0 11 * * *"  -- 9AM SP time (LocalTime+2H)
@@ -92,7 +93,6 @@ module.MASK_CRON_CTRL="* * * * *" -- At every minute
 -- overwrite variables
 if file.exists("nconfig.lua") then
   dofile("nconfig.lua")
-  file.remove("nconfig.lua")
 end
 
 print("LIGHT:"..module.LIGHT)
