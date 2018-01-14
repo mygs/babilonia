@@ -7,12 +7,19 @@ MQTTCLIENT = nil
 function conn_pub_sub(client)
 	print ("[MQTT CLIENT] Connected")
 
-	MQTTCLIENT:subscribe("/cmd",0,
+	MQTTCLIENT:subscribe("/cfg",0,
 		function(conn)
 			print("[MQTT CLIENT] Subscribe success")
 			local parms = {}
 			table.insert(parms, "id:"..node.chipid())
-			table.insert(parms, ";rb:"..module.REMOTE_REBOOT)
+			-- avoiding infinity loop
+			if file.exists("remote.reboot") then
+				table.insert(parms, ";rb:1")
+				file.remove("remote.reboot")
+			else
+				table.insert(parms, ";rb:0")
+			end
+
 			MQTTCLIENT:publish("/online", table.concat(parms,""), 0, 0)	-- request conf.
 		end)
 	module.MQTT_STATUS = 0;

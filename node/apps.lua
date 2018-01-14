@@ -22,6 +22,35 @@ function publish_data(status_dht, measured_temp, measured_humi)
   table.insert(parms, ";sl:"..light())
   publish("/data", table.concat(parms,""))
 end
+-- SAVE NODE CONFIGURATION
+function save_configuration()
+  -- remove old configuration set
+  if file.exists("nconfig.lua") then
+    file.remove("nconfig.lua")
+  end
+
+  if file.open("nconfig.lua", "w") then
+    -- writing new parameters
+    file.writeline('module.LIGHT='..light())
+    file.writeline('module.FAN='..fan())
+    file.writeline('module.TEMPERATURE_THRESHOLD='..module.TEMPERATURE_THRESHOLD)
+    file.writeline('module.MASK_CRON_LIGHT_ON=\"'..module.MASK_CRON_LIGHT_ON.."\"")
+    file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..module.MASK_CRON_LIGHT_OFF.."\"")
+    file.writeline('module.MASK_CRON_CTRL=\"'..module.MASK_CRON_CTRL.."\"")
+    file.close()
+  end
+  -- flaged as remote reboot
+  if file.open("remote.reboot", "w") then
+    file.close()
+  end
+end
+
+-- REBOOT NODE KEEPING CURRENT CONFIGURATION
+function reboot()
+  save_configuration()
+  print("Restarting NODE "..node.chipid())
+  node.restart()
+end
 
 -- UPDATE PARAMETERS
 function update(data)
@@ -29,6 +58,7 @@ function update(data)
   for k, v in string.gmatch(data, "(%w+):([^;]*);*") do
       RES[k] = v
   end
+  -- id=NULL means broadcast
   if(RES.id == nil or tonumber(RES.id) == node.chipid())then
     if(RES.fan ~= nil)then
           fan(tonumber(RES.fan))
@@ -36,34 +66,28 @@ function update(data)
     if(RES.light ~= nil)then
           light(tonumber(RES.light))
     end
+    if(RES.temp ~= nil)then
+          module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
+    end
+    if(RES.mclon ~= nil)then
+      module.MASK_CRON_LIGHT_ON=RES.mclon
+    end
+    if(RES.mcloff ~= nil)then
+      module.MASK_CRON_LIGHT_OFF=RES.mcloff
+    end
+    if(RES.mcctrl ~= nil)then
+      module.MASK_CRON_CTRL=RES.mcctrl
+    end
     if(RES.cmd ~= nil)then
           local cmd = tonumber(RES.cmd)
 
-          if     cmd == 0 then node.restart()
+          if     cmd == 0 then reboot()
           elseif cmd == 1 then control()
           elseif cmd == 2 then collectgarbage()
           elseif cmd == 3 then publish("/env", "heap: "..node.heap())
           elseif cmd == 4 then publish("/env", "info: "..node.info())
           else                 print("command not found")
           end
-    end
-
-    if(RES.temp ~= nil)then
-          module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
-    end
-    if(RES.mclon ~= nil and RES.mcloff ~= nil and RES.mcctrl ~= nil)then
-      if file.open("nconfig.lua", "w") then
-        file.writeline('module.LIGHT='..light())
-        file.writeline('module.FAN='..fan())
-        file.writeline('module.TEMPERATURE_THRESHOLD='..module.TEMPERATURE_THRESHOLD)
-        file.writeline('module.MASK_CRON_LIGHT_ON=\"'..RES.mclon.."\"")
-        file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..RES.mcloff.."\"")
-        file.writeline('module.MASK_CRON_CTRL=\"'..RES.mcctrl.."\"")
-        file.writeline('module.REMOTE_REBOOT=1')
-        file.close()
-        print("Restarting NODE "..node.chipid())
-        node.restart()
-      end
     end
   end
 end
@@ -72,7 +96,7 @@ MQTTCLIENT:on("message",
 function(conn, topic, data)
    print("[MQTT CLIENT] Message Received...")
    if(topic ~= nil and data ~= nil) then
-     if(topic == "/cmd") then
+     if(topic == "/cfg") then
        update(data)
      end
    end
@@ -136,6 +160,7 @@ function control()
   end
     publish_data(status,measured_temp,measured_humi)
 end
+
 -----------------------
 -- SCHEDULE ROUTINES --
 -----------------------
@@ -147,8 +172,4 @@ cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e)
 end)
 cron.schedule(module.MASK_CRON_CTRL, control)
 
--- free memory by destroying local variables
-module.MASK_CRON_LIGHT_ON = nil
-module.MASK_CRON_LIGHT_OFF = nil
-module.MASK_CRON_CTRL = nil
 collectgarbage()
