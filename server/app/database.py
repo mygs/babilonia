@@ -31,13 +31,13 @@ def retrieve_cfg(values):
     conf = ""
     con = sql.connect("nodes.db")
     cur = con.cursor()
-    cur.execute("""SELECT FAN,LIGHT,TEMPERATURE_THRESHOLD,MASK_CRON_LIGHT_ON,
+    cur.execute("""SELECT TEMPERATURE_THRESHOLD,MASK_CRON_LIGHT_ON,
                           MASK_CRON_LIGHT_OFF,MASK_CRON_CTRL,LAST_UPDATE
                     FROM NODECFG WHERE ID = ?""", (values['id'],))
     for row in cur.fetchall():
-        conf = "id:"+values['id']+";fan:"+str(row[0])+";light:"+str(row[1])+";temp:"+str(row[2])+";"
+        conf = "id:"+values['id']+";temp:"+str(row[0])+";"
         # ask node to reboot because we are sending new crontab parameters
-        conf += "mclon:"+str(row[3])+";mcloff:"+str(row[4])+";mcctrl:"+str(row[5])+";"
+        conf += "mclon:"+str(row[1])+";mcloff:"+str(row[2])+";mcctrl:"+str(row[3])+";"
         conf += "cmd:0"
     cur.execute("UPDATE NODECFG SET LAST_UPDATE = ? WHERE ID = ?", (int(time.time()),values['id'],))
     con.commit()
