@@ -29,25 +29,24 @@ function save_configuration()
     file.remove("nconfig.lua")
   end
 
-  if file.open("nconfig.lua", "w") then
+  if file.open("nconfig.lua", "w+") then
     -- writing new parameters
-    file.writeline('module.LIGHT='..light())
-    file.writeline('module.FAN='..fan())
     file.writeline('module.TEMPERATURE_THRESHOLD='..module.TEMPERATURE_THRESHOLD)
     file.writeline('module.MASK_CRON_LIGHT_ON=\"'..module.MASK_CRON_LIGHT_ON.."\"")
     file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..module.MASK_CRON_LIGHT_OFF.."\"")
     file.writeline('module.MASK_CRON_CTRL=\"'..module.MASK_CRON_CTRL.."\"")
     file.close()
   end
-  -- flaged as remote reboot
-  if file.open("remote.reboot", "w") then
-    file.close()
-  end
+
 end
 
 -- REBOOT NODE KEEPING CURRENT CONFIGURATION
 function reboot()
   save_configuration()
+  -- flaged as remote reboot
+  if file.open("remote.reboot", "w") then
+    file.close()
+  end
   print("Restarting NODE "..node.chipid())
   node.restart()
 end
@@ -112,12 +111,17 @@ function light(switch)
   if (switch == 1) then
     gpio.write(module.PIN_LIGHT, gpio.LOW)
     print("[LIGHT] ON")
+    if file.open("light.on", "w") then
+      file.close()
+    end
   elseif (switch == 0) then
     gpio.write(module.PIN_LIGHT, gpio.HIGH)
     print("[LIGHT] OFF")
+    if file.exists("light.on") then
+      file.remove("light.on")
+    end
   end
-  module.LIGHT = 1 - gpio.read(module.PIN_LIGHT)
-  return module.LIGHT
+  return 1 - gpio.read(module.PIN_LIGHT)
 end
 
 -- ACTUATOR FAN
@@ -127,12 +131,17 @@ function fan(switch)
   if (switch == 1) then
     gpio.write(module.PIN_FAN, gpio.LOW)
     print("[FAN] ON")
+    if file.open("fan.on", "w") then
+      file.close()
+    end
   elseif (switch == 0) then
     gpio.write(module.PIN_FAN, gpio.HIGH)
     print("[FAN] OFF")
+    if file.exists("fan.on") then
+      file.remove("fan.on")
+    end
   end
-  module.FAN = 1 - gpio.read(module.PIN_FAN)
-  return module.FAN
+  return  1 - gpio.read(module.PIN_FAN)
 end
 
 ----------------------
@@ -140,8 +149,18 @@ end
 ----------------------
 gpio.mode(module.PIN_FAN, gpio.OUTPUT)
 gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
-light(module.LIGHT)
-fan(module.FAN)
+
+
+if file.exists("fan.on") then
+  fan(1)
+else
+  fan(0)
+end
+if file.exists("light.on") then
+  light(1)
+else
+  light(0)
+end
 
 ----------------------
 ------ CONTROL -------

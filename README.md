@@ -64,10 +64,10 @@ nodemcu-uploader upload apps.lc config.lc init.lua
 module = {}
 -- Wifi Credentials
 module.SSID = "SSID"
-module.PASSWORD = "PASSWORD"
+module.PASSWORD = "PASSWD"
 
 -- MQTT configs
-module.BROKER = "MQTT BROKER IP" --nabucodonasor
+module.BROKER = "BROKER IP" --nabucodonasor
 module.PORT = 1883 -- mosquitto default port
 module.MQTT_STATUS = 1 -- 0 Connected / 1 = Disconnected
 
@@ -80,8 +80,6 @@ module.PIN_FAN   = 6
 module.PIN_LIGHT = 7
 
 -- default values
-module.LIGHT = 0
-module.FAN = 0
 module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
 module.TEMPERATURE_NSAMPLES = 10
 module.TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
@@ -95,12 +93,11 @@ if file.exists("nconfig.lua") then
   dofile("nconfig.lua")
 end
 
-print("LIGHT:"..module.LIGHT)
-print("FAN:"..module.FAN)
 print("TEMPERATURE_THRESHOLD:"..module.TEMPERATURE_THRESHOLD)
 print("MASK_CRON_LIGHT_ON:"..module.MASK_CRON_LIGHT_ON)
 print("MASK_CRON_LIGHT_OFF:"..module.MASK_CRON_LIGHT_OFF)
 print("MASK_CRON_CTRL:"..module.MASK_CRON_CTRL)
+
 
 ```
 ### mqtt reference
