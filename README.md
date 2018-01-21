@@ -31,7 +31,7 @@ git clone --recursive https://github.com/nodemcu/nodemcu-firmware.git
 
 /*app/include/user_version.h*/
 #define NODE_VERSION   "NodeMCU 2.1.2 babilonia"
-#define BUILD_DATE       "20171016"
+#define BUILD_DATE       "20180116"
 ```bash
 
 
@@ -102,25 +102,31 @@ print("MASK_CRON_CTRL:"..module.MASK_CRON_CTRL)
 ```
 ### mqtt reference
 https://nodemcu.readthedocs.io/en/master/en/modules/mqtt/#mqttclient
+
 https://www.foobarflies.io/a-simple-connected-object-with-nodemcu-and-mqtt/
+
 http://wingsquare.com/blog/setting-up-mqtt-mosquitto-broker-in-ubuntu-linux/
 
+### python imports
+```
+sudo pip install paho-mqtt
+sudo pip install sqlalchemy
 
-
+```
 ### mqtt commands
 
 subscribe all topics
 ```
-mosquitto_sub -h 192.168.1.12 -t "#" -v
+mosquitto_sub -h 192.168.1.60 -t "#" -v
 ```
 send message
 ```
-mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "fan:1;light:1;temp:24"
-mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "id:3765036;fan:1;light:1;temp:24"
-mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/7 * * * *"
-mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "id:3765036;mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/2 * * * *"
-mosquitto_pub -h 192.168.1.12 -t "/cmd" -m "id:3765036;cmd:3"
-mosquitto_pub -h 192.168.1.12 -t "/online" -m "id:3765036;rb:0"
+mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "fan:1;light:1;temp:24"
+mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "id:3765036;fan:1;light:1;temp:24"
+mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/7 * * * *"
+mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "id:3765036;mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/2 * * * *"
+mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "id:3765036;cmd:3"
+mosquitto_pub -h 192.168.1.60 -t "/online" -m "id:3765036;rb:0"
 
 
 ```

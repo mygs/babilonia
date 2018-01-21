@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import paho.mqtt.client as mqtt
 import database
 import time
