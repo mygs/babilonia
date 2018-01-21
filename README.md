@@ -130,3 +130,17 @@ mosquitto_pub -h 192.168.1.60 -t "/online" -m "id:3765036;rb:0"
 
 
 ```
+
+
+
+### daemon
+http://blog.scphillips.com/posts/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/
+
+```bash
+sudo chmod 755 babilonia-nodes-manager.py
+sudo chmod 755 babilonia-nodes-manager.sh
+sudo cp babilonia-nodes-manager.sh /etc/init.d
+sudo update-rc.d babilonia-nodes-manager.sh defaults
+sudo /etc/init.d/babilonia-nodes-manager.sh start
+sudo /etc/init.d/babilonia-nodes-manager.sh status
+```
