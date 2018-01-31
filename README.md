@@ -78,6 +78,7 @@ module.SYNC_CLOCK_SERVER = "pool.ntp.br"
 module.PIN_DHT   = 5
 module.PIN_FAN   = 6
 module.PIN_LIGHT = 7
+module.PIN_ANALOGIC_MOISTURE = 0
 
 -- default values
 module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
@@ -131,6 +132,10 @@ mosquitto_pub -h 192.168.1.60 -t "/online" -m "id:3765036;rb:0"
 
 ```
 
+### database administration
+```bash
+
+```
 
 
 ### daemon

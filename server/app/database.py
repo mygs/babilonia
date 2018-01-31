@@ -20,10 +20,10 @@ def init_db():
 def insert_data(values):
     con = sql.connect(os.path.join(project_dir, database_name))
     cur = con.cursor()
-    cur.execute("""INSERT INTO DATA (ID,TIMESTAMP,STATUS_DHT,CALCULATE_TEMPERATURE,MEASURED_TEMPERATURE,
+    cur.execute("""INSERT INTO DATA (ID,TIMESTAMP,STATUS_DHT,MEASURED_MOISTURE,CALCULATE_TEMPERATURE,MEASURED_TEMPERATURE,
                                     MEASURED_HUMIDITY,STATUS_FAN, STATUS_LIGHT)
-                    VALUES (?,?,?,?,?,?,?,?)""",
-                (values['id'],int(time.time()),values['sd'],values['ct'],values['mt'],values['mh'],values['sf'],values['sl']))
+                    VALUES (?,?,?,?,?,?,?,?,?)""",
+                (values['id'],int(time.time()),values['sd'],values['mm'],values['ct'],values['mt'],values['mh'],values['sf'],values['sl']))
     con.commit()
     con.close()
 

@@ -11,13 +11,14 @@ function publish(topic, data)
   end
 end
 
-function publish_data(status_dht, measured_temp, measured_humi)
+function publish_data(status_dht, measured_temp, measured_humi, measured_moisture)
   local parms = {}
   table.insert(parms, "id:"..node.chipid())
   table.insert(parms, ";sd:"..status_dht)
   table.insert(parms, ";ct:"..string.format("%02.2f",module.TEMPERATURE_SMA))
   table.insert(parms, ";mt:"..measured_temp)
   table.insert(parms, ";mh:"..measured_humi)
+  table.insert(parms, ";mm:"..measured_moisture)
   table.insert(parms, ";sf:"..fan())
   table.insert(parms, ";sl:"..light())
   publish("/data", table.concat(parms,""))
@@ -167,17 +168,19 @@ end
 ----------------------
 function control()
   local status, measured_temp, measured_temp_dec, measured_humi, measured_humi_dec = dht.read(module.PIN_DHT)
+  local measured_moisture = ( 100.00 - ( (adc.read(module.PIN_ANALOGIC_MOISTURE)/1023.00) * 100.00 ) )
+
   if (status == dht.OK) then -- so, filter the value
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
-    print("[CONTROL] Temp "..string.format("%02.2f",module.TEMPERATURE_SMA).."C")
+    print("[CONTROL] Soil Moisture: "..string.format("%0.4g",module.TEMPERATURE_SMA).."% Temp: "..string.format("%02.2f",module.TEMPERATURE_SMA).."C")
     if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
     else
       fan(0)
     end
   end
-    publish_data(status,measured_temp,measured_humi)
+    publish_data(status,measured_temp,measured_humi, measured_moisture)
 end
 
 -----------------------
