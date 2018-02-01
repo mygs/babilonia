@@ -1,15 +1,8 @@
-<!DOCTYPE HTML>
-<html>
-  <head>
-    <title>Flask Example</title>
-  </head>
-  <body>
-    <form method="POST" action="">
-      What is your name? <input type="text" name="name">
-      <input type="submit" name="submit" value="Submit">
-    </form>
-    {% if name %}
-      <h1>Hello, {{name}}!</h1>
-    {% endif %}
-  </body>
-</html>
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="jumbotron text-center">
+    <h1>Welcome To FlaskApp</h1>
+    <p class="lead">This application is built on the Python Flask framework and is the focus for the "Python Flask From Scratch" YouTube series</p>
+  </div>
+{% endblock %}

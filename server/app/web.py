@@ -9,12 +9,9 @@ app = Flask(__name__)
 def shutdown_session(exception=None):
     db_session.remove()
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    name = None
-    if request.method == 'POST' and 'name' in request.form:
-        name = request.form['name']
-    return render_template('index.html', name=name)
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
