@@ -1,0 +1,86 @@
+body {
+  padding-top: 20px;
+  background: #222;
+  font-family: Montserrat, helvetica-neue, helvetica, sans-serif;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 30px;
+  color: #eee;
+  text-align: center;
+}
+
+#sortable {
+  list-style: none;
+  border: solid 4px #62B1F6;
+  margin: 0;
+  padding: 20px;
+  width: 100%;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+#sortable li {
+  display: inline-block;
+  text-align: center;
+  margin-bottom: 20px;
+}
+#sortable li:hover {
+  cursor: pointer;
+}
+#sortable li .box {
+  height: 180px;
+  border: solid 2px #999;
+  background: #eee;
+  width: 100%;
+  padding: 10px;
+  overflow: hidden;
+  overflow-y: hidden;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+#sortable li .box.danger {
+  background: #F08080;
+  color: #931111;
+  border-color: #c01717;
+}
+#sortable li .box.danger .fa {
+  color: #c01717;
+}
+#sortable li .box.good {
+  background: #BCED91;
+  color: #3d6d12;
+  border-color: #6dc520;
+}
+#sortable li .box.good .fa {
+  color: #3d6d12;
+}
+#sortable li .box.excellent {
+  color: #084a84;
+  background: #62B1F6;
+  border-color: #0a65b5;
+}
+#sortable li .box.excellent .fa {
+  color: #0a65b5;
+}
+#sortable li .box.nostatus {
+  color: #333;
+  background: white;
+  border-color: gray;
+}
+#sortable li .box.nostatus .fa {
+  color: #b3b3b3;
+}
+#sortable li .box h4 {
+  margin-top: 0;
+}
+#sortable li .box h4 .fa {
+  display: inline-block;
+  margin-right: 4px;
+}
+#sortable li .box p {
+  color: #444;
+  font-size: 12px;
+}
