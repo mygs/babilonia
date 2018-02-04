@@ -1,6 +1,7 @@
 luac.cross
 *.lc
 config.lua
+config.json
 *.db
 *.pyc
 __pycache__

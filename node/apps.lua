@@ -18,7 +18,7 @@ function publish_data(status_dht, measured_temp, measured_humi, measured_moistur
   table.insert(parms, ";ct:"..string.format("%02.2f",module.TEMPERATURE_SMA))
   table.insert(parms, ";mt:"..measured_temp)
   table.insert(parms, ";mh:"..measured_humi)
-  table.insert(parms, ";mm:"..measured_moisture)
+  table.insert(parms, ";mm:"..string.format("%0.4g",measured_moisture))
   table.insert(parms, ";sf:"..fan())
   table.insert(parms, ";sl:"..light())
   publish("/data", table.concat(parms,""))
@@ -173,7 +173,7 @@ function control()
   if (status == dht.OK) then -- so, filter the value
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
-    print("[CONTROL] Soil Moisture: "..string.format("%0.4g",module.TEMPERATURE_SMA).."% Temp: "..string.format("%02.2f",module.TEMPERATURE_SMA).."C")
+    print("[CONTROL] Soil Moisture: "..string.format("%0.4g",measured_moisture).."% Temp: "..string.format("%02.2f",module.TEMPERATURE_SMA).."C")
     if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
     else
