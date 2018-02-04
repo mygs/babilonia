@@ -35,6 +35,7 @@ def on_message(client, userdata, msg):
 #################################
 ###########    MAIN   ###########
 #################################
+print("*** STARTING NABUCODONOSOR SYSTEM ***")
 # create console handler and set level to debug
 project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'logging.json'), "r") as fd:

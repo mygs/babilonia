@@ -1,13 +1,23 @@
 #!/usr/bin/python3
 from flask import Flask, render_template, request
-from database import db_session
+from flaskext.mysql import MySQL
+import os
+import json
 
+project_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(project_dir, 'config.json'), "r") as json_data_file:
+    cfg = json.load(json_data_file)
+
+mysql = MySQL()
 app = Flask(__name__)
 
+app.config['MYSQL_DATABASE_USER'] =  cfg["db"]["user"]
+app.config['MYSQL_DATABASE_PASSWORD'] =  cfg["db"]["password"]
+app.config['MYSQL_DATABASE_DB'] = cfg["db"]["schema"]
+app.config['MYSQL_DATABASE_HOST'] = cfg["db"]["host"]
+mysql.init_app(app)
 
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    db_session.remove()
+
 
 @app.route('/')
 def index():

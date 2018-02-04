@@ -122,11 +122,11 @@ mosquitto_sub -h 192.168.1.60 -t "#" -v
 ```
 send message
 ```
-mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "fan:1;light:1;temp:24"
-mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "id:3765036;fan:1;light:1;temp:24"
-mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/7 * * * *"
-mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "id:3765036;mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/2 * * * *"
-mosquitto_pub -h 192.168.1.60 -t "/cmd" -m "id:3765036;cmd:3"
+mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "fan:1;light:1;temp:24"
+mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "id:3765036;fan:1;light:1;temp:24"
+mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/7 * * * *"
+mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "id:3765036;mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/2 * * * *"
+mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "id:3765036;cmd:3"
 mosquitto_pub -h 192.168.1.60 -t "/online" -m "id:3765036;rb:0"
 
 
