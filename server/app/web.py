@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 from flaskext.mysql import MySQL
 import os
 import json
+import database
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'config.json'), "r") as json_data_file:
@@ -21,7 +22,8 @@ mysql.init_app(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    modules = database.retrieve_nodes();
+    return render_template('index.html', modules=modules)
 
 @app.route('/about')
 def about():

@@ -5,6 +5,16 @@
     <div class="col-sm-12">
       <h2>Oasis</h2>
       <ul class="clearfix" id="sortable">
+        {% for module in modules %}
+          <li>
+            <div class="box nostatus">
+              <h4>{{module[0]}}</h4>
+              <p>Here is a short description of a basic project</p>
+            </div>
+          </li>
+        {% endfor %}
+
+
         <li>
           <div class="box nostatus">
             <h4>Project Title</h4>

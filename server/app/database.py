@@ -20,6 +20,23 @@ def insert_data(values):
                      values['ct'],values['mt'],values['mh'],values['sf'],values['sl']))
         con.commit()
 
+def retrieve_all_cfg():
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM NODE")
+        return cur.fetchall()
+
+def retrieve_nodes():
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("""SELECT A.ID, A.TIMESTAMP, A.MEASURED_TEMPERATURE, A.MEASURED_MOISTURE,A.MEASURED_HUMIDITY
+                        FROM (SELECT ID, MAX(TIMESTAMP) AS TIMESTAMP
+                                FROM DATA GROUP BY ID)B
+                        INNER JOIN DATA A USING (ID, TIMESTAMP)""")
+        return cur.fetchall()
+
 def retrieve_cfg(values):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
