@@ -7,7 +7,7 @@
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           <li>
-            <div class="box nostatus">
+            <div class="box good">
               <h4>{{module[0]}}</h4>
               <p>{{ format_timestamp(module[2]) }}</p>
               <table id="telemetry">
@@ -32,29 +32,17 @@
                   <td class="param-value">{{ status(module[7]) }}</td>
                 </tr>
               </table>
+              <div>
+                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#updateNodeModal" ><i class="fa fa-cog" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-sm btn-warning"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-sm btn-info"><i class="fa fa-lightbulb-o" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-snowflake-o" aria-hidden="true"></i></button>
+
+              </div>
             </div>
           </li>
         {% endfor %}
 
-
-        <li>
-          <div class="box nostatus">
-            <h4>Project Title</h4>
-            <p>Here is a short description of a basic project</p>
-
-            <table id="telemetry">
-              <tr>
-                <td class="param-label">Temperature</td>
-                <td class="param-value">25</td>
-              </tr>
-              <tr>
-                <td class="param-label">Humidity</td>
-                <td class="param-value">75</td>
-              </tr>
-            </table>
-
-          </div>
-        </li>
         <li>
           <div class="box danger">
             <h4>789456</h4>
@@ -82,5 +70,6 @@
       </ul>
     </div>
   </div>
-
 {% endblock %}
+<!-- modal -->
+{% include 'modal-updatenode.html' %}
