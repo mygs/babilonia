@@ -27,14 +27,17 @@ def retrieve_all_cfg():
         cur.execute("SELECT * FROM NODE")
         return cur.fetchall()
 
-def retrieve_nodes():
+def retrieve_last_telemetry_info():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("""SELECT A.ID, A.TIMESTAMP, A.MEASURED_TEMPERATURE, A.MEASURED_MOISTURE,A.MEASURED_HUMIDITY
-                        FROM (SELECT ID, MAX(TIMESTAMP) AS TIMESTAMP
-                                FROM DATA GROUP BY ID)B
-                        INNER JOIN DATA A USING (ID, TIMESTAMP)""")
+        cur.execute("""SELECT N.NAME, N.ID, D.TIMESTAMP, D.MEASURED_TEMPERATURE, D.MEASURED_MOISTURE, D.MEASURED_HUMIDITY, D.STATUS_FAN, D.STATUS_LIGHT
+                            FROM (
+	                               SELECT *
+                                		FROM (SELECT ID, MAX(TIMESTAMP) AS TIMESTAMP
+                                				FROM DATA GROUP BY ID) DM
+                                		INNER JOIN DATA DD USING (ID, TIMESTAMP)
+                                )D INNER JOIN NODE N USING (ID)""")
         return cur.fetchall()
 
 def retrieve_cfg(values):

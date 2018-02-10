@@ -9,7 +9,29 @@
           <li>
             <div class="box nostatus">
               <h4>{{module[0]}}</h4>
-              <p>Here is a short description of a basic project</p>
+              <p>{{ format_timestamp(module[2]) }}</p>
+              <table id="telemetry">
+                <tr>
+                  <td class="param-label">Temperature</td>
+                  <td class="param-value">{{ format_temperature(module[3]) }}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Moisture</td>
+                  <td class="param-value">{{ format_moisture(module[4]) }}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Humidity</td>
+                  <td class="param-value">{{ format_humidity(module[5]) }}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Fan</td>
+                  <td class="param-value">{{ status(module[6]) }}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Light</td>
+                  <td class="param-value">{{ status(module[7]) }}</td>
+                </tr>
+              </table>
             </div>
           </li>
         {% endfor %}
@@ -19,6 +41,18 @@
           <div class="box nostatus">
             <h4>Project Title</h4>
             <p>Here is a short description of a basic project</p>
+
+            <table id="telemetry">
+              <tr>
+                <td class="param-label">Temperature</td>
+                <td class="param-value">25</td>
+              </tr>
+              <tr>
+                <td class="param-label">Humidity</td>
+                <td class="param-value">75</td>
+              </tr>
+            </table>
+
           </div>
         </li>
         <li>
@@ -28,51 +62,9 @@
           </div>
         </li>
         <li>
-          <div class="box danger">
-            <h4>Bad Project</h4>
-            <p>Here is a short description of a project this is in trouble</p>
-          </div>
-        </li>
-        <li>
-          <div class="box nostatus">
-            <h4>Project Title</h4>
-            <p>Here is a short description of a basic project</p>
-          </div>
-        </li>
-        <li>
           <div class="box excellent">
             <h4>Excellent Project</h4>
             <p>Here is a short description of a project that is doing excellent</p>
-          </div>
-        </li>
-        <li>
-          <div class="box excellent">
-            <h4>Excellent Project</h4>
-            <p>Here is a short description of a project that is doing excellent</p>
-          </div>
-        </li>
-        <li>
-          <div class="box nostatus">
-            <h4>Project Title</h4>
-            <p>Here is a short description of a basic project</p>
-          </div>
-        </li>
-        <li>
-          <div class="box nostatus">
-            <h4>Project Title</h4>
-            <p>Here is a short description of a basic project</p>
-          </div>
-        </li>
-        <li>
-          <div class="box good">
-            <h4>Pretty Good Project</h4>
-            <p>Here is a short description of a project that is doing good</p>
-          </div>
-        </li>
-        <li>
-          <div class="box nostatus">
-            <h4>Project Title</h4>
-            <p>Here is a short description of a basic project</p>
           </div>
         </li>
         <li>
