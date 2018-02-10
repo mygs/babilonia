@@ -145,6 +145,23 @@ mosquitto_pub -h 192.168.1.60 -t "/online" -m "id:3765036;rb:0"
 
 ```
 
+### config.json template
+```
+{
+    "db":{
+        "host":"HOST",
+        "user":"USER",
+        "password":"PASSWORD",
+        "schema":"SCHEMA"
+    },
+    "mqtt":{
+        "broker":"HOST",
+        "port":PORT,
+        "keepalive":TIME
+    }
+}
+
+```
 
 ### daemon
 http://blog.scphillips.com/posts/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/

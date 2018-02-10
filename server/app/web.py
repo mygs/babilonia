@@ -5,6 +5,8 @@ import os
 import json
 import database
 import time
+import paho.mqtt.client as mqtt
+
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'config.json'), "r") as json_data_file:
@@ -25,6 +27,18 @@ mysql.init_app(app)
 def index():
     modules = database.retrieve_last_telemetry_info();
     return render_template('index.html', modules=modules)
+
+@app.route('/light', methods=['POST'])
+def light():
+    client = mqtt.Client()
+    client.connect(cfg["mqtt"]["broker"], cfg["mqtt"]["port"], cfg["mqtt"]["keepalive"]) #nabucodonosor
+    id = request.form['id'];
+    command = request.form['command'];
+    client.publish("/cfg", "id:{};light:{}".format(id, command))
+
+    print("CHEGOU AQUI")
+    return json.dumps({'status':'OK','id':id,'command':command});
+
 
 @app.context_processor
 def utility_processor():
