@@ -11,6 +11,11 @@ h2 {
   text-align: center;
 }
 
+.node-cfg-lbl {
+    text-align: right;
+    padding: 5px;
+}
+
 table#telemetry {
     width: 100%;
     table-layout: fixed;

@@ -39,6 +39,13 @@ def node():
                         'MASK_CRON_LIGHT_OFF':node[4],
                         'MASK_CRON_CTRL':node[5]});
 
+@app.route('/updatecfg', methods=['POST'])
+def updatecfg():
+
+    status = database.save_cfg(request);
+    return json.dumps({ 'status':status});
+
+
 @app.route('/light', methods=['POST'])
 def light():
     client = mqtt.Client()

@@ -62,7 +62,6 @@ $('#updateNodeModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget) ;// Button that triggered the modal
   var id = button.data('id'); // Extract info from data-* attributes
 	var modal = $(this);
-
 	$.ajax({
 		url: '/configuration',
 		type: 'POST',
@@ -72,6 +71,7 @@ $('#updateNodeModal').on('show.bs.modal', function (event) {
 				var resp = JSON.parse(response);
 
 				modal.find('.modal-title').text('Configuration for ' + resp.NAME);
+				$("#ID").val(id);
 				$("#NAME").val(resp.NAME);
 				$("#TEMPERATURE_THRESHOLD").val(resp.TEMPERATURE_THRESHOLD);
 				$("#MOISTURE_THRESHOLD").val(resp.MOISTURE_THRESHOLD);
@@ -84,6 +84,25 @@ $('#updateNodeModal').on('show.bs.modal', function (event) {
 				$("#alert").addClass("alert alert-danger");
 				$(".alert").delay(5000).fadeOut(1000);
 		}
-});
-
+	});
 })
+
+function updatecfg(){
+	$.ajax({
+    url: '/updatecfg',
+    type: 'POST',
+    data: $('#updateNodeModalForm').serialize(),
+    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    success: function (response) {
+				resp = JSON.parse(response);
+				$("#alert").html(resp.status);
+				$("#alert").addClass("alert alert-success");
+			 	$(".alert").delay(5000).fadeOut(1000);
+    },
+    error: function () {
+        $("#alert").html("ERROR");
+				$("#alert").addClass("alert alert-danger");
+			 	$(".alert").delay(5000).fadeOut(1000);
+    }
+});
+}

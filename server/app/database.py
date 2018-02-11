@@ -20,6 +20,25 @@ def insert_data(values):
                      values['ct'],values['mt'],values['mh'],values['sf'],values['sl']))
         con.commit()
 
+def save_cfg(request):
+    ID = request.form['ID'];
+    NAME = request.form['NAME'];
+    TEMPERATURE_THRESHOLD = request.form['TEMPERATURE_THRESHOLD'];
+    MOISTURE_THRESHOLD = request.form['MOISTURE_THRESHOLD'];
+    MASK_CRON_LIGHT_ON = request.form['MASK_CRON_LIGHT_ON'];
+    MASK_CRON_LIGHT_OFF = request.form['MASK_CRON_LIGHT_OFF'];
+    MASK_CRON_CTRL = request.form['MASK_CRON_CTRL'];
+
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s, MOISTURE_THRESHOLD=%s,
+                                            MASK_CRON_LIGHT_ON=%s, MASK_CRON_LIGHT_OFF=%s,
+                                            MASK_CRON_LIGHT_OFF=%s where ID = %s""",
+                    (NAME,TEMPERATURE_THRESHOLD,MOISTURE_THRESHOLD,MASK_CRON_LIGHT_ON,MASK_CRON_LIGHT_OFF,MASK_CRON_CTRL,ID))
+        con.commit()
+        return True
+
 def retrieve_all_cfg():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
