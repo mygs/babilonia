@@ -43,7 +43,10 @@ def node():
 def updatecfg():
 
     status = database.save_cfg(request);
-    return json.dumps({ 'status':status});
+    if int(status) == 0:
+        return  json.dumps({ 'status': status, 'message':'Configuration was saved succesfully'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Configuration was NOT saved'});
 
 
 @app.route('/light', methods=['POST'])

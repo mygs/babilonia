@@ -32,12 +32,18 @@ def save_cfg(request):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s, MOISTURE_THRESHOLD=%s,
+        resp = cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s, MOISTURE_THRESHOLD=%s,
                                             MASK_CRON_LIGHT_ON=%s, MASK_CRON_LIGHT_OFF=%s,
-                                            MASK_CRON_LIGHT_OFF=%s where ID = %s""",
-                    (NAME,TEMPERATURE_THRESHOLD,MOISTURE_THRESHOLD,MASK_CRON_LIGHT_ON,MASK_CRON_LIGHT_OFF,MASK_CRON_CTRL,ID))
+                                            MASK_CRON_CTRL=%s where ID = %s""",
+                    (NAME,
+                    TEMPERATURE_THRESHOLD,
+                    MOISTURE_THRESHOLD,
+                    MASK_CRON_LIGHT_ON,
+                    MASK_CRON_LIGHT_OFF,
+                    MASK_CRON_CTRL,
+                    ID))
         con.commit()
-        return True
+        return resp
 
 def retrieve_all_cfg():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])

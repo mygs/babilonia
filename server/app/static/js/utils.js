@@ -10,7 +10,7 @@ $('.good h4').prepend('<i class="fa fa-check"></i>');
 $('.excellent h4').prepend('<i class="fa fa-star"></i>');
 /* AJAX STUFF */
 function light(id, command){
-	command = 1 - status; /* invert status */
+	command = 1 - command; /* invert status */
 	$.ajax({
     url: '/light',
     type: 'POST',
@@ -31,10 +31,9 @@ function light(id, command){
 			 	$(".alert").delay(5000).fadeOut(1000);
     }
 });
-}
+};
 
 function command(id, code){
-	command = 1 - status; /* invert status */
 	$.ajax({
     url: '/command',
     type: 'POST',
@@ -55,7 +54,7 @@ function command(id, code){
 			 	$(".alert").delay(5000).fadeOut(1000);
     }
 });
-}
+};
 /* MODAL STUFF */
 
 $('#updateNodeModal').on('show.bs.modal', function (event) {
@@ -95,14 +94,14 @@ function updatecfg(){
     contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
     success: function (response) {
 				resp = JSON.parse(response);
-				$("#alert").html(resp.status);
-				$("#alert").addClass("alert alert-success");
-			 	$(".alert").delay(5000).fadeOut(1000);
+				$("#alertModal").html(resp.message);
+				$("#alertModal").addClass("alert alert-success");
+			 	$(".alertModal").delay(5000).fadeOut(1000);
     },
     error: function () {
-        $("#alert").html("ERROR");
-				$("#alert").addClass("alert alert-danger");
-			 	$(".alert").delay(5000).fadeOut(1000);
+				$("#alertModal").html(resp.message);
+				$("#alertModal").addClass("alert alert-danger");
+			 	$(".alertModal").delay(5000).fadeOut(1000);
     }
 });
 }
