@@ -56,3 +56,16 @@ def retrieve_cfg(values):
         cur.execute("UPDATE NODE SET LAST_UPDATE = %s WHERE ID = %s", (int(time.time()),values['id'],))
         con.commit()
         return conf
+
+def get_node_cfg(id):
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("""SELECT NAME,
+                              TEMPERATURE_THRESHOLD,
+                              MOISTURE_THRESHOLD,
+                              MASK_CRON_LIGHT_ON,
+                              MASK_CRON_LIGHT_OFF,
+                              MASK_CRON_CTRL
+                        FROM NODE WHERE ID = %s""", (id,))
+        return cur.fetchone()

@@ -3,6 +3,7 @@
 {% block body %}
   <div class="row">
     <div class="col-sm-12">
+      <div id="alert"></div>
       <h2>Oasis</h2>
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
@@ -33,11 +34,10 @@
                 </tr>
               </table>
               <div>
-                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#updateNodeModal" ><i class="fa fa-cog" aria-hidden="true"></i></button>
-                <button type="button" class="btn btn-sm btn-warning"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#updateNodeModal"  data-id="{{module[1]}}"><i class="fa fa-cog" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-sm btn-warning" onclick="command({{module[1]}},1)"><i class="fa fa-refresh" aria-hidden="true"></i></button>
                 <button type="button" class="btn btn-sm btn-info" onclick="light({{module[1]}},{{module[7]}})"><i class="fa fa-lightbulb-o" aria-hidden="true"></i></button>
                 <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-snowflake-o" aria-hidden="true"></i></button>
-
               </div>
             </div>
           </li>
@@ -45,26 +45,116 @@
 
         <li>
           <div class="box danger">
-            <h4>789456</h4>
-            <p>Here is a short description of a project this is in trouble</p>
+            <h4>TOMATEIRO</h4>
+            <p>09-01-18</p>
+            <table id="telemetry">
+              <tr>
+                <td class="param-label">Temperature</td>
+                <td class="param-value">25.00 C</td>
+              </tr>
+              <tr>
+                <td class="param-label">Moisture</td>
+                <td class="param-value">88.02 %</td>
+              </tr>
+              <tr>
+                <td class="param-label">Humidity</td>
+                <td class="param-value">0.00 %</td>
+              </tr>
+              <tr>
+                <td class="param-label">Fan</td>
+                <td class="param-value">OFF</td>
+              </tr>
+              <tr>
+                <td class="param-label">Light</td>
+                <td class="param-value">OFF</td>
+              </tr>
+            </table>
           </div>
         </li>
+
         <li>
           <div class="box excellent">
-            <h4>Excellent Project</h4>
-            <p>Here is a short description of a project that is doing excellent</p>
+            <h4>TEMPEROS</h4>
+            <p>09-01-18</p>
+            <table id="telemetry">
+              <tr>
+                <td class="param-label">Temperature</td>
+                <td class="param-value">25.00 C</td>
+              </tr>
+              <tr>
+                <td class="param-label">Moisture</td>
+                <td class="param-value">88.02 %</td>
+              </tr>
+              <tr>
+                <td class="param-label">Humidity</td>
+                <td class="param-value">0.00 %</td>
+              </tr>
+              <tr>
+                <td class="param-label">Fan</td>
+                <td class="param-value">OFF</td>
+              </tr>
+              <tr>
+                <td class="param-label">Light</td>
+                <td class="param-value">OFF</td>
+              </tr>
+            </table>
           </div>
         </li>
+
         <li>
           <div class="box nostatus">
-            <h4>Project Title</h4>
-            <p>Here is a short description of a basic project</p>
+            <h4>PEPINO</h4>
+            <p>09-02-18 22:00</p>
+            <table id="telemetry">
+              <tr>
+                <td class="param-label">Temperature</td>
+                <td class="param-value">25.00 C</td>
+              </tr>
+              <tr>
+                <td class="param-label">Moisture</td>
+                <td class="param-value">88.02 %</td>
+              </tr>
+              <tr>
+                <td class="param-label">Humidity</td>
+                <td class="param-value">0.00 %</td>
+              </tr>
+              <tr>
+                <td class="param-label">Fan</td>
+                <td class="param-value">OFF</td>
+              </tr>
+              <tr>
+                <td class="param-label">Light</td>
+                <td class="param-value">OFF</td>
+              </tr>
+            </table>
           </div>
         </li>
         <li>
           <div class="box good">
-            <h4>Pretty Good Project</h4>
-            <p>Here is a short description of a project that is doing good</p>
+            <h4>LEGUMINOSAS</h4>
+            <p>09-02-18 22:00</p>
+            <table id="telemetry">
+              <tr>
+                <td class="param-label">Temperature</td>
+                <td class="param-value">25.00 C</td>
+              </tr>
+              <tr>
+                <td class="param-label">Moisture</td>
+                <td class="param-value">88.02 %</td>
+              </tr>
+              <tr>
+                <td class="param-label">Humidity</td>
+                <td class="param-value">0.00 %</td>
+              </tr>
+              <tr>
+                <td class="param-label">Fan</td>
+                <td class="param-value">OFF</td>
+              </tr>
+              <tr>
+                <td class="param-label">Light</td>
+                <td class="param-value">OFF</td>
+              </tr>
+            </table>
           </div>
         </li>
       </ul>

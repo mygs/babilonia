@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request
 from flaskext.mysql import MySQL
 import os
-import json
+import simplejson as json
 import database
 import time
 import paho.mqtt.client as mqtt
@@ -28,6 +28,17 @@ def index():
     modules = database.retrieve_last_telemetry_info();
     return render_template('index.html', modules=modules)
 
+@app.route('/configuration', methods=['POST'])
+def node():
+    id = request.form['id'];
+    node = database.get_node_cfg(id);
+    return json.dumps({ 'NAME':node[0],
+                        'TEMPERATURE_THRESHOLD':node[1],
+                        'MOISTURE_THRESHOLD':node[2],
+                        'MASK_CRON_LIGHT_ON':node[3],
+                        'MASK_CRON_LIGHT_OFF':node[4],
+                        'MASK_CRON_CTRL':node[5]});
+
 @app.route('/light', methods=['POST'])
 def light():
     client = mqtt.Client()
@@ -35,10 +46,17 @@ def light():
     id = request.form['id'];
     command = request.form['command'];
     client.publish("/cfg", "id:{};light:{}".format(id, command))
-
-    print("CHEGOU AQUI")
     return json.dumps({'status':'OK','id':id,'command':command});
 
+
+@app.route('/command', methods=['POST'])
+def command():
+    client = mqtt.Client()
+    client.connect(cfg["mqtt"]["broker"], cfg["mqtt"]["port"], cfg["mqtt"]["keepalive"]) #nabucodonosor
+    id = request.form['id'];
+    code = request.form['code'];
+    client.publish("/cfg", "id:{};cmd:{}".format(id, code))
+    return json.dumps({'status':'OK','id':id,'code':code});
 
 @app.context_processor
 def utility_processor():
