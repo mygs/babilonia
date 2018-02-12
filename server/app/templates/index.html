@@ -41,7 +41,7 @@
               <tr>
                 <td><button type="button" class="btn btn-sm btn-info btn-fan" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-tornado"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-danger btn-restart" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-power-off"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-success btn-plot" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-success btn-plot" data-toggle="modal" data-target="#chartNodeModal"  data-id="{{module[1]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button></td>
               </tr>
               </table>
 
@@ -167,5 +167,6 @@
     </div>
   </div>
 {% endblock %}
-<!-- modal -->
+<!-- modals -->
 {% include 'modal-updatenode.html' %}
+{% include 'modal-chart.html' %}

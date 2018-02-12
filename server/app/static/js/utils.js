@@ -54,7 +54,7 @@ $(".btn-light").on("click", function() {
 		var id = $(this).data('id');
 		var name = $(this).data('name');
 		var mode = 'fan';
-		var param = ($('#light_'+id).html() == "on") ? 0 : 1; /* invert! */
+		var param = ($('#fan_'+id).html() == "on") ? 0 : 1; /* invert! */
 		var img = '/static/img/fan.png';
 		var title =  "Turn "+(param == 1 ? "ON": "OFF")+" the fan for "+name+"?";
 		var text =  name+" schedule might overwrite your current action";
@@ -123,23 +123,35 @@ $('#updateNodeModal').on('show.bs.modal', function (event) {
 });
 
 function updatecfg(){
-	$.ajax({
-    url: '/updatecfg',
-    type: 'POST',
-    data: $('#updateNodeModalForm').serialize(),
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-    success: function (response) {
-				var resp = JSON.parse(response);
-				$("#alertModal").html(resp.message);
-				$("#alertModal").removeClass('alert alert-success alert-danger').addClass("alert alert-success");
-			 	$(".alertModal").delay(2000).fadeOut(1000);
-    },
-    error: function (response) {
-				$("#alertModal").html(resp.message);
-				$("#alertModal").removeClass('alert alert-success alert-danger').addClass("alert alert-danger");
-			 	$(".alertModal").delay(2000).fadeOut(1000);
-    }
-});
+	swal({
+			title: "Are you sure?",
+			text: "Node will be reboot in order to apply new configuration",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Confirm",
+			closeOnConfirm: false
+	}, function (isConfirm) {
+			if (isConfirm){
+				$.ajax({
+			    url: '/updatecfg',
+			    type: 'POST',
+					data: $('#updateNodeModalForm').serialize(),
+			    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+			    success: function (response) {
+						resp = JSON.parse(response);
+						swal("Success", resp.message, "success");
+						$("#saveconfig").attr("disabled","disabled");
+			    },
+			    error: function (response) {
+						resp = JSON.parse(response);
+						swal("Failed",resp.message, "error");
+			    }
+				});
+			} else{
+				swal("You not apply nor save new configuration!");
+			}
+	});
 };
 
 

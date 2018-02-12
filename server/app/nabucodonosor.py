@@ -55,6 +55,8 @@ def node():
 @app.route('/updatecfg', methods=['POST'])
 def updatecfg():
     status = database.save_cfg(request);
+    conf = database.retrieve_cfg(request.form['ID'])
+    mqtt.publish("/cfg", conf)
     if status == 0:
         return  json.dumps({ 'status': status, 'message':'Configuration was saved succesfully'});
     else:
@@ -129,7 +131,7 @@ def handle_mqtt_message(client, userdata, msg):
     if topic == "/online":
         if values['rb'] == "0" : # not remote requested boot
             conf = ""
-            conf = database.retrieve_cfg(values)
+            conf = database.retrieve_cfg(values['id'])
             mqtt.publish("/cfg", conf)
 
 if __name__ == '__main__':
