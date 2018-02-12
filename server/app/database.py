@@ -8,7 +8,7 @@ project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'config.json'), "r") as json_data_file:
     cfg = json.load(json_data_file)
 
-def insert_data(values):
+def insert_data(time, values):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
@@ -16,7 +16,7 @@ def insert_data(values):
                                         CALCULATE_TEMPERATURE,MEASURED_TEMPERATURE,
                                         MEASURED_HUMIDITY,STATUS_FAN, STATUS_LIGHT)
                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-                    (values['id'],int(time.time()),values['sd'],values['mm'],
+                    (values['id'],time,values['sd'],values['mm'],
                      values['ct'],values['mt'],values['mh'],values['sf'],values['sl']))
         con.commit()
 

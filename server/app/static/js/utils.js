@@ -9,16 +9,17 @@ $('.danger h4').prepend('<i class="fa fa-exclamation-circle"></i>');
 $('.good h4').prepend('<i class="fa fa-check"></i>');
 $('.excellent h4').prepend('<i class="fa fa-star"></i>');
 /* AJAX STUFF */
-function light(id, command){
-	command = 1 - command; /* invert status */
+function light(id){
+	status = ($('#light_'+id).html() == "ON") ? 1 : 0;
+	command = 1 - status;/* invert status */
 	$.ajax({
     url: '/light',
     type: 'POST',
     data: {
 						"id": id ,
-						"command" : command
+						"light" : command
 					},
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    //contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
     success: function (response) {
 				resp = JSON.parse(response);
 				$("#alert").html(resp.status);
@@ -41,7 +42,7 @@ function command(id, code){
 						"id": id ,
 						"code" : code
 					},
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    //contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
     success: function (response) {
 				resp = JSON.parse(response);
 				$("#alert").html(resp.status);
@@ -78,13 +79,13 @@ $('#updateNodeModal').on('show.bs.modal', function (event) {
 				$("#MASK_CRON_LIGHT_ON").val(resp.MASK_CRON_LIGHT_ON);
 				$("#MASK_CRON_LIGHT_OFF").val(resp.MASK_CRON_LIGHT_OFF);
 		},
-		error: function () {
+		error: function (response) {
 				$("#alert").html("ERROR");
 				$("#alert").addClass("alert alert-danger");
 				$(".alert").delay(5000).fadeOut(1000);
 		}
 	});
-})
+});
 
 function updatecfg(){
 	$.ajax({
@@ -98,10 +99,27 @@ function updatecfg(){
 				$("#alertModal").addClass("alert alert-success");
 			 	$(".alertModal").delay(5000).fadeOut(1000);
     },
-    error: function () {
+    error: function (response) {
 				$("#alertModal").html(resp.message);
 				$("#alertModal").addClass("alert alert-danger");
 			 	$(".alertModal").delay(5000).fadeOut(1000);
     }
 });
-}
+};
+
+
+/* Websocket connection to update NODE Status */
+$(document).ready(function(){
+	var socket = io.connect('http://localhost:5000');
+    socket.on('mqtt_message', function(data) {
+			console.log(data);
+			var id = data.id;
+			$('#time_'+id).html(moment.unix(data.timestamp).format('DD-MM-YY HH:mm'));
+			$('#temp_'+id).html(data.mt);
+			$('#moist_'+id).html(data.mm);
+			$('#humid_'+id).html(data.mh);
+			$('#fan_'+id).html((data.sf == 1) ? "ON": "OFF");
+			$('#light_'+id).html((data.sl == 1) ? "ON": "OFF");
+
+    });
+});

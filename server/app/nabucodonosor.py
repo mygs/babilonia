@@ -1,27 +1,40 @@
 #!/usr/bin/python3
+import os
+import time
+import logging
+import logging.config
+import database
+import simplejson as json
 from flask import Flask, render_template, request
 from flaskext.mysql import MySQL
-import os
-import simplejson as json
-import database
-import time
-import paho.mqtt.client as mqtt
-
+from flask_mqtt import Mqtt
+from flask_socketio import SocketIO
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'config.json'), "r") as json_data_file:
     cfg = json.load(json_data_file)
 
+# create console handler and set level to debug
+project_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(project_dir, 'logging.json'), "r") as fd:
+    logging.config.dictConfig(json.load(fd))
+logger = logging.getLogger()
+
 mysql = MySQL()
 app = Flask(__name__)
+
+app.config['MQTT_BROKER_URL'] = cfg["mqtt"]["broker"]
+app.config['MQTT_BROKER_PORT'] = cfg["mqtt"]["port"]
+app.config['MQTT_KEEPALIVE'] = cfg["mqtt"]["keepalive"]
 
 app.config['MYSQL_DATABASE_USER'] =  cfg["db"]["user"]
 app.config['MYSQL_DATABASE_PASSWORD'] =  cfg["db"]["password"]
 app.config['MYSQL_DATABASE_DB'] = cfg["db"]["schema"]
 app.config['MYSQL_DATABASE_HOST'] = cfg["db"]["host"]
+
+mqtt = Mqtt(app)
 mysql.init_app(app)
-
-
+socketio = SocketIO(app)
 
 @app.route('/')
 def index():
@@ -41,7 +54,6 @@ def node():
 
 @app.route('/updatecfg', methods=['POST'])
 def updatecfg():
-
     status = database.save_cfg(request);
     if int(status) == 0:
         return  json.dumps({ 'status': status, 'message':'Configuration was saved succesfully'});
@@ -51,21 +63,17 @@ def updatecfg():
 
 @app.route('/light', methods=['POST'])
 def light():
-    client = mqtt.Client()
-    client.connect(cfg["mqtt"]["broker"], cfg["mqtt"]["port"], cfg["mqtt"]["keepalive"]) #nabucodonosor
     id = request.form['id'];
-    command = request.form['command'];
-    client.publish("/cfg", "id:{};light:{}".format(id, command))
-    return json.dumps({'status':'OK','id':id,'command':command});
+    light = request.form['light'];
+    mqtt.publish("/cfg", "id:{};light:{}".format(id, light))
+    return json.dumps({'status':'OK','id':id,'light':light});
 
 
 @app.route('/command', methods=['POST'])
 def command():
-    client = mqtt.Client()
-    client.connect(cfg["mqtt"]["broker"], cfg["mqtt"]["port"], cfg["mqtt"]["keepalive"]) #nabucodonosor
     id = request.form['id'];
     code = request.form['code'];
-    client.publish("/cfg", "id:{};cmd:{}".format(id, code))
+    mqtt.publish("/cfg", "id:{};cmd:{}".format(id, code))
     return json.dumps({'status':'OK','id':id,'code':code});
 
 @app.context_processor
@@ -73,11 +81,11 @@ def utility_processor():
     def format_timestamp(value):
         return time.strftime("%d-%m-%y %H:%M", time.localtime(int(value)))
     def format_temperature(value):
-        return u'{0:.2f} C'.format(value)
+        return u'{0:.2f}'.format(value)
     def format_humidity(value):
-        return u'{0:.2f} %'.format(value)
+        return u'{0:.2f}'.format(value)
     def format_moisture(value):
-        return u'{0:.2f} %'.format(value)
+        return u'{0:.2f}'.format(value)
     def status(value):
         if int(value) == 1:
             return "ON"
@@ -95,5 +103,37 @@ def utility_processor():
 def about():
     return render_template('about.html')
 
+
+
+
+# The callback for when the client receives a CONNACK response from the server.
+@mqtt.on_connect()
+def handle_mqtt_connect(client, userdata, flags, rc):
+    logger.info("Connected with result code %s",str(rc))
+    # Subscribing in on_connect() means that if we lose the connection and
+    # reconnect then subscriptions will be renewed.
+    mqtt.subscribe("/online")
+    mqtt.subscribe("/data")
+
+# The callback for when a PUBLISH message is received from the server.
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, msg):
+    topic = msg.topic
+    data = str(msg.payload, 'utf-8')
+    values = dict(item.split(":") for item in data.split(";"))
+    logger.info("Receive message from NODE %s on topic %s",values['id'], topic)
+
+    if topic == "/data":
+        timestamp = int(time.time())
+        values['timestamp']=timestamp
+        socketio.emit('mqtt_message', data=values)
+        database.insert_data(timestamp, values)
+    if topic == "/online":
+        if values['rb'] == "0" : # not remote requested boot
+            conf = ""
+            conf = database.retrieve_cfg(values)
+            mqtt.publish("/cfg", conf)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    print("*** STARTING NABUCODONOSOR SYSTEM ***")
+    socketio.run(app,debug=True, use_reloader=False)

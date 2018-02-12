@@ -113,6 +113,8 @@ http://wingsquare.com/blog/setting-up-mqtt-mosquitto-broker-in-ubuntu-linux/
 sudo pip install paho-mqtt
 sudo pip install sqlalchemy
 sudo pip install flask-mysql
+sudo pip install flask-socketio
+sudo pip3 install flask-mqtt
 ```
 
 ### middlwares & tools

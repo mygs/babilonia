@@ -26,13 +26,13 @@ table#telemetry {
     text-align: right;
     font-weight: bold;
     padding: 5px;
-    width: 50%;
+    width: 60%;
 }
 
 .param-value {
     text-align: left;
     padding: 5px;
-    width: 50%;
+    width: 40%;
 }
 
 #sortable {

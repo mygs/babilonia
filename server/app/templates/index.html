@@ -10,34 +10,34 @@
           <li>
             <div class="box good">
               <h4>{{module[0]}}</h4>
-              <p>{{ format_timestamp(module[2]) }}</p>
+               <p><span id='time_{{module[1]}}'>{{ format_timestamp(module[2]) }} </span></p>
               <table id="telemetry">
                 <tr>
-                  <td class="param-label">Temperature</td>
-                  <td class="param-value">{{ format_temperature(module[3]) }}</td>
+                  <td class="param-label">Temperature <i class="wi wi-celsius"></i></td>
+                  <td class="param-value" id='temp_{{module[1]}}'>{{ format_temperature(module[3]) }}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Moisture</td>
-                  <td class="param-value">{{ format_moisture(module[4]) }}</td>
+                  <td class="param-label">Moisture <i class="wi wi-humidity"></i></td>
+                  <td class="param-value" id='moist_{{module[1]}}'>{{ format_moisture(module[4]) }}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Humidity</td>
-                  <td class="param-value">{{ format_humidity(module[5]) }}</td>
+                  <td class="param-label">Humidity <i class="wi wi-humidity"></i></td>
+                  <td class="param-value" id='humid_{{module[1]}}'>{{ format_humidity(module[5]) }}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Fan</td>
-                  <td class="param-value">{{ status(module[6]) }}</td>
+                  <td class="param-label">Fan  <i class="wi wi-strong-wind"></i></td>
+                  <td class="param-value" id='fan_{{module[1]}}'>{{ status(module[6]) }}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Light</td>
-                  <td class="param-value">{{ status(module[7]) }}</td>
+                  <td class="param-label">Light  <i class="wi wi-day-sunny"></i></td>
+                  <td class="param-value" id='light_{{module[1]}}'>{{ status(module[7]) }}</td>
                 </tr>
               </table>
               <div>
                 <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#updateNodeModal"  data-id="{{module[1]}}"><i class="fa fa-cog" aria-hidden="true"></i></button>
                 <button type="button" class="btn btn-sm btn-warning" onclick="command({{module[1]}},1)"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                <button type="button" class="btn btn-sm btn-info" onclick="light({{module[1]}},{{module[7]}})"><i class="fa fa-lightbulb-o" aria-hidden="true"></i></button>
-                <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-snowflake-o" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-sm btn-info" onclick="light({{module[1]}})"><i class="wi wi-day-sunny"></i></button>
+                <button type="button" class="btn btn-sm btn-danger"><i class="wi wi-strong-wind"></i></button>
                 <button type="button" class="btn btn-sm btn-success"><i class="fa fa-line-chart" aria-hidden="true"></i></button>
 
               </div>
