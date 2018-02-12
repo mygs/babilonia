@@ -30,9 +30,9 @@ def save_cfg(request):
     MASK_CRON_CTRL = request.form['MASK_CRON_CTRL'];
 
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
-    with con:
-        cur = con.cursor()
-        resp = cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s, MOISTURE_THRESHOLD=%s,
+    cur = con.cursor()
+    try:
+        cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s, MOISTURE_THRESHOLD=%s,
                                             MASK_CRON_LIGHT_ON=%s, MASK_CRON_LIGHT_OFF=%s,
                                             MASK_CRON_CTRL=%s where ID = %s""",
                     (NAME,
@@ -43,7 +43,13 @@ def save_cfg(request):
                     MASK_CRON_CTRL,
                     ID))
         con.commit()
-        return resp
+        return 0
+    except:
+        print(e)
+        return -1
+    finally:
+        cur.close()
+        con.close()
 
 def retrieve_all_cfg():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])

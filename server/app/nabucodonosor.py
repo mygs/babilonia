@@ -55,7 +55,7 @@ def node():
 @app.route('/updatecfg', methods=['POST'])
 def updatecfg():
     status = database.save_cfg(request);
-    if int(status) == 0:
+    if status == 0:
         return  json.dumps({ 'status': status, 'message':'Configuration was saved succesfully'});
     else:
         return json.dumps({ 'status':status, 'message':'Configuration was NOT saved'});
@@ -67,6 +67,13 @@ def light():
     light = request.form['light'];
     mqtt.publish("/cfg", "id:{};light:{}".format(id, light))
     return json.dumps({'status':'OK','id':id,'light':light});
+
+@app.route('/fan', methods=['POST'])
+def fan():
+    id = request.form['id'];
+    fan = request.form['fan'];
+    mqtt.publish("/cfg", "id:{};fan:{}".format(id, fan))
+    return json.dumps({'status':'OK','id':id,'fan':fan});
 
 
 @app.route('/command', methods=['POST'])
