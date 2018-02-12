@@ -62,9 +62,17 @@ function update(data)
   if(RES.id == nil or tonumber(RES.id) == node.chipid())then
     if(RES.fan ~= nil)then
           fan(tonumber(RES.fan))
+          local parms = {}
+          table.insert(parms, "id:"..node.chipid())
+          table.insert(parms, ";sf:"..fan())
+          publish("/cmd-ack", table.concat(parms,""))
     end
     if(RES.light ~= nil)then
           light(tonumber(RES.light))
+          local parms = {}
+          table.insert(parms, "id:"..node.chipid())
+          table.insert(parms, ";sl:"..light())
+          publish("/cmd-ack", table.concat(parms,""))
     end
     if(RES.temp ~= nil)then
           module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)

@@ -3,7 +3,6 @@
 {% block body %}
   <div class="row">
     <div class="col-sm-12">
-      <div id="alert"></div>
       <h2>Oasis</h2>
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
@@ -35,10 +34,10 @@
               </table>
               <div>
                 <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#updateNodeModal"  data-id="{{module[1]}}"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                <button type="button" class="btn btn-sm btn-warning btn-cmd" data-id="{{module[1]}}" data-cmd="1"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                <button type="button" class="btn btn-sm btn-info btn-light" data-id="{{module[1]}}"><i class="wi wi-day-sunny"></i></button>
-                <button type="button" class="btn btn-sm btn-danger btn-fan" data-id="{{module[1]}}"><i class="wi wi-strong-wind"></i></button>
-                <button type="button" class="btn btn-sm btn-success btn-plot" data-id="{{module[1]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-sm btn-warning btn-cmd" data-id="{{module[1]}}" data-name="{{module[0]}}" data-cmd="1"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-sm btn-info btn-light" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-day-sunny"></i></button>
+                <button type="button" class="btn btn-sm btn-danger btn-fan" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-strong-wind"></i></button>
+                <button type="button" class="btn btn-sm btn-success btn-plot" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button>
 
               </div>
             </div>

@@ -9,83 +9,69 @@ $('.danger h4').prepend('<i class="fa fa-exclamation-circle"></i>');
 $('.good h4').prepend('<i class="fa fa-check"></i>');
 $('.excellent h4').prepend('<i class="fa fa-star"></i>');
 /* AJAX STUFF */
-$(".btn-light").on("click", function light(id){
+
+
+function callbackend(id, name, mode){
+	status = ($('#'+mode+'_'+id).html() == "ON") ? 1 : 0;
+	parm = 1 - status;/* invert status */
+	swal({
+			title: "Turn "+(parm == 1 ? "ON": "OFF")+" the "+mode+" for "+name+"?",
+			text: name+" schedule might overwrite your current action",
+			imageUrl: '/static/img/'+mode+'.png',
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Confirm",
+			closeOnConfirm: false
+	}, function (isConfirm) {
+			if (!isConfirm) return;
+			$.ajax({
+		    url: '/command',
+		    type: 'POST',
+		    data: {"id": id, "command": mode, "parm":parm},
+		    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		    success: function (response) {
+					resp = JSON.parse(response);
+					swal(resp.status, "It was succesfully!", "success");
+		    },
+		    error: function (response) {
+					resp = JSON.parse(response);
+					swal(resp.status, "XPTO!", "error");
+		    }
+			});
+	});
+};
+
+
+$(".btn-light").on("click", function() {
 	var id = $(this).data('id'); // Extract info from data-* attributes
-	status = ($('#light_'+id).html() == "ON") ? 1 : 0;
-	command = 1 - status;/* invert status */
+	var name = $(this).data('name'); // Extract info from data-* attributes
+	callbackend(id, name, 'light')});
+
+$(".btn-fan").on("click", function() {
+	var id = $(this).data('id'); // Extract info from data-* attributes
+	var name = $(this).data('name'); // Extract info from data-* attributes
+	callbackend(id, name, 'fan')});
+
+
+$(".btn-cmd").on("click", function() {
+	var id = $(this).data('id'); // Extract info from data-* attributes
+	var name = $(this).data('name'); // Extract info from data-* attributes
 	$.ajax({
-    url: '/light',
-    type: 'POST',
-    data: {
-						"id": id ,
-						"light" : command
-					},
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-    success: function (response) {
-				resp = JSON.parse(response);
-				$("#alert").html(resp.status);
-				$("#alert").addClass("alert alert-success");
-			 	$(".alert").delay(2000).fadeOut(1000);
-    },
-    error: function () {
-        $("#alert").html("ERROR");
-				$("#alert").addClass("alert alert-danger");
-			 	$(".alert").delay(2000).fadeOut(1000);
-    }
-});
+		url: '/command',
+		type: 'POST',
+		data: {"id": id, "command": "cmd", "parm":"1"},
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		success: function (response) {
+			resp = JSON.parse(response);
+			swal(resp.status, "It was succesfully!", "success");
+		},
+		error: function (response) {
+			resp = JSON.parse(response);
+			swal(resp.status, "XPTO!", "error");
+		}
+	});
 });
 
-$(".btn-fan").on("click", function light(id){
-	var id = $(this).data('id'); // Extract info from data-* attributes
-	status = ($('#light_'+id).html() == "ON") ? 1 : 0;
-	command = 1 - status;/* invert status */
-	$.ajax({
-    url: '/fan',
-    type: 'POST',
-    data: {
-						"id": id ,
-						"fan" : command
-					},
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-    success: function (response) {
-				resp = JSON.parse(response);
-				$("#alert").html(resp.status);
-				$("#alert").addClass("alert alert-success");
-			 	$(".alert").delay(2000).fadeOut(1000);
-    },
-    error: function () {
-        $("#alert").html("ERROR");
-				$("#alert").addClass("alert alert-danger");
-			 	$(".alert").delay(2000).fadeOut(1000);
-    }
-});
-});
-
-$(".btn-cmd").on("click", function command(id, code){
-	var id = $(this).data('id'); // Extract info from data-* attributes
-	var code = $(this).data('cmd'); // Extract info from data-* attributes
-
-	$.ajax({
-    url: '/command',
-    type: 'POST',
-    data: {
-						"id": id ,
-						"code" : code
-					},
-    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-    success: function (response) {
-				resp = JSON.parse(response);
-				$("#alert").html(resp.status);
-				$("#alert").addClass("alert alert-success");
-			 	$(".alert").delay(2000).fadeOut(1000);
-    },
-    error: function () {
-        $("#alert").html("ERROR");
-				$("#alert").addClass("alert alert-danger");
-			 	$(".alert").delay(2000).fadeOut(1000);
-    }
-});
-});
 /* MODAL STUFF */
 
 $('#updateNodeModal').on('show.bs.modal', function (event) {
@@ -111,7 +97,7 @@ $('#updateNodeModal').on('show.bs.modal', function (event) {
 		},
 		error: function (response) {
 				$("#alert").html("ERROR");
-				$("#alert").addClass("alert alert-danger");
+				$("#alert").removeClass('alert alert-success alert-danger').addClass("alert alert-danger");
 				$(".alert").delay(5000).fadeOut(1000);
 		}
 	});
@@ -126,12 +112,12 @@ function updatecfg(){
     success: function (response) {
 				var resp = JSON.parse(response);
 				$("#alertModal").html(resp.message);
-				$("#alertModal").addClass("alert alert-success");
+				$("#alertModal").removeClass('alert alert-success alert-danger').addClass("alert alert-success");
 			 	$(".alertModal").delay(2000).fadeOut(1000);
     },
     error: function (response) {
 				$("#alertModal").html(resp.message);
-				$("#alertModal").addClass("alert alert-danger");
+				$("#alertModal").removeClass('alert alert-success alert-danger').addClass("alert alert-danger");
 			 	$(".alertModal").delay(2000).fadeOut(1000);
     }
 });
@@ -139,7 +125,7 @@ function updatecfg(){
 
 
 /* Websocket connection to update NODE Status */
-//$(document).ready(function(){
+$(document).ready(function(){
 	var socket = io.connect('http://localhost:5000');
     socket.on('mqtt_message', function(data) {
 			console.log(data);
@@ -152,4 +138,4 @@ function updatecfg(){
 			$('#light_'+id).html((data.sl == 1) ? "ON": "OFF");
 
     });
-//});
+});

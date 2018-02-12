@@ -21,7 +21,7 @@ with open(os.path.join(project_dir, 'logging.json'), "r") as fd:
 logger = logging.getLogger()
 
 mysql = MySQL()
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 app.config['MQTT_BROKER_URL'] = cfg["mqtt"]["broker"]
 app.config['MQTT_BROKER_PORT'] = cfg["mqtt"]["port"]
@@ -61,27 +61,13 @@ def updatecfg():
         return json.dumps({ 'status':status, 'message':'Configuration was NOT saved'});
 
 
-@app.route('/light', methods=['POST'])
-def light():
-    id = request.form['id'];
-    light = request.form['light'];
-    mqtt.publish("/cfg", "id:{};light:{}".format(id, light))
-    return json.dumps({'status':'OK','id':id,'light':light});
-
-@app.route('/fan', methods=['POST'])
-def fan():
-    id = request.form['id'];
-    fan = request.form['fan'];
-    mqtt.publish("/cfg", "id:{};fan:{}".format(id, fan))
-    return json.dumps({'status':'OK','id':id,'fan':fan});
-
-
 @app.route('/command', methods=['POST'])
 def command():
     id = request.form['id'];
-    code = request.form['code'];
-    mqtt.publish("/cfg", "id:{};cmd:{}".format(id, code))
-    return json.dumps({'status':'OK','id':id,'code':code});
+    command = request.form['command'];
+    parm = request.form['parm'];
+    mqtt.publish("/cfg", "id:{};{}:{}".format(id, command, parm))
+    return json.dumps({'status':'Success!'});
 
 @app.context_processor
 def utility_processor():
@@ -121,6 +107,7 @@ def handle_mqtt_connect(client, userdata, flags, rc):
     # reconnect then subscriptions will be renewed.
     mqtt.subscribe("/online")
     mqtt.subscribe("/data")
+    mqtt.subscribe("/cmd-ack")
 
 # The callback for when a PUBLISH message is received from the server.
 @mqtt.on_message()
@@ -135,6 +122,10 @@ def handle_mqtt_message(client, userdata, msg):
         values['timestamp']=timestamp
         socketio.emit('mqtt_message', data=values)
         database.insert_data(timestamp, values)
+    if topic == "/cmd-ack":
+        timestamp = int(time.time())
+        values['timestamp']=timestamp
+        socketio.emit('mqtt_message', data=values)
     if topic == "/online":
         if values['rb'] == "0" : # not remote requested boot
             conf = ""
