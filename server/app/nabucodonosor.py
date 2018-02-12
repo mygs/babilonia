@@ -65,25 +65,25 @@ def updatecfg():
 def command():
     id = request.form['id'];
     command = request.form['command'];
-    parm = request.form['parm'];
-    mqtt.publish("/cfg", "id:{};{}:{}".format(id, command, parm))
+    param = request.form['param'];
+    mqtt.publish("/cfg", "id:{};{}:{}".format(id, command, param))
     return json.dumps({'status':'Success!'});
 
 @app.context_processor
 def utility_processor():
     def format_timestamp(value):
-        return time.strftime("%d-%m-%y %H:%M", time.localtime(int(value)))
+        return time.strftime("%d/%m/%Y %H:%M:%S", time.localtime(int(value)))
     def format_temperature(value):
-        return u'{0:.2f}'.format(value)
+        return u'{0:2.0f}°C'.format(value)
     def format_humidity(value):
-        return u'{0:.2f}'.format(value)
+        return u'{0:.2f}%'.format(value)
     def format_moisture(value):
-        return u'{0:.2f}'.format(value)
+        return u'{0:.2f}%'.format(value)
     def status(value):
         if int(value) == 1:
-            return "ON"
+            return 'on'
         else:
-            return "OFF"
+            return 'off'
     return {'format_timestamp':format_timestamp,
             'format_temperature':format_temperature,
             'format_humidity':format_humidity,

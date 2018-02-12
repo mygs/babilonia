@@ -11,13 +11,11 @@ $('.excellent h4').prepend('<i class="fa fa-star"></i>');
 /* AJAX STUFF */
 
 
-function callbackend(id, name, mode){
-	status = ($('#'+mode+'_'+id).html() == "ON") ? 1 : 0;
-	parm = 1 - status;/* invert status */
+function callbackend(id,mode,param,img,title,text){
 	swal({
-			title: "Turn "+(parm == 1 ? "ON": "OFF")+" the "+mode+" for "+name+"?",
-			text: name+" schedule might overwrite your current action",
-			imageUrl: '/static/img/'+mode+'.png',
+			title: title,
+			text: text,
+			imageUrl: img,
 			showCancelButton: true,
 			confirmButtonColor: "#DD6B55",
 			confirmButtonText: "Confirm",
@@ -27,7 +25,7 @@ function callbackend(id, name, mode){
 			$.ajax({
 		    url: '/command',
 		    type: 'POST',
-		    data: {"id": id, "command": mode, "parm":parm},
+		    data: {"id": id, "command": mode, "param":param},
 		    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 		    success: function (response) {
 					resp = JSON.parse(response);
@@ -43,27 +41,48 @@ function callbackend(id, name, mode){
 
 
 $(".btn-light").on("click", function() {
-	var id = $(this).data('id'); // Extract info from data-* attributes
-	var name = $(this).data('name'); // Extract info from data-* attributes
-	callbackend(id, name, 'light')});
+	var id = $(this).data('id');
+	var name = $(this).data('name');
+	var mode = 'light';
+	var param = ($('#light_'+id).html() == "on") ? 0 : 1; /* invert! */
+	var img = '/static/img/light.png';
+	var title =  "Turn "+(param == 1 ? "ON": "OFF")+" the light for "+name+"?";
+	var text =  name+" schedule might overwrite your current action";
+	callbackend(id,mode,param,img,title,text)});
 
-$(".btn-fan").on("click", function() {
-	var id = $(this).data('id'); // Extract info from data-* attributes
-	var name = $(this).data('name'); // Extract info from data-* attributes
-	callbackend(id, name, 'fan')});
+	$(".btn-fan").on("click", function() {
+		var id = $(this).data('id');
+		var name = $(this).data('name');
+		var mode = 'fan';
+		var param = ($('#light_'+id).html() == "on") ? 0 : 1; /* invert! */
+		var img = '/static/img/fan.png';
+		var title =  "Turn "+(param == 1 ? "ON": "OFF")+" the fan for "+name+"?";
+		var text =  name+" schedule might overwrite your current action";
+		callbackend(id,mode,param,img, title,text)});
 
 
-$(".btn-cmd").on("click", function() {
-	var id = $(this).data('id'); // Extract info from data-* attributes
-	var name = $(this).data('name'); // Extract info from data-* attributes
+	$(".btn-restart").on("click", function() {
+		var id = $(this).data('id');
+		var name = $(this).data('name');
+		var mode = 'cmd';
+		var param = 0; /* reboot */
+		var img = '/static/img/restart.png';
+		var title =  "Are you want to reboot "+name+"?";
+		var text =  "might take a while";
+		callbackend(id,mode,param,img,title,text)});
+
+
+$(".btn-refresh").on("click", function() {
+	var id = $(this).data('id');
+	var name = $(this).data('name');
 	$.ajax({
 		url: '/command',
 		type: 'POST',
-		data: {"id": id, "command": "cmd", "parm":"1"},
+		data: {"id": id, "command": "cmd", "param":"1"},
 		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 		success: function (response) {
 			resp = JSON.parse(response);
-			swal(resp.status, "It was succesfully!", "success");
+			//swal(resp.status, "It was succesfully!", "success");
 		},
 		error: function (response) {
 			resp = JSON.parse(response);
@@ -130,12 +149,12 @@ $(document).ready(function(){
     socket.on('mqtt_message', function(data) {
 			console.log(data);
 			var id = data.id;
-			$('#time_'+id).html(moment.unix(data.timestamp).format('DD-MM-YY HH:mm'));
-			$('#temp_'+id).html(data.mt);
-			$('#moist_'+id).html(data.mm);
-			$('#humid_'+id).html(data.mh);
-			$('#fan_'+id).html((data.sf == 1) ? "ON": "OFF");
-			$('#light_'+id).html((data.sl == 1) ? "ON": "OFF");
+			if(data.timestamp != null){$('#time_'+id).html(moment.unix(data.timestamp).format('DD/MM/YYYY HH:mm:ss'));}
+			if(data.mt != null){$('#temp_'+id).html(data.mt +  String.fromCharCode(176)+'C');}
+			if(data.mm != null){$('#moist_'+id).html(data.mm+'%');}
+			if(data.mh != null){$('#humid_'+id).html(data.mh+'%');}
+			if(data.sf != null){$('#fan_'+id).html((data.sf == 1) ? 'on': 'off');}
+			if(data.sl != null){$('#light_'+id).html((data.sl == 1) ? 'on': 'off');}
 
     });
 });

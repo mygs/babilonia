@@ -12,34 +12,39 @@
                <p><span id='time_{{module[1]}}'>{{ format_timestamp(module[2]) }} </span></p>
               <table id="telemetry">
                 <tr>
-                  <td class="param-label">Temperature <i class="wi wi-celsius"></i></td>
+                  <td class="param-label">Temperature</td>
                   <td class="param-value" id='temp_{{module[1]}}'>{{ format_temperature(module[3]) }}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Moisture <i class="wi wi-humidity"></i></td>
+                  <td class="param-label">Moisture</i></td>
                   <td class="param-value" id='moist_{{module[1]}}'>{{ format_moisture(module[4]) }}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Humidity <i class="wi wi-humidity"></i></td>
+                  <td class="param-label">Humidity</td>
                   <td class="param-value" id='humid_{{module[1]}}'>{{ format_humidity(module[5]) }}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Fan  <i class="wi wi-strong-wind"></i></td>
+                  <td class="param-label">Fan</td>
                   <td class="param-value" id='fan_{{module[1]}}'>{{ status(module[6]) }}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Light  <i class="wi wi-day-sunny"></i></td>
+                  <td class="param-label">Light</td>
                   <td class="param-value" id='light_{{module[1]}}'>{{ status(module[7]) }}</td>
                 </tr>
               </table>
-              <div>
-                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#updateNodeModal"  data-id="{{module[1]}}"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                <button type="button" class="btn btn-sm btn-warning btn-cmd" data-id="{{module[1]}}" data-name="{{module[0]}}" data-cmd="1"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                <button type="button" class="btn btn-sm btn-info btn-light" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-day-sunny"></i></button>
-                <button type="button" class="btn btn-sm btn-danger btn-fan" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-strong-wind"></i></button>
-                <button type="button" class="btn btn-sm btn-success btn-plot" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button>
+              <table id="cockpit">
+              <tr>
+                <td><button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#updateNodeModal"  data-id="{{module[1]}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-warning btn-refresh" data-id="{{module[1]}}" data-name="{{module[0]}}" data-cmd="1"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-info btn-light" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-day-sunny"></i></button></td>
+              </tr>
+              <tr>
+                <td><button type="button" class="btn btn-sm btn-info btn-fan" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-tornado"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-danger btn-restart" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-power-off"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-success btn-plot" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button></td>
+              </tr>
+              </table>
 
-              </div>
             </div>
           </li>
         {% endfor %}

@@ -20,18 +20,30 @@ table#telemetry {
     width: 100%;
     table-layout: fixed;
     border-spacing: 3px;
+    margin-up: 5px;
+    font-size: 13px;
+
+
+}
+
+table#cockpit {
+    text-align: center;
+    border-spacing: 2px;
+    border-collapse: separate;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .param-label {
     text-align: right;
     font-weight: bold;
-    padding: 5px;
+    padding: 3px;
     width: 60%;
 }
 
 .param-value {
     text-align: left;
-    padding: 5px;
+    padding: 3px;
     width: 40%;
 }
 
@@ -54,7 +66,7 @@ table#telemetry {
   cursor: pointer;
 }
 #sortable li .box {
-  height: 260px;
+  height: 220px;
   border: solid 2px #999;
   background: #eee;
   width: 100%;
@@ -99,12 +111,19 @@ table#telemetry {
 }
 #sortable li .box h4 {
   margin-top: 0;
+  margin-bottom: 5px;
 }
+
+#sortable li .box p {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
 #sortable li .box h4 .fa {
   display: inline-block;
   margin-right: 4px;
 }
 #sortable li .box p {
   color: #444;
-  font-size: 12px;
+  font-size: 11px;
 }
