@@ -11,9 +11,9 @@
 ### END INIT INFO
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
-DIR=/babilonia/server
-DAEMON=$DIR/babilonia-nodes-manager.py
-DAEMON_NAME=babilonia-nodes-manager
+DIR=/babilonia/server/app
+DAEMON=$DIR/nabucodonosor.py
+DAEMON_NAME=nabucodonosor
 
 # Add any command line options for your daemon here
 DAEMON_OPTS=""
