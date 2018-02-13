@@ -25,7 +25,10 @@ def get_timeseries(id):
 
     df.index = df.index.strftime('%H:%M')
     label = df.index.format()
-    data = df.temperature.tolist()
-    temperature = [{"label":label,"data":data}]
-    timeseries = [{"temperature":temperature}]
+    temperature = [{"label":label,"data":df.temperature.tolist()}]
+    humidity = [{"label":label,"data":df.humidity.tolist()}]
+    moisture = [{"label":label,"data":df.moisture.tolist()}]
+    timeseries = [{"temperature":temperature,
+                   "humidity":humidity,
+                   "moisture":moisture}]
     return json.dumps(timeseries)

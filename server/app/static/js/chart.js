@@ -24,15 +24,45 @@ $('#chartNodeModal').on('show.bs.modal', function (event) {
 		success: function (response) {
 				var resp = JSON.parse(response);
 
-        var myChart = new Chart($('#temperatureChart'), {
+        var temperatureChart = new Chart($('#temperatureChart'), {
             type: 'line',
             data: {
                 labels: resp[0].temperature[0].label,
                 datasets: [{
-                    label: 'Temperature',
+                    label: 'Temperature (Celsius)',
                     data:resp[0].temperature[0].data,
                     fill:false,
-                    borderColor:"rgb(75, 192, 192)",
+                    borderColor:"rgb(255, 0, 0)",
+                    lineTension:0.5,
+                    borderWidth: 1
+                }]
+            },
+            options: {}
+        });
+        var humidityChart = new Chart($('#humidityChart'), {
+            type: 'line',
+            data: {
+                labels: resp[0].humidity[0].label,
+                datasets: [{
+                    label: 'Humidity (%)',
+                    data:resp[0].humidity[0].data,
+                    fill:false,
+                    borderColor:"rgb(0, 0, 255)",
+                    lineTension:0.5,
+                    borderWidth: 1
+                }]
+            },
+            options: {}
+        });
+        var moistureChart = new Chart($('#moistureChart'), {
+            type: 'line',
+            data: {
+                labels: resp[0].moisture[0].label,
+                datasets: [{
+                    label: 'Moisture (%)',
+                    data:resp[0].moisture[0].data,
+                    fill:false,
+                    borderColor:"rgb(0, 255, 0)",
                     lineTension:0.5,
                     borderWidth: 1
                 }]
