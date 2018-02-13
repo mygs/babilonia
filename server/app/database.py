@@ -51,6 +51,14 @@ def save_cfg(request):
         cur.close()
         con.close()
 
+def retrieve_data(id):
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT TIMESTAMP, MEASURED_TEMPERATURE, MEASURED_HUMIDITY, MEASURED_MOISTURE FROM DATA WHERE ID=%s", (id,))
+        return cur.fetchall()
+
+
 def retrieve_all_cfg():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:

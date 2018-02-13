@@ -4,6 +4,7 @@ import time
 import logging
 import logging.config
 import database
+import analytics
 import simplejson as json
 from flask import Flask, render_template, request
 from flaskext.mysql import MySQL
@@ -40,6 +41,11 @@ socketio = SocketIO(app)
 def index():
     modules = database.retrieve_last_telemetry_info();
     return render_template('index.html', modules=modules)
+
+@app.route('/timeseries', methods=['POST'])
+def timeseries():
+    id = request.form['id'];
+    return analytics.get_timeseries(id);
 
 @app.route('/configuration', methods=['POST'])
 def node():

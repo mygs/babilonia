@@ -7,43 +7,41 @@ $('#chartNodeModal').on('show.bs.modal', function (event) {
 	var modal = $(this);
 	modal.find('.modal-title').text('Charts of ' + name);
 
-	var timeseries = {
+	/*var timeseries = {
 		"temperature":{
 			"label": ["JAN", "FEV", "MAR", "ABR", "MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"],
-			"data": [	{x:1,y:33},{x:2,y:34},{x:3,y:29},{x:4,y:27},{x:5,y:28},{x:6,y:25},
-								{x:7,y:22},{x:8,y:21},{x:9,y:21},{x:10,y:23},{x:11,y:25},{x:12,y:29}],
+			"data": [	{x:"JAN",y:33},{x:"FEV",y:34},{x:"MAR",y:29},{x:"ABR",y:27},{x:"MAI",y:28},{x:"JUN",y:25},
+								{x:"JUL",y:22},{x:"AGO",y:21},{x:"SET",y:21},{x:"OUT",y:23},{x:"NOV",y:25},{x:"DEZ",y:29}],
 		}
 	}
+*/
 
-	var myChart = new Chart($('#temperatureChart'), {
-	    type: 'line',
-	    data: {
-	        labels: timeseries["temperature"]["label"],
-	        datasets: [{
-	            label: 'Temperature',
-	            data:timeseries["temperature"]["data"],
-							fill:false,
-							borderColor:"rgb(75, 192, 192)",
-							lineTension:0.5,
-	            borderWidth: 1
-	        }]
-	    },
-	    options: {}
-	});
-	/*
 	$.ajax({
-		url: '/timseries',
+		url: '/timeseries',
 		type: 'POST',
 		data: {"id": id },
 		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 		success: function (response) {
 				var resp = JSON.parse(response);
 
-				$("#ID").val(id);
-				$("#NAME").val(resp.NAME);
+        var myChart = new Chart($('#temperatureChart'), {
+            type: 'line',
+            data: {
+                labels: resp[0].temperature[0].label,
+                datasets: [{
+                    label: 'Temperature',
+                    data:resp[0].temperature[0].data,
+                    fill:false,
+                    borderColor:"rgb(75, 192, 192)",
+                    lineTension:0.5,
+                    borderWidth: 1
+                }]
+            },
+            options: {}
+        });
 		},
 		error: function (response) {
 		}
 	});
-*/
+
 });
