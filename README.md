@@ -114,6 +114,8 @@ sudo pip install paho-mqtt
 sudo pip install sqlalchemy
 sudo pip install flask-mysql
 sudo pip install flask-socketio
+sudo pip install simplejson
+sudo pip install pandas
 sudo pip3 install flask-mqtt
 ```
 

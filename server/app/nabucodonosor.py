@@ -142,4 +142,4 @@ def handle_mqtt_message(client, userdata, msg):
 
 if __name__ == '__main__':
     print("*** STARTING NABUCODONOSOR SYSTEM ***")
-    socketio.run(app,debug=True, use_reloader=False)
+    socketio.run(app,host= '0.0.0.0',debug=True, use_reloader=False)
