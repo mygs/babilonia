@@ -1,4 +1,5 @@
 luac.cross
+log
 *.lc
 config.lua
 config.json
