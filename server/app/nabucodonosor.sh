@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 ### BEGIN INIT INFO
-# Provides:          myservice
+# Provides:          nabucodonosor
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
