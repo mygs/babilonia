@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="row">
+    <div class="col-sm-12">
+      <h2>Oasis Farm</h2>
+      <ul class="clearfix" id="sortable">
+        {% for module in modules %}
+          <li>
+            <div class="box good">
+              <h4>{{module[0]}}</h4>
+               <p><span id='time_{{module[1]}}'>{{ format_timestamp(module[2]) }} </span></p>
+              <table id="telemetry">
+                <tr>
+                  <td class="param-label">Temperature</td>
+                  <td class="param-value" id='temp_{{module[1]}}'>{{ format_temperature(module[3]) }}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Moisture</i></td>
+                  <td class="param-value" id='moist_{{module[1]}}'>{{ format_moisture(module[4]) }}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Humidity</td>
+                  <td class="param-value" id='humid_{{module[1]}}'>{{ format_humidity(module[5]) }}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Fan</td>
+                  <td class="param-value" id='fan_{{module[1]}}'>{{ status(module[6]) }}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Light</td>
+                  <td class="param-value" id='light_{{module[1]}}'>{{ status(module[7]) }}</td>
+                </tr>
+              </table>
+              <table id="cockpit">
+              <tr>
+                <td><button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#updateNodeModal"  data-id="{{module[1]}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-warning btn-refresh" data-id="{{module[1]}}" data-name="{{module[0]}}" data-cmd="1"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-info btn-light" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-day-sunny"></i></button></td>
+              </tr>
+              <tr>
+                <td><button type="button" class="btn btn-sm btn-info btn-fan" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-tornado"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-danger btn-restart" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-power-off"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-success btn-plot" data-toggle="modal" data-target="#chartNodeModal"  data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button></td>
+              </tr>
+              </table>
+
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+<!-- modals -->
+{% include 'modal-updatenode.html' %}
+{% include 'modal-chart.html' %}

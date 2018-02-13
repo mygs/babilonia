@@ -1,5 +1,8 @@
 luac.cross
+log
 *.lc
 config.lua
-#temp files dir
-sandbox/
+config.json
+*.db
+*.pyc
+__pycache__

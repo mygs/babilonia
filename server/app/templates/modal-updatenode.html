@@ -1,0 +1,56 @@
+<div class="modal fade" id="updateNodeModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog  modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <div id="alertModal"></div>
+        <form id="updateNodeModalForm" name="updateNodeModalForm">
+          <input type="hidden" name="ID" id="ID" value="">
+
+          <div class="form-group row">
+            <label for="NAME" class="node-cfg-lbl control-label col-form-label col-sm-6">NAME</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="NAME" id="NAME">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="TEMPERATURE_THRESHOLD" class="node-cfg-lbl control-label col-sm-6">TEMPERATURE_THRESHOLD</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="TEMPERATURE_THRESHOLD" id="TEMPERATURE_THRESHOLD">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="MOISTURE_THRESHOLD" class="node-cfg-lbl control-label col-sm-6">MOISTURE_THRESHOLD</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="MOISTURE_THRESHOLD" id="MOISTURE_THRESHOLD">
+          </div>          </div>
+          <div class="form-group row">
+            <label for="MASK_CRON_CTRL" class="node-cfg-lbl control-label col-sm-6">MASK_CRON_CTRL</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="MASK_CRON_CTRL" id="MASK_CRON_CTRL">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="MASK_CRON_LIGHT_ON" class="node-cfg-lbl control-label col-sm-6">MASK_CRON_LIGHT_ON</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="MASK_CRON_LIGHT_ON" id="MASK_CRON_LIGHT_ON">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="MASK_CRON_LIGHT_OFF" class="node-cfg-lbl control-label col-sm-6">MASK_CRON_LIGHT_OFF</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="MASK_CRON_LIGHT_OFF" id="MASK_CRON_LIGHT_OFF">
+            </div>
+         </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveconfig" onclick="updatecfg()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

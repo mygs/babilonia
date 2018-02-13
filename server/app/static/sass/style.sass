@@ -1,0 +1,70 @@
+@import "compass"
+
+$excellent: #62B1F6
+$good: #BCED91
+$danger: #F08080
+$nostatus: #333
+
+body
+	padding-top: 20px
+	background: #222
+	font-family: Montserrat, helvetica-neue, helvetica, sans-serif
+h2
+	margin-top: 0
+	margin-bottom: 30px
+	color: #eee
+	text-align: center
+#sortable
+	list-style: none
+	border: solid 4px $excellent
+	margin: 0
+	padding: 20px
+	width: 100%
+	+border-radius(2px)
+	li
+		display: inline-block
+		text-align: center
+		margin-bottom: 20px
+		&:hover
+			cursor: pointer
+		.box
+			height: 180px
+			border: solid 2px #999
+			background: #eee
+			width: 100%
+			padding: 10px
+			overflow: hidden
+			overflow-y: hidden
+			+border-radius(4px)
+			&.danger
+				background: $danger
+				color: darken($danger,40%)
+				border-color: darken($danger,30%)
+				.fa
+					color: darken($danger,30%)
+			&.good
+				background: $good
+				color: darken($good,50%)
+				border-color: darken($good,30%)
+				.fa
+					color: darken($good,50%)
+			&.excellent
+				color: darken($excellent,40%)
+				background: $excellent
+				border-color: darken($excellent,30%)
+				.fa
+					color: darken($excellent,30%)
+			&.nostatus
+				color: $nostatus
+				background: lighten($nostatus,80%)
+				border-color: lighten($nostatus,30%)
+				.fa
+					color: lighten($nostatus,50%)
+			h4
+				margin-top: 0
+				.fa
+					display: inline-block
+					margin-right: 4px
+			p
+				color: #444
+				font-size: 12px
