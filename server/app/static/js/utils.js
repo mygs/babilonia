@@ -155,6 +155,19 @@ function updatecfg(){
 };
 
 
+$('#chartNodeModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) ;// Button that triggered the modal
+  var id = button.data('id');
+	var name = button.data('name');
+	var modal = $(this);
+	modal.find('.modal-title').text('Charts of ' + name);
+
+
+});
+
+
+
+
 /* Websocket connection to update NODE Status */
 $(document).ready(function(){
 	var socket = io.connect('http://localhost:5000');

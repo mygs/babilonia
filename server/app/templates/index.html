@@ -3,7 +3,7 @@
 {% block body %}
   <div class="row">
     <div class="col-sm-12">
-      <h2>Oasis</h2>
+      <h2>Oasis Farm</h2>
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           <li>
@@ -41,7 +41,7 @@
               <tr>
                 <td><button type="button" class="btn btn-sm btn-info btn-fan" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="wi wi-tornado"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-danger btn-restart" data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-power-off"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-success btn-plot" data-toggle="modal" data-target="#chartNodeModal"  data-id="{{module[1]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-success btn-plot" data-toggle="modal" data-target="#chartNodeModal"  data-id="{{module[1]}}" data-name="{{module[0]}}"><i class="fa fa-line-chart" aria-hidden="true"></i></button></td>
               </tr>
               </table>
 
