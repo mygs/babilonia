@@ -24,7 +24,8 @@ DROP TABLE IF EXISTS `NODE`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `NODE` (
   `ID` varchar(64) NOT NULL,
-  `TEMPERATURE_THRESHOLD` decimal(8,4) NOT NULL DEFAULT '25.0000',
+  `NAME` varchar(64) DEFAULT NULL,
+  `TEMPERATURE_THRESHOLD` decimal(4,2) NOT NULL DEFAULT '25.00',
   `MOISTURE_THRESHOLD` varchar(64) DEFAULT NULL,
   `MASK_CRON_LIGHT_ON` varchar(64) NOT NULL DEFAULT '0 11 * *',
   `MASK_CRON_LIGHT_OFF` varchar(64) NOT NULL DEFAULT '0 20 * * *',
@@ -32,6 +33,7 @@ CREATE TABLE `NODE` (
   `LAST_UPDATE` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
