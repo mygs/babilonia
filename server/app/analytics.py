@@ -10,7 +10,7 @@ def get_timeseries(id):
     data = db.retrieve_data(id);
     df = DataFrame(list(data))
     df.columns = ['timestamp', 'temperature', 'humidity', 'moisture']
-    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s', utc=True)
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
     df['temperature'] = pd.to_numeric(df['temperature'])
     df['humidity'] = pd.to_numeric(df['humidity'])
     df['moisture'] = pd.to_numeric(df['moisture'])
