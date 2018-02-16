@@ -157,7 +157,7 @@ function updatecfg(){
 
 /* Websocket connection to update NODE Status */
 $(document).ready(function(){
-	var socket = io.connect('http://'+location.host+':5000');
+	var socket = io.connect('http://192.168.1.60:5000');
     socket.on('mqtt_message', function(data) {
 			console.log(data);
 			var id = data.id;
