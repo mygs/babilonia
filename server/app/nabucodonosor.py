@@ -111,9 +111,14 @@ def about():
 @app.route('/management')
 def management():
     return render_template('management/management.html')
+
 @app.route('/management/plant')
 def plant():
     return render_template('management/plant.html')
+
+@app.route('/management/plant-supplier')
+def plant_supplier():
+    return render_template('management/plant-supplier.html')
 
 if cfg["mode"]["mqtt"] == True:
 # The callback for when the client receives a CONNACK response from the server.

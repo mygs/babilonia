@@ -22,8 +22,6 @@ table#telemetry {
     border-spacing: 3px;
     margin-up: 5px;
     font-size: 13px;
-
-
 }
 
 table#cockpit {
@@ -206,4 +204,33 @@ canvas {
 .main .page-header {
   margin-top: 50px;
   color: #eee;
+}
+
+
+table.management {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    color: #E6E6E6 !important;
+}
+
+.dataTables_wrapper .dataTables_filter {
+  color: #E6E6E6 !important;
+  float: right;
+  text-align: left;
+}
+
+table.management td, table.management th {
+  border: 0px;
+  padding: 3px 2px;
+}
+
+table.management td {
+  background: #222 ;
+}
+
+table.management thead th {
+  background: #000000;
+  font-weight: bold;
+  text-align: center;
 }

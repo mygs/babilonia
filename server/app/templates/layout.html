@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" >
-    <meta name="description" content="babilonia management system">
-    <meta name="author" content="M Saito">
-    <link rel="icon" href="../../static/img/favicon.ico" />
+    <meta charset='utf-8'>
+    <meta name='viewport' >
+    <meta name='description' content='babilonia management system'>
+    <meta name='author' content='M Saito'>
+    <link rel='icon' href='../../static/img/favicon.ico' />
     <title>babilônia</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/examples/sticky-footer-navbar/sticky-footer-navbar.css">
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdn.datatables.net/buttons/1.5.1/css/buttons.bootstrap.min.css'>
+
+    <link rel='stylesheet' href='https://getbootstrap.com/docs/4.0/examples/sticky-footer-navbar/sticky-footer-navbar.css'>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css'>
-    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel='stylesheet' href='../../static/css/style.css'>
 
   {% include 'includes/_navbar.html' %}
   </head>
@@ -21,15 +24,21 @@
     {% include 'includes/_messages.html' %}
     {% block body %}{% endblock %}
 
-    <script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src='http://code.jquery.com/jquery-2.2.4.min.js'></script>
+    <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
+    <script src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js'></script>
+    <script src='https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js'></script>
+
+    <script src='https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js'></script>
+    <script src='https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap.min.js'></script>
+
     <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-    <script src="../../static/js/chart.js"></script>
-    <script src="../../static/js/utils.js"></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js'></script>
+    <script src='../../static/js/chart.js'></script>
+    <script src='../../static/js/utils.js'></script>
   </body>
   {% include 'includes/_footer.html' %}
 </html>

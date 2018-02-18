@@ -156,6 +156,7 @@ function updatecfg(){
 
 /* Websocket connection to update NODE Status */
 $(document).ready(function(){
+
 	var socket = io.connect('http://192.168.1.60:8080');
     socket.on('mqtt_message', function(data) {
 			console.log(data);
@@ -172,11 +173,28 @@ $(document).ready(function(){
 		// get current URL path and assign 'active' class
 		var pathname = window.location.pathname;
 		var suffix = pathname.substring(0,pathname.indexOf("/", pathname.indexOf("/") + 1))
-
-		if(suffix ==  ""){
-			suffix = pathname;
-		}
-		//prefix
+		if(suffix ==  ""){suffix = pathname;}
 		$('.navbar-nav > li > a[href="'+suffix+'"]').parent().addClass('active');
 		$('.nav-sidebar > li > a[href="'+pathname+'"]').parent().addClass('active');
+
+
+		// START grids
+		$('.management').DataTable(
+			{
+				"bLengthChange": false,
+				"info": false,
+				"bPaginate": false, //hide pagination control
+				"dom": 'Bfrtip',
+				"buttons": [
+										{
+											text:'<i class="fa fa-plus" aria-hidden="true"></i>',
+					            titleAttr: 'Adicionar',
+												action: function ( e, dt, node, config ) {
+														alert( 'Button activated' );
+												}
+										}
+								]
+			}
+		);
+		// END grids
 });
