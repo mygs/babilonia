@@ -1,9 +1,10 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+<div class="container">
   <div class="row">
     <div class="col-sm-12">
-      <h2>Plantação</h2>
+      <h2 id="index">Plantação</h2>
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           <li>
@@ -51,6 +52,7 @@
       </ul>
     </div>
   </div>
+</div>
 {% endblock %}
 <!-- modals -->
 {% include 'modal-updatenode.html' %}

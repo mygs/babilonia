@@ -1,12 +1,12 @@
 body {
-  padding-top: 20px;
+  padding-top: 10px;
   background: #222;
-  font-family: Montserrat, helvetica-neue, helvetica, sans-serif;
+  font-family:  Montserrat, helvetica-neue, helvetica, sans-serif;
 }
 
-h2 {
-  margin-top: 0;
-  margin-bottom: 30px;
+h2#index {
+  margin-top: 15px;
+  margin-bottom: 10px;
   color: #eee;
   text-align: center;
 }
@@ -151,6 +151,28 @@ canvas {
   -ms-user-select: none;
 }
 
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+.sidebar {
+  display: none;
+}
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  }
+}
+
 
 /* Sidebar navigation */
 .nav-sidebar {
@@ -168,10 +190,8 @@ canvas {
   color: #fff;
   background-color: #428bca;
 }
-
-
 /*
- * Main content
+ * Main content with sidebar
  */
 
 .main {
@@ -184,5 +204,6 @@ canvas {
   }
 }
 .main .page-header {
-  margin-top: 0;
+  margin-top: 50px;
+  color: #eee;
 }
