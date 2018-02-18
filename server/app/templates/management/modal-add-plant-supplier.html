@@ -1,0 +1,48 @@
+<div class="modal fade" id="plantSupplierModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog  modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Adicionar Novo Fornecedor</h4>
+      </div>
+      <div class="modal-body">
+        <div id="alertModal"></div>
+        <form id="plantSupplierModalForm" name="plantSupplierModalForm">
+          <input type="hidden" name="id" id="id" value="">
+
+          <div class="form-group row">
+            <label for="nome" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Nome</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="nome" id="nome">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="tipo" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Tipo</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="tipo" id="tipo">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="estado" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Estado</label>
+            <div class="col-sm-9">
+              <select class="form-control" id="estado">
+                  <option value=""></option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="cidade" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Cidade</label>
+            <div class="col-sm-9">
+              <select class="form-control" id="cidade">
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="savePlantSupplierForm" onclick="updatecfg()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

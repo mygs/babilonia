@@ -16,6 +16,11 @@ h2#index {
     padding: 5px;
 }
 
+.supplier-cfg-lbl {
+    text-align: right;
+    padding: 5px;
+}
+
 table#telemetry {
     width: 100%;
     table-layout: fixed;
