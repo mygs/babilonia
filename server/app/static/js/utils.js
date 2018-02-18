@@ -1,9 +1,3 @@
-$(document).ready(function() {
-	// get current URL path and assign 'active' class
-	var pathname = window.location.pathname;
-	$('.navbar-nav > li > a[href="'+pathname+'"]').parent().addClass('active');
-})
-
 /* GRID STUFF */
 $(function() {
 	$( "#sortable" ).sortable();
@@ -160,7 +154,6 @@ function updatecfg(){
 	});
 };
 
-
 /* Websocket connection to update NODE Status */
 $(document).ready(function(){
 	var socket = io.connect('http://192.168.1.60:8080');
@@ -175,4 +168,15 @@ $(document).ready(function(){
 			if(data.sl != null){$('#light_'+id).html((data.sl == 1) ? 'on': 'off');}
 
     });
+
+		// get current URL path and assign 'active' class
+		var pathname = window.location.pathname;
+		var suffix = pathname.substring(0,pathname.indexOf("/", pathname.indexOf("/") + 1))
+
+		if(suffix ==  ""){
+			suffix = pathname;
+		}
+		//prefix
+		$('.navbar-nav > li > a[href="'+suffix+'"]').parent().addClass('active');
+		$('.nav-sidebar > li > a[href="'+pathname+'"]').parent().addClass('active');
 });
