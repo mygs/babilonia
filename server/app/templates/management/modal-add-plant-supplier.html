@@ -8,7 +8,7 @@
       <div class="modal-body">
         <div id="alertModal"></div>
         <form id="plantSupplierModalForm" name="plantSupplierModalForm">
-          <input type="hidden" name="id" id="id" value="">
+          <!--<input type="hidden" name="id" id="id" value=""> -->
 
           <div class="form-group row">
             <label for="nome" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Nome</label>
@@ -19,13 +19,17 @@
           <div class="form-group row">
             <label for="tipo" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Tipo</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" name="tipo" id="tipo">
+              <select class="form-control" name="tipo" id="tipo">
+                <option value="">Escolha...</option>
+                <option value="Semente">Semente</option>
+                <option value="Muda">Muda</option>
+              </select>
             </div>
           </div>
           <div class="form-group row">
             <label for="estado" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Estado</label>
             <div class="col-sm-9">
-              <select class="form-control" id="estado">
+              <select class="form-control" name="estado" id="estado">
                   <option value=""></option>
               </select>
             </div>
@@ -33,7 +37,7 @@
           <div class="form-group row">
             <label for="cidade" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Cidade</label>
             <div class="col-sm-9">
-              <select class="form-control" id="cidade">
+              <select class="form-control" name="cidade" id="cidade">
               </select>
             </div>
           </div>
@@ -41,7 +45,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="savePlantSupplierForm" onclick="updatecfg()">Save</button>
+        <button type="button" class="btn btn-primary" id="savesupplier" onclick="savesupplier()">Save</button>
       </div>
     </div>
   </div>

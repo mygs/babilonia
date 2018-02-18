@@ -202,6 +202,38 @@ function supplierModal() {
 }
 
 
+function savesupplier() {
+  swal({
+    title: "Are you want to save new Supplier?",
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirm",
+    closeOnConfirm: false
+  }, function(isConfirm) {
+    if (isConfirm) {
+      $.ajax({
+        url: '/savesupplier',
+        type: 'POST',
+        data: $('#plantSupplierModalForm').serialize(),
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        success: function(response) {
+          resp = JSON.parse(response);
+          swal("Success", resp.message, "success");
+          $("#savesupplier").attr("disabled", "disabled");
+        },
+        error: function(response) {
+          resp = JSON.parse(response);
+          swal("Failed", resp.message, "error");
+        }
+      });
+    } else {
+      swal("You will not save new supplier!");
+    }
+  });
+};
+
+
 
 
 /* Websocket connection to update NODE Status */
@@ -256,5 +288,19 @@ $(document).ready(function() {
       }
     }]
   });
+
+	$('#plant').DataTable({
+		"bLengthChange": false,
+		"info": false,
+		"bPaginate": false, //hide pagination control
+		"dom": 'Bfrtip',
+		"buttons": [{
+			text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+			titleAttr: 'Adicionar Vegetal',
+			action: function(e, dt, node, config) {
+					plantModal()
+			}
+		}]
+	});
   // END grids
 });

@@ -71,6 +71,14 @@ def updatecfg():
     else:
         return json.dumps({ 'status':status, 'message':'Configuration was NOT saved'});
 
+@app.route('/savesupplier', methods=['POST'])
+def savesupplier():
+    #status = database.save_cfg(request);
+    status = 0
+    if status == 0:
+        return  json.dumps({ 'status': status, 'message':'Supplier was saved succesfully'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Supplier was NOT saved'});
 
 @app.route('/command', methods=['POST'])
 def command():
