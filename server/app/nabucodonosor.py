@@ -33,7 +33,9 @@ app.config['MYSQL_DATABASE_PASSWORD'] =  cfg["db"]["password"]
 app.config['MYSQL_DATABASE_DB'] = cfg["db"]["schema"]
 app.config['MYSQL_DATABASE_HOST'] = cfg["db"]["host"]
 
-mqtt = Mqtt(app)
+if cfg["mode"]["mqtt"] == True:
+    mqtt = Mqtt(app)
+
 mysql.init_app(app)
 socketio = SocketIO(app)
 
@@ -62,7 +64,8 @@ def node():
 def updatecfg():
     status = database.save_cfg(request);
     conf = database.retrieve_cfg(request.form['ID'])
-    mqtt.publish("/cfg", conf)
+    if cfg["mode"]["mqtt"] == True:
+        mqtt.publish("/cfg", conf)
     if status == 0:
         return  json.dumps({ 'status': status, 'message':'Configuration was saved succesfully'});
     else:
@@ -74,7 +77,8 @@ def command():
     id = request.form['id'];
     command = request.form['command'];
     param = request.form['param'];
-    mqtt.publish("/cfg", "id:{};{}:{}".format(id, command, param))
+    if cfg["mode"]["mqtt"] == True:
+        mqtt.publish("/cfg", "id:{};{}:{}".format(id, command, param))
     return json.dumps({'status':'Success!'});
 
 @app.context_processor
@@ -104,42 +108,47 @@ def utility_processor():
 def about():
     return render_template('about.html')
 
+@app.route('/management')
+def management():
+    return render_template('management.html')
 
-
-
+if cfg["mode"]["mqtt"] == True:
 # The callback for when the client receives a CONNACK response from the server.
-@mqtt.on_connect()
-def handle_mqtt_connect(client, userdata, flags, rc):
-    logger.info("Connected with result code %s",str(rc))
-    # Subscribing in on_connect() means that if we lose the connection and
-    # reconnect then subscriptions will be renewed.
-    mqtt.subscribe("/online")
-    mqtt.subscribe("/data")
-    mqtt.subscribe("/cmd-ack")
+    @mqtt.on_connect()
+    def handle_mqtt_connect(client, userdata, flags, rc):
+        logger.info("Connected with result code %s",str(rc))
+        # Subscribing in on_connect() means that if we lose the connection and
+        # reconnect then subscriptions will be renewed.
+        mqtt.subscribe("/online")
+        mqtt.subscribe("/data")
+        mqtt.subscribe("/cmd-ack")
 
-# The callback for when a PUBLISH message is received from the server.
-@mqtt.on_message()
-def handle_mqtt_message(client, userdata, msg):
-    topic = msg.topic
-    data = str(msg.payload, 'utf-8')
-    values = dict(item.split(":") for item in data.split(";"))
-    logger.info("Receive message from NODE %s on topic %s",values['id'], topic)
+    # The callback for when a PUBLISH message is received from the server.
+    @mqtt.on_message()
+    def handle_mqtt_message(client, userdata, msg):
+        topic = msg.topic
+        data = str(msg.payload, 'utf-8')
+        values = dict(item.split(":") for item in data.split(";"))
+        logger.info("Receive message from NODE %s on topic %s",values['id'], topic)
 
-    if topic == "/data":
-        timestamp = int(time.time())
-        values['timestamp']=timestamp
-        socketio.emit('mqtt_message', data=values)
-        database.insert_data(timestamp, values)
-    if topic == "/cmd-ack":
-        timestamp = int(time.time())
-        values['timestamp']=timestamp
-        socketio.emit('mqtt_message', data=values)
-    if topic == "/online":
-        if values['rb'] == "0" : # not remote requested boot
-            conf = ""
-            conf = database.retrieve_cfg(values['id'])
-            mqtt.publish("/cfg", conf)
+        if topic == "/data":
+            timestamp = int(time.time())
+            values['timestamp']=timestamp
+            socketio.emit('mqtt_message', data=values)
+            database.insert_data(timestamp, values)
+        if topic == "/cmd-ack":
+            timestamp = int(time.time())
+            values['timestamp']=timestamp
+            socketio.emit('mqtt_message', data=values)
+        if topic == "/online":
+            if values['rb'] == "0" : # not remote requested boot
+                conf = ""
+                conf = database.retrieve_cfg(values['id'])
+                mqtt.publish("/cfg", conf)
 
 if __name__ == '__main__':
     print("*** STARTING NABUCODONOSOR SYSTEM ***")
-    socketio.run(app, host='0.0.0.0', port=8080, debug=True, use_reloader=False)
+    user_reload = True
+    if cfg["mode"]["mqtt"] == True:
+        user_reload = False # Avoid Bug: TWICE mqtt instances
+    socketio.run(app, host='0.0.0.0', port=8080, debug=True, use_reloader=user_reload)
