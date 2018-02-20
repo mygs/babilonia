@@ -15,30 +15,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Sakata</td>
-              <td>Semente</td>
-              <td>Bragança Paulista</td>
-              <td>SP</td>
-            </tr>
-            <tr>
-              <td>Mudas Lissoni</td>
-              <td>Muda</td>
-              <td>Pirassununga</td>
-              <td>SP</td>
-            </tr>
-            <tr>
-              <td>Mudas Sousa</td>
-              <td>Muda</td>
-              <td>Pombal</td>
-              <td>PB</td>
-            </tr>
-            <tr>
-              <td>Top Seed</td>
-              <td>Semente</td>
-              <td>Santo Antônio de Posse</td>
-              <td>SP</td>
-            </tr>
+          {% for supplier in suppliers %}
+          <tr>
+            <td>{{supplier[0]}}</td>
+            <td>{{supplier[1]}}</td>
+            <td>{{supplier[2]}}</td>
+            <td>{{supplier[3]}}</td>
+          </tr>
+          {% endfor %}
           </tbody>
         </table>
       </div>

@@ -71,15 +71,6 @@ def updatecfg():
     else:
         return json.dumps({ 'status':status, 'message':'Configuration was NOT saved'});
 
-@app.route('/savesupplier', methods=['POST'])
-def savesupplier():
-    #status = database.save_cfg(request);
-    status = 0
-    if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Supplier was saved succesfully'});
-    else:
-        return json.dumps({ 'status':status, 'message':'Supplier was NOT saved'});
-
 @app.route('/command', methods=['POST'])
 def command():
     id = request.form['id'];
@@ -126,7 +117,17 @@ def plant():
 
 @app.route('/management/plant-supplier')
 def plant_supplier():
-    return render_template('management/plant-supplier.html')
+    suppliers = database.retrieve_suppliers()
+    print(suppliers)
+    return render_template('management/plant-supplier.html', suppliers=suppliers)
+
+@app.route('/management/save-plant-supplier', methods=['POST'])
+def savesupplier():
+    status = database.save_supplier(request);
+    if status == 0:
+        return  json.dumps({ 'status': status, 'message':'Supplier was saved succesfully'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Supplier was NOT saved'});
 
 if cfg["mode"]["mqtt"] == True:
 # The callback for when the client receives a CONNACK response from the server.

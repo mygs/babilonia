@@ -213,7 +213,7 @@ function savesupplier() {
   }, function(isConfirm) {
     if (isConfirm) {
       $.ajax({
-        url: '/savesupplier',
+        url: '/management/save-plant-supplier',
         type: 'POST',
         data: $('#plantSupplierModalForm').serialize(),
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -221,6 +221,7 @@ function savesupplier() {
           resp = JSON.parse(response);
           swal("Success", resp.message, "success");
           $("#savesupplier").attr("disabled", "disabled");
+           location.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);

@@ -51,6 +51,34 @@ def save_cfg(request):
         cur.close()
         con.close()
 
+def save_supplier(request):
+    NAME = request.form['nome'];
+    TYPE = request.form['tipo'];
+    STATE = request.form['estado'];
+    CITY = request.form['cidade'];
+
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    cur = con.cursor()
+    try:
+        cur.execute("""INSERT SUPPLIER (NAME,TYPE,STATE,CITY)
+                            VALUES(%s,%s,%s,%s)""",
+                    (NAME,TYPE,STATE,CITY))
+        con.commit()
+        return 0
+    except:
+        print(e)
+        return -1
+    finally:
+        cur.close()
+        con.close()
+
+def retrieve_suppliers():
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT NAME,TYPE,CITY,STATE FROM SUPPLIER")
+        return cur.fetchall()
+
 def retrieve_data(id):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
