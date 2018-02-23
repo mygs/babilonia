@@ -39,7 +39,9 @@
             <label for="supplier" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Fornecedor</label>
             <div class="col-sm-9">
               <select class="form-control" name="plant-supplier" id="plant-supplier">
-                  <option value=""></option>
+                {% for supplier in suppliers %}
+                  <option value="{{supplier[0]}}">{{supplier[1]}} ({{supplier[2]}})</option>
+                {% endfor %}
               </select>
             </div>
           </div>

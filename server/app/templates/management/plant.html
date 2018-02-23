@@ -18,7 +18,7 @@
             <tr>
               <td>{{plant[0]}}</td>
               <td>{{plant[1]}}</td>
-              <td>{{plant[2]}}</td>
+              <td>{{plant[3]}} ({{plant[2]}})</td>
             </tr>
           {% endfor %}
           </tbody>
@@ -30,4 +30,6 @@
 {% endblock %}
 
 <!-- modals -->
+{% with  suppliers=suppliers %}
 {% include 'management/modal-add-plant.html' %}
+{% endwith %}

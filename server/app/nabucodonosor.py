@@ -115,7 +115,8 @@ def management():
 @app.route('/management/plant')
 def plant():
     plants = database.retrieve_plants()
-    return render_template('management/plant.html', plants=plants)
+    suppliers = database.retrieve_suppliers()
+    return render_template('management/plant.html', plants=plants , suppliers=suppliers)
 
 @app.route('/management/plant-supplier')
 def plant_supplier():
