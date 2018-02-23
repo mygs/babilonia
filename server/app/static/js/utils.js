@@ -234,7 +234,42 @@ function savesupplier() {
   });
 };
 
+function plantModal() {
+  $('#plantModal').modal('show');
+}
 
+
+function savesplant() {
+  swal({
+    title: "Are you want to save new Plant?",
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirm",
+    closeOnConfirm: false
+  }, function(isConfirm) {
+    if (isConfirm) {
+      $.ajax({
+        url: '/management/save-plant',
+        type: 'POST',
+        data: $('#plantModalForm').serialize(),
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        success: function(response) {
+          resp = JSON.parse(response);
+          swal("Success", resp.message, "success");
+          $("#saveplant").attr("disabled", "disabled");
+           location.reload();
+        },
+        error: function(response) {
+          resp = JSON.parse(response);
+          swal("Failed", resp.message, "error");
+        }
+      });
+    } else {
+      swal("You will not save new plant!");
+    }
+  });
+};
 
 
 /* Websocket connection to update NODE Status */
@@ -276,6 +311,20 @@ $(document).ready(function() {
 
 
   // START grids
+  $('#plant').DataTable({
+		"bLengthChange": false,
+		"info": false,
+		"bPaginate": false, //hide pagination control
+		"dom": 'Bfrtip',
+		"buttons": [{
+			text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+			titleAttr: 'Adicionar Vegetal',
+			action: function(e, dt, node, config) {
+					plantModal()
+			}
+		}]
+	});
+  
   $('#supplier').DataTable({
     "bLengthChange": false,
     "info": false,
@@ -289,19 +338,5 @@ $(document).ready(function() {
       }
     }]
   });
-
-	$('#plant').DataTable({
-		"bLengthChange": false,
-		"info": false,
-		"bPaginate": false, //hide pagination control
-		"dom": 'Bfrtip',
-		"buttons": [{
-			text: '<i class="fa fa-plus" aria-hidden="true"></i>',
-			titleAttr: 'Adicionar Vegetal',
-			action: function(e, dt, node, config) {
-					plantModal()
-			}
-		}]
-	});
   // END grids
 });

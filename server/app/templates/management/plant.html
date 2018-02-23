@@ -5,64 +5,22 @@
     <div class="col-sm-8 col-sm-offset-2 col-md-9 col-md-offset-1 main">
       <h2 class="page-header">Vegetal</h2>
       <div class="table-responsive">
-        <table id="plant" class="table table-hover management">
+        <table id="plant" class="management table">
           <thead>
             <tr>
               <th>Tipo</th>
               <th>Nome</th>
-              <th>Tipo Fornecedor</th>
               <th>Fornecedor</th>
             </tr>
           </thead>
           <tbody>
+            {% for plant in plants %}
             <tr>
-              <td>Tempero</td>
-              <td>Salsinha</td>
-              <td>Semente</td>
-              <td>Sakata</td>
+              <td>{{plant[0]}}</td>
+              <td>{{plant[1]}}</td>
+              <td>{{plant[2]}}</td>
             </tr>
-            <tr>
-              <td>Folha</td>
-              <td>Almeirão</td>
-              <td>Muda</td>
-              <td>Mudas São João</td>
-            </tr>
-            <tr>
-              <td>Raiz</td>
-              <td>Cenoura</td>
-              <td>Semente</td>
-              <td>Isla</td>
-            </tr>
-            <tr>
-              <td>Folha</td>
-              <td>Rúcula</td>
-              <td>Semente</td>
-              <td>Top Seed</td>
-            </tr>
-            <tr>
-              <td>Folha</td>
-              <td>Alface americano</td>
-              <td>Semente</td>
-              <td>Sakata</td>
-            </tr>
-            <tr>
-              <td>Folha</td>
-              <td>Alface Roxo</td>
-              <td>Muda</td>
-              <td>Mudas Lissoni</td>
-            </tr>
-            <tr>
-              <td>Tempero</td>
-              <td>Cebolinha</td>
-              <td>Muda</td>
-              <td>Mudas Sousa</td>
-            </tr>
-            <tr>
-              <td>Raiz</td>
-              <td>Rabanete</td>
-              <td>Muda</td>
-              <td>Mudas Saito</td>
-            </tr>
+          {% endfor %}
           </tbody>
         </table>
       </div>
@@ -70,3 +28,6 @@
   </div>
 </div>
 {% endblock %}
+
+<!-- modals -->
+{% include 'management/modal-add-plant.html' %}

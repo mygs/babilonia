@@ -114,12 +114,12 @@ def management():
 
 @app.route('/management/plant')
 def plant():
-    return render_template('management/plant.html')
+    plants = database.retrieve_plants()
+    return render_template('management/plant.html', plants=plants)
 
 @app.route('/management/plant-supplier')
 def plant_supplier():
     suppliers = database.retrieve_suppliers()
-    print(suppliers)
     return render_template('management/plant-supplier.html', suppliers=suppliers)
 
 @app.route('/management/save-plant-supplier', methods=['POST'])

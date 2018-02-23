@@ -72,6 +72,13 @@ def save_supplier(request):
         cur.close()
         con.close()
 
+def retrieve_plants():
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT NAME,TYPE,SUPPLIER FROM PLANT")
+        return cur.fetchall()
+
 def retrieve_suppliers():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
