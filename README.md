@@ -117,6 +117,9 @@ sudo pip install flask-socketio
 sudo pip install simplejson
 sudo pip install pandas
 sudo pip3 install flask-mqtt
+sudo pip install Pillow
+sudo pip install Flask-QRcode
+
 ```
 
 ### middlwares & tools

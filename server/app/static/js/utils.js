@@ -239,7 +239,7 @@ function plantModal() {
 }
 
 
-function savesplant() {
+function saveplant() {
   swal({
     title: "Are you want to save new Plant?",
     icon: "info",
@@ -324,7 +324,7 @@ $(document).ready(function() {
 			}
 		}]
 	});
-  
+
   $('#supplier').DataTable({
     "bLengthChange": false,
     "info": false,

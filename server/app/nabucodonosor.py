@@ -11,6 +11,7 @@ from flask import Flask, render_template, request
 from flaskext.mysql import MySQL
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
+#from flask_qrcode import QRcode
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'config.json'), "r") as json_data_file:
@@ -39,6 +40,7 @@ if cfg["mode"]["mqtt"] == True:
 
 mysql.init_app(app)
 socketio = SocketIO(app)
+#qrcode = QRcode(app)
 
 @app.route('/')
 def index():
@@ -111,6 +113,21 @@ def about():
 @app.route('/management')
 def management():
     return render_template('management/management.html')
+
+@app.route('/management/module')
+def module():
+    modules = database.retrieve_modules()
+    oasis = database.retrieve_oasis()
+    return render_template('management/module.html', modules=modules , oasis=oasis)
+
+@app.route('/management/save-module', methods=['POST'])
+def savemodule():
+    status = database.save_module(request);
+    if status == 0:
+        return  json.dumps({ 'status': status, 'message':'Module was saved succesfully'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Module was NOT saved'});
+
 
 @app.route('/management/plant')
 def plant():

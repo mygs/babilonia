@@ -72,6 +72,41 @@ def save_supplier(request):
         cur.close()
         con.close()
 
+
+def save_module(request):
+    ID = request.form['nome'];
+    TYPE = request.form['tipo'];
+    OASIS = request.form['oasis'];
+    DATE = request.form['data'];
+
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    cur = con.cursor()
+    try:
+        cur.execute("""INSERT MODULE (ID,TYPE,OASIS,DATE)
+                            VALUES(%s,%s,%s,%s)""",
+                    (ID,TYPE,OASIS,DATE))
+        con.commit()
+        return 0
+    except:
+        return -1
+    finally:
+        cur.close()
+        con.close()
+
+def retrieve_modules():
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT M.ID,M.TYPE,N.NAME,M.DATE FROM MODULE M, NODE N WHERE M.OASIS = N.ID")
+        return cur.fetchall()
+
+def retrieve_oasis():
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT ID, NAME FROM NODE")
+        return cur.fetchall()
+
 def retrieve_plants():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
