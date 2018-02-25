@@ -113,7 +113,10 @@ def utility_processor():
     def crop_duration(date):
         now = dt.date.today()
         delta = now - date
-        return str(delta.days)
+        if delta.days < 0:
+            return "N/A"
+        else:
+            return str(delta.days)
     return {'format_timestamp':format_timestamp,
             'format_temperature':format_temperature,
             'format_humidity':format_humidity,

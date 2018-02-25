@@ -94,15 +94,22 @@ def save_module(request):
         con.close()
 
 def save_crop(request):
+    ID = request.form['id'];
     STATE = request.form['estado'];
     CITY = request.form['cidade'];
     DATE = request.form['data'];
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     cur = con.cursor()
+    print("ID:"+ID)
     try:
-        cur.execute("""INSERT CROP (CITY,STATE,START_DATE)
+        if ID == "":
+            cur.execute("""INSERT CROP (CITY,STATE,START_DATE)
                             VALUES(%s,%s,%s)""",
-                    (CITY,STATE,DATE))
+                            (CITY,STATE,DATE))
+        else:
+            cur.execute("""UPDATE CROP SET CITY=%s,STATE=%s,START_DATE=%s
+                            WHERE ID=CONV(%s,16,10)""",
+                            (CITY,STATE,DATE,ID))
         #print(cur.lastrowid)
         con.commit()
         return 0

@@ -18,6 +18,7 @@ function cropModal(data) {
     $("#crop-modal-title").text("Adicionar Nova Produção");
   }else{
     $("#crop-modal-title").text("Editar Produção "+data[0]);
+    $("#id").val(data[0]);
     $("#estado").val(data[2]);
     regionCitySelector(data[2], data[1]);
     $("#data").val(data[3]);
