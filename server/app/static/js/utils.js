@@ -167,9 +167,7 @@ function updatecfg() {
   });
 };
 
-
-function supplierModal() {
-  $('#plantSupplierModal').modal('show')
+function regionSelector(){
   $.getJSON('/static/data/estados_cidades.json', function(data) {
     var items = [];
     var options = '<option value="">Escolha ...</option>';
@@ -199,6 +197,11 @@ function supplierModal() {
     }).change();
 
   });
+}
+
+function supplierModal() {
+  $('#plantSupplierModal').modal('show')
+  regionSelector();
 }
 
 

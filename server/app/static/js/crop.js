@@ -1,3 +1,14 @@
+function cropModalReset() {
+  //$('#nome').val("");
+}
+
+function cropModal() {
+  cropModalReset();
+  $('#cropModal').modal('show');
+  regionSelector();
+}
+
+
 function savecrop() {
   swal({
     title: "Are you want to save new Crop?",
@@ -11,7 +22,7 @@ function savecrop() {
       $.ajax({
         url: '/management/save-crop',
         type: 'POST',
-        data: $('#cropForm').serialize(),
+        data: $('#cropModalForm').serialize(),
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
           resp = JSON.parse(response);
@@ -43,7 +54,7 @@ $(document).ready(function() {
       text: '<i class="fa fa-plus" aria-hidden="true"></i>',
       titleAttr: 'Adicionar Produção',
       action: function(e, dt, node, config) {
-          //moduleModal()
+          cropModal()
       }
     }]
   });

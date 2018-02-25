@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
+import datetime as dt
 import logging
 import logging.config
 import database
@@ -109,12 +110,17 @@ def utility_processor():
             return 'on'
         else:
             return 'off'
+    def crop_duration(date):
+        now = dt.date.today()
+        delta = now - date
+        return str(delta.days)
     return {'format_timestamp':format_timestamp,
             'format_temperature':format_temperature,
             'format_humidity':format_humidity,
             'format_moisture':format_moisture,
             'status':status,
             'status_node':status_node,
+            'crop_duration':crop_duration
             }
 
 
@@ -126,6 +132,14 @@ def about():
 def management():
     crops = database.retrieve_crops()
     return render_template('management/management.html', crops=crops)
+
+@app.route('/management/save-crop', methods=['POST'])
+def savecrop():
+    status = database.save_crop(request);
+    if status == 0:
+        return  json.dumps({ 'status': status, 'message':'Crop was saved succesfully'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Crop was NOT saved'});
 
 @app.route('/management/module')
 def module():

@@ -1,0 +1,44 @@
+<div class="modal fade" id="cropModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog  modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Adicionar Nova Produção</h4>
+      </div>
+      <div class="modal-body">
+        <div id="alertModal"></div>
+        <form id="cropModalForm" name="cropModalForm">
+          <!--<input type="hidden" name="id" id="id" value=""> -->
+          <div class="form-group row">
+            <label for="estado" class="supplier-cfg-lbl control-label col-form-label col-md-3">Estado</label>
+            <div class="col-md-4">
+              <select class="form-control" name="estado" id="estado">
+                  <option value=""></option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="cidade" class="supplier-cfg-lbl control-label col-form-label col-md-3">Cidade</label>
+            <div class="col-md-6">
+              <select class="form-control" name="cidade" id="cidade">
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="data" class="supplier-cfg-lbl control-label col-form-label col-md-3">Data Início</label>
+            <div class="col-md-4">
+              <div class="input-group date" id="datapicker">
+                <input type="text" class="form-control" name="data" id="data">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="savecrop" onclick="savecrop()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

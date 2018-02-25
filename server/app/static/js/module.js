@@ -1,4 +1,12 @@
+function moduleModalReset() {
+  $('#nome').val("");
+  $('#tipo').val("");
+  $('#oasis').val("");
+  $('#data').val("");
+}
+
 function moduleModal() {
+  moduleModalReset();
   $('#moduleModal').modal('show');
 }
 

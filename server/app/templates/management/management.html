@@ -19,9 +19,9 @@
             {% for crop in crops %}
             <tr>
               <td>{{crop[0]}}</td>
-              <td>{{crop[1]}}</td>
-              <td>{{crop[2]}}</td>
+              <td>{{crop[1]}} - {{crop[2]}}</td>
               <td>{{crop[3]}}</td>
+              <td>{{ crop_duration(crop[3]) }}</td>
               <td>{{crop[4]}}</td>
             </tr>
           {% endfor %}
@@ -32,3 +32,4 @@
   </div>
 </div>
 {% endblock %}
+{% include 'management/modal-crop.html' %}

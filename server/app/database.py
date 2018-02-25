@@ -93,11 +93,30 @@ def save_module(request):
         cur.close()
         con.close()
 
+def save_crop(request):
+    STATE = request.form['estado'];
+    CITY = request.form['cidade'];
+    DATE = request.form['data'];
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    cur = con.cursor()
+    try:
+        cur.execute("""INSERT CROP (CITY,STATE,START_DATE)
+                            VALUES(%s,%s,%s)""",
+                    (CITY,STATE,DATE))
+        #print(cur.lastrowid)
+        con.commit()
+        return 0
+    except:
+        return -1
+    finally:
+        cur.close()
+        con.close()
+
 def retrieve_crops():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("SELECT ID,CITY,STATE,START_DATE,STATUS,COMMENT FROM CROP")
+        cur.execute("SELECT HEX(ID),CITY,STATE,START_DATE,STATUS,COMMENT FROM CROP")
         return cur.fetchall()
 
 def retrieve_modules():
