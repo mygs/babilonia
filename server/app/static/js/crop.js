@@ -1,11 +1,28 @@
 function cropModalReset() {
-  //$('#nome').val("");
+  $('#estado').val("");
+  $('#cidade').val("");
+  $('#data').val("");
+
 }
 
-function cropModal() {
+$("#cropModal").on("hidden.bs.modal", function () {
+    $('#crop tr').removeClass("selected");
+    $(".editButton").addClass("disabled")
+    cropModalReset();
+});
+
+
+function cropModal(data) {
   cropModalReset();
-  $('#cropModal').modal('show');
-  regionSelector();
+  if (data == null){
+    $("#crop-modal-title").text("Adicionar Nova Produção");
+  }else{
+    $("#crop-modal-title").text("Editar Produção "+data[0]);
+    $("#estado").val(data[2]);
+    regionCitySelector(data[2], data[1]);
+    $("#data").val(data[3]);
+  }
+    $('#cropModal').modal('show');
 }
 
 
@@ -45,19 +62,38 @@ function savecrop() {
 $(document).ready(function() {
 
 
-  $('#crop').DataTable({
+  var table = $('#crop').DataTable({
     "bLengthChange": false,
     "info": false,
     "bPaginate": false, //hide pagination control
     "dom": 'Bfrtip',
-    "buttons": [{
-      text: '<i class="fa fa-plus" aria-hidden="true"></i>',
-      titleAttr: 'Adicionar Produção',
-      action: function(e, dt, node, config) {
-          cropModal()
-      }
-    }]
+    "select": {
+      style:    'os',
+      selector: 'td:first-child'
+    },
+    "buttons": [
+      {
+        text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+        titleAttr: 'Adicionar Produção',
+        action: function(e, dt, node, config) {cropModal(null)}
+      },{
+        text: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+        className :"editButton",
+        extend: "selectedSingle",
+        action: function (e, dt, bt, config) {
+          cropModal( dt.row( { selected: true } ).data()); }
+      }]
   });
+
+  $('#crop tbody').on( 'click', 'tr', function () {
+    if ( $(this).hasClass('selected') ) {
+        $(this).removeClass('selected');
+    }
+    else {
+        table.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+} );
 
   $('#datapicker').datepicker({
     format: "yyyy-mm-dd",
@@ -65,4 +101,6 @@ $(document).ready(function() {
     autoclose: true,
     todayHighlight: true
   });
+
+  regionSelector();
 });

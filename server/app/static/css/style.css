@@ -216,11 +216,11 @@ table.management {
     width: 100%;
     text-align: center;
     border-collapse: collapse;
-    color: #E6E6E6 !important;
+    color: #E6E6E6;
 }
 
 .dataTables_wrapper .dataTables_filter {
-  color: #E6E6E6 !important;
+  color: #E6E6E6;
   float: right;
   text-align: left;
 }
@@ -238,4 +238,9 @@ table.management thead th {
   background: #000000;
   font-weight: bold;
   text-align: center;
+}
+
+table.dataTable tbody tr.selected {
+    color: yellow !important;
+    background-color: #35376a !important;
 }

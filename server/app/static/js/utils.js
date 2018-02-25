@@ -167,6 +167,26 @@ function updatecfg() {
   });
 };
 
+function regionCitySelector(state, selectedCity){
+  $.getJSON('/static/data/estados_cidades.json', function(data) {
+      var options_cidades = '';
+      $.each(data, function(key, val) {
+        if (val.sigla == state) {
+          $.each(val.cidades, function(key_city, val_city) {
+            options_cidades += '<option value="' + val_city + '">' + val_city + '</option>';
+          });
+        }
+      });
+      $("#cidade").html(options_cidades);
+      $("#cidade").val(selectedCity);
+  });
+};
+
+
+
+
+
+
 function regionSelector(){
   $.getJSON('/static/data/estados_cidades.json', function(data) {
     var items = [];
@@ -179,25 +199,18 @@ function regionSelector(){
     $("#estado").change(function() {
 
       var options_cidades = '';
-      var str = "";
+      var state = "";
 
       $("#estado option:selected").each(function() {
-        str += $(this).text();
+        state += $(this).val();
       });
 
-      $.each(data, function(key, val) {
-        if (val.nome == str) {
-          $.each(val.cidades, function(key_city, val_city) {
-            options_cidades += '<option value="' + val_city + '">' + val_city + '</option>';
-          });
-        }
-      });
-      $("#cidade").html(options_cidades);
+        regionCitySelector(state);
 
     }).change();
 
   });
-}
+};
 
 function supplierModal() {
   $('#plantSupplierModal').modal('show')
