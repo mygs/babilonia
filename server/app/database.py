@@ -72,6 +72,24 @@ def save_supplier(request):
         cur.close()
         con.close()
 
+def save_plant(request):
+    NAME = request.form['nome'];
+    TYPE = request.form['tipo'];
+    SUPPLIER = request.form['plant-supplier'];
+
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    cur = con.cursor()
+    try:
+        cur.execute("""INSERT PLANT (NAME,TYPE,SUPPLIER)
+                            VALUES(%s,%s,%s)""",
+                    (NAME,TYPE,SUPPLIER))
+        con.commit()
+        return 0
+    except:
+        return -1
+    finally:
+        cur.close()
+        con.close()
 
 def save_module(request):
     ID = request.form['nome'];

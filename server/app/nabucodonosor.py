@@ -165,6 +165,14 @@ def plant():
     suppliers = database.retrieve_suppliers()
     return render_template('management/plant.html', plants=plants , suppliers=suppliers)
 
+@app.route('/management/save-plant', methods=['POST'])
+def saveplant():
+    status = database.save_plant(request);
+    if status == 0:
+        return  json.dumps({ 'status': status, 'message':'Plant was saved succesfully'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Plant was NOT saved'});
+
 @app.route('/management/plant-supplier')
 def plant_supplier():
     suppliers = database.retrieve_suppliers()

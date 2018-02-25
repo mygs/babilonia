@@ -111,7 +111,14 @@ $(document).ready(function() {
      {
        text: '<i class="fa fa-plus" aria-hidden="true"></i>',
        titleAttr: 'Adicionar Produção',
-       action: function(e, dt, node, config) {}
+       action: function(e, dt, node, config) {
+         dt.row.add( [
+              'XXXX1',
+              'YYYY2',
+              'ZZZZ3',
+              'WWWW4',
+          ] ).draw( false );
+       }
      }]
  });
 
