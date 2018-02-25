@@ -114,7 +114,7 @@ def utility_processor():
         now = dt.date.today()
         delta = now - date
         if delta.days < 0:
-            return "N/A"
+            return ""
         else:
             return str(delta.days)
     return {'format_timestamp':format_timestamp,

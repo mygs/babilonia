@@ -15,9 +15,9 @@ $("#cropModal").on("hidden.bs.modal", function () {
 function cropModal(data) {
   cropModalReset();
   if (data == null){
-    $("#crop-modal-title").text("Adicionar Nova Produção");
+    $("#crop-modal-title").html("Adicionar Nova Produção");
   }else{
-    $("#crop-modal-title").text("Editar Produção "+data[0]);
+    $("#crop-modal-title").html("Editar Produção <font color='red'><b>"+data[0]+"</b></font>");
     $("#id").val(data[0]);
     $("#estado").val(data[2]);
     regionCitySelector(data[2], data[1]);
@@ -95,6 +95,25 @@ $(document).ready(function() {
         $(this).addClass('selected');
     }
 } );
+
+
+  $('#crop-modules').DataTable({
+   "bLengthChange": false,
+   "info": false,
+   "searching": false,
+   "bPaginate": false, //hide pagination control
+   "dom": 'Bfrtip',
+   "select": {
+     style:    'os',
+     selector: 'td:first-child'
+   },
+   "buttons": [
+     {
+       text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+       titleAttr: 'Adicionar Produção',
+       action: function(e, dt, node, config) {}
+     }]
+ });
 
   $('#datapicker').datepicker({
     format: "yyyy-mm-dd",
