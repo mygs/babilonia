@@ -93,6 +93,13 @@ def save_module(request):
         cur.close()
         con.close()
 
+def retrieve_crops():
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT ID,CITY,STATE,START_DATE,STATUS,COMMENT FROM CROP")
+        return cur.fetchall()
+
 def retrieve_modules():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:

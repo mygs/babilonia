@@ -281,6 +281,20 @@ $(document).ready(function() {
     var id = data.id;
     if (data.timestamp != null) {
       $('#time_' + id).html(moment.unix(data.timestamp).format('DD/MM/YYYY HH:mm:ss'));
+
+
+      $( '#status_' + id ).removeClass( "excellent good nostatus danger" );
+      NOW = Math.floor((new Date).getTime() / 1000);
+      DELTA = NOW - data.timestamp;
+      if(DELTA < 60){
+          $( '#status_' + id ).addClass( "excellent" );
+      }else if(DELTA < 60*3){
+          $( '#status_' + id ).addClass( "good" );
+      }else if(DELTA < 60*15){
+        $( '#status_' + id ).addClass( "nostatus" );
+      }else{
+        $( '#status_' + id ).addClass( "danger" );
+      }
     }
     if (data.mt != null) {
       $('#temp_' + id).html(data.mt + String.fromCharCode(176) + 'C');

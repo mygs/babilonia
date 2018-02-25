@@ -85,6 +85,17 @@ def command():
 
 @app.context_processor
 def utility_processor():
+    def status_node(timestamp):
+        NOW = int(time.time())
+        DELTA = NOW - int(timestamp)
+        if DELTA < 60: # 1 min
+            return "excellent"
+        if DELTA < 60*3: # 3 min
+            return "good"
+        if DELTA < 60*15: # 15 min
+            return "nostatus"
+        else: # >= 15 min
+            return "danger"
     def format_timestamp(value):
         return time.strftime("%d/%m/%Y %H:%M:%S", time.localtime(int(value)))
     def format_temperature(value):
@@ -103,6 +114,7 @@ def utility_processor():
             'format_humidity':format_humidity,
             'format_moisture':format_moisture,
             'status':status,
+            'status_node':status_node,
             }
 
 
@@ -112,7 +124,8 @@ def about():
 
 @app.route('/management')
 def management():
-    return render_template('management/management.html')
+    crops = database.retrieve_crops()
+    return render_template('management/management.html', crops=crops)
 
 @app.route('/management/module')
 def module():

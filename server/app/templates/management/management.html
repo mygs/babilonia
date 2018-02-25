@@ -3,7 +3,31 @@
   <div class="row">
     {% include 'management/_management_sidebar.html' %}
     <div class="col-sm-8 col-sm-offset-2 col-md-9 col-md-offset-1 main">
-      <h2 class="page-header">Lote</h2>
+      <h2 class="page-header">Produção</h2>
+      <div class="table-responsive">
+        <table id="crop" class="management table">
+          <thead>
+            <tr>
+              <th>Identificador</th>
+              <th>Região</th>
+              <th>Data Início</th>
+              <th>Duração</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for crop in crops %}
+            <tr>
+              <td>{{crop[0]}}</td>
+              <td>{{crop[1]}}</td>
+              <td>{{crop[2]}}</td>
+              <td>{{crop[3]}}</td>
+              <td>{{crop[4]}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
