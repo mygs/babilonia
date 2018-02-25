@@ -134,7 +134,9 @@ def about():
 @app.route('/management')
 def management():
     crops = database.retrieve_crops()
-    return render_template('management/management.html', crops=crops)
+    modules = database.retrieve_modules()
+    plants = database.retrieve_plants()
+    return render_template('management/management.html', crops=crops, modules=modules, plants=plants)
 
 @app.route('/management/save-crop', methods=['POST'])
 def savecrop():

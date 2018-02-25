@@ -34,4 +34,6 @@
   </div>
 </div>
 {% endblock %}
+{% with modules=modules, plants=plants %}
 {% include 'management/modal-crop.html' %}
+{% endwith %}

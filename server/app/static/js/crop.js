@@ -1,8 +1,9 @@
+
 function cropModalReset() {
   $('#estado').val("");
   $('#cidade').val("");
   $('#data').val("");
-
+  $('#crop-modules').DataTable().clear().draw();
 }
 
 $("#cropModal").on("hidden.bs.modal", function () {
@@ -16,8 +17,10 @@ function cropModal(data) {
   cropModalReset();
   if (data == null){
     $("#crop-modal-title").html("Adicionar Nova Produção");
+    $("#crop-modules-panel").hide();
   }else{
     $("#crop-modal-title").html("Editar Produção <font color='red'><b>"+data[0]+"</b></font>");
+     $("#crop-modules-panel").show();
     $("#id").val(data[0]);
     $("#estado").val(data[2]);
     regionCitySelector(data[2], data[1]);
@@ -26,6 +29,15 @@ function cropModal(data) {
     $('#cropModal').modal('show');
 }
 
+
+function cropModuleModal(data) {
+  if (data == null){
+    $("#crop-module-modal-title").html("Adicionar Módulo na Produção");
+  }else{
+    $("#crop-module-modal-title").html("Editar Módulo na Produção");
+  }
+    $('#cropModuleModal').modal('show');
+}
 
 function savecrop() {
   swal({
@@ -46,7 +58,7 @@ function savecrop() {
           resp = JSON.parse(response);
           swal("Success", resp.message, "success");
           $("#savecrop").attr("disabled", "disabled");
-           location.reload();
+           //location.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);
@@ -94,8 +106,15 @@ $(document).ready(function() {
         table.$('tr.selected').removeClass('selected');
         $(this).addClass('selected');
     }
-} );
+  } );
+  $('#datapicker').datepicker({
+    format: "yyyy-mm-dd",
+    calendarWeeks: true,
+    autoclose: true,
+    todayHighlight: true
+  });
 
+  regionSelector();
 
   $('#crop-modules').DataTable({
    "bLengthChange": false,
@@ -112,22 +131,9 @@ $(document).ready(function() {
        text: '<i class="fa fa-plus" aria-hidden="true"></i>',
        titleAttr: 'Adicionar Produção',
        action: function(e, dt, node, config) {
-         dt.row.add( [
-              'XXXX1',
-              'YYYY2',
-              'ZZZZ3',
-              'WWWW4',
-          ] ).draw( false );
+          cropModuleModal();
        }
      }]
  });
 
-  $('#datapicker').datepicker({
-    format: "yyyy-mm-dd",
-    calendarWeeks: true,
-    autoclose: true,
-    todayHighlight: true
-  });
-
-  regionSelector();
 });

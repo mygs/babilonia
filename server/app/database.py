@@ -162,7 +162,7 @@ def retrieve_plants():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("SELECT P.NAME,P.TYPE,S.TYPE, S.NAME FROM PLANT P, SUPPLIER S WHERE P.SUPPLIER = S.ID  ORDER BY P.NAME ASC")
+        cur.execute("SELECT P.ID, P.NAME,P.TYPE,S.TYPE, S.NAME FROM PLANT P, SUPPLIER S WHERE P.SUPPLIER = S.ID  ORDER BY P.NAME ASC")
         return cur.fetchall()
 
 def retrieve_suppliers():

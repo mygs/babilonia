@@ -33,14 +33,14 @@
             </div>
           </div>
           <!-- Modules -->
-          <div class="panel panel-success">
+          <div id="crop-modules-panel" class="panel panel-success">
             <div class="panel-heading">
               <h3 class="panel-title">Módulos</h3>
             </div>
             <div class="panel-body">
               <div class="table-responsive">
                 <table id="crop-modules" class="management table">
-                  <thead>
+              <thead>
                     <tr>
                       <th>Módulo</th>
                       <th>Planta</th>
@@ -48,14 +48,6 @@
                       <th>Status</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>XXXX</td>
-                      <td>YYYY</td>
-                      <td>ZZZZ</td>
-                      <td>WWWW</td>
-                    </tr>
-                  </tbody>
                 </table>
               </div>
             </div>
@@ -70,3 +62,7 @@
     </div>
   </div>
 </div>
+<!-- modals -->
+{% with modules=modules, plants=plants %}
+{% include 'management/modal-add-crop-module.html' %}
+{% endwith %}
