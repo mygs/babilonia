@@ -82,6 +82,7 @@ function cropModuleModal(data) {
   }
     $('#cropModuleModalFormId').val(id);
     $('#cropModuleModal').modal('show');
+
 }
 
 function savecrop() {
@@ -137,6 +138,7 @@ function savecropmodule() {
           swal("Success", resp.message, "success");
           $("#savecrop").attr("disabled", "disabled");
            //location.reload();
+           $('#crop-modules').DataTable().ajax.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);
