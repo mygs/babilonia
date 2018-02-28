@@ -146,6 +146,20 @@ def savecrop():
     else:
         return json.dumps({ 'status':status, 'message':'Crop was NOT saved'});
 
+@app.route('/management/crop-module', methods=['GET'])
+def cropmodule():
+    id = request.args.get('id');
+    return database.retrive_crop_module(id)
+
+
+@app.route('/management/save-crop-module', methods=['POST'])
+def savecropmodule():
+    status = database.save_crop_module(request);
+    if status == 0:
+        return  json.dumps({ 'status': status, 'message':'Module was added succesfully'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Module was NOT added'});
+
 @app.route('/management/module')
 def module():
     modules = database.retrieve_modules()

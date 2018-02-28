@@ -2,7 +2,7 @@
 import time
 import os
 import MySQLdb as mdb
-import json
+import simplejson as json
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'config.json'), "r") as json_data_file:
@@ -136,6 +136,43 @@ def save_crop(request):
     finally:
         cur.close()
         con.close()
+
+def save_crop_module(request):
+    isNew = request.form['newCropModule'];
+    CROP = request.form['cropModuleModalFormId'];
+    MODULE = request.form['modulo'];
+    PLANT = request.form['planta'];
+    SUBSTRATE = request.form['substrato'];
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    cur = con.cursor()
+    print("cropModuleModalFormId:"+CROP)
+    try:
+        if isNew == "true":
+            cur.execute("""INSERT CROP_DETAIL (CROP,MODULE,PLANT,SUBSTRATE)
+                            VALUES(CONV(%s,16,10),%s,%s,%s)""",
+                            (CROP,MODULE,PLANT,SUBSTRATE))
+        else:
+            cur.execute("""UPDATE CROP_DETAIL SET MODULE=%s,PLANT=%s,SUBSTRATE=%s
+                            WHERE CROP=CONV(%s,16,10)""",
+                            (MODULE,PLANT,SUBSTRATE,CROP))
+        #print(cur.lastrowid)
+        con.commit()
+        return 0
+    except:
+        return -1
+    finally:
+        cur.close()
+        con.close()
+
+
+def retrive_crop_module(id):
+    print("********** ID = "+id)
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT MODULE,PLANT,SUBSTRATE FROM CROP_DETAIL WHERE CROP =CONV(%s,16,10)", (id,))
+        r = [dict((cur.description[i][0], value) for i, value in enumerate(row)) for row in cur.fetchall()]
+        return json.dumps(r)
 
 def retrieve_crops():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])

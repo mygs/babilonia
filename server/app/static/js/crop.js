@@ -27,15 +27,60 @@ function cropModal(data) {
     $("#data").val(data[3]);
   }
     $('#cropModal').modal('show');
+
+
+
+    $('#crop-modules').DataTable({
+     "bLengthChange": false,
+     "info": false,
+     "searching": false,
+     "bPaginate": false, //hide pagination control
+     "dom": 'Bfrtip',
+     "select": {
+       style:    'os',
+       selector: 'td:first-child'
+     },
+     "processing": true,
+     //"serverSide": true,
+     "ajax": {
+       "url" : "/management/crop-module?id="+$("#cropModalForm").find("#id").val(),
+       "type": "GET",
+       "dataSrc": function ( json ) {
+                   for ( var i=0, ien=json.length ; i<ien ; i++ ) {
+                     console.log(json[i]);
+                   }
+                   return json;
+                }
+      },
+      "columns": [
+        { "data": "MODULE" },
+        { "data": "PLANT" },
+        { "data": "SUBSTRATE" }
+      ],
+     "buttons": [
+       {
+         text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+         titleAttr: 'Adicionar Módulo na Produção',
+         action: function(e, dt, node, config) {
+            cropModuleModal(dt.row( { selected: true } ).data());
+         }
+       }],
+        "destroy" : true
+     });
+
 }
 
 
 function cropModuleModal(data) {
+  var id = $("#cropModalForm").find("#id").val()
   if (data == null){
-    $("#crop-module-modal-title").html("Adicionar Módulo na Produção");
+    $("#crop-module-modal-title").html("Adicionar Módulo (<font color='red'><b>"+id+"</b></font>)");
+    $('#newCropModule').val("true");
   }else{
-    $("#crop-module-modal-title").html("Editar Módulo na Produção");
+    $("#crop-module-modal-title").html("Editar Módulo (<font color='red'><b>"+id+"</b></font>)");
+    $('#newCropModule').val("false");
   }
+    $('#cropModuleModalFormId').val(id);
     $('#cropModuleModal').modal('show');
 }
 
@@ -71,6 +116,38 @@ function savecrop() {
   });
 };
 
+
+function savecropmodule() {
+  swal({
+    title: "Are you want to add new Module Crop?",
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirm",
+    closeOnConfirm: false
+  }, function(isConfirm) {
+    if (isConfirm) {
+      $.ajax({
+        url: '/management/save-crop-module',
+        type: 'POST',
+        data: $('#cropModuleModalForm').serialize(),
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        success: function(response) {
+          resp = JSON.parse(response);
+          swal("Success", resp.message, "success");
+          $("#savecrop").attr("disabled", "disabled");
+           //location.reload();
+        },
+        error: function(response) {
+          resp = JSON.parse(response);
+          swal("Failed", resp.message, "error");
+        }
+      });
+    } else {
+      swal("You will not save new crop!");
+    }
+  });
+};
 
 $(document).ready(function() {
 
@@ -115,25 +192,5 @@ $(document).ready(function() {
   });
 
   regionSelector();
-
-  $('#crop-modules').DataTable({
-   "bLengthChange": false,
-   "info": false,
-   "searching": false,
-   "bPaginate": false, //hide pagination control
-   "dom": 'Bfrtip',
-   "select": {
-     style:    'os',
-     selector: 'td:first-child'
-   },
-   "buttons": [
-     {
-       text: '<i class="fa fa-plus" aria-hidden="true"></i>',
-       titleAttr: 'Adicionar Produção',
-       action: function(e, dt, node, config) {
-          cropModuleModal();
-       }
-     }]
- });
 
 });
