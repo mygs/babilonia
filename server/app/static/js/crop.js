@@ -33,6 +33,7 @@ function cropModal(data) {
     $('#crop-modules').DataTable({
      "bLengthChange": false,
      "info": false,
+     "order": [[1, 'asc']],
      "searching": false,
      "bPaginate": false, //hide pagination control
      "dom": 'Bfrtip',
@@ -45,17 +46,13 @@ function cropModal(data) {
      "ajax": {
        "url" : "/management/crop-module?id="+$("#cropModalForm").find("#id").val(),
        "type": "GET",
-       "dataSrc": function ( json ) {
-                   for ( var i=0, ien=json.length ; i<ien ; i++ ) {
-                     console.log(json[i]);
-                   }
-                   return json;
-                }
+       "dataSrc":""
       },
       "columns": [
-        { "data": "MODULE" },
-        { "data": "PLANT" },
-        { "data": "SUBSTRATE" }
+        { "data": "ID", "visible": false, "targets": 0  },
+        { "name": "Módulo", "data": "MODULE", "targets": 1  },
+        { "name": "Planta", "data": "PLANT", "targets": 2  },
+        { "name": "Substrato", "data": "SUBSTRATE", "targets": 3  }
       ],
      "buttons": [
        {

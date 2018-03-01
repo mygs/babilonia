@@ -170,7 +170,9 @@ def retrive_crop_module(id):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("SELECT MODULE,PLANT,SUBSTRATE FROM CROP_DETAIL WHERE CROP =CONV(%s,16,10)", (id,))
+        cur.execute("""SELECT CD.ID, CD.MODULE, P.NAME AS PLANT, CD.PLANT AS PLANT_ID, CD.SUBSTRATE
+                            FROM CROP_DETAIL CD, PLANT P
+                            WHERE CD.PLANT = P.ID AND CROP = CONV(%s,16,10)""", (id,))
         r = [dict((cur.description[i][0], value) for i, value in enumerate(row)) for row in cur.fetchall()]
         return json.dumps(r)
 

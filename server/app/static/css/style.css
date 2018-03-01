@@ -213,7 +213,7 @@ canvas {
 
 
 table.management {
-    width: 100%;
+    width: 100% !important;
     text-align: center;
     border-collapse: collapse;
     color: #E6E6E6;
