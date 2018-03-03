@@ -160,6 +160,15 @@ def savecropmodule():
     else:
         return json.dumps({ 'status':status, 'message':'Module was NOT added'});
 
+@app.route('/management/delete-crop-module', methods=['POST'])
+def deletecropmodule():
+    id = request.form['id'];
+    status = database.delete_crop_module(id);
+    if status == 0:
+        return  json.dumps({ 'status': status, 'message':'Module was deleted succesfully'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Module was NOT deleted'});
+
 @app.route('/management/module')
 def module():
     modules = database.retrieve_modules()

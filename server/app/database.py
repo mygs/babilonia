@@ -145,7 +145,6 @@ def save_crop_module(request):
     SUBSTRATE = request.form['substrato'];
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     cur = con.cursor()
-    print("cropModuleModalFormId:"+CROP)
     try:
         if isNew == "true":
             cur.execute("""INSERT CROP_DETAIL (CROP,MODULE,PLANT,SUBSTRATE)
@@ -164,9 +163,20 @@ def save_crop_module(request):
         cur.close()
         con.close()
 
+def delete_crop_module(id):
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    cur = con.cursor()
+    try:
+        cur.execute("DELETE FROM CROP_DETAIL WHERE ID=%s",(id,))
+        con.commit()
+        return 0
+    except:
+        return -1
+    finally:
+        cur.close()
+        con.close()
 
 def retrive_crop_module(id):
-    print("********** ID = "+id)
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()

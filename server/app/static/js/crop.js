@@ -6,6 +6,18 @@ function cropModalReset() {
   $('#crop-modules').DataTable().clear().draw();
 }
 
+function cropModuleModalReset() {
+  $('#modulo').val("");
+  $('#planta').val("");
+  $('#substrato').val("");
+}
+
+$("#cropModuleModal").on("hidden.bs.modal", function () {
+    $('#crop-module tr').removeClass("selected");
+    $(".editButton").addClass("disabled")
+    cropModuleModalReset();
+});
+
 $("#cropModal").on("hidden.bs.modal", function () {
     $('#crop tr').removeClass("selected");
     $(".editButton").addClass("disabled")
@@ -60,6 +72,15 @@ function cropModal(data) {
          titleAttr: 'Adicionar Módulo na Produção',
          action: function(e, dt, node, config) {
             cropModuleModal(dt.row( { selected: true } ).data());
+         }
+       },
+       {
+         text: '<i class="fa fa-trash" aria-hidden="true"></i>',
+         titleAttr: 'Remover Módulo da Produção',
+         className :"deleteButton",
+         extend: "selectedSingle",
+         action: function(e, dt, node, config) {
+           deletecropmodule(dt.row( { selected: true } ).data());
          }
        }],
         "destroy" : true
@@ -133,8 +154,40 @@ function savecropmodule() {
         success: function(response) {
           resp = JSON.parse(response);
           swal("Success", resp.message, "success");
-          $("#savecrop").attr("disabled", "disabled");
+          $("#savecropmodule").attr("disabled", "disabled");
            //location.reload();
+           $('#crop-modules').DataTable().ajax.reload();
+        },
+        error: function(response) {
+          resp = JSON.parse(response);
+          swal("Failed", resp.message, "error");
+        }
+      });
+    } else {
+      swal("You will not save new crop!");
+    }
+  });
+};
+
+
+function deletecropmodule(data) {
+  swal({
+    title: "Você quer remover o módulo dessa Produção?",
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirma",
+    closeOnConfirm: false
+  }, function(isConfirm) {
+    if (isConfirm) {
+      $.ajax({
+        url: '/management/delete-crop-module',
+        type: 'POST',
+        data: {"id": data.ID},
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        success: function(response) {
+          resp = JSON.parse(response);
+          swal("Success", resp.message, "success");
            $('#crop-modules').DataTable().ajax.reload();
         },
         error: function(response) {
