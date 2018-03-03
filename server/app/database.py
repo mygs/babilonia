@@ -138,7 +138,7 @@ def save_crop(request):
         con.close()
 
 def save_crop_module(request):
-    isNew = request.form['newCropModule'];
+    cropDetailId = request.form['cropDetailId'];
     CROP = request.form['cropModuleModalFormId'];
     MODULE = request.form['modulo'];
     PLANT = request.form['planta'];
@@ -146,14 +146,14 @@ def save_crop_module(request):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     cur = con.cursor()
     try:
-        if isNew == "true":
+        if cropDetailId == "":
             cur.execute("""INSERT CROP_DETAIL (CROP,MODULE,PLANT,SUBSTRATE)
                             VALUES(CONV(%s,16,10),%s,%s,%s)""",
                             (CROP,MODULE,PLANT,SUBSTRATE))
         else:
             cur.execute("""UPDATE CROP_DETAIL SET MODULE=%s,PLANT=%s,SUBSTRATE=%s
-                            WHERE CROP=CONV(%s,16,10)""",
-                            (MODULE,PLANT,SUBSTRATE,CROP))
+                            WHERE ID=%s""",
+                            (MODULE,PLANT,SUBSTRATE,cropDetailId))
         #print(cur.lastrowid)
         con.commit()
         return 0

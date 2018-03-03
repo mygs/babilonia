@@ -156,9 +156,9 @@ def cropmodule():
 def savecropmodule():
     status = database.save_crop_module(request);
     if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Módulo foi adicionado com sucesso'});
+        return  json.dumps({ 'status': status, 'message':'Módulo foi gravado com sucesso'});
     else:
-        return json.dumps({ 'status':status, 'message':'Módulo não foi adicionado'});
+        return json.dumps({ 'status':status, 'message':'Módulo não foi gravado'});
 
 @app.route('/management/delete-crop-module', methods=['POST'])
 def deletecropmodule():

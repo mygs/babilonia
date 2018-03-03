@@ -222,7 +222,7 @@ function supplierModal() {
 
 function savesupplier() {
   swal({
-    title: "Are you want to save new Supplier?",
+    title: "Você deseja salvar um novo fornecedor?",
     icon: "info",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
@@ -238,13 +238,13 @@ function savesupplier() {
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
           resp = JSON.parse(response);
-          swal("Success", resp.message, "success");
+          swal("Sucesso", resp.message, "success");
           $("#savesupplier").attr("disabled", "disabled");
            location.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);
-          swal("Failed", resp.message, "error");
+          swal("Falhou", resp.message, "error");
         }
       });
     } else {

@@ -8,9 +8,12 @@ function cropModalReset() {
 }
 
 function cropModuleModalReset() {
+  $('#cropModuleModalFormId').val("");
+  $('#cropDetailId').val("");
   $('#modulo').val("");
   $('#planta').val("");
   $('#substrato').val("");
+  $("#savecropmodule").removeAttr("disabled");
 }
 
 $("#cropModuleModal").on("hidden.bs.modal", function () {
@@ -31,6 +34,7 @@ function cropModal(data) {
   if (data == null){
     $("#crop-modal-title").html("Adicionar Nova Produção");
     $("#crop-modules-panel").hide();
+    $('#savecrop').html("Salvar");
   }else{
     $("#crop-modal-title").html("Editar Produção <font color='red'><b>"+data[0]+"</b></font>");
      $("#crop-modules-panel").show();
@@ -38,6 +42,8 @@ function cropModal(data) {
     $("#estado").val(data[2]);
     regionCitySelector(data[2], data[1]);
     $("#data").val(data[3]);
+    $('#savecrop').html("Atualizar");
+
   }
     $('#cropModal').modal('show');
 
@@ -72,6 +78,13 @@ function cropModal(data) {
          text: '<i class="fa fa-plus" aria-hidden="true"></i>',
          titleAttr: 'Adicionar Módulo na Produção',
          action: function(e, dt, node, config) {
+            cropModuleModal(null);
+         }
+       },
+       {
+         text: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+         titleAttr: 'Editar Módulo na Produção',
+         action: function(e, dt, node, config) {
             cropModuleModal(dt.row( { selected: true } ).data());
          }
        },
@@ -91,18 +104,21 @@ function cropModal(data) {
 
 
 function cropModuleModal(data) {
+  cropModuleModalReset();
   var id = $("#cropModalForm").find("#id").val()
   if (data == null){
     $("#crop-module-modal-title").html("Adicionar Módulo (<font color='red'><b>"+id+"</b></font>)");
-    $('#newCropModule').val("true");
-    cropModuleModalReset();
+    $('#savecropmodule').html("Salvar");
   }else{
     $("#crop-module-modal-title").html("Editar Módulo (<font color='red'><b>"+id+"</b></font>)");
-    $('#newCropModule').val("false");
+    $("#cropDetailId").val(data.ID);
+    $("#modulo").val(data.MODULE);
+    $("#planta").val(data.PLANT_ID);
+    $("#substrato").val(data.SUBSTRATE);
+    $('#savecropmodule').html("Atualizar");
   }
     $('#cropModuleModalFormId').val(id);
     $('#cropModuleModal').modal('show');
-
 }
 
 function savecrop() {
@@ -141,7 +157,7 @@ function savecrop() {
 
 function savecropmodule() {
   swal({
-    title: "Você deseja adicionar um novo módulo na produção?",
+    title: "Você deseja salvar o módulo na produção?",
     icon: "info",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
@@ -168,7 +184,7 @@ function savecropmodule() {
         }
       });
     } else {
-      swal("Você não adicionou o módulo na produção!");
+      swal("Você não salvou o módulo na produção!");
     }
   });
 };
