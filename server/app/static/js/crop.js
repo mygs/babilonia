@@ -3,6 +3,7 @@ function cropModalReset() {
   $('#estado').val("");
   $('#cidade').val("");
   $('#data').val("");
+  $('#status').val("");
   $("#savecrop").removeAttr("disabled");
   $('#crop-modules').DataTable().clear().draw();
 }
@@ -42,6 +43,7 @@ function cropModal(data) {
     $("#estado").val(data[2]);
     regionCitySelector(data[2], data[1]);
     $("#data").val(data[3]);
+    $("#status").val(data[5]);
     $('#savecrop').html("Atualizar");
 
   }
@@ -141,7 +143,7 @@ function savecrop() {
           resp = JSON.parse(response);
           swal("Sucesso", resp.message, "success");
           $("#savecrop").attr("disabled", "disabled");
-           //location.reload();
+           location.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);
