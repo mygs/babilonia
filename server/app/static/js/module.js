@@ -13,11 +13,12 @@ function moduleModal() {
 
 function savemodule() {
   swal({
-    title: "Are you want to save new Module?",
+    title: "Você deseja salvar um novo módulo?",
     icon: "info",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirm",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (isConfirm) {
@@ -28,17 +29,17 @@ function savemodule() {
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
           resp = JSON.parse(response);
-          swal("Success", resp.message, "success");
+          swal("Sucesso", resp.message, "success");
           $("#savemodule").attr("disabled", "disabled");
            location.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);
-          swal("Failed", resp.message, "error");
+          swal("Falhou", resp.message, "error");
         }
       });
     } else {
-      swal("You will not save new module!");
+      swal("Você não salvou o módulo!");
     }
   });
 };

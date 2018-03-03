@@ -3,6 +3,7 @@ function cropModalReset() {
   $('#estado').val("");
   $('#cidade').val("");
   $('#data').val("");
+  $("#savecrop").removeAttr("disabled");
   $('#crop-modules').DataTable().clear().draw();
 }
 
@@ -94,6 +95,7 @@ function cropModuleModal(data) {
   if (data == null){
     $("#crop-module-modal-title").html("Adicionar Módulo (<font color='red'><b>"+id+"</b></font>)");
     $('#newCropModule').val("true");
+    cropModuleModalReset();
   }else{
     $("#crop-module-modal-title").html("Editar Módulo (<font color='red'><b>"+id+"</b></font>)");
     $('#newCropModule').val("false");
@@ -105,11 +107,12 @@ function cropModuleModal(data) {
 
 function savecrop() {
   swal({
-    title: "Are you want to save new Crop?",
+    title: "Você deseja salvar uma nova produção?",
     icon: "info",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirm",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (isConfirm) {
@@ -120,17 +123,17 @@ function savecrop() {
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
           resp = JSON.parse(response);
-          swal("Success", resp.message, "success");
+          swal("Sucesso", resp.message, "success");
           $("#savecrop").attr("disabled", "disabled");
            //location.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);
-          swal("Failed", resp.message, "error");
+          swal("Falhou", resp.message, "error");
         }
       });
     } else {
-      swal("You will not save new crop!");
+      swal("Você não salvou a produção!");
     }
   });
 };
@@ -138,11 +141,12 @@ function savecrop() {
 
 function savecropmodule() {
   swal({
-    title: "Are you want to add new Module Crop?",
+    title: "Você deseja adicionar um novo módulo na produção?",
     icon: "info",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirm",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (isConfirm) {
@@ -153,18 +157,18 @@ function savecropmodule() {
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
           resp = JSON.parse(response);
-          swal("Success", resp.message, "success");
+          swal("Sucesso", resp.message, "success");
           $("#savecropmodule").attr("disabled", "disabled");
            //location.reload();
            $('#crop-modules').DataTable().ajax.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);
-          swal("Failed", resp.message, "error");
+          swal("Falhou", resp.message, "error");
         }
       });
     } else {
-      swal("You will not save new crop!");
+      swal("Você não adicionou o módulo na produção!");
     }
   });
 };
@@ -172,11 +176,12 @@ function savecropmodule() {
 
 function deletecropmodule(data) {
   swal({
-    title: "Você quer remover o módulo dessa Produção?",
+    title: "Você deseja remover o módulo dessa Produção?",
     icon: "info",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirma",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (isConfirm) {
@@ -187,16 +192,16 @@ function deletecropmodule(data) {
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
           resp = JSON.parse(response);
-          swal("Success", resp.message, "success");
+          swal("Sucesso", resp.message, "success");
            $('#crop-modules').DataTable().ajax.reload();
         },
         error: function(response) {
           resp = JSON.parse(response);
-          swal("Failed", resp.message, "error");
+          swal("Falhou", resp.message, "error");
         }
       });
     } else {
-      swal("You will not save new crop!");
+      swal("Você não removeu o módulo da produção!");
     }
   });
 };

@@ -18,7 +18,8 @@ function callbackend(id, mode, param, img, title, text) {
     imageUrl: img,
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirm",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (!isConfirm) return;
@@ -142,7 +143,8 @@ function updatecfg() {
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirm",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (isConfirm) {
@@ -224,7 +226,8 @@ function savesupplier() {
     icon: "info",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirm",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (isConfirm) {
@@ -261,7 +264,8 @@ function saveplant() {
     icon: "info",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirm",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (isConfirm) {

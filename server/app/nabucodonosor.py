@@ -71,9 +71,9 @@ def updatecfg():
     if cfg["mode"]["mqtt"] == True:
         mqtt.publish("/cfg", conf)
     if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Configuration was saved succesfully'});
+        return  json.dumps({ 'status': status, 'message':'Configuração foi gravado com sucesso'});
     else:
-        return json.dumps({ 'status':status, 'message':'Configuration was NOT saved'});
+        return json.dumps({ 'status':status, 'message':'Configuração não foi gravado'});
 
 @app.route('/command', methods=['POST'])
 def command():
@@ -142,9 +142,9 @@ def management():
 def savecrop():
     status = database.save_crop(request);
     if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Crop was saved succesfully'});
+        return  json.dumps({ 'status': status, 'message':'Produção foi gravado com sucesso'});
     else:
-        return json.dumps({ 'status':status, 'message':'Crop was NOT saved'});
+        return json.dumps({ 'status':status, 'message':'Produção não foi gravado'});
 
 @app.route('/management/crop-module', methods=['GET'])
 def cropmodule():
@@ -156,18 +156,18 @@ def cropmodule():
 def savecropmodule():
     status = database.save_crop_module(request);
     if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Module was added succesfully'});
+        return  json.dumps({ 'status': status, 'message':'Módulo foi adicionado com sucesso'});
     else:
-        return json.dumps({ 'status':status, 'message':'Module was NOT added'});
+        return json.dumps({ 'status':status, 'message':'Módulo não foi adicionado'});
 
 @app.route('/management/delete-crop-module', methods=['POST'])
 def deletecropmodule():
     id = request.form['id'];
     status = database.delete_crop_module(id);
     if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Module was deleted succesfully'});
+        return  json.dumps({ 'status': status, 'message':'Módulo foi removido com sucesso'});
     else:
-        return json.dumps({ 'status':status, 'message':'Module was NOT deleted'});
+        return json.dumps({ 'status':status, 'message':'Módulo não foi removido'});
 
 @app.route('/management/module')
 def module():
@@ -179,9 +179,9 @@ def module():
 def savemodule():
     status = database.save_module(request);
     if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Module was saved succesfully'});
+        return  json.dumps({ 'status': status, 'message':'Módulo foi gravado com sucesso'});
     else:
-        return json.dumps({ 'status':status, 'message':'Module was NOT saved'});
+        return json.dumps({ 'status':status, 'message':'Módulo não foi gravado'});
 
 
 @app.route('/management/plant')
@@ -194,9 +194,9 @@ def plant():
 def saveplant():
     status = database.save_plant(request);
     if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Plant was saved succesfully'});
+        return  json.dumps({ 'status': status, 'message':'Planta foi gravado com sucesso'});
     else:
-        return json.dumps({ 'status':status, 'message':'Plant was NOT saved'});
+        return json.dumps({ 'status':status, 'message':'Planta não foi gravado'});
 
 @app.route('/management/plant-supplier')
 def plant_supplier():
@@ -207,9 +207,9 @@ def plant_supplier():
 def savesupplier():
     status = database.save_supplier(request);
     if status == 0:
-        return  json.dumps({ 'status': status, 'message':'Supplier was saved succesfully'});
+        return  json.dumps({ 'status': status, 'message':'Fornecedor foi gravado com sucesso'});
     else:
-        return json.dumps({ 'status':status, 'message':'Supplier was NOT saved'});
+        return json.dumps({ 'status':status, 'message':'Fornecedor não foi gravado'});
 
 if cfg["mode"]["mqtt"] == True:
 # The callback for when the client receives a CONNACK response from the server.

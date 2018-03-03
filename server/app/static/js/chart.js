@@ -5,16 +5,7 @@ $('#chartNodeModal').on('show.bs.modal', function (event) {
   var id = button.data('id');
 	var name = button.data('name');
 	var modal = $(this);
-	modal.find('.modal-title').text('Charts of ' + name);
-
-	/*var timeseries = {
-		"temperature":{
-			"label": ["JAN", "FEV", "MAR", "ABR", "MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"],
-			"data": [	{x:"JAN",y:33},{x:"FEV",y:34},{x:"MAR",y:29},{x:"ABR",y:27},{x:"MAI",y:28},{x:"JUN",y:25},
-								{x:"JUL",y:22},{x:"AGO",y:21},{x:"SET",y:21},{x:"OUT",y:23},{x:"NOV",y:25},{x:"DEZ",y:29}],
-		}
-	}
-*/
+	modal.find('.modal-title').text('Gráfico de ' + name);
 
 	$.ajax({
 		url: '/timeseries',
@@ -29,7 +20,7 @@ $('#chartNodeModal').on('show.bs.modal', function (event) {
             data: {
                 labels: resp[0].temperature[0].label,
                 datasets: [{
-                    label: 'Temperature (Celsius)',
+                    label: 'Temperatura (Celsius)',
                     data:resp[0].temperature[0].data,
                     fill:false,
                     borderColor:"rgb(255, 0, 0)",
@@ -44,7 +35,7 @@ $('#chartNodeModal').on('show.bs.modal', function (event) {
             data: {
                 labels: resp[0].humidity[0].label,
                 datasets: [{
-                    label: 'Humidity (%)',
+                    label: 'Umidade do ar (%)',
                     data:resp[0].humidity[0].data,
                     fill:false,
                     borderColor:"rgb(0, 0, 255)",
@@ -59,7 +50,7 @@ $('#chartNodeModal').on('show.bs.modal', function (event) {
             data: {
                 labels: resp[0].moisture[0].label,
                 datasets: [{
-                    label: 'Moisture (%)',
+                    label: 'Umidade do solo (%)',
                     data:resp[0].moisture[0].data,
                     fill:false,
                     borderColor:"rgb(0, 255, 0)",
