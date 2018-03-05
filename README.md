@@ -73,7 +73,7 @@ module.MQTT_STATUS = 1 -- 0 Connected / 1 = Disconnected
 
 module.SLEEP_TIME = 4 -- seconds
 
-module.SYNC_CLOCK_SERVER = "pool.ntp.br"
+module.SYNC_CLOCK_SERVER = "NTP SERVER  IP" --nabucodonasor
 -- I/O ports
 module.PIN_DHT   = 5
 module.PIN_FAN   = 6
