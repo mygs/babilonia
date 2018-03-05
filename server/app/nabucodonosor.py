@@ -110,10 +110,10 @@ def utility_processor():
             return 'on'
         else:
             return 'off'
-    def crop_duration(date):
+    def crop_duration(date, status):
         now = dt.date.today()
         delta = now - date
-        if delta.days < 0:
+        if delta.days < 0 or status == 'Planejado' or status == 'Encerrado':
             return ""
         else:
             return str(delta.days)
