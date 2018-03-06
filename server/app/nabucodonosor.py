@@ -12,6 +12,7 @@ from flask import Flask, render_template, request
 from flaskext.mysql import MySQL
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
+from flask_assets import Environment, Bundle
 #from flask_qrcode import QRcode
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -41,7 +42,41 @@ if cfg["mode"]["mqtt"] == True:
 
 mysql.init_app(app)
 socketio = SocketIO(app)
+assets = Environment(app)
 #qrcode = QRcode(app)
+
+
+assets.load_path = [os.path.join(os.path.dirname(__file__), 'static/fonts'),
+                    os.path.join(os.path.dirname(__file__), 'static')]
+assets.register('3rdpartycss',
+                'css/3rdparty/bootstrap.css',
+                'css/3rdparty/dataTables.bootstrap.css',
+                'css/3rdparty/buttons.bootstrap.css',
+                'css/3rdparty/select.bootstrap.css',
+                'css/3rdparty/sticky-footer-navbar.css',
+                'css/3rdparty/font-awesome.css',
+                'css/3rdparty/weather-icons.css',
+                'css/3rdparty/sweetalert.css',
+                'css/3rdparty/bootstrap-datepicker.css',
+                output='assets/3rdparty.css',
+                filters='cssmin')
+
+assets.register('3rdpartyjs',
+                'js/3rdparty/jquery-2.2.4.js',
+                'js/3rdparty/jquery-ui.js',
+                'js/3rdparty/jquery.dataTables.js',
+                'js/3rdparty/dataTables.bootstrap.js',
+                'js/3rdparty/dataTables.buttons.js',
+                'js/3rdparty/buttons.bootstrap.js',
+                'js/3rdparty/bootstrap-datepicker.js',
+                'js/3rdparty/dataTables.select.js',
+                'js/3rdparty/bootstrap.js',
+                'js/3rdparty/socket.io.js',
+                'js/3rdparty/moment.js',
+                'js/3rdparty/sweetalert.min.js',
+                'js/3rdparty/Chart.js',
+                output='assets/3rdparty.js',
+                filters='jsmin')
 
 @app.route('/')
 def index():

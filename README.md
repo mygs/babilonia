@@ -119,6 +119,9 @@ sudo pip install pandas
 sudo pip3 install flask-mqtt
 sudo pip install Pillow
 sudo pip install Flask-QRcode
+sudo pip install Flask-Assets
+sudo pip install jsmin
+sudo pip install cssmin
 
 ```
 
