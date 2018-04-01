@@ -248,7 +248,10 @@ def retrieve_last_telemetry_info():
                                 D.MEASURED_TEMPERATURE,
                                 D.MEASURED_HUMIDITY,
                                 D.STATUS_FAN,
-                                D.STATUS_LIGHT
+                                D.STATUS_LIGHT,
+                                D.MEASURED_MOISTURE_A,
+                                D.MEASURED_MOISTURE_B, 
+                                D.MEASURED_MOISTURE_C
                             FROM (
 	                               SELECT *
                                 		FROM (SELECT ID, MAX(TIMESTAMP) AS TIMESTAMP
