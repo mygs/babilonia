@@ -94,10 +94,9 @@ def node():
     node = database.get_node_cfg(id);
     return json.dumps({ 'NAME':node[0],
                         'TEMPERATURE_THRESHOLD':node[1],
-                        'MOISTURE_THRESHOLD':node[2],
-                        'MASK_CRON_LIGHT_ON':node[3],
-                        'MASK_CRON_LIGHT_OFF':node[4],
-                        'MASK_CRON_CTRL':node[5]});
+                        'MASK_CRON_LIGHT_ON':node[2],
+                        'MASK_CRON_LIGHT_OFF':node[3],
+                        'MASK_CRON_CTRL':node[4]});
 
 @app.route('/updatecfg', methods=['POST'])
 def updatecfg():

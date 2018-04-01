@@ -9,11 +9,10 @@ def get_timeseries(id):
 
     data = db.retrieve_data(id);
     df = DataFrame(list(data))
-    df.columns = ['timestamp', 'temperature', 'humidity', 'moisture']
+    df.columns = ['timestamp', 'temperature', 'humidity']
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
     df['temperature'] = pd.to_numeric(df['temperature'])
     df['humidity'] = pd.to_numeric(df['humidity'])
-    df['moisture'] = pd.to_numeric(df['moisture'])
 
     df.index = df['timestamp']
     df.index = df.index.tz_localize(pytz.utc).tz_convert(pytz.timezone('America/Sao_Paulo'))
@@ -29,6 +28,5 @@ def get_timeseries(id):
     humidity = [{"label":label,"data":df.humidity.tolist()}]
     moisture = [{"label":label,"data":df.moisture.tolist()}]
     timeseries = [{"temperature":temperature,
-                   "humidity":humidity,
-                   "moisture":moisture}]
+                   "humidity":humidity}]
     return json.dumps(timeseries)

@@ -123,7 +123,6 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       $("#ID").val(id);
       $("#NAME").val(resp.NAME);
       $("#TEMPERATURE_THRESHOLD").val(resp.TEMPERATURE_THRESHOLD);
-      $("#MOISTURE_THRESHOLD").val(resp.MOISTURE_THRESHOLD);
       $("#MASK_CRON_CTRL").val(resp.MASK_CRON_CTRL);
       $("#MASK_CRON_LIGHT_ON").val(resp.MASK_CRON_LIGHT_ON);
       $("#MASK_CRON_LIGHT_OFF").val(resp.MASK_CRON_LIGHT_OFF);

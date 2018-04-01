@@ -12,19 +12,21 @@ def insert_data(time, values):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("""INSERT INTO DATA (ID,TIMESTAMP,STATUS_DHT,MEASURED_MOISTURE,
+        cur.execute("""INSERT INTO DATA (ID,TIMESTAMP,STATUS_DHT,
                                         CALCULATE_TEMPERATURE,MEASURED_TEMPERATURE,
-                                        MEASURED_HUMIDITY,STATUS_FAN, STATUS_LIGHT)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-                    (values['id'],time,values['sd'],values['mm'],
-                     values['ct'],values['mt'],values['mh'],values['sf'],values['sl']))
+                                        MEASURED_HUMIDITY,STATUS_FAN, STATUS_LIGHT,
+                                        MEASURED_MOISTURE_A, MEASURED_MOISTURE_B,
+                                        MEASURED_MOISTURE_C)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                    (values['id'],time,values['sd'],values['ct'],values['mt'],
+                    values['mh'],values['sf'],values['sl'],
+                    values['mma'],values['mmb'],values['mmc']))
         con.commit()
 
 def save_cfg(request):
     ID = request.form['ID'];
     NAME = request.form['NAME'];
     TEMPERATURE_THRESHOLD = request.form['TEMPERATURE_THRESHOLD'];
-    MOISTURE_THRESHOLD = request.form['MOISTURE_THRESHOLD'];
     MASK_CRON_LIGHT_ON = request.form['MASK_CRON_LIGHT_ON'];
     MASK_CRON_LIGHT_OFF = request.form['MASK_CRON_LIGHT_OFF'];
     MASK_CRON_CTRL = request.form['MASK_CRON_CTRL'];
@@ -32,12 +34,11 @@ def save_cfg(request):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     cur = con.cursor()
     try:
-        cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s, MOISTURE_THRESHOLD=%s,
+        cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s
                                             MASK_CRON_LIGHT_ON=%s, MASK_CRON_LIGHT_OFF=%s,
                                             MASK_CRON_CTRL=%s where ID = %s""",
                     (NAME,
                     TEMPERATURE_THRESHOLD,
-                    MOISTURE_THRESHOLD,
                     MASK_CRON_LIGHT_ON,
                     MASK_CRON_LIGHT_OFF,
                     MASK_CRON_CTRL,
@@ -226,7 +227,7 @@ def retrieve_data(id):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("SELECT TIMESTAMP, MEASURED_TEMPERATURE, MEASURED_HUMIDITY, MEASURED_MOISTURE FROM DATA WHERE ID=%s", (id,))
+        cur.execute("SELECT TIMESTAMP, MEASURED_TEMPERATURE, MEASURED_HUMIDITY FROM DATA WHERE ID=%s", (id,))
         return cur.fetchall()
 
 
@@ -241,7 +242,13 @@ def retrieve_last_telemetry_info():
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("""SELECT N.NAME, N.ID, D.TIMESTAMP, D.MEASURED_TEMPERATURE, D.MEASURED_MOISTURE, D.MEASURED_HUMIDITY, D.STATUS_FAN, D.STATUS_LIGHT
+        cur.execute("""SELECT   N.NAME,
+                                N.ID,
+                                D.TIMESTAMP,
+                                D.MEASURED_TEMPERATURE,
+                                D.MEASURED_HUMIDITY,
+                                D.STATUS_FAN,
+                                D.STATUS_LIGHT
                             FROM (
 	                               SELECT *
                                 		FROM (SELECT ID, MAX(TIMESTAMP) AS TIMESTAMP
@@ -273,7 +280,6 @@ def get_node_cfg(id):
         cur = con.cursor()
         cur.execute("""SELECT NAME,
                               TEMPERATURE_THRESHOLD,
-                              MOISTURE_THRESHOLD,
                               MASK_CRON_LIGHT_ON,
                               MASK_CRON_LIGHT_OFF,
                               MASK_CRON_CTRL

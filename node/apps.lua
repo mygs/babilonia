@@ -11,14 +11,16 @@ function publish(topic, data)
   end
 end
 
-function publish_data(status_dht, measured_temp, measured_humi, measured_moisture)
+function publish_data(status_dht, measured_temp, measured_humi, mma, mmb, mmc)
   local parms = {}
   table.insert(parms, "id:"..node.chipid())
   table.insert(parms, ";sd:"..status_dht)
   table.insert(parms, ";ct:"..string.format("%02.2f",module.TEMPERATURE_SMA))
   table.insert(parms, ";mt:"..measured_temp)
   table.insert(parms, ";mh:"..measured_humi)
-  table.insert(parms, ";mm:"..string.format("%0.4g",measured_moisture))
+  table.insert(parms, ";mma:"..mma)
+  table.insert(parms, ";mmb:"..mmb)
+  table.insert(parms, ";mmc:"..mmc)
   table.insert(parms, ";sf:"..fan())
   table.insert(parms, ";sl:"..light())
   publish("/data", table.concat(parms,""))
@@ -158,7 +160,9 @@ end
 ----------------------
 gpio.mode(module.PIN_FAN, gpio.OUTPUT)
 gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
-
+gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
+gpio.mode(module.PIN_MOISTURE_B, gpio.INPUT)
+gpio.mode(module.PIN_MOISTURE_C, gpio.INPUT)
 
 if file.exists("fan.on") then
   fan(1)
@@ -176,19 +180,25 @@ end
 ----------------------
 function control()
   local status, measured_temp, measured_temp_dec, measured_humi, measured_humi_dec = dht.read(module.PIN_DHT)
-  local measured_moisture = ( 100.00 - ( (adc.read(module.PIN_ANALOGIC_MOISTURE)/1023.00) * 100.00 ) )
+  -- analogic 0 to 1024, where:
+  -- [WET] mmx < 500 --- digital = 0 & led = ON
+  -- [DRY] mmx > 500 --- digital = 1 & led = OFF
+  local mma = gpio.read(module.PIN_MOISTURE_A)
+  local mmb = gpio.read(module.PIN_MOISTURE_B)
+  local mmc = gpio.read(module.PIN_MOISTURE_C)
 
   if (status == dht.OK) then -- so, filter the value
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
-    print("[CONTROL] Soil Moisture: "..string.format("%0.4g",measured_moisture).."% Temp: "..string.format("%02.2f",module.TEMPERATURE_SMA).."C")
+    local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
+    print("[CONTROL] Temp: "..temp_str.."C  Soil Moisture:["..mma..","..mmb..","..mmc.."]")
     if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
     else
       fan(0)
     end
   end
-    publish_data(status,measured_temp,measured_humi, measured_moisture)
+    publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
 end
 
 -----------------------

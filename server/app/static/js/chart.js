@@ -45,21 +45,6 @@ $('#chartNodeModal').on('show.bs.modal', function (event) {
             },
             options: {}
         });
-        var moistureChart = new Chart($('#moistureChart'), {
-            type: 'line',
-            data: {
-                labels: resp[0].moisture[0].label,
-                datasets: [{
-                    label: 'Umidade do solo (%)',
-                    data:resp[0].moisture[0].data,
-                    fill:false,
-                    borderColor:"rgb(0, 255, 0)",
-                    lineTension:0.5,
-                    borderWidth: 1
-                }]
-            },
-            options: {}
-        });
 		},
 		error: function (response) {
 		}
