@@ -318,8 +318,14 @@ $(document).ready(function() {
     if (data.mt != null) {
       $('#temp_' + id).html(data.mt + String.fromCharCode(176) + 'C');
     }
-    if (data.mm != null) {
-      $('#moist_' + id).html(data.mm + '%');
+    if (data.mma != null) {
+      $('#mma_' + id).html((data.mma == 1) ? 'DRY' : 'WET');
+    }
+    if (data.mmb != null) {
+      $('#mmb_' + id).html((data.mmb == 1) ? 'DRY' : 'WET');
+    }
+    if (data.mmc != null) {
+      $('#mmc_' + id).html((data.mmc == 1) ? 'DRY' : 'WET');
     }
     if (data.mh != null) {
       $('#humid_' + id).html(data.mh + '%');
