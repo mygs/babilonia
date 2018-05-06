@@ -156,8 +156,46 @@ function fan(switch)
 end
 
 ----------------------
+------ CONTROL -------
+----------------------
+function control()
+  -- power ON sensors
+  gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
+  local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.readxx(module.PIN_DHT)
+  tmr.delay(3000000)
+  -- analogic 0 to 1024, where:
+  -- [WET] mmx < 500 --- digital = 0 & led = ON
+  -- [DRY] mmx > 500 --- digital = 1 & led = OFF
+  local mma = gpio.read(module.PIN_MOISTURE_A)
+  local mmb = gpio.read(module.PIN_MOISTURE_B)
+  local mmc = gpio.read(module.PIN_MOISTURE_C)
+
+  -- power OFF sensors
+  gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
+
+
+  if (status == dht.OK) then -- so, filter the value
+    module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
+    module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
+    local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
+    print("[CONTROL] Temp: "..temp_str.."C  Soil Moisture:["..mma..","..mmb..","..mmc.."]")
+    if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
+      fan(1)
+    else
+      fan(0)
+    end
+  end
+    publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
+end
+
+
+----------------------
 ----- INIT SETUP -----
 ----------------------
+print("[INIT SETUP] Started")
+for i=0,8 do
+  gpio.write(i, gpio.LOW)
+end
 gpio.mode(module.PIN_FAN, gpio.OUTPUT)
 gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
 gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
@@ -174,33 +212,6 @@ if file.exists("light.on") then
 else
   light(0)
 end
-
-----------------------
------- CONTROL -------
-----------------------
-function control()
-  local status, measured_temp, measured_temp_dec, measured_humi, measured_humi_dec = dht.read(module.PIN_DHT)
-  -- analogic 0 to 1024, where:
-  -- [WET] mmx < 500 --- digital = 0 & led = ON
-  -- [DRY] mmx > 500 --- digital = 1 & led = OFF
-  local mma = gpio.read(module.PIN_MOISTURE_A)
-  local mmb = gpio.read(module.PIN_MOISTURE_B)
-  local mmc = gpio.read(module.PIN_MOISTURE_C)
-
-  if (status == dht.OK) then -- so, filter the value
-    module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
-    module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
-    local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
-    print("[CONTROL] Temp: "..temp_str.."C  Soil Moisture:["..mma..","..mmb..","..mmc.."]")
-    if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
-      fan(1)
-    else
-      fan(0)
-    end
-  end
-    publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
-end
-
 -----------------------
 -- SCHEDULE ROUTINES --
 -----------------------
@@ -211,5 +222,6 @@ cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e)
   light(0)
 end)
 cron.schedule(module.MASK_CRON_CTRL, control)
-
 collectgarbage()
+
+print("[INIT SETUP] Completed")
