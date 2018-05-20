@@ -1,5 +1,19 @@
 # babilonia
 
+### Env variables
+/etc/profile.d/00-babilonia.sh
+```bash
+PATH=$PATH:/data/github/esp-open-sdk/xtensa-lx106-elf/bin
+alias xgcc="xtensa-lx106-elf-gcc"
+export BABILONIA_HOME=/data/github/babilonia
+```
+### USB rule
+/etc/udev/rules.d/babilonia.rules
+
+```bash
+SUBSYSTEM=="usb", ACTION=="add", ENV{DEVTYPE}=="usb_device", ENV{ID_VENDOR}=="1a86", RUN+="/data/github/babilonia/utils/nodeupdate.sh"
+
+```
 ### esp-open-sdk (to build firmware)
 ```bash
 git clone --recursive https://github.com/pfalcon/esp-open-sdk
