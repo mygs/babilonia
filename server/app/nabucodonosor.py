@@ -139,9 +139,9 @@ def utility_processor():
         return u'{0:.2f}%'.format(value)
     def format_moisture(value):
         if int(value) == 1:
-            return 'DRY'
-        else:
             return 'WET'
+        else:
+            return 'DRY'
     def status(value):
         if int(value) == 1:
             return 'on'

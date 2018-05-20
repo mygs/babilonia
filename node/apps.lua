@@ -159,10 +159,10 @@ end
 ------ CONTROL -------
 ----------------------
 function control()
-  -- power ON sensors
+  -- power ON moisture sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
   local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.readxx(module.PIN_DHT)
-  tmr.delay(3000000)
+  tmr.delay(5000000) --5 segs delay - time to moisture computes its values  
   -- analogic 0 to 1024, where:
   -- [WET] mmx < 500 --- digital = 0 & led = ON
   -- [DRY] mmx > 500 --- digital = 1 & led = OFF
