@@ -11,9 +11,9 @@ export BABILONIA_HOME=/data/github/babilonia
 /etc/udev/rules.d/babilonia.rules
 
 ```bash
-SUBSYSTEM=="usb", ACTION=="add", ENV{DEVTYPE}=="usb_device", ENV{ID_VENDOR}=="1a86", RUN+="/data/github/babilonia/utils/nodeupdate.sh"
-
+SUBSYSTEM=="usb", ACTION=="add", ENV{DEVTYPE}=="usb_device", ENV{ID_VENDOR}=="1a86", RUN+="/babilonia/utils/nodeupdate.sh"
 ```
+
 ### esp-open-sdk (to build firmware)
 ```bash
 git clone --recursive https://github.com/pfalcon/esp-open-sdk
