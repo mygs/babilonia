@@ -137,11 +137,11 @@ def utility_processor():
         return u'{0:2.0f}°C'.format(value)
     def format_humidity(value):
         return u'{0:.2f}%'.format(value)
-    def format_moisture(value):
-        if int(value) == 1:
-            return 'WET'
-        else:
+    def format_moisture(value): #WET: GPIO = 0 / BUILD IN LED = ON
+        if int(value) == 1:     #DRY: GPIO = 1 / BUILD IN LED = OFF
             return 'DRY'
+        else:
+            return 'WET'
     def status(value):
         if int(value) == 1:
             return 'on'
