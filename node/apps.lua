@@ -161,8 +161,8 @@ end
 function control()
   -- power ON moisture sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
-  local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.readxx(module.PIN_DHT)
-  tmr.delay(5000000) --5 segs delay - time to moisture computes its values  
+  local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.read(module.PIN_DHT)
+  tmr.delay(5000000) --5 segs delay - time to moisture computes its values
   -- analogic 0 to 1024, where:
   -- [WET] mmx < 500 --- digital = 0 & led = ON
   -- [DRY] mmx > 500 --- digital = 1 & led = OFF
@@ -177,15 +177,21 @@ function control()
   if (status == dht.OK) then -- so, filter the value
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
-    local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
-    print("[CONTROL] Temp: "..temp_str.."C  Soil Moisture:["..mma..","..mmb..","..mmc.."]")
+  end
+
+  if (module.TYPE == 0 ) then -- indoor
     if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
     else
       fan(0)
     end
+  elseif (module.TYPE == 1 ) then -- outdoor
+
   end
-    publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
+
+  local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
+  print("[CONTROL] Temp: "..temp_str.."C  Soil Moisture:["..mma..","..mmb..","..mmc.."]")
+  publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
 end
 
 
