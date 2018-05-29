@@ -61,34 +61,34 @@ function update(data)
       RES[k] = v
   end
   -- id=NULL means broadcast
-  if(RES.id == nil or tonumber(RES.id) == node.chipid())then
-    if(RES.fan ~= nil)then
+  if (RES.id == nil or tonumber(RES.id) == node.chipid()) then
+    if (RES.fan ~= nil) then
           fan(tonumber(RES.fan))
           local parms = {}
           table.insert(parms, "id:"..node.chipid())
           table.insert(parms, ";sf:"..fan())
           publish("/cmd-ack", table.concat(parms,""))
     end
-    if(RES.light ~= nil)then
+    if (RES.light ~= nil) then
           light(tonumber(RES.light))
           local parms = {}
           table.insert(parms, "id:"..node.chipid())
           table.insert(parms, ";sl:"..light())
           publish("/cmd-ack", table.concat(parms,""))
     end
-    if(RES.temp ~= nil)then
+    if (RES.temp ~= nil) then
           module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
     end
-    if(RES.mclon ~= nil)then
+    if (RES.mclon ~= nil) then
       module.MASK_CRON_LIGHT_ON=RES.mclon
     end
-    if(RES.mcloff ~= nil)then
+    if (RES.mcloff ~= nil) then
       module.MASK_CRON_LIGHT_OFF=RES.mcloff
     end
-    if(RES.mcctrl ~= nil)then
+    if (RES.mcctrl ~= nil) then
       module.MASK_CRON_CTRL=RES.mcctrl
     end
-    if(RES.cmd ~= nil)then
+    if (RES.cmd ~= nil) then
           local cmd = tonumber(RES.cmd)
 
           if     cmd == 0 then reboot()
@@ -105,8 +105,8 @@ end
 MQTTCLIENT:on("message",
 function(conn, topic, data)
    print("[MQTT CLIENT] Message Received...")
-   if(topic ~= nil and data ~= nil) then
-     if(topic == "/cfg") then
+   if (topic ~= nil and data ~= nil) then
+     if (topic == "/cfg") then
        update(data)
      end
    end
@@ -155,6 +155,14 @@ function fan(switch)
   return  1 - gpio.read(module.PIN_FAN)
 end
 
+-- ACTUATOR SPRINKLE
+function sprinkle()
+  print("[SPRINKLE] ACTIVATED")
+  gpio.write(module.PIN_PUMP_SOLENOID, gpio.HIGH)
+  tmr.delay(module.SLEEP_TIME_SPRINKLE)
+  gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
+end
+
 ----------------------
 ------ CONTROL -------
 ----------------------
@@ -162,7 +170,7 @@ function control()
   -- power ON moisture sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
   local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.read(module.PIN_DHT)
-  tmr.delay(5000000) --5 segs delay - time to moisture computes its values
+  tmr.delay(module.SLEEP_TIME_MOISTURE) -- time to moisture computes its values
   -- analogic 0 to 1024, where:
   -- [WET] mmx < 500 --- digital = 0 & led = ON
   -- [DRY] mmx > 500 --- digital = 1 & led = OFF
@@ -179,14 +187,16 @@ function control()
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
   end
 
-  if (module.TYPE == 0 ) then -- indoor
+  if (module.TYPE == 0) then -- indoor
     if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
     else
       fan(0)
     end
-  elseif (module.TYPE == 1 ) then -- outdoor
-
+  elseif (module.TYPE == 1) then -- outdoor
+    if (mma == 1 or mmb == 1 or mmc == 1) then
+      sprinkle()
+    end
   end
 
   local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
@@ -208,16 +218,22 @@ gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
 gpio.mode(module.PIN_MOISTURE_B, gpio.INPUT)
 gpio.mode(module.PIN_MOISTURE_C, gpio.INPUT)
 
-if file.exists("fan.on") then
-  fan(1)
-else
-  fan(0)
+
+if (module.TYPE == 0 ) then -- indoor
+  if file.exists("fan.on") then
+    fan(1)
+  else
+    fan(0)
+  end
+  if file.exists("light.on") then
+    light(1)
+  else
+    light(0)
+  end
+elseif (module.TYPE == 1 ) then -- outdoor
 end
-if file.exists("light.on") then
-  light(1)
-else
-  light(0)
-end
+
+
 -----------------------
 -- SCHEDULE ROUTINES --
 -----------------------
