@@ -187,13 +187,13 @@ function control()
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
   end
 
-  if (module.TYPE == 0) then -- indoor
+  if (module.MODE == 0) then -- indoor
     if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
     else
       fan(0)
     end
-  elseif (module.TYPE == 1) then -- outdoor
+  elseif (module.MODE == 1) then -- outdoor
     if (mma == 1 or mmb == 1 or mmc == 1) then
       sprinkle()
     end
@@ -218,8 +218,7 @@ gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
 gpio.mode(module.PIN_MOISTURE_B, gpio.INPUT)
 gpio.mode(module.PIN_MOISTURE_C, gpio.INPUT)
 
-
-if (module.TYPE == 0 ) then -- indoor
+if (module.MODE == 0) then -- indoor
   if file.exists("fan.on") then
     fan(1)
   else
@@ -230,10 +229,7 @@ if (module.TYPE == 0 ) then -- indoor
   else
     light(0)
   end
-elseif (module.TYPE == 1 ) then -- outdoor
 end
-
-
 -----------------------
 -- SCHEDULE ROUTINES --
 -----------------------
