@@ -1,15 +1,15 @@
 -- load configurations
-require("config")
+		require("config")
 ------------------------------------------------------------------------------
 ---------------------------------- MQTT --------------------------------------
 ------------------------------------------------------------------------------
 MQTTCLIENT = nil
 function conn_pub_sub(client)
-	print ("[MQTT CLIENT] Connected")
+	print ("[MQTT] Connected")
 
 	MQTTCLIENT:subscribe("/cfg",0,
 		function(conn)
-			print("[MQTT CLIENT] Subscribe success")
+			print("[MQTT] Subscribe success")
 			local parms = {}
 			table.insert(parms, "id:"..node.chipid())
 			-- avoiding infinity loop
@@ -27,13 +27,13 @@ end
 
 -- Establish a connection to the MQTT broker with the configured parameters.
 function do_mqtt_connect()
-	print("[MQTT CLIENT] Making connection. BROKER:"..module.BROKER..":".. module.PORT)
-	MQTTCLIENT:connect(module.BROKER, module.PORT, 0,
+	print("[MQTT] Making connection. BROKER:"..module.BABILONIA_SERVER..":1883")
+	MQTTCLIENT:connect(module.BABILONIA_SERVER,1883, 0,
   	conn_pub_sub,
     function(client, reason)
-      print("[MQTT CLIENT] Cannot connect. Failed reason: "..reason)
+      print("[MQTT] Cannot connect. Failed reason: "..reason)
       module.MQTT_STATUS = 1;
-      print("[MQTT CLIENT] Trying again within "..module.SLEEP_TIME.." seconds")
+      print("[MQTT] Trying again within "..module.SLEEP_TIME.." seconds")
       tmr.create():alarm(module.SLEEP_TIME*1000, tmr.ALARM_SINGLE, do_mqtt_connect)
     end
   )
@@ -41,7 +41,7 @@ end
 
 -- Reconnect to MQTT when we receive an "offline" message.
 function handle_mqtt_error()
-	print("[MQTT CLIENT] Disconnected, reconnecting....")
+	print("[MQTT] Disconnected, reconnecting....")
   module.MQTT_STATUS = 1;
 	do_mqtt_connect()
 end
@@ -56,11 +56,10 @@ end
 
 function createMqttConnection()
 	-- Instantiate a global MQTT client object
-	print("[MQTT CLIENT] Instantiating ")
+	print("[MQTT] Instantiating ")
 	MQTTCLIENT = mqtt.Client(module.ID, module.SLEEP_TIME)
 
 	-- Set up the event callbacks
-	print("[MQTT CLIENT] Setting up callbacks")
 	MQTTCLIENT:on("connect", conn_pub_sub)
 	MQTTCLIENT:on("offline", handle_mqtt_error)
 
@@ -72,16 +71,16 @@ end
 --------------------------------- STARTUP ------------------------------------
 ------------------------------------------------------------------------------
 function startup()
-	sntp.sync(module.SYNC_CLOCK_SERVER,  -- Sync clock for schedule
+	sntp.sync(module.BABILONIA_SERVER,  -- Sync clock for schedule
 		function()
-			print('[SYNC CLOCK] Success')
+			print('[CLOCK] Sync OK')
 			createMqttConnection()
 			print("Starting Babilonia App")
 			-- the actual application is stored in 'apps'
 			require("apps")
 		end,
 		function()
-			print('[SYNC CLOCK] Failed. Trying to Sync again')
+			print('[CLOCK] Sync Failed.')
 			startup()
 		end,
 		1 -- autorepeat
@@ -90,7 +89,7 @@ end
 
 function prepare_startup()
     if file.open("init.lua") == nil then
-        print("init.lua deleted or renamed")
+        print("init.lua not found")
     else
         file.close("init.lua")
 				startup()
@@ -102,15 +101,15 @@ end
 ------------------------------------------------------------------------------
 wifi_connect_event = function(T)
   print("Connection to AP("..T.SSID..") established!")
-  print("Waiting for IP address...")
+  print("Waiting for IP...")
   if disconnect_ct ~= nil then disconnect_ct = nil end
 end
 ------------------------------------------------------------------------------
 wifi_got_ip_event = function(T)
   -- Note: Having an IP address does not mean there is internet access!
   -- Internet connectivity can be determined with net.dns.resolve().
-  print("Wifi connection is ready! IP address is: "..T.IP)
-  print("Startup will resume momentarily, you have "..module.SLEEP_TIME.." seconds to abort.")
+  print("Wifi connection is ready! IP is: "..T.IP)
+  print("Startup will resume, you have "..module.SLEEP_TIME.." seconds to abort.")
   print("Waiting...")
   tmr.create():alarm(module.SLEEP_TIME*1000, tmr.ALARM_SINGLE, prepare_startup)
 end
@@ -122,7 +121,7 @@ wifi_disconnect_event = function(T)
   end
   -- total_tries: how many times the station will attempt to connect to the AP.
   --  Should consider AP reboot duration.
-  local total_tries = 100
+  local total_tries = 5
   print("\nWiFi connection to AP("..T.SSID..") has failed!")
 
   --There are many possible disconnect reasons, the following iterates through
@@ -145,6 +144,8 @@ wifi_disconnect_event = function(T)
     wifi.sta.disconnect()
     print("Aborting connection to AP!")
     disconnect_ct = nil
+		print("**** Rebooting NODE because it is OFFLINE ****")
+		node.restart()
   end
 end
 ------------------------------------------------------------------------------
@@ -157,5 +158,6 @@ wifi.eventmon.register(wifi.eventmon.STA_DISCONNECTED, wifi_disconnect_event)
 print("Connecting to WiFi access point...")
 wifi.setmode(wifi.STATION)
 wifi.setphymode(wifi.PHYMODE_G)
+wifi.sta.disconnect()
 wifi.sta.config({ssid=module.SSID, pwd=module.PASSWORD})
 -- wifi.sta.connect() not necessary because config() uses auto-connect=true by default

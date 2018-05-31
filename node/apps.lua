@@ -4,10 +4,10 @@ print("[NODEID] "..node.chipid())
 ----------------------
 function publish(topic, data)
   if(module.MQTT_STATUS == 0)then
-    print("[MQTT CLIENT] Publishing")
+    print("[MQTT] Publishing")
     MQTTCLIENT:publish(topic,data, 0, 0)	-- publish
   else
-    print("[MQTT CLIENT] Tried to publish, but NODE is still disconnected")
+    print("[MQTT] NODE is OFFLINE")
   end
 end
 
@@ -104,7 +104,7 @@ end
 
 MQTTCLIENT:on("message",
 function(conn, topic, data)
-   print("[MQTT CLIENT] Message Received...")
+   print("[MQTT] MSG Received...")
    if (topic ~= nil and data ~= nil) then
      if (topic == "/cfg") then
        update(data)
@@ -157,10 +157,11 @@ end
 
 -- ACTUATOR SPRINKLE
 function sprinkle()
-  print("[SPRINKLE] ACTIVATED")
+  print("[SPRINKLE] ON")
   gpio.write(module.PIN_PUMP_SOLENOID, gpio.HIGH)
   tmr.delay(module.SLEEP_TIME_SPRINKLE)
   gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
+  print("[SPRINKLE] OFF")
 end
 
 ----------------------
@@ -187,6 +188,10 @@ function control()
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
   end
 
+  local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
+  print("[CTRL] Temp: "..temp_str.."C | Moisture:["..mma..","..mmb..","..mmc.."]")
+  publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
+
   if (module.MODE == 0) then -- indoor
     if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
@@ -198,17 +203,13 @@ function control()
       sprinkle()
     end
   end
-
-  local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
-  print("[CONTROL] Temp: "..temp_str.."C  Soil Moisture:["..mma..","..mmb..","..mmc.."]")
-  publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
 end
 
 
 ----------------------
 ----- INIT SETUP -----
 ----------------------
-print("[INIT SETUP] Started")
+print("[SETUP] Started")
 for i=0,8 do
   gpio.write(i, gpio.LOW)
 end
@@ -233,13 +234,15 @@ end
 -----------------------
 -- SCHEDULE ROUTINES --
 -----------------------
-cron.schedule(module.MASK_CRON_LIGHT_ON, function(e)
-  light(1)
-end)
-cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e)
-  light(0)
-end)
+if (module.MODE == 0) then -- indoor
+  cron.schedule(module.MASK_CRON_LIGHT_ON, function(e)
+    light(1)
+  end)
+  cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e)
+    light(0)
+  end)
+end
 cron.schedule(module.MASK_CRON_CTRL, control)
 collectgarbage()
 
-print("[INIT SETUP] Completed")
+print("[SETUP] Completed")

@@ -10,8 +10,8 @@ if [[ ! -z $NODE_IS_PLUGGED ]]; then
   cd /babilonia/node
   ./luac.cross -o config.lc config.lua
   ./luac.cross -o apps.lc apps.lua
-  echo "Cleaning old binaries from NODE..."
-  nodemcu-uploader file remove init.lua apps.lc config.lc nconfig.lua
+  echo "Cleaning old binaries and confs from NODE..."
+  nodemcu-uploader file remove init.lua apps.lc config.lc nconfig.lua remote.reboot fan.on light.on
   echo "Restarting NODE..."
   nodemcu-uploader node restart
   sleep 5
