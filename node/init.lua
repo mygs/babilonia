@@ -1,82 +1,52 @@
--- load configurations
-		require("config")
-------------------------------------------------------------------------------
----------------------------------- MQTT --------------------------------------
-------------------------------------------------------------------------------
+require("config")
 MQTTCLIENT = nil
 function conn_pub_sub(client)
 	print ("[MQTT] Connected")
-
 	MQTTCLIENT:subscribe("/cfg",0,
 		function(conn)
 			print("[MQTT] Subscribe success")
 			local parms = {}
 			table.insert(parms, "id:"..node.chipid())
-			-- avoiding infinity loop
 			if file.exists("remote.reboot") then
 				table.insert(parms, ";rb:1")
 				file.remove("remote.reboot")
 			else
 				table.insert(parms, ";rb:0")
 			end
-
 			MQTTCLIENT:publish("/online", table.concat(parms,""), 0, 0)	-- request conf.
 		end)
 	module.MQTT_STATUS = 0;
 end
-
--- Establish a connection to the MQTT broker with the configured parameters.
 function do_mqtt_connect()
-	print("[MQTT] Making connection. BROKER:"..module.BABILONIA_SERVER..":1883")
+	print("[MQTT] Making connection.")
 	MQTTCLIENT:connect(module.BABILONIA_SERVER,1883, 0,
   	conn_pub_sub,
     function(client, reason)
-      print("[MQTT] Cannot connect. Failed reason: "..reason)
+      print("[MQTT] Cannot connect. Reason: "..reason)
       module.MQTT_STATUS = 1;
-      print("[MQTT] Trying again within "..module.SLEEP_TIME.." seconds")
+      print("[MQTT] Trying again within "..module.SLEEP_TIME.." secs")
       tmr.create():alarm(module.SLEEP_TIME*1000, tmr.ALARM_SINGLE, do_mqtt_connect)
     end
   )
 end
-
--- Reconnect to MQTT when we receive an "offline" message.
 function handle_mqtt_error()
 	print("[MQTT] Disconnected, reconnecting....")
   module.MQTT_STATUS = 1;
 	do_mqtt_connect()
 end
--- createMqttConnection() instantiates the MQTT control object, sets up callbacks,
--- connects to the broker, and then uses the timer to send sensor data.
--- This is the "main" function in this library. This should be called
--- from init.lua (which runs on the ESP8266 at boot), but only after
--- it's been vigorously debugged.
---
--- Note: once you call this from init.lua the only way to change the
--- program on your ESP8266 will be to reflash the NodeCMU firmware!
-
 function createMqttConnection()
-	-- Instantiate a global MQTT client object
 	print("[MQTT] Instantiating ")
 	MQTTCLIENT = mqtt.Client(module.ID, module.SLEEP_TIME)
-
-	-- Set up the event callbacks
 	MQTTCLIENT:on("connect", conn_pub_sub)
 	MQTTCLIENT:on("offline", handle_mqtt_error)
-
-	-- Connect to the Broker
 	do_mqtt_connect()
 end
-
-------------------------------------------------------------------------------
---------------------------------- STARTUP ------------------------------------
-------------------------------------------------------------------------------
 function startup()
 	sntp.sync(module.BABILONIA_SERVER,  -- Sync clock for schedule
 		function()
 			print('[CLOCK] Sync OK')
 			createMqttConnection()
 			print("Starting Babilonia App")
-			-- the actual application is stored in 'apps'
 			require("apps")
 		end,
 		function()
@@ -86,7 +56,6 @@ function startup()
 		1 -- autorepeat
 		)
 end
-
 function prepare_startup()
     if file.open("init.lua") == nil then
         print("init.lua not found")
@@ -95,69 +64,45 @@ function prepare_startup()
 				startup()
     end
 end
-
-------------------------------------------------------------------------------
---------------- Define WiFi station event callbacks --------------------------
-------------------------------------------------------------------------------
 wifi_connect_event = function(T)
-  print("Connection to AP("..T.SSID..") established!")
-  print("Waiting for IP...")
+  print("[WIFI] Connected to "..T.SSID)
   if disconnect_ct ~= nil then disconnect_ct = nil end
 end
-------------------------------------------------------------------------------
 wifi_got_ip_event = function(T)
-  -- Note: Having an IP address does not mean there is internet access!
-  -- Internet connectivity can be determined with net.dns.resolve().
-  print("Wifi connection is ready! IP is: "..T.IP)
-  print("Startup will resume, you have "..module.SLEEP_TIME.." seconds to abort.")
-  print("Waiting...")
+  print("[WIFI] IP: "..T.IP)
+  print("[WIFI] You have "..module.SLEEP_TIME.." secs to abort.")
   tmr.create():alarm(module.SLEEP_TIME*1000, tmr.ALARM_SINGLE, prepare_startup)
 end
-------------------------------------------------------------------------------
 wifi_disconnect_event = function(T)
   if T.reason == wifi.eventmon.reason.ASSOC_LEAVE then
-    --the station has disassociated from a previously connected AP
     return
   end
-  -- total_tries: how many times the station will attempt to connect to the AP.
-  --  Should consider AP reboot duration.
-  local total_tries = 5
-  print("\nWiFi connection to AP("..T.SSID..") has failed!")
-
-  --There are many possible disconnect reasons, the following iterates through
-  --the list and returns the string corresponding to the disconnect reason.
+  local total_tries = 5   --consider AP reboot duration.
+  print("\n[WIFI] Connection to "..T.SSID.."  failed!")
   for key,val in pairs(wifi.eventmon.reason) do
     if val == T.reason then
-      print("Disconnect reason: "..val.."("..key..")")
+      print("[WIFI] Disconnect reason: "..val.."("..key..")")
       break
     end
   end
-
   if disconnect_ct == nil then
     disconnect_ct = 1
   else
     disconnect_ct = disconnect_ct + 1
   end
   if disconnect_ct < total_tries then
-    print("Retrying connection...(attempt "..(disconnect_ct+1).." of "..total_tries..")")
+    print("[WIFI] Retrying connection...(attempt "..(disconnect_ct+1).." of "..total_tries..")")
   else
     wifi.sta.disconnect()
-    print("Aborting connection to AP!")
+    print("[WIFI] Aborting connection and restarting NODE!")
     disconnect_ct = nil
-		print("**** Rebooting NODE because it is OFFLINE ****")
 		node.restart()
   end
 end
-------------------------------------------------------------------------------
---------------- Register WiFi Station event callbacks ------------------------
-------------------------------------------------------------------------------
 wifi.eventmon.register(wifi.eventmon.STA_CONNECTED, wifi_connect_event)
 wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, wifi_got_ip_event)
 wifi.eventmon.register(wifi.eventmon.STA_DISCONNECTED, wifi_disconnect_event)
-
-print("Connecting to WiFi access point...")
+print("[WIFI] Connecting")
 wifi.setmode(wifi.STATION)
 wifi.setphymode(wifi.PHYMODE_G)
-wifi.sta.disconnect()
 wifi.sta.config({ssid=module.SSID, pwd=module.PASSWORD})
--- wifi.sta.connect() not necessary because config() uses auto-connect=true by default
