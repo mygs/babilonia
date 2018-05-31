@@ -13,6 +13,8 @@ function conn_pub_sub(client)
 			else
 				table.insert(parms, ";rb:0")
 			end
+			print("Starting Babilonia App")
+			require("apps")
 			MQTTCLIENT:publish("/online", table.concat(parms,""), 0, 0)	-- request conf.
 		end)
 	module.MQTT_STATUS = 0;
@@ -46,8 +48,6 @@ function startup()
 		function()
 			print('[CLOCK] Sync OK')
 			createMqttConnection()
-			print("Starting Babilonia App")
-			require("apps")
 		end,
 		function()
 			print('[CLOCK] Sync Failed.')
@@ -77,7 +77,7 @@ wifi_disconnect_event = function(T)
   if T.reason == wifi.eventmon.reason.ASSOC_LEAVE then
     return
   end
-  local total_tries = 5   --consider AP reboot duration.
+  local total_tries = 20   --consider AP reboot duration.
   print("\n[WIFI] Connection to "..T.SSID.."  failed!")
   for key,val in pairs(wifi.eventmon.reason) do
     if val == T.reason then

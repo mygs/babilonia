@@ -1,13 +1,11 @@
 print("[NODEID] "..node.chipid())
-----------------------
 -------- UTILS -------
-----------------------
 function publish(topic, data)
   if(module.MQTT_STATUS == 0)then
     print("[MQTT] Publishing")
     MQTTCLIENT:publish(topic,data, 0, 0)	-- publish
   else
-    print("[MQTT] NODE is OFFLINE")
+    print("[MQTT] Not connected")
   end
 end
 
@@ -31,7 +29,6 @@ function save_configuration()
   if file.exists("nconfig.lua") then
     file.remove("nconfig.lua")
   end
-
   if file.open("nconfig.lua", "w+") then
     -- writing new parameters
     file.writeline('module.TEMPERATURE_THRESHOLD='..module.TEMPERATURE_THRESHOLD)
@@ -42,7 +39,6 @@ function save_configuration()
   end
 
 end
-
 -- REBOOT NODE KEEPING CURRENT CONFIGURATION
 function reboot()
   save_configuration()
@@ -53,7 +49,6 @@ function reboot()
   print("Restarting NODE "..node.chipid())
   node.restart()
 end
-
 -- UPDATE PARAMETERS
 function update(data)
   local RES = {}
@@ -104,17 +99,14 @@ end
 
 MQTTCLIENT:on("message",
 function(conn, topic, data)
-   print("[MQTT] MSG Received...")
+   print("[MQTT] MSG Received!")
    if (topic ~= nil and data ~= nil) then
      if (topic == "/cfg") then
-       update(data)
+         update(data)
      end
    end
 end)
-
---------------------------
 --- SENSOR & ACTUATORS ---
---------------------------
 -- ACTUATOR LIGHT
 -- @param switch 1 = ON / 0 = OFF
 -- @return 1 = ON / 0 = OFF
@@ -134,7 +126,6 @@ function light(switch)
   end
   return 1 - gpio.read(module.PIN_LIGHT)
 end
-
 -- ACTUATOR FAN
 -- @param switch 1 = ON / 0 = OFF
 -- @return 1 = ON / 0 = OFF
@@ -154,7 +145,6 @@ function fan(switch)
   end
   return  1 - gpio.read(module.PIN_FAN)
 end
-
 -- ACTUATOR SPRINKLE
 function sprinkle()
   print("[SPRINKLE] ON")
@@ -163,10 +153,7 @@ function sprinkle()
   gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
   print("[SPRINKLE] OFF")
 end
-
-----------------------
 ------ CONTROL -------
-----------------------
 function control()
   -- power ON moisture sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
@@ -178,20 +165,15 @@ function control()
   local mma = gpio.read(module.PIN_MOISTURE_A)
   local mmb = gpio.read(module.PIN_MOISTURE_B)
   local mmc = gpio.read(module.PIN_MOISTURE_C)
-
   -- power OFF sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
-
-
   if (status == dht.OK) then -- so, filter the value
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
   end
-
   local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
   print("[CTRL] Temp: "..temp_str.."C | Moisture:["..mma..","..mmb..","..mmc.."]")
   publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
-
   if (module.MODE == 0) then -- indoor
     if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
       fan(1)
@@ -204,11 +186,7 @@ function control()
     end
   end
 end
-
-
-----------------------
 ----- INIT SETUP -----
-----------------------
 print("[SETUP] Started")
 for i=0,8 do
   gpio.write(i, gpio.LOW)
@@ -220,29 +198,14 @@ gpio.mode(module.PIN_MOISTURE_B, gpio.INPUT)
 gpio.mode(module.PIN_MOISTURE_C, gpio.INPUT)
 
 if (module.MODE == 0) then -- indoor
-  if file.exists("fan.on") then
-    fan(1)
-  else
-    fan(0)
-  end
-  if file.exists("light.on") then
-    light(1)
-  else
-    light(0)
-  end
+  if file.exists("fan.on") then fan(1) else fan(0) end
+  if file.exists("light.on") then light(1) else light(0) end
 end
------------------------
 -- SCHEDULE ROUTINES --
------------------------
 if (module.MODE == 0) then -- indoor
-  cron.schedule(module.MASK_CRON_LIGHT_ON, function(e)
-    light(1)
-  end)
-  cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e)
-    light(0)
-  end)
+  cron.schedule(module.MASK_CRON_LIGHT_ON, function(e) light(1) end)
+  cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e) light(0) end)
 end
 cron.schedule(module.MASK_CRON_CTRL, control)
 collectgarbage()
-
 print("[SETUP] Completed")
