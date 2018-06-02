@@ -43,9 +43,6 @@ git clone --recursive https://github.com/nodemcu/nodemcu-firmware.git
 #define LUA_USE_MODULES_TMR
 #define LUA_USE_MODULES_WIFI
 
-/*app/include/user_version.h*/
-#define NODE_VERSION   "NodeMCU 2.1.2 babilonia"
-#define BUILD_DATE       "20180116"
 ```bash
 
 
@@ -75,44 +72,11 @@ nodemcu-uploader upload apps.lc config.lc init.lua
 
 ### config.lua file
 ```lua
-module = {}
--- Wifi Credentials
-module.SSID = "SSID"
-module.PASSWORD = "PASSWD"
-
--- MQTT configs
-module.BROKER = "BROKER IP" --nabucodonasor
-module.PORT = 1883 -- mosquitto default port
-module.MQTT_STATUS = 1 -- 0 Connected / 1 = Disconnected
-
-module.SLEEP_TIME = 4 -- seconds
-
-module.SYNC_CLOCK_SERVER = "NTP SERVER  IP" --nabucodonasor
--- I/O ports
-module.PIN_DHT   = 5
-module.PIN_FAN   = 6
-module.PIN_LIGHT = 7
-module.PIN_ANALOGIC_MOISTURE = 0
-
--- default values
-module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
-module.TEMPERATURE_NSAMPLES = 10
-module.TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
--- https://crontab.guru/ (nodemcu time is GMT. Sao Paulo time is GMT-2)
-module.MASK_CRON_LIGHT_ON="0 11 * * *"  -- 9AM SP time (LocalTime+2H)
-module.MASK_CRON_LIGHT_OFF="0 20 * * *" -- 6PM SP time (LocalTime+2H)
-module.MASK_CRON_CTRL="* * * * *" -- At every minute
-
--- overwrite variables
-if file.exists("nconfig.lua") then
-  dofile("nconfig.lua")
-end
-
-print("TEMPERATURE_THRESHOLD:"..module.TEMPERATURE_THRESHOLD)
-print("MASK_CRON_LIGHT_ON:"..module.MASK_CRON_LIGHT_ON)
-print("MASK_CRON_LIGHT_OFF:"..module.MASK_CRON_LIGHT_OFF)
-print("MASK_CRON_CTRL:"..module.MASK_CRON_CTRL)
-
+profile = {}
+profile.MODE = <MODE>  -- 0: indoor / 1: outdoor
+profile.SSID = "<THE SSID>"
+profile.PASSWORD = "<THE PASSWORD>"
+profile.BABILONIA_SERVER = "<SERVER IP>"
 
 ```
 ### mqtt reference

@@ -1,7 +1,7 @@
 luac.cross
 log/
 *.lc
-config.lua
+profile.lua
 config.json
 *.db
 *.pyc

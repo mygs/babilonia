@@ -11,12 +11,12 @@ if [[ ! -z $NODE_IS_PLUGGED ]]; then
   ./luac.cross -o config.lc config.lua
   ./luac.cross -o apps.lc apps.lua
   echo "Cleaning old binaries and confs from NODE..."
-  nodemcu-uploader file remove init.lua apps.lc config.lc nconfig.lua remote.reboot fan.on light.on
+  nodemcu-uploader file remove profile.lua init.lua apps.lc config.lc nconfig.lua remote.reboot fan.on light.on
   echo "Restarting NODE..."
   nodemcu-uploader node restart
   sleep 5
   echo "Uploading..."
-  nodemcu-uploader upload config.lc apps.lc init.lua
+  nodemcu-uploader upload profile.lua config.lc apps.lc init.lua
   exit 0
 else
   echo "NODE is not plugged"
