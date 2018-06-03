@@ -78,7 +78,7 @@ wifi_disconnect_event = function(T)
     return
   end
   local total_tries = 20   --consider AP reboot duration.
-  print("\n[WIFI] Connection to "..T.SSID.."  failed!")
+  print("\n[WIFI] Connection to "..T.SSID.." failed!")
   for key,val in pairs(wifi.eventmon.reason) do
     if val == T.reason then
       print("[WIFI] Disconnect reason: "..val.."("..key..")")
