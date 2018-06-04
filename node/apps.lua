@@ -188,23 +188,25 @@ function control()
 end
 ----- INIT SETUP -----
 print("[SETUP] Started")
-for i=0,8 do
-  gpio.write(i, gpio.LOW)
-end
+
 gpio.mode(module.PIN_FAN, gpio.OUTPUT)
 gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
 gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
 gpio.mode(module.PIN_MOISTURE_B, gpio.INPUT)
 gpio.mode(module.PIN_MOISTURE_C, gpio.INPUT)
+-- power OFF sensors
+gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
+-- power OFF pump or solenoid
+gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
 
 if (module.MODE == 0) then -- indoor
   if file.exists("fan.on") then fan(1) else fan(0) end
   if file.exists("light.on") then light(1) else light(0) end
-end
--- SCHEDULE ROUTINES --
-if (module.MODE == 0) then -- indoor
   cron.schedule(module.MASK_CRON_LIGHT_ON, function(e) light(1) end)
   cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e) light(0) end)
+elseif (module.MODE == 1) then -- outdoor
+  gpio.write(module.PIN_FAN, gpio.LOW)
+  gpio.write(module.PIN_LIGHT, gpio.LOW)
 end
 cron.schedule(module.MASK_CRON_CTRL, control)
 collectgarbage()
