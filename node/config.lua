@@ -41,9 +41,12 @@ print("WIFI: "..module.SSID)
 print("SERVER: "..module.BABILONIA_SERVER)
 if (module.MODE == 0) then -- indoor
   print("MODE: INDOOR")
+  print("TEMPERATURE_THRESHOLD: "..module.TEMPERATURE_THRESHOLD)
   print("MASK_CRON_LIGHT_ON: "..module.MASK_CRON_LIGHT_ON)
   print("MASK_CRON_LIGHT_OFF: "..module.MASK_CRON_LIGHT_OFF)
 else
   print("MODE: OUTDOOR")
+  print("SLEEP_TIME_SPRINKLE: "..module.SLEEP_TIME_SPRINKLE)
 end
+print("SLEEP_TIME_MOISTURE: "..module.SLEEP_TIME_MOISTURE)
 print("MASK_CRON_CTRL: "..module.MASK_CRON_CTRL)

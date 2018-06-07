@@ -26,6 +26,7 @@ def insert_data(time, values):
 def save_cfg(request):
     ID = request.form['ID'];
     NAME = request.form['NAME'];
+    SLEEP_TIME_SPRINKLE = request.form['SLEEP_TIME_SPRINKLE'];
     TEMPERATURE_THRESHOLD = request.form['TEMPERATURE_THRESHOLD'];
     MASK_CRON_LIGHT_ON = request.form['MASK_CRON_LIGHT_ON'];
     MASK_CRON_LIGHT_OFF = request.form['MASK_CRON_LIGHT_OFF'];
@@ -36,12 +37,13 @@ def save_cfg(request):
     try:
         cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s
                                             MASK_CRON_LIGHT_ON=%s, MASK_CRON_LIGHT_OFF=%s,
-                                            MASK_CRON_CTRL=%s where ID = %s""",
+                                            MASK_CRON_CTRL=%s, SLEEP_TIME_SPRINKLE=%s where ID = %s""",
                     (NAME,
                     TEMPERATURE_THRESHOLD,
                     MASK_CRON_LIGHT_ON,
                     MASK_CRON_LIGHT_OFF,
                     MASK_CRON_CTRL,
+                    SLEEP_TIME_SPRINKLE,
                     ID))
         con.commit()
         return 0
@@ -250,7 +252,7 @@ def retrieve_last_telemetry_info():
                                 D.STATUS_FAN,
                                 D.STATUS_LIGHT,
                                 D.MEASURED_MOISTURE_A,
-                                D.MEASURED_MOISTURE_B, 
+                                D.MEASURED_MOISTURE_B,
                                 D.MEASURED_MOISTURE_C
                             FROM (
 	                               SELECT *
@@ -265,13 +267,14 @@ def retrieve_cfg(id):
     with con:
         cur = con.cursor()
         cur.execute("""SELECT TEMPERATURE_THRESHOLD,MASK_CRON_LIGHT_ON,
-                              MASK_CRON_LIGHT_OFF,MASK_CRON_CTRL,LAST_UPDATE
+                              MASK_CRON_LIGHT_OFF,MASK_CRON_CTRL,SLEEP_TIME_SPRINKLE
                         FROM NODE WHERE ID = %s""", (id,))
         conf = ""
         for row in cur.fetchall():
             conf = "id:"+id+";temp:"+str(row[0])+";"
             # ask node to reboot because we are sending new crontab parameters
             conf += "mclon:"+str(row[1])+";mcloff:"+str(row[2])+";mcctrl:"+str(row[3])+";"
+            conf = "sts:"+str(row[4])+";"
             conf += "cmd:0"
         cur.execute("UPDATE NODE SET LAST_UPDATE = %s WHERE ID = %s", (int(time.time()),id,))
         con.commit()
@@ -285,6 +288,7 @@ def get_node_cfg(id):
                               TEMPERATURE_THRESHOLD,
                               MASK_CRON_LIGHT_ON,
                               MASK_CRON_LIGHT_OFF,
-                              MASK_CRON_CTRL
+                              MASK_CRON_CTRL,
+                              SLEEP_TIME_SPRINKLE
                         FROM NODE WHERE ID = %s""", (id,))
         return cur.fetchone()

@@ -96,7 +96,8 @@ def node():
                         'TEMPERATURE_THRESHOLD':node[1],
                         'MASK_CRON_LIGHT_ON':node[2],
                         'MASK_CRON_LIGHT_OFF':node[3],
-                        'MASK_CRON_CTRL':node[4]});
+                        'MASK_CRON_CTRL':node[4],
+                        'SLEEP_TIME_SPRINKLE':node[5]});
 
 @app.route('/updatecfg', methods=['POST'])
 def updatecfg():

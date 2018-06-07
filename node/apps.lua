@@ -31,6 +31,7 @@ function save_configuration()
   end
   if file.open("nconfig.lua", "w+") then
     -- writing new parameters
+    file.writeline('module.SLEEP_TIME_SPRINKLE='..module.SLEEP_TIME_SPRINKLE)
     file.writeline('module.TEMPERATURE_THRESHOLD='..module.TEMPERATURE_THRESHOLD)
     file.writeline('module.MASK_CRON_LIGHT_ON=\"'..module.MASK_CRON_LIGHT_ON.."\"")
     file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..module.MASK_CRON_LIGHT_OFF.."\"")
@@ -70,6 +71,12 @@ function update(data)
           table.insert(parms, "id:"..node.chipid())
           table.insert(parms, ";sl:"..light())
           publish("/cmd-ack", table.concat(parms,""))
+    end
+    if (RES.sts ~= nil) then
+          module.SLEEP_TIME_SPRINKLE = tonumber(RES.sts)
+    end
+    if (RES.sop ~= nil) then
+      sprinkle()
     end
     if (RES.temp ~= nil) then
           module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
