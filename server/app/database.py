@@ -35,7 +35,7 @@ def save_cfg(request):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     cur = con.cursor()
     try:
-        cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s
+        cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s,
                                             MASK_CRON_LIGHT_ON=%s, MASK_CRON_LIGHT_OFF=%s,
                                             MASK_CRON_CTRL=%s, SLEEP_TIME_SPRINKLE=%s where ID = %s""",
                     (NAME,
