@@ -94,7 +94,7 @@ function update(data)
           local cmd = tonumber(RES.cmd)
 
           if     cmd == 0 then reboot()
-          elseif cmd == 1 then control()
+          elseif cmd == 1 then control(false)
           elseif cmd == 2 then collectgarbage()
           elseif cmd == 3 then publish("/env", "heap: "..node.heap())
           elseif cmd == 4 then publish("/env", "info: "..node.info())
@@ -164,7 +164,7 @@ function sprinkle(duration)
   print("[SPRINKLE] OFF")
 end
 ------ CONTROL -------
-function control()
+function control(readonly)
   -- power ON moisture sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
   local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.read(module.PIN_DHT)
@@ -184,18 +184,20 @@ function control()
   local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
   print("[CTRL] Temp: "..temp_str.."C | Moisture:["..mma..","..mmb..","..mmc.."]")
   publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
-  if (module.MODE == 0) then -- indoor
-    if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
-      fan(1)
-    else
-      fan(0)
-    end
-  elseif (module.MODE == 1) then -- outdoor
-    if (mma == 1 or mmb == 1 or mmc == 1) then
-      sprinkle()
+  if (readonly == nil) then
+    if (module.MODE == 0) then -- indoor
+      if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
+        fan(1)
+      else
+        fan(0)
+      end
+    elseif (module.MODE == 1) then -- outdoor
+      if (mma == 1 or mmb == 1 or mmc == 1) then
+        sprinkle()
+      end
     end
   end
-end
+  end
 ----- INIT SETUP -----
 print("[SETUP] Started")
 
