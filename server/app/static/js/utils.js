@@ -122,6 +122,7 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       modal.find('.modal-title').text('Configuration for ' + resp.NAME);
       $("#ID").val(id);
       $("#NAME").val(resp.NAME);
+      $("#SLEEP_TIME_SPRINKLE").val(resp.SLEEP_TIME_SPRINKLE);
       $("#TEMPERATURE_THRESHOLD").val(resp.TEMPERATURE_THRESHOLD);
       $("#MASK_CRON_CTRL").val(resp.MASK_CRON_CTRL);
       $("#MASK_CRON_LIGHT_ON").val(resp.MASK_CRON_LIGHT_ON);
