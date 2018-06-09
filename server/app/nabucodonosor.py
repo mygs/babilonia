@@ -132,6 +132,13 @@ def utility_processor():
             return "nostatus"
         else: # >= 15 min
             return "danger"
+    def mode(mode):
+        if int(mode) == 0:
+            return "indoor"
+        elif int(mode) == 1:
+            return "outdoor"
+        else: # Not Define Yet
+            return "undefinedmode"
     def format_timestamp(value):
         return time.strftime("%d/%m/%Y %H:%M:%S", time.localtime(int(value)))
     def format_temperature(value):
@@ -161,6 +168,7 @@ def utility_processor():
             'format_moisture':format_moisture,
             'status':status,
             'status_node':status_node,
+            'mode':mode,
             'crop_duration':crop_duration
             }
 

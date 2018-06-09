@@ -8,7 +8,7 @@
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           <li>
-            <div id='status_{{module[1]}}' class="box {{ status_node(module[3]) }}">
+            <div id='status_{{module[1]}}' class="box {{ status_node(module[3]) }} {{ mode(module[2]) }}">
               <h4>{{module[0]}}</h4>
                <p><span id='time_{{module[1]}}'>{{ format_timestamp(module[3]) }} </span></p>
               <table id="telemetry">
