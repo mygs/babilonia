@@ -102,7 +102,7 @@ def node():
 @app.route('/updatecfg', methods=['POST'])
 def updatecfg():
     status = database.save_cfg(request);
-    conf = database.retrieve_cfg(request.form['ID'])
+    conf = database.syncronize_node_cfg(request.form['ID'], None)
     if cfg["mode"]["mqtt"] == True:
         mqtt.publish("/cfg", conf)
     if status == 0:
@@ -280,7 +280,7 @@ if cfg["mode"]["mqtt"] == True:
         if topic == "/online":
             if values['rb'] == "0" : # not remote requested boot
                 conf = ""
-                conf = database.syncronize_node(values)
+                conf = database.syncronize_node_cfg(values['id'],values['mode'])
                 mqtt.publish("/cfg", conf)
 
 if __name__ == '__main__':

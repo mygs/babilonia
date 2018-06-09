@@ -8,37 +8,37 @@
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           <li>
-            <div  id='status_{{module[1]}}' class="box {{ status_node(module[2]) }}">
+            <div id='status_{{module[1]}}' class="box {{ status_node(module[3]) }}">
               <h4>{{module[0]}}</h4>
-               <p><span id='time_{{module[1]}}'>{{ format_timestamp(module[2]) }} </span></p>
+               <p><span id='time_{{module[1]}}'>{{ format_timestamp(module[3]) }} </span></p>
               <table id="telemetry">
                 <tr>
                   <td class="param-label">Temperature</td>
-                  <td class="param-value" id='temp_{{module[1]}}'>{{ format_temperature(module[3]) }}</td>
+                  <td class="param-value" id='temp_{{module[1]}}'>{{ format_temperature(module[4]) }}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Moisture A</i></td>
-                  <td class="param-value" id='mma_{{module[1]}}'>{{ format_moisture(module[7]) }}</td>
+                  <td class="param-value" id='mma_{{module[1]}}'>{{ format_moisture(module[8]) }}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Moisture B</i></td>
-                  <td class="param-value" id='mmb_{{module[1]}}'>{{ format_moisture(module[8]) }}</td>
+                  <td class="param-value" id='mmb_{{module[1]}}'>{{ format_moisture(module[9]) }}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Moisture C</i></td>
-                  <td class="param-value" id='mmc_{{module[1]}}'>{{ format_moisture(module[9]) }}</td>
+                  <td class="param-value" id='mmc_{{module[1]}}'>{{ format_moisture(module[10]) }}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Humidity</td>
-                  <td class="param-value" id='humid_{{module[1]}}'>{{ format_humidity(module[4]) }}</td>
+                  <td class="param-value" id='humid_{{module[1]}}'>{{ format_humidity(module[5]) }}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Fan</td>
-                  <td class="param-value" id='fan_{{module[1]}}'>{{ status(module[5]) }}</td>
+                  <td class="param-value" id='fan_{{module[1]}}'>{{ status(module[6]) }}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Light</td>
-                  <td class="param-value" id='light_{{module[1]}}'>{{ status(module[6]) }}</td>
+                  <td class="param-value" id='light_{{module[1]}}'>{{ status(module[7]) }}</td>
                 </tr>
               </table>
               <table id="cockpit">

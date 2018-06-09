@@ -246,6 +246,7 @@ def retrieve_last_telemetry_info():
         cur = con.cursor()
         cur.execute("""SELECT   N.NAME,
                                 N.ID,
+                                N.MODE,
                                 D.TIMESTAMP,
                                 D.MEASURED_TEMPERATURE,
                                 D.MEASURED_HUMIDITY,
@@ -262,21 +263,25 @@ def retrieve_last_telemetry_info():
                                 )D INNER JOIN NODE N USING (ID)""")
         return cur.fetchall()
 
-def syncronize_node(values):
+def syncronize_node_cfg(id, mode):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
         cur.execute("""SELECT TEMPERATURE_THRESHOLD,MASK_CRON_LIGHT_ON,
                               MASK_CRON_LIGHT_OFF,MASK_CRON_CTRL,SLEEP_TIME_SPRINKLE
-                        FROM NODE WHERE ID = %s""", (values['id'],))
+                        FROM NODE WHERE ID = %s""", (id,))
         conf = ""
         for row in cur.fetchall():
-            conf = "id:"+values['id']+";temp:"+str(row[0])+";"
+            conf = "id:"+id+";temp:"+str(row[0])+";"
             # ask node to reboot because we are sending new crontab parameters
             conf += "mclon:"+str(row[1])+";mcloff:"+str(row[2])+";mcctrl:"+str(row[3])+";"
             conf += "sts:"+str(row[4])+";"
             conf += "cmd:0"
-        cur.execute("UPDATE NODE SET MODE = %s, LAST_UPDATE = %s WHERE ID = %s", (values['mode'], int(time.time()),values['id']))
+        if mode is None:
+            cur.execute("UPDATE NODE SET LAST_UPDATE = %s WHERE ID = %s", (int(time.time()),id))
+        else:
+            cur.execute("UPDATE NODE SET MODE = %s, LAST_UPDATE = %s WHERE ID = %s", (mode, int(time.time()),id))
+
         con.commit()
         return conf
 
