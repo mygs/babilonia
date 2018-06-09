@@ -32,13 +32,16 @@ function do_mqtt_connect()
   )
 end
 function handle_mqtt_error()
-	print("[MQTT] Disconnected, reconnecting....")
-	MQTTCLIENT:close()
-  module.MQTT_STATUS = 1;
+	--print("[MQTT] Disconnected, reconnecting....")
+	--MQTTCLIENT:close()
+  --module.MQTT_STATUS = 1;
 	if file.open("remote.reboot", "w") then
 		file.close()
 	end
-	do_mqtt_connect()
+	--do_mqtt_connect()
+	--createMqttConnection()
+	print("[MQTT] Aborting connection and restarting NODE!")
+	node.restart()
 end
 function createMqttConnection()
 	print("[MQTT] Instantiating ")
@@ -97,9 +100,7 @@ wifi_disconnect_event = function(T)
   if disconnect_ct < total_tries then
     print("[WIFI] Retrying connection...(attempt "..(disconnect_ct+1).." of "..total_tries..")")
   else
-    wifi.sta.disconnect()
     print("[WIFI] Aborting connection and restarting NODE!")
-    disconnect_ct = nil
 		node.restart()
   end
 end
