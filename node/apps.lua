@@ -76,7 +76,7 @@ function update(data)
           module.SLEEP_TIME_SPRINKLE = tonumber(RES.sts)
     end
     if (RES.sop ~= nil) then
-      sprinkle()
+      sprinkle(tonumber(RES.sop))
     end
     if (RES.temp ~= nil) then
           module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
@@ -153,10 +153,13 @@ function fan(switch)
   return  1 - gpio.read(module.PIN_FAN)
 end
 -- ACTUATOR SPRINKLE
-function sprinkle()
-  print("[SPRINKLE] ON")
+function sprinkle(duration)
+  if (duration == nil) then
+    duration = module.SLEEP_TIME_SPRINKLE
+  end
+  print("[SPRINKLE] ON for "..duration.." us")
   gpio.write(module.PIN_PUMP_SOLENOID, gpio.HIGH)
-  tmr.delay(module.SLEEP_TIME_SPRINKLE)
+  tmr.delay(duration)
   gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
   print("[SPRINKLE] OFF")
 end
