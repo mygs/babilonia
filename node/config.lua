@@ -22,7 +22,7 @@ module.PIN_PUMP_SOLENOID      = 3
 module.MQTT_STATUS = 1 -- 0 Connected / 1 = Disconnected
 module.SLEEP_TIME = 5 -- seconds
 module.SLEEP_TIME_MOISTURE = 5000000 -- 5 seconds
-module.SLEEP_TIME_SPRINKLE = 30000000 -- 30 seconds
+module.SLEEP_TIME_SPRINKLE = 25000000 -- 25 seconds
 module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
 module.TEMPERATURE_NSAMPLES = 10 -- https://goo.gl/3bLYao
 module.TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature

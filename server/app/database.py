@@ -274,7 +274,7 @@ def retrieve_cfg(id):
             conf = "id:"+id+";temp:"+str(row[0])+";"
             # ask node to reboot because we are sending new crontab parameters
             conf += "mclon:"+str(row[1])+";mcloff:"+str(row[2])+";mcctrl:"+str(row[3])+";"
-            conf = "sts:"+str(row[4])+";"
+            conf += "sts:"+str(row[4])+";"
             conf += "cmd:0"
         cur.execute("UPDATE NODE SET LAST_UPDATE = %s WHERE ID = %s", (int(time.time()),id,))
         con.commit()
