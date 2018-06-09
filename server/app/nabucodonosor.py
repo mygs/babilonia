@@ -280,7 +280,7 @@ if cfg["mode"]["mqtt"] == True:
         if topic == "/online":
             if values['rb'] == "0" : # not remote requested boot
                 conf = ""
-                conf = database.retrieve_cfg(values['id'])
+                conf = database.syncronize_node(values)
                 mqtt.publish("/cfg", conf)
 
 if __name__ == '__main__':

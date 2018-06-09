@@ -7,6 +7,7 @@ function conn_pub_sub(client)
 			print("[MQTT] Subscribe success")
 			local parms = {}
 			table.insert(parms, "id:"..node.chipid())
+			table.insert(parms, ";mode:"..profile.MODE)
 			if file.exists("remote.reboot") then
 				table.insert(parms, ";rb:1")
 				file.remove("remote.reboot")
