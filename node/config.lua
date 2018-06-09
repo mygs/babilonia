@@ -20,7 +20,7 @@ module.PIN_PUMP_SOLENOID      = 3
 
 -- default values
 module.MQTT_STATUS = 1 -- 0 Connected / 1 = Disconnected
-module.SLEEP_TIME = 5 -- seconds
+module.SLEEP_TIME = 10 -- seconds
 module.SLEEP_TIME_MOISTURE = 5000000 -- 5 seconds
 module.SLEEP_TIME_SPRINKLE = 25000000 -- 25 seconds
 module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
