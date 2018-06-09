@@ -67,6 +67,16 @@ $(".btn-fan").on("click", function() {
   callbackend(id, mode, param, img, title, text)
 });
 
+$(".btn-sop").on("click", function() {
+  var id = $(this).data('id');
+  var name = $(this).data('name');
+  var mode = 'sop';
+  var img = '/static/img/fan.png';
+  var title = "Turn ON Pump/Solenoid for 30 secs?";
+  var text = "after action, please wait";
+  callbackend(id, mode, 3000000, img, title, text)
+});
+
 
 $(".btn-restart").on("click", function() {
   var id = $(this).data('id');
