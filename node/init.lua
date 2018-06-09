@@ -33,7 +33,11 @@ function do_mqtt_connect()
 end
 function handle_mqtt_error()
 	print("[MQTT] Disconnected, reconnecting....")
+	MQTTCLIENT:close()
   module.MQTT_STATUS = 1;
+	if file.open("remote.reboot", "w") then
+		file.close()
+	end
 	do_mqtt_connect()
 end
 function createMqttConnection()
