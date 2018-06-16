@@ -7,7 +7,7 @@ function conn_pub_sub(client)
 			print("[MQTT] Subscribe success")
 			local parms = {}
 			table.insert(parms, "id:"..node.chipid())
-			table.insert(parms, ";mode:"..profile.MODE)
+			table.insert(parms, ";mode:"..module.MODE)
 			if file.exists("remote.reboot") then
 				table.insert(parms, ";rb:1")
 				file.remove("remote.reboot")
@@ -54,8 +54,12 @@ end
 function startup()
 	sntp.sync(module.BABILONIA_SERVER,  -- Sync clock for schedule
 		function()
-			print('[CLOCK] Sync OK')
-			createMqttConnection()
+			if(module.BABILONIA_STATUS == 1) then
+				print('[CLOCK] Sync OK')
+				createMqttConnection()
+			else
+				print('[CLOCK] ReSync OK')
+			end
 		end,
 		function()
 			print('[CLOCK] Sync Failed.')
