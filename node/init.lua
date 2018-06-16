@@ -37,16 +37,12 @@ function do_mqtt_connect()
   )
 end
 function handle_mqtt_error()
+	module.MQTT_STATUS = 1;
 	print("[MQTT] Disconnected, reconnecting....")
+	MQTTCLIENT = nil
 	--MQTTCLIENT:close()
-  --module.MQTT_STATUS = 1;
-	if file.open("remote.reboot", "w") then
-		file.close()
-	end
-	do_mqtt_connect()
-	--createMqttConnection()
-	--print("[MQTT] Aborting connection and restarting NODE!")
-	--node.restart()
+	--do_mqtt_connect()
+	createMqttConnection()
 end
 function createMqttConnection()
 	print("[MQTT] Instantiating ")
