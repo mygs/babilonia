@@ -304,7 +304,7 @@ function saveplant() {
 /* Websocket connection to update NODE Status */
 $(document).ready(function() {
 
-  var socket = io.connect('http://192.168.1.60:8080');
+  var socket = io.connect();
   socket.on('mqtt_message', function(data) {
     console.log(data);
     var id = data.id;

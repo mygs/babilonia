@@ -6,9 +6,8 @@ module.MODE = profile.MODE
 module.SSID = profile.SSID
 module.PASSWORD = profile.PASSWORD
 module.BABILONIA_SERVER = profile.BABILONIA_SERVER
-
+profile = nil
 -- I/O ports
---module.PIN_ANALOGIC_MOISTURE  = 0
 module.PIN_SENSORS_SWITCH     = 1  -- fixed at shield
 module.PIN_MOISTURE_A         = 2
 module.PIN_MOISTURE_B         = 0
@@ -21,7 +20,7 @@ module.PIN_PUMP_SOLENOID      = 3
 -- default values
 module.BABILONIA_STATUS = 1 -- 0: Already started / 1: Not started yet
 module.MQTT_STATUS = 1 -- 0: Connected / 1: Disconnected
-module.SLEEP_TIME_WIFI = 10 -- seconds
+module.SLEEP_TIME_WIFI = 5 -- seconds
 module.SLEEP_TIME_MQTT = 5 -- seconds
 module.SLEEP_TIME_MOISTURE = 5000000 -- 5 seconds
 module.SLEEP_TIME_SPRINKLE = 25000000 -- 25 seconds
