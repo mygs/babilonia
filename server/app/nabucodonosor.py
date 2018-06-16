@@ -133,24 +133,39 @@ def utility_processor():
         else: # >= 15 min
             return "danger"
     def mode(mode):
+        if mode is None or mode=="":
+            return "undefinedmode"
         if int(mode) == 0:
             return "indoor"
         elif int(mode) == 1:
             return "outdoor"
         else: # Not Define Yet
             return "undefinedmode"
+    def disableBtn(btn, mode):
+        if mode is None or mode=="":
+            return ""
+        if int(mode) == 1 and btn != "sop": #outdoor => disable fan and light
+            return "disabled=disable"
+        elif int(mode) == 0 and btn == "sop": #indoor => disable sop
+            return "disabled=disable"
+        else:
+            return ""
     def format_timestamp(value):
         return time.strftime("%d/%m/%Y %H:%M:%S", time.localtime(int(value)))
     def format_temperature(value):
         return u'{0:2.0f}°C'.format(value)
     def format_humidity(value):
         return u'{0:.2f}%'.format(value)
-    def format_moisture(value): #WET: GPIO = 0 / BUILD IN LED = ON
-        if int(value) == 1:     #DRY: GPIO = 1 / BUILD IN LED = OFF
-            return 'DRY'
+    def format_moisture(value, mode):
+        if mode  is None or mode=="" or int(mode) == 0:
+            return 'N/A'
+        if int(value) == 1:
+            return 'DRY' #DRY: GPIO = 1 / BUILD IN LED = OFF
         else:
-            return 'WET'
-    def status(value):
+            return 'WET' #WET: GPIO = 0 / BUILD IN LED = ON
+    def status(value, mode):
+        if mode  is None or mode=="" or int(mode) == 1:
+            return 'N/A'
         if int(value) == 1:
             return 'on'
         else:
@@ -163,6 +178,7 @@ def utility_processor():
         else:
             return str(delta.days)
     return {'format_timestamp':format_timestamp,
+            'disableBtn':disableBtn,
             'format_temperature':format_temperature,
             'format_humidity':format_humidity,
             'format_moisture':format_moisture,
