@@ -164,7 +164,7 @@ function sprinkle(duration)
   print("[SPRINKLE] OFF")
 end
 ------ CONTROL -------
-function control(readonly)
+function control(action)
   -- power ON moisture sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
   local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.read(module.PIN_DHT)
@@ -184,7 +184,7 @@ function control(readonly)
   local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
   print("[CTRL] Temp: "..temp_str.."C | Moisture:["..mma..","..mmb..","..mmc.."]")
   publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
-  if (readonly == nil) then
+  if (action == true) then
     if (module.MODE == 0) then -- indoor
       if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
         fan(1)
@@ -220,6 +220,7 @@ elseif (module.MODE == 1) then -- outdoor
   gpio.write(module.PIN_FAN, gpio.LOW)
   gpio.write(module.PIN_LIGHT, gpio.LOW)
 end
-cron.schedule(module.MASK_CRON_CTRL, control)
+cron.schedule(module.MASK_CRON_CTRL,  function(e) control(true) end)
 collectgarbage()
 print("[SETUP] Completed")
+module.BABILONIA_STATUS = 0

@@ -14,9 +14,13 @@ function conn_pub_sub(client)
 			else
 				table.insert(parms, ";rb:0")
 			end
-			print("Starting Babilonia App")
-			require("apps")
-			MQTTCLIENT:publish("/online", table.concat(parms,""), 0, 0)	-- request conf.
+			if(module.BABILONIA_STATUS == 1) then
+				print("[APP] Starting Babilonia App")
+				require("apps")
+				MQTTCLIENT:publish("/online", table.concat(parms,""), 0, 0)	-- request conf.
+			else
+				print("[APP] Babilonia App already started")
+			end
 		end)
 	module.MQTT_STATUS = 0;
 end
@@ -27,8 +31,8 @@ function do_mqtt_connect()
     function(client, reason)
       print("[MQTT] Cannot connect. Reason: "..reason)
       module.MQTT_STATUS = 1;
-      print("[MQTT] Trying again within "..module.SLEEP_TIME.." secs")
-      tmr.create():alarm(module.SLEEP_TIME*1000, tmr.ALARM_SINGLE, do_mqtt_connect)
+      print("[MQTT] Trying again within "..module.SLEEP_TIME_MQTT.." secs")
+      tmr.create():alarm(module.SLEEP_TIME_MQTT*1000, tmr.ALARM_SINGLE, do_mqtt_connect)
     end
   )
 end
@@ -46,7 +50,7 @@ function handle_mqtt_error()
 end
 function createMqttConnection()
 	print("[MQTT] Instantiating ")
-	MQTTCLIENT = mqtt.Client(module.ID, module.SLEEP_TIME)
+	MQTTCLIENT = mqtt.Client(module.ID, module.SLEEP_TIME_MQTT)
 	MQTTCLIENT:on("connect", conn_pub_sub)
 	MQTTCLIENT:on("offline", handle_mqtt_error)
 	do_mqtt_connect()
@@ -78,8 +82,12 @@ wifi_connect_event = function(T)
 end
 wifi_got_ip_event = function(T)
   print("[WIFI] IP: "..T.IP)
-  print("[WIFI] You have "..module.SLEEP_TIME.." secs to abort.")
-  tmr.create():alarm(module.SLEEP_TIME*1000, tmr.ALARM_SINGLE, prepare_startup)
+	if(module.BABILONIA_STATUS == 1) then
+  	print("[WIFI] You have "..module.SLEEP_TIME_WIFI.."s to abort")
+  	tmr.create():alarm(module.SLEEP_TIME_WIFI*1000, tmr.ALARM_SINGLE, prepare_startup)
+	else
+		print("[WIFI] Connection recovered procedures done!")
+	end
 end
 wifi_disconnect_event = function(T)
   if T.reason == wifi.eventmon.reason.ASSOC_LEAVE then
