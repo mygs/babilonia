@@ -36,7 +36,7 @@ app/include/user_config.h
 
 /app/include/user_modules.h
 ```c
-#define LUA_USE_MODULES_ADC
+//#define LUA_USE_MODULES_ADC
 //#define LUA_USE_BUILTIN_COROUTINE
 //#define LUA_USE_BUILTIN_MATH
 //#define LUA_USE_BUILTIN_DEBUG_MINIMAL

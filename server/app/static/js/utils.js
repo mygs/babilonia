@@ -73,7 +73,7 @@ $(".btn-sop").on("click", function() {
   var img = '/static/img/tap.png';
   var title = "Turn ON Pump/Solenoid for 15 secs?";
   var text = "after action, please wait";
-  callbackend(id, mode, 15000000, img, title, text)
+  callbackend(id, mode, '', img, title, text)
 });
 
 
