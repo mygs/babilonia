@@ -26,24 +26,38 @@ alias xgcc="xtensa-lx106-elf-gcc"
 git clone --recursive https://github.com/nodemcu/nodemcu-firmware.git
 ```
 
+#### nodemcu-firmware customisation
+
+app/include/user_config.h
 ```c
-/*app/include/user_config.h*/
 //#define CLIENT_SSL_ENABLE
 //#define SHA2_ENABLE
+```
 
-/*/app/include/user_modules.h*/
+/app/include/user_modules.h
+```c
+#define LUA_USE_MODULES_ADC
+//#define LUA_USE_BUILTIN_COROUTINE
+//#define LUA_USE_BUILTIN_MATH
+//#define LUA_USE_BUILTIN_DEBUG_MINIMAL
+//#define LUA_USE_MODULES_BIT
 #define LUA_USE_MODULES_CRON
+//#define LUA_USE_MODULES_I2C
 #define LUA_USE_MODULES_DHT
 #define LUA_USE_MODULES_FILE
 #define LUA_USE_MODULES_GPIO
 #define LUA_USE_MODULES_MQTT
 #define LUA_USE_MODULES_NET
+//#define LUA_USE_MODULES_NODE
+//#define LUA_USE_MODULES_OW
 #define LUA_USE_MODULES_RTCTIME
 #define LUA_USE_MODULES_SNTP
+//#define LUA_USE_MODULES_SPI
+//#define LUA_USE_MODULES_TLS
 #define LUA_USE_MODULES_TMR
+//#define LUA_USE_MODULES_UART
 #define LUA_USE_MODULES_WIFI
-
-```bash
+```
 
 
 ### flash firmware
