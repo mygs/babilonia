@@ -117,6 +117,7 @@ $(".btn-refresh").on("click", function() {
 $('#updateNodeModal').on('show.bs.modal', function(event) {
   var button = $(event.relatedTarget); // Button that triggered the modal
   var id = button.data('id'); // Extract info from data-* attributes
+  var mode = button.data('mode'); // Extract info from data-* attributes
   var modal = $(this);
   $.ajax({
     url: '/configuration',
@@ -128,7 +129,7 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
     success: function(response) {
       var resp = JSON.parse(response);
 
-      modal.find('.modal-title').text('Configuration for ' + resp.NAME);
+      modal.find('.modal-title').text('Configuration for ' + resp.NAME + ' - '+mode);
       $("#ID").val(id);
       $("#NAME").val(resp.NAME);
       $("#SLEEP_TIME_SPRINKLE").val(resp.SLEEP_TIME_SPRINKLE);
@@ -136,6 +137,18 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       $("#MASK_CRON_CTRL").val(resp.MASK_CRON_CTRL);
       $("#MASK_CRON_LIGHT_ON").val(resp.MASK_CRON_LIGHT_ON);
       $("#MASK_CRON_LIGHT_OFF").val(resp.MASK_CRON_LIGHT_OFF);
+
+      if(mode == "outdoor"){
+        $("#SLEEP_TIME_SPRINKLE").attr('readonly', false);
+        $("#TEMPERATURE_THRESHOLD").attr('readonly', true);
+        $("#MASK_CRON_LIGHT_ON").attr('readonly', true);
+        $("#MASK_CRON_LIGHT_OFF").attr('readonly', true);
+      } else if(mode == "indoor"){
+        $("#SLEEP_TIME_SPRINKLE").attr('readonly', true);
+        $("#TEMPERATURE_THRESHOLD").attr('readonly', false);
+        $("#MASK_CRON_LIGHT_ON").attr('readonly', false);
+        $("#MASK_CRON_LIGHT_OFF").attr('readonly', false);
+      }
     },
     error: function(response) {
       $("#alert").html("ERROR");
