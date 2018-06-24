@@ -118,6 +118,7 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
   var button = $(event.relatedTarget); // Button that triggered the modal
   var id = button.data('id'); // Extract info from data-* attributes
   var mode = button.data('mode'); // Extract info from data-* attributes
+  var crud = button.data('crud'); // Extract info from data-* attributes
   var modal = $(this);
   $.ajax({
     url: '/configuration',
@@ -128,8 +129,11 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
     contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
     success: function(response) {
       var resp = JSON.parse(response);
-
-      modal.find('.modal-title').text('Configuration for ' + resp.NAME + ' - '+mode);
+      if (crud == "edit"){
+        modal.find('.modal-title').text('Configuration for ' + resp.NAME + ' - '+mode);
+      } else if(crud == "new"){
+        modal.find('.modal-title').text('New Configuration for ' + id + ' - '+mode);
+      }
       $("#ID").val(id);
       $("#NAME").val(resp.NAME);
       $("#SLEEP_TIME_SPRINKLE").val(resp.SLEEP_TIME_SPRINKLE);

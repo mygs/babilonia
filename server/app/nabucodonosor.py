@@ -92,12 +92,19 @@ def timeseries():
 def node():
     id = request.form['id'];
     node = database.get_node_cfg(id);
-    return json.dumps({ 'NAME':node[0],
-                        'TEMPERATURE_THRESHOLD':node[1],
-                        'MASK_CRON_LIGHT_ON':node[2],
-                        'MASK_CRON_LIGHT_OFF':node[3],
-                        'MASK_CRON_CTRL':node[4],
-                        'SLEEP_TIME_SPRINKLE':node[5]});
+    if node is None:
+        return json.dumps({ 'TEMPERATURE_THRESHOLD':cfg["defaults"]["TEMPERATURE_THRESHOLD"],
+                            'MASK_CRON_LIGHT_ON':cfg["defaults"]["MASK_CRON_LIGHT_ON"],
+                            'MASK_CRON_LIGHT_OFF':cfg["defaults"]["MASK_CRON_LIGHT_OFF"],
+                            'MASK_CRON_CTRL':cfg["defaults"]["MASK_CRON_CTRL"],
+                            'SLEEP_TIME_SPRINKLE':cfg["defaults"]["SLEEP_TIME_SPRINKLE"]});
+    else:
+        return json.dumps({ 'NAME':node[0],
+                            'TEMPERATURE_THRESHOLD':node[1],
+                            'MASK_CRON_LIGHT_ON':node[2],
+                            'MASK_CRON_LIGHT_OFF':node[3],
+                            'MASK_CRON_CTRL':node[4],
+                            'SLEEP_TIME_SPRINKLE':node[5]});
 
 @app.route('/updatecfg', methods=['POST'])
 def updatecfg():
@@ -312,4 +319,4 @@ if __name__ == '__main__':
     user_reload = True
     if cfg["mode"]["mqtt"] == True:
         user_reload = False # Avoid Bug: TWICE mqtt instances
-    socketio.run(app, host='0.0.0.0', port=80, debug=True, use_reloader=user_reload)
+    socketio.run(app, host='0.0.0.0', port=8080, debug=True, use_reloader=user_reload)

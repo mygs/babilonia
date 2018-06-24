@@ -1,3 +1,10 @@
+.alert{
+    display: none;
+}
+.alert .btn-danger {
+  float: right;
+}
+
 .navbar-brand {
   padding: 0px; /* firefox bug fix */
 }

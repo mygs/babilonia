@@ -35,16 +35,19 @@ def save_cfg(request):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     cur = con.cursor()
     try:
-        cur.execute("""UPDATE NODE SET NAME=%s, TEMPERATURE_THRESHOLD=%s,
+        cur.execute("""INSERT INTO NODE (ID, NAME, TEMPERATURE_THRESHOLD,
+                                            MASK_CRON_LIGHT_ON, MASK_CRON_LIGHT_OFF,
+                                            MASK_CRON_CTRL, SLEEP_TIME_SPRINKLE)
+                                    VALUES  (%s,%s,%s,%s,%s,%s,%s)
+                        ON DUPLICATE KEY UPDATE NAME=%s, TEMPERATURE_THRESHOLD=%s,
                                             MASK_CRON_LIGHT_ON=%s, MASK_CRON_LIGHT_OFF=%s,
-                                            MASK_CRON_CTRL=%s, SLEEP_TIME_SPRINKLE=%s where ID = %s""",
-                    (NAME,
-                    TEMPERATURE_THRESHOLD,
-                    MASK_CRON_LIGHT_ON,
-                    MASK_CRON_LIGHT_OFF,
-                    MASK_CRON_CTRL,
-                    SLEEP_TIME_SPRINKLE,
-                    ID))
+                                            MASK_CRON_CTRL=%s, SLEEP_TIME_SPRINKLE=%s""",
+                    (ID, NAME, TEMPERATURE_THRESHOLD,
+                    MASK_CRON_LIGHT_ON, MASK_CRON_LIGHT_OFF,
+                    MASK_CRON_CTRL, SLEEP_TIME_SPRINKLE,
+                    NAME, TEMPERATURE_THRESHOLD,
+                    MASK_CRON_LIGHT_ON, MASK_CRON_LIGHT_OFF,
+                    MASK_CRON_CTRL, SLEEP_TIME_SPRINKLE))
         con.commit()
         return 0
     except:
