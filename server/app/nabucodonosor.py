@@ -310,9 +310,12 @@ if cfg["mode"]["mqtt"] == True:
             socketio.emit('mqtt_message', data=values)
         if topic == "/online":
             if values['rb'] == "0" : # not remote requested boot
-                conf = ""
                 conf = database.syncronize_node_cfg(values['id'],values['mode'])
-                mqtt.publish("/cfg", conf)
+                if conf != "":
+                    mqtt.publish("/cfg", conf)
+                else:
+                    socketio.emit('alert', data=values)
+
 
 if __name__ == '__main__':
     print("*** STARTING NABUCODONOSOR SYSTEM ***")

@@ -386,6 +386,10 @@ $(document).ready(function() {
 
   });
 
+  socket.on('alert', function(data) {
+    console.log(data);
+
+  });
   // get current URL path and assign 'active' class
   var pathname = window.location.pathname;
   var suffix = pathname.substring(0, pathname.indexOf("/", pathname.indexOf("/") + 1))
