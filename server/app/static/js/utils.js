@@ -389,7 +389,7 @@ $(document).ready(function() {
   socket.on('alert', function(data) {
     console.log(data);
     var mode = (data.mode == 0) ? 'indoor' : 'outdoor';
-    $('#nodealert_msg').html('O NODE '+data.id+' ('+mode+') foi detectado.');
+    $('#nodealert_msg').html('NODE '+data.id+' ('+mode+') foi detectado.');
     $('#nodealert_btn').data('mode', mode);
     $('#nodealert_btn').data('id', data.id);
     $('#nodealert').show()
