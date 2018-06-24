@@ -3,10 +3,8 @@
 {% block body %}
 <div class="container">
   <div class="alert alert-info col-md-4 col-md-offset-4 text-center" id="nodealert">
-    <div>
-        <span><strong>O NODE 12345 (indoor)</strong></span>
-        <button class="btn btn-xs btn-danger" data-toggle="modal" data-target="#updateNodeModal"  data-id="12345" data-mode="indoor" data-crud="new">Adicionar</button>
-    </div>
+        <strong><span id='nodealert_msg'></span></strong>
+          <button id='nodealert_btn' class="btn btn-xs btn-danger" data-toggle="modal" data-target="#updateNodeModal"  data-id="12345" data-mode="indoor" data-crud="new">Adicionar</button>
   </div>
   <div class="row">
     <div class="col-sm-12">
