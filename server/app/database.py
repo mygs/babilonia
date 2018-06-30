@@ -308,6 +308,7 @@ def get_node_cfg(id):
     with con:
         cur = con.cursor()
         cur.execute("""SELECT NAME,
+                              MODE,
                               TEMPERATURE_THRESHOLD,
                               MASK_CRON_LIGHT_ON,
                               MASK_CRON_LIGHT_OFF,

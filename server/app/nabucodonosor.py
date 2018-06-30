@@ -100,11 +100,12 @@ def node():
                             'SLEEP_TIME_SPRINKLE':cfg["defaults"]["SLEEP_TIME_SPRINKLE"]});
     else:
         return json.dumps({ 'NAME':node[0],
-                            'TEMPERATURE_THRESHOLD':node[1],
-                            'MASK_CRON_LIGHT_ON':node[2],
-                            'MASK_CRON_LIGHT_OFF':node[3],
-                            'MASK_CRON_CTRL':node[4],
-                            'SLEEP_TIME_SPRINKLE':node[5]});
+                            'MODE':node[1],
+                            'TEMPERATURE_THRESHOLD':node[2],
+                            'MASK_CRON_LIGHT_ON':node[3],
+                            'MASK_CRON_LIGHT_OFF':node[4],
+                            'MASK_CRON_CTRL':node[5],
+                            'SLEEP_TIME_SPRINKLE':node[6]});
 
 @app.route('/updatecfg', methods=['POST'])
 def updatecfg():
