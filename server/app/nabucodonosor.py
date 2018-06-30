@@ -117,6 +117,14 @@ def updatecfg():
     else:
         return json.dumps({ 'status':status, 'message':'Configuração não foi gravado'});
 
+@app.route('/deletenode', methods=['POST'])
+def deletenode():
+    status = database.delete_node(request.form['ID']);
+    if status == 0:
+        return  json.dumps({ 'status': status, 'message':'Node removido com sucesso'});
+    else:
+        return json.dumps({ 'status':status, 'message':'Fail to remove node'});
+
 @app.route('/command', methods=['POST'])
 def command():
     id = request.form['id'];

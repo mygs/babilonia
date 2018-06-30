@@ -195,6 +195,40 @@ function updatecfg() {
   });
 };
 
+function deletenode() {
+  swal({
+    title: "Are you sure?",
+    text: "Node configuration and data will be deleted",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
+    closeOnConfirm: false
+  }, function(isConfirm) {
+    if (isConfirm) {
+      $.ajax({
+        url: '/deletenode',
+        type: 'POST',
+        data: $('#updateNodeModalForm').serialize(),
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        success: function(response) {
+          resp = JSON.parse(response);
+          swal("Success", resp.message, "success");
+        },
+        error: function(response) {
+          resp = JSON.parse(response);
+          swal("Failed", resp.message, "error");
+        }
+      });
+    } else {
+      swal("You keep the node in the system!");
+    }
+  });
+};
+
+
+
 function regionCitySelector(state, selectedCity){
   $.getJSON('/static/data/estados_cidades.json', function(data) {
       var options_cidades = '';

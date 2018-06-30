@@ -57,6 +57,20 @@ def save_cfg(request):
         cur.close()
         con.close()
 
+def delete_node(id):
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    cur = con.cursor()
+    try:
+        cur.execute("DELETE FROM NODE WHERE ID=%s",(id,))
+        cur.execute("DELETE FROM DATA WHERE ID=%s",(id,))
+        con.commit()
+        return 0
+    except:
+        return -1
+    finally:
+        cur.close()
+        con.close()
+
 def save_supplier(request):
     NAME = request.form['nome'];
     TYPE = request.form['tipo'];
