@@ -117,7 +117,8 @@ $(".btn-refresh").on("click", function() {
 $('#updateNodeModal').on('show.bs.modal', function(event) {
   var button = $(event.relatedTarget); // Button that triggered the modal
   var id = button.data('id'); // Extract info from data-* attributes
-  var mode = button.data('mode'); // Extract info from data-* attributes
+  var mode_id = button.data('mode'); // Extract info from data-* attributes
+  var mode = (mode_id == 0) ? 'indoor' : 'outdoor';
   var crud = button.data('crud'); // Extract info from data-* attributes
   var modal = $(this);
   $.ajax({
@@ -131,11 +132,13 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       var resp = JSON.parse(response);
       if (crud == "edit"){
         modal.find('.modal-title').text('Configuration for ' + resp.NAME + ' - '+mode);
+        $("#MODE").val(resp.MODE);
       } else if(crud == "new"){
         modal.find('.modal-title').text('New Configuration for ' + id + ' - '+mode);
+        $("#MODE").val(mode_id);
       }
       $("#ID").val(id);
-      $("#MODE").val(resp.MODE);
+
       $("#NAME").val(resp.NAME);
       $("#SLEEP_TIME_SPRINKLE").val(resp.SLEEP_TIME_SPRINKLE);
       $("#TEMPERATURE_THRESHOLD").val(resp.TEMPERATURE_THRESHOLD);
