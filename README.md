@@ -160,6 +160,13 @@ mosquitto_pub -h 192.168.1.60 -t "/online" -m "id:3765036;rb:0"
         "broker":"HOST",
         "port":PORT,
         "keepalive":TIME
+    },
+    "defaults":{
+        "TEMPERATURE_THRESHOLD":"25.00",
+        "MASK_CRON_LIGHT_ON":"0 11 * * *",
+        "MASK_CRON_LIGHT_OFF":"0 20 * * *",
+        "MASK_CRON_CTRL": "*/10 * * * *",
+        "SLEEP_TIME_SPRINKLE":"30000000"
     }
 }
 

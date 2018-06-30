@@ -135,6 +135,7 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
         modal.find('.modal-title').text('New Configuration for ' + id + ' - '+mode);
       }
       $("#ID").val(id);
+      $("#MODE").val(resp.MODE);
       $("#NAME").val(resp.NAME);
       $("#SLEEP_TIME_SPRINKLE").val(resp.SLEEP_TIME_SPRINKLE);
       $("#TEMPERATURE_THRESHOLD").val(resp.TEMPERATURE_THRESHOLD);
@@ -142,12 +143,12 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       $("#MASK_CRON_LIGHT_ON").val(resp.MASK_CRON_LIGHT_ON);
       $("#MASK_CRON_LIGHT_OFF").val(resp.MASK_CRON_LIGHT_OFF);
 
-      if(mode == "outdoor"){
+      if(mode == 1){ /*outdoor*/
         $("#SLEEP_TIME_SPRINKLE").attr('readonly', false);
         $("#TEMPERATURE_THRESHOLD").attr('readonly', true);
         $("#MASK_CRON_LIGHT_ON").attr('readonly', true);
         $("#MASK_CRON_LIGHT_OFF").attr('readonly', true);
-      } else if(mode == "indoor"){
+      } else if(mode == 0){ /*indoor*/
         $("#SLEEP_TIME_SPRINKLE").attr('readonly', true);
         $("#TEMPERATURE_THRESHOLD").attr('readonly', false);
         $("#MASK_CRON_LIGHT_ON").attr('readonly', false);
@@ -424,7 +425,7 @@ $(document).ready(function() {
     console.log(data);
     var mode = (data.mode == 0) ? 'indoor' : 'outdoor';
     $('#nodealert_msg').html('NODE '+data.id+' ('+mode+') foi detectado.');
-    $('#nodealert_btn').data('mode', mode);
+    $('#nodealert_btn').data('mode', data.mode);
     $('#nodealert_btn').data('id', data.id);
     $('#nodealert').show()
   });
