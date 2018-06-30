@@ -39,7 +39,7 @@ def save_cfg(request):
         cur.execute("""INSERT INTO NODE (ID, NAME, MODE, TEMPERATURE_THRESHOLD,
                                             MASK_CRON_LIGHT_ON, MASK_CRON_LIGHT_OFF,
                                             MASK_CRON_CTRL, SLEEP_TIME_SPRINKLE)
-                                    VALUES  (%s,%s,%s,%s,%s,%s,%s)
+                                    VALUES  (%s,%s,%s,%s,%s,%s,%s,%s)
                         ON DUPLICATE KEY UPDATE NAME=%s, MODE=%s, TEMPERATURE_THRESHOLD=%s,
                                             MASK_CRON_LIGHT_ON=%s, MASK_CRON_LIGHT_OFF=%s,
                                             MASK_CRON_CTRL=%s, SLEEP_TIME_SPRINKLE=%s""",
