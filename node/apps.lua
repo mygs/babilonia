@@ -170,8 +170,8 @@ function control(action)
   local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.read(module.PIN_DHT)
   tmr.delay(module.SLEEP_TIME_MOISTURE) -- time to moisture computes its values
   -- analogic 0 to 1024, where:
-  -- [WET] mmx < 500 --- digital = 0 & led = ON
-  -- [DRY] mmx > 500 --- digital = 1 & led = OFF
+  -- [WET] low resistance  --- digital = 0 & led = ON
+  -- [DRY] high resistance --- digital = 1 & led = OFF
   local mma = gpio.read(module.PIN_MOISTURE_A)
   local mmb = gpio.read(module.PIN_MOISTURE_B)
   local mmc = gpio.read(module.PIN_MOISTURE_C)
