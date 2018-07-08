@@ -78,6 +78,14 @@ function update(data)
     if (RES.sop ~= nil) then
       sprinkle(tonumber(RES.sop))
     end
+    if (RES.setup ~= nil) then
+      local setup = tonumber(RES.setup)
+      if     setup == 10 then gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
+      elseif setup == 11 then gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
+      elseif setup == 20 then gpio.write(module.PIN_PUMP_SOLENOID, gpio.HIGH)
+      elseif setup == 21 then gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
+      end
+    end
     if (RES.temp ~= nil) then
           module.TEMPERATURE_THRESHOLD = tonumber(RES.temp)
     end
@@ -177,6 +185,8 @@ function control(action)
   local mmc = gpio.read(module.PIN_MOISTURE_C)
   -- power OFF sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
+    -- power OFF solenoid - just in case someone forgot to finish setup
+  gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
   if (status == dht.OK) then -- so, filter the value
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA - module.TEMPERATURE_SMA/module.TEMPERATURE_NSAMPLES
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
