@@ -138,6 +138,7 @@ mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "mclon:0 7 * * *;mcloff:0 7 * * *;mcc
 mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "id:3765036;mclon:0 7 * * *;mcloff:0 7 * * *;mcctrl:*/2 * * * *"
 mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "id:3765036;cmd:3"
 mosquitto_pub -h 192.168.1.60 -t "/online" -m "id:3765036;rb:0"
+mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "setup:10"
 
 
 ```
