@@ -16,11 +16,14 @@ function publish_data(status_dht, measured_temp, measured_humi, mma, mmb, mmc)
   table.insert(parms, ";ct:"..string.format("%02.2f",module.TEMPERATURE_SMA))
   table.insert(parms, ";mt:"..measured_temp)
   table.insert(parms, ";mh:"..measured_humi)
-  table.insert(parms, ";mma:"..mma)
-  table.insert(parms, ";mmb:"..mmb)
-  table.insert(parms, ";mmc:"..mmc)
-  table.insert(parms, ";sf:"..fan())
-  table.insert(parms, ";sl:"..light())
+  if (module.MODE == 1) then -- outdoor
+    table.insert(parms, ";mma:"..mma)
+    table.insert(parms, ";mmb:"..mmb)
+    table.insert(parms, ";mmc:"..mmc)
+  else
+    table.insert(parms, ";sf:"..fan())
+    table.insert(parms, ";sl:"..light())
+  end
   publish("/data", table.concat(parms,""))
 end
 -- SAVE NODE CONFIGURATION
@@ -211,25 +214,22 @@ function control(action)
   end
 ----- INIT SETUP -----
 print("[SETUP] Started")
-
-gpio.mode(module.PIN_FAN, gpio.OUTPUT)
-gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
-gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
-gpio.mode(module.PIN_MOISTURE_B, gpio.INPUT)
-gpio.mode(module.PIN_MOISTURE_C, gpio.INPUT)
--- power OFF sensors
-gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
--- power OFF pump or solenoid
-gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
-
 if (module.MODE == 0) then -- indoor
+  gpio.mode(module.PIN_FAN, gpio.OUTPUT)
+  gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
   if file.exists("fan.on") then fan(1) else fan(0) end
   if file.exists("light.on") then light(1) else light(0) end
   cron.schedule(module.MASK_CRON_LIGHT_ON, function(e) light(1) end)
   cron.schedule(module.MASK_CRON_LIGHT_OFF, function(e) light(0) end)
 elseif (module.MODE == 1) then -- outdoor
-  gpio.write(module.PIN_FAN, gpio.LOW)
-  gpio.write(module.PIN_LIGHT, gpio.LOW)
+  gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
+  gpio.mode(module.PIN_MOISTURE_B, gpio.INPUT)
+  gpio.mode(module.PIN_MOISTURE_C, gpio.INPUT)
+  gpio.mode(module.PIN_MOISTURE_D, gpio.INPUT)
+  -- power OFF sensors
+  gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
+  -- power OFF pump or solenoid
+  gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
 end
 cron.schedule(module.MASK_CRON_CTRL,  function(e) control(true) end)
 collectgarbage()

@@ -8,15 +8,24 @@ module.PASSWORD = profile.PASSWORD
 module.BABILONIA_SERVER = profile.BABILONIA_SERVER
 profile = nil
 -- I/O ports
-module.PIN_SENSORS_SWITCH     = 1  -- fixed at shield
-module.PIN_MOISTURE_A         = 2
-module.PIN_MOISTURE_B         = 0
-module.PIN_MOISTURE_C         = 5
-module.PIN_DHT                = 4 -- fixed at shield
-module.PIN_FAN                = 6
-module.PIN_LIGHT              = 7
-module.PIN_PUMP_SOLENOID      = 3
-
+if (module.MODE == 0) then -- indoor
+  module.PIN_SENSORS_SWITCH     = 1
+  module.PIN_MOISTURE_A         = 2
+  module.PIN_MOISTURE_B         = 0
+  module.PIN_MOISTURE_C         = 5
+  module.PIN_DHT                = 4 -- fixed at shield
+  module.PIN_FAN                = 6
+  module.PIN_LIGHT              = 7
+  module.PIN_PUMP_SOLENOID      = 3
+else
+  module.PIN_SENSORS_SWITCH     = 2
+  module.PIN_MOISTURE_A         = 0
+  module.PIN_MOISTURE_B         = 7
+  module.PIN_MOISTURE_C         = 6
+  module.PIN_MOISTURE_D         = 5
+  module.PIN_DHT                = 4 -- fixed at shield
+  module.PIN_PUMP_SOLENOID      = 1 -- fixed at shield
+end
 -- default values
 module.BABILONIA_STATUS = 1 -- 0: Already started / 1: Not started yet
 module.MQTT_STATUS = 1 -- 0: Connected / 1: Disconnected
