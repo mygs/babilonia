@@ -13,6 +13,7 @@ from flaskext.mysql import MySQL
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_assets import Environment, Bundle
+from croniter import croniter
 #from flask_qrcode import QRcode
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -137,16 +138,17 @@ def command():
 
 @app.context_processor
 def utility_processor():
-    def status_node(timestamp):
+    def status_node(timestamp, node_id):
+        node = database.get_node_cfg(node_id);
+        MASK_CRON_CTRL = node[5];
+        NEXT = croniter(MASK_CRON_CTRL, int(timestamp)).get_next()
         NOW = int(time.time())
-        DELTA = NOW - int(timestamp)
-        if DELTA < 60: # 1 min
-            return "excellent"
-        if DELTA < 60*3: # 3 min
+        DELTA = NEXT - NOW
+        if DELTA > 0: # NEXT is future
             return "good"
-        if DELTA < 60*15: # 15 min
+        if DELTA > -60: # 1 min delayed
             return "nostatus"
-        else: # >= 15 min
+        else:
             return "danger"
     def mode(mode):
         if mode is None or mode=="":
