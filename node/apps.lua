@@ -20,7 +20,12 @@ function publish_data(status_dht, measured_temp, measured_humi, mma, mmb, mmc)
     table.insert(parms, ";mma:"..mma)
     table.insert(parms, ";mmb:"..mmb)
     table.insert(parms, ";mmc:"..mmc)
+    table.insert(parms, ";sf:-1")
+    table.insert(parms, ";sl:-1")
   else
+    table.insert(parms, ";mma:-1")
+    table.insert(parms, ";mmb:-1")
+    table.insert(parms, ";mmc-1:")
     table.insert(parms, ";sf:"..fan())
     table.insert(parms, ";sl:"..light())
   end
