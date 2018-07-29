@@ -178,9 +178,9 @@ def utility_processor():
         if mode is None or mode=="" or int(mode) == 0:
             return 'N/A'
         if int(value) == 1:
-            return 'DRY' #DRY: GPIO = 1 / BUILD IN LED = OFF
+            return 'SECO' #DRY: GPIO = 1 / BUILD IN LED = OFF
         else:
-            return 'WET' #WET: GPIO = 0 / BUILD IN LED = ON
+            return 'MOLHADO' #WET: GPIO = 0 / BUILD IN LED = ON
     def status(value, mode):
         if mode  is None or mode=="" or int(mode) == 1:
             return 'N/A'

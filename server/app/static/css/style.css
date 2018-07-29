@@ -85,7 +85,7 @@ table#cockpit {
   cursor: pointer;
 }
 #sortable li .box {
-  height: 270px;
+  height: 285px;
   border: solid 2px #999;
   background: #eee;
   width: 100%;

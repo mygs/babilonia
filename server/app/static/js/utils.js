@@ -387,28 +387,28 @@ $(document).ready(function() {
       if($('#mma_' + id).hasClass('indoor')){
         $('#mma_' + id).html('N/A');
       } else {
-        $('#mma_' + id).html((data.mma == 1) ? 'DRY' : 'WET');
+        $('#mma_' + id).html((data.mma == 1) ? 'SECO' : 'MOLHADO');
       }
     }
     if (data.mmb != null) {
       if($('#mmb_' + id).hasClass('indoor')){
         $('#mmb_' + id).html('N/A');
       } else {
-        $('#mmb_' + id).html((data.mmb == 1) ? 'DRY' : 'WET');
+        $('#mmb_' + id).html((data.mmb == 1) ? 'SECO' : 'MOLHADO');
       }
     }
     if (data.mmc != null) {
       if($('#mmc_' + id).hasClass('indoor')){
         $('#mmc_' + id).html('N/A');
       } else {
-        $('#mmc_' + id).html((data.mmc == 1) ? 'DRY' : 'WET');
+        $('#mmc_' + id).html((data.mmc == 1) ? 'SECO' : 'MOLHADO');
       }
     }
     if (data.mmd != null) {
       if($('#mmd_' + id).hasClass('indoor')){
         $('#mmd_' + id).html('N/A');
       } else {
-        $('#mmd_' + id).html((data.mmd == 1) ? 'DRY' : 'WET');
+        $('#mmd_' + id).html((data.mmd == 1) ? 'SECO' : 'MOLHADO');
       }
     }
     if (data.mh != null) {
