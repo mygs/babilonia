@@ -9,7 +9,7 @@ function publish(topic, data)
   end
 end
 
-function publish_data(status_dht, measured_temp, measured_humi, mma, mmb, mmc)
+function publish_data(status_dht, measured_temp, measured_humi, mma, mmb, mmc, mmd)
   local parms = {}
   table.insert(parms, "id:"..node.chipid())
   table.insert(parms, ";sd:"..status_dht)
@@ -20,12 +20,14 @@ function publish_data(status_dht, measured_temp, measured_humi, mma, mmb, mmc)
     table.insert(parms, ";mma:"..mma)
     table.insert(parms, ";mmb:"..mmb)
     table.insert(parms, ";mmc:"..mmc)
+    table.insert(parms, ";mmd:"..mmd)
     table.insert(parms, ";sf:-1")
     table.insert(parms, ";sl:-1")
   else
     table.insert(parms, ";mma:-1")
     table.insert(parms, ";mmb:-1")
-    table.insert(parms, ";mmc-1:")
+    table.insert(parms, ";mmc:-1")
+    table.insert(parms, ";mmd:-1")
     table.insert(parms, ";sf:"..fan())
     table.insert(parms, ";sl:"..light())
   end
@@ -191,6 +193,7 @@ function control(action)
   local mma = gpio.read(module.PIN_MOISTURE_A)
   local mmb = gpio.read(module.PIN_MOISTURE_B)
   local mmc = gpio.read(module.PIN_MOISTURE_C)
+  local mmd = gpio.read(module.PIN_MOISTURE_D)
   -- power OFF sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
     -- power OFF solenoid - just in case someone forgot to finish setup
@@ -200,8 +203,8 @@ function control(action)
     module.TEMPERATURE_SMA = module.TEMPERATURE_SMA + measured_temp/module.TEMPERATURE_NSAMPLES
   end
   local  temp_str = string.format("%02.2f",module.TEMPERATURE_SMA)
-  print("[CTRL] Temp: "..temp_str.."C | Moisture:["..mma..","..mmb..","..mmc.."]")
-  publish_data(status,measured_temp,measured_humi, mma, mmb, mmc)
+  print("[CTRL] Temp: "..temp_str.."C | Moisture:["..mma..","..mmb..","..mmc..","..mmd.."]")
+  publish_data(status,measured_temp,measured_humi, mma, mmb, mmc, mmd)
   if (action == true) then
     if (module.MODE == 0) then -- indoor
       if (module.TEMPERATURE_SMA > module.TEMPERATURE_THRESHOLD) then
