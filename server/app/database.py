@@ -16,11 +16,11 @@ def insert_data(time, values):
                                         CALCULATE_TEMPERATURE,MEASURED_TEMPERATURE,
                                         MEASURED_HUMIDITY,STATUS_FAN, STATUS_LIGHT,
                                         MEASURED_MOISTURE_A, MEASURED_MOISTURE_B,
-                                        MEASURED_MOISTURE_C)
+                                        MEASURED_MOISTURE_C, MEASURED_MOISTURE_D)
                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                     (values['id'],time,values['sd'],values['ct'],values['mt'],
                     values['mh'],values['sf'],values['sl'],
-                    values['mma'],values['mmb'],values['mmc']))
+                    values['mma'],values['mmb'],values['mmc'],values['mmd']))
         con.commit()
 
 def save_cfg(request):
@@ -272,7 +272,8 @@ def retrieve_last_telemetry_info():
                                 D.STATUS_LIGHT,
                                 D.MEASURED_MOISTURE_A,
                                 D.MEASURED_MOISTURE_B,
-                                D.MEASURED_MOISTURE_C
+                                D.MEASURED_MOISTURE_C,
+                                D.MEASURED_MOISTURE_D
                             FROM (
 	                               SELECT *
                                 		FROM (SELECT ID, MAX(TIMESTAMP) AS TIMESTAMP

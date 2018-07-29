@@ -404,6 +404,13 @@ $(document).ready(function() {
         $('#mmc_' + id).html((data.mmc == 1) ? 'DRY' : 'WET');
       }
     }
+    if (data.mmd != null) {
+      if($('#mmd_' + id).hasClass('indoor')){
+        $('#mmd_' + id).html('N/A');
+      } else {
+        $('#mmd_' + id).html((data.mmd == 1) ? 'DRY' : 'WET');
+      }
+    }
     if (data.mh != null) {
       $('#humid_' + id).html(data.mh + '%');
     }
