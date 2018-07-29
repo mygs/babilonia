@@ -17,7 +17,7 @@ def insert_data(time, values):
                                         MEASURED_HUMIDITY,STATUS_FAN, STATUS_LIGHT,
                                         MEASURED_MOISTURE_A, MEASURED_MOISTURE_B,
                                         MEASURED_MOISTURE_C, MEASURED_MOISTURE_D)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                     (values['id'],time,values['sd'],values['ct'],values['mt'],
                     values['mh'],values['sf'],values['sl'],
                     values['mma'],values['mmb'],values['mmc'],values['mmd']))
