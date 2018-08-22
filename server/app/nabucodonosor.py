@@ -333,4 +333,4 @@ if __name__ == '__main__':
     user_reload = True
     if cfg["mode"]["mqtt"] == True:
         user_reload = False # Avoid Bug: TWICE mqtt instances
-    socketio.run(app, host='0.0.0.0', port=8080, debug=True, use_reloader=user_reload)
+    socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)
