@@ -31,7 +31,7 @@ module.BABILONIA_STATUS = 1 -- 0: Already started / 1: Not started yet
 module.MQTT_STATUS = 1 -- 0: Connected / 1: Disconnected
 module.SLEEP_TIME_WIFI = 5 -- seconds
 module.SLEEP_TIME_MQTT = 5 -- seconds
-module.SLEEP_TIME_MOISTURE = 5000000 -- 5 seconds
+module.SLEEP_TIME_MOISTURE = 8000000 -- 8 seconds
 module.SLEEP_TIME_SPRINKLE = 25000000 -- 25 seconds
 module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
 module.TEMPERATURE_NSAMPLES = 10 -- https://goo.gl/3bLYao
@@ -39,7 +39,7 @@ module.TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
 -- https://crontab.guru/ (nodemcu time is GMT. Sao Paulo time is GMT-2)
 module.MASK_CRON_LIGHT_ON="0 11 * * *"  -- 9AM SP time (LocalTime+2H)
 module.MASK_CRON_LIGHT_OFF="0 20 * * *" -- 6PM SP time (LocalTime+2H)
-module.MASK_CRON_CTRL="*/9 * * * *" -- At every 9 minutes
+module.MASK_CRON_CTRL="*/30 * * * *" -- At every 30 minutes
 
 -- overwrite variables
 if file.exists("nconfig.lua") then

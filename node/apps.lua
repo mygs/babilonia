@@ -213,7 +213,7 @@ function control(action)
         fan(0)
       end
     elseif (module.MODE == 1) then -- outdoor
-      local sum = mma + mmb + mmc
+      local sum = mma + mmb + mmc + mmd
       if (sum >= 2) then -- at least 2 sensors are DRY
         sprinkle()
       end
