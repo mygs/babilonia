@@ -12,16 +12,22 @@ def insert_data(time, values):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        cur.execute("""INSERT INTO DATA (ID,TIMESTAMP,STATUS_DHT,
+        mma = values.get('mma', -1);
+        mmb = values.get('mmb', -1);
+        mmc = values.get('mmc', -1);
+        mmd = values.get('mmd', -1);
+
+        query = """INSERT INTO DATA (ID,TIMESTAMP,STATUS_DHT,
                                         CALCULATE_TEMPERATURE,MEASURED_TEMPERATURE,
                                         MEASURED_HUMIDITY,STATUS_FAN, STATUS_LIGHT,
                                         MEASURED_MOISTURE_A, MEASURED_MOISTURE_B,
                                         MEASURED_MOISTURE_C, MEASURED_MOISTURE_D)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-                    (values['id'],time,values['sd'],values['ct'],values['mt'],
-                    values['mh'],values['sf'],values['sl'],
-                    values['mma'],values['mmb'],values['mmc'],values['mmd']))
-        con.commit()
+                        VALUES ({},{},{},{},{},{},{},{},{},{},{},{})""".format(
+                    values['id'],time,values['sd'],values['ct'],values['mt'],
+                    values['mh'],values['sf'],values['sl'],mma,mmb,mmc,mmd);
+        #print (query);
+        cur.execute(query);
+        con.commit();
 
 def save_cfg(request):
     ID = request.form['ID'];
