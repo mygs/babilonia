@@ -330,10 +330,10 @@ if cfg["mode"]["mqtt"] == True:
                     mqtt.publish("/cfg", conf)
                 else:
                     socketio.emit('alert', data=values)
-        if topic == "/test":
+        if topic == "/moisture":
             timestamp = int(time.time())
             values['timestamp']=timestamp
-            socketio.emit('mqtt_message', data=values)
+            socketio.emit('moisture', data=values)
             #database.insert_data(timestamp, values)
 
 if __name__ == '__main__':
