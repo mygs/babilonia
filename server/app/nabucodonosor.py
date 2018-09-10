@@ -305,6 +305,8 @@ if cfg["mode"]["mqtt"] == True:
         mqtt.subscribe("/online")
         mqtt.subscribe("/data")
         mqtt.subscribe("/cmd-ack")
+        mqtt.subscribe("/moisture")
+
 
     # The callback for when a PUBLISH message is received from the server.
     @mqtt.on_message()
