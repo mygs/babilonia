@@ -84,6 +84,10 @@ def index():
     modules = database.retrieve_last_telemetry_info();
     return render_template('index.html', modules=modules)
 
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
 @app.route('/timeseries', methods=['POST'])
 def timeseries():
     id = request.form['id'];
@@ -326,7 +330,11 @@ if cfg["mode"]["mqtt"] == True:
                     mqtt.publish("/cfg", conf)
                 else:
                     socketio.emit('alert', data=values)
-
+        if topic == "/test":
+            timestamp = int(time.time())
+            values['timestamp']=timestamp
+            socketio.emit('mqtt_message', data=values)
+            #database.insert_data(timestamp, values)
 
 if __name__ == '__main__':
     print("*** STARTING NABUCODONOSOR SYSTEM ***")

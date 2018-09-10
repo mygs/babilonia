@@ -10,6 +10,24 @@ $('.outdoor h4').prepend('<i class="fa fa-sign-out"></i>');
 $('.undefinedmode h4').prepend('<i class="fa fa-connectdevelop"></i>');
 /* AJAX STUFF */
 
+function appendMoistureMsg() {
+  var epoch = Math.round(new Date().getTime() / 1000.0);
+	message = "<div class='moistureTestMsg'>["+epoch+"] Hello world</div>";
+  $('#moistureTestMsgs').prepend(message);
+}
+function publishMoistureMsg() {
+	// Prior to getting your messages.
+  shouldScroll = $('#moistureTestMsgs').scrollTop + $('#moistureTestMsgs').clientHeight === $('#moistureTestMsgs').scrollHeight;
+  /*
+   * Get your messages, we'll just simulate it by appending a new one syncronously.
+   */
+  appendMoistureMsg();
+  // After getting your messages.
+  if (!shouldScroll) {
+    $('#moistureTestMsgs').scrollTop = $('#moistureTestMsgs').scrollHeight;
+  }
+}
+setInterval(publishMoistureMsg, 1000);
 
 function callbackend(id, mode, param, img, title, text) {
   swal({
