@@ -312,7 +312,7 @@ if cfg["mode"]["mqtt"] == True:
         topic = msg.topic
         data = str(msg.payload, 'utf-8')
         values = dict(item.split(":") for item in data.split(";"))
-        logger.info("Receive message from NODE %s on topic %s",values['id'], topic)
+        logger.info("Receive message on topic %s", topic)
 
         if topic == "/data":
             timestamp = int(time.time())
