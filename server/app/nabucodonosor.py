@@ -307,14 +307,13 @@ if cfg["mode"]["mqtt"] == True:
         mqtt.subscribe("/cmd-ack")
         mqtt.subscribe("/moisture")
 
-
     # The callback for when a PUBLISH message is received from the server.
     @mqtt.on_message()
     def handle_mqtt_message(client, userdata, msg):
         topic = msg.topic
         data = str(msg.payload, 'utf-8')
         values = dict(item.split(":") for item in data.split(";"))
-        logger.info("Receive message on topic %s", topic)
+        logger.info("Receive message from NODE %s on topic %s",values['id'], topic)
 
         if topic == "/data":
             timestamp = int(time.time())
