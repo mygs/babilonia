@@ -69,7 +69,7 @@ function update(data)
     if (RES.cmd ~= nil) then
           local cmd = tonumber(RES.cmd)
           if cmd == 0 then reboot()
-          elseif cmd == 1 then publish()
+          elseif cmd == 1 then moisture()
           elseif cmd == 2 then collectgarbage()
           else                 print("command not found")
           end
