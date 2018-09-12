@@ -10,14 +10,14 @@ $('.outdoor h4').prepend('<i class="fa fa-sign-out"></i>');
 $('.undefinedmode h4').prepend('<i class="fa fa-connectdevelop"></i>');
 /* AJAX STUFF */
 
-function publishMoistureMsg(timestamp, value) {
+function publishMoistureMsg(timestamp, id, value) {
 	// Prior to getting your messages.
   shouldScroll = $('#moistureTestMsgs').scrollTop + $('#moistureTestMsgs').clientHeight === $('#moistureTestMsgs').scrollHeight;
   /*
    * Get your messages, we'll just simulate it by appending a new one syncronously.
    */
    //var epoch = Math.round(new Date().getTime() / 1000.0);
- 	message = "<div class='moistureTestMsg'>["+timestamp+"] "+value+"</div>";
+ 	message = "<div class='moistureTestMsg'>["+timestamp+"]@["+id+"]="+value+"</div>";
    $('#moistureTestMsgs').prepend(message);
      // After getting your messages.
   if (!shouldScroll) {
@@ -456,7 +456,7 @@ $(document).ready(function() {
 
   socket.on('moisture', function(data) {
     console.log(data);
-    publishMoistureMsg(data.timestamp, data.value);
+    publishMoistureMsg(data.timestamp, data.id, data.value);
 
   });
   // get current URL path and assign 'active' class
