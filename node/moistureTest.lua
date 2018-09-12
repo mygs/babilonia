@@ -9,7 +9,7 @@ function publish(topic, data)
   end
 end
 
-function publish()
+function moisture()
   -- power ON moisture sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
   tmr.delay(module.SLEEP_TIME_MOISTURE) -- time to moisture computes its values
@@ -93,7 +93,7 @@ print("[SETUP] Started")
 gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
 adc.force_init_mode(adc.INIT_ADC)
 gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
-cron.schedule(module.MASK_CRON_CTRL,  function(e) publish() end)
+cron.schedule(module.MASK_CRON_CTRL,  function(e) moisture() end)
 collectgarbage()
 print("[SETUP] Completed")
 module.BABILONIA_STATUS = 0

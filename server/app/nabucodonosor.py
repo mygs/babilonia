@@ -334,7 +334,7 @@ if cfg["mode"]["mqtt"] == True:
         if topic == "/moisture":
             timestamp = int(time.time())
             values['timestamp']=timestamp
-            socketio.emit('moisture', data=values)
+            socketio.emit('/moisture', data=values)
             #database.insert_data(timestamp, values)
 
 if __name__ == '__main__':
