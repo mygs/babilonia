@@ -16,7 +16,11 @@ function conn_pub_sub(client)
 			end
 			if(module.BABILONIA_STATUS == 1) then
 				print("[APP] Starting Babilonia App")
-				require("apps")
+				if(module.MODE == 2) then
+					require("moistureTest")
+				else
+					require("apps")
+				end
 				MQTTCLIENT:publish("/online", table.concat(parms,""), 0, 0)	-- request conf.
 			else
 				print("[APP] Babilonia App already started")

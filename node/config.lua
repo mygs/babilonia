@@ -54,9 +54,11 @@ if (module.MODE == 0) then -- indoor
   print("TEMPERATURE_THRESHOLD: "..module.TEMPERATURE_THRESHOLD)
   print("MASK_CRON_LIGHT_ON: "..module.MASK_CRON_LIGHT_ON)
   print("MASK_CRON_LIGHT_OFF: "..module.MASK_CRON_LIGHT_OFF)
-else
+elseif(module.MODE == 1) then
   print("MODE: OUTDOOR")
   print("SLEEP_TIME_SPRINKLE: "..module.SLEEP_TIME_SPRINKLE)
+elseif(module.MODE == 2) then
+  print("MODE: MOISTURE TEST")
 end
 print("SLEEP_TIME_MOISTURE: "..module.SLEEP_TIME_MOISTURE)
 print("MASK_CRON_CTRL: "..module.MASK_CRON_CTRL)

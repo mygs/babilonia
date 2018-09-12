@@ -26,6 +26,29 @@ function publish()
   publish("/moisture", table.concat(parms,""))
 end
 
+-- SAVE NODE CONFIGURATION
+function save_configuration()
+  -- remove old configuration set
+  if file.exists("nconfig.lua") then
+    file.remove("nconfig.lua")
+  end
+  if file.open("nconfig.lua", "w+") then
+    -- writing new parameters
+    file.writeline('module.MASK_CRON_CTRL=\"'..module.MASK_CRON_CTRL.."\"")
+    file.close()
+  end
+
+end
+-- REBOOT NODE KEEPING CURRENT CONFIGURATION
+function reboot()
+  save_configuration()
+  -- flaged as remote reboot
+  if file.open("remote.reboot", "w") then
+    file.close()
+  end
+  print("Restarting NODE "..node.chipid())
+  node.restart()
+end
 -- UPDATE PARAMETERS
 function update(data)
   local RES = {}
@@ -40,14 +63,14 @@ function update(data)
       elseif setup == 11 then gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
       end
     end
+    if (RES.mcctrl ~= nil) then
+      module.MASK_CRON_CTRL=RES.mcctrl
+    end
     if (RES.cmd ~= nil) then
           local cmd = tonumber(RES.cmd)
-
-          if     cmd == 0 then reboot()
+          if cmd == 0 then reboot()
           elseif cmd == 1 then publish()
           elseif cmd == 2 then collectgarbage()
-          elseif cmd == 3 then publish("/env", "heap: "..node.heap())
-          elseif cmd == 4 then publish("/env", "info: "..node.info())
           else                 print("command not found")
           end
     end
