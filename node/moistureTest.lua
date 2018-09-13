@@ -16,7 +16,12 @@ function moisture()
   -- analogic 0 to 1024, where:
   -- [WET] low resistance  --- digital = 0 & led = ON
   -- [DRY] high resistance --- digital = 1 & led = OFF
-  local analogic = adc.read(module.PIN_MOISTURE_A)
+  local analogic = 0
+  for i=1,module.MOISTURE_NSAMPLE do
+    analogic = analogic + adc.read(module.PIN_MOISTURE_A)
+  end
+  analogic = analogic/module.MOISTURE_NSAMPLE
+
   -- power OFF sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
   print("[Moisture]"..analogic)
@@ -24,6 +29,7 @@ function moisture()
   table.insert(parms, "id:"..node.chipid())
   table.insert(parms, ";value:"..analogic)
   table.insert(parms, ";stm:"..module.SLEEP_TIME_MOISTURE)
+  table.insert(parms, ";mns:"..module.MOISTURE_NSAMPLE)
   publish("/moisture", table.concat(parms,""))
 end
 
@@ -66,6 +72,9 @@ function update(data)
     end
     if (RES.stm ~= nil) then
       module.SLEEP_TIME_MOISTURE = tonumber(RES.stm)
+    end
+    if (RES.mns ~= nil) then
+      module.MOISTURE_NSAMPLE = tonumber(RES.mns)
     end
     if (RES.mcctrl ~= nil) then
       module.MASK_CRON_CTRL=RES.mcctrl
