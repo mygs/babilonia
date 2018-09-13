@@ -12,7 +12,7 @@ def insert_moisture(id, timestamp, value, stm, mns):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        query = """INSERT INTO MOISTURE_TEST_DATA (NODE,TIMESTAMP,VALUE,SLEEP_TIME_MOISTURE)
+        query = """INSERT INTO MOISTURE_TEST_DATA (NODE,TIMESTAMP,VALUE,SLEEP_TIME_MOISTURE, MOISTURE_NSAMPLE)
                         VALUES ({},{},{},{},{})""".format(
                             id, timestamp, value, stm, mns);
         #print (query);
