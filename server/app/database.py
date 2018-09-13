@@ -13,7 +13,7 @@ def insert_moisture(id, timestamp, value, stm):
     with con:
         cur = con.cursor()
         query = """INSERT INTO MOISTURE_TEST_DATA (NODE,TIMESTAMP,VALUE,SLEEP_TIME_MOISTURE)
-                        VALUES ({},{},{})""".format(
+                        VALUES ({},{},{},{})""".format(
                             id, timestamp, value, stm);
         #print (query);
         cur.execute(query);
