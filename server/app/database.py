@@ -8,13 +8,13 @@ project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'config.json'), "r") as json_data_file:
     cfg = json.load(json_data_file)
 
-def insert_moisture(id, timestamp, value):
+def insert_moisture(id, timestamp, value, stm):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
     with con:
         cur = con.cursor()
-        query = """INSERT INTO MOISTURE_TEST_DATA (NODE,TIMESTAMP,VALUE)
+        query = """INSERT INTO MOISTURE_TEST_DATA (NODE,TIMESTAMP,VALUE,SLEEP_TIME_MOISTURE)
                         VALUES ({},{},{})""".format(
-                            id, timestamp, value);
+                            id, timestamp, value, stm);
         #print (query);
         cur.execute(query);
         con.commit();

@@ -23,6 +23,7 @@ function moisture()
   local parms = {}
   table.insert(parms, "id:"..node.chipid())
   table.insert(parms, ";value:"..analogic)
+  table.insert(parms, ";stm:"..module.SLEEP_TIME_MOISTURE)
   publish("/moisture", table.concat(parms,""))
 end
 
@@ -62,6 +63,9 @@ function update(data)
       if     setup == 10 then gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
       elseif setup == 11 then gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
       end
+    end
+    if (RES.stm ~= nil) then
+      module.SLEEP_TIME_MOISTURE = tonumber(RES.stm)
     end
     if (RES.mcctrl ~= nil) then
       module.MASK_CRON_CTRL=RES.mcctrl

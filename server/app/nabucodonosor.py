@@ -335,7 +335,7 @@ if cfg["mode"]["mqtt"] == True:
             timestamp = int(time.time())
             values['timestamp']=timestamp
             socketio.emit('moisture', data=values)
-            database.insert_moisture(values['id'],timestamp, values['value'])
+            database.insert_moisture(values['id'],timestamp, values['value'], values['stm'])
 
 if __name__ == '__main__':
     print("*** STARTING NABUCODONOSOR SYSTEM ***")
