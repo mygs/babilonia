@@ -19,6 +19,7 @@ function moisture()
   local analogic = 0
   for i=1,module.MOISTURE_NSAMPLE do
     analogic = analogic + adc.read(module.PIN_MOISTURE_A)
+    tmr.delay(module.MOISTURE_NSAMPLE_TIME)
   end
   analogic = analogic/module.MOISTURE_NSAMPLE
 
@@ -30,6 +31,7 @@ function moisture()
   table.insert(parms, ";value:"..analogic)
   table.insert(parms, ";stm:"..module.SLEEP_TIME_MOISTURE)
   table.insert(parms, ";mns:"..module.MOISTURE_NSAMPLE)
+  table.insert(parms, ";mnst:"..module.MOISTURE_NSAMPLE_TIME)
   publish("/moisture", table.concat(parms,""))
 end
 
@@ -42,6 +44,10 @@ function save_configuration()
   if file.open("nconfig.lua", "w+") then
     -- writing new parameters
     file.writeline('module.MASK_CRON_CTRL=\"'..module.MASK_CRON_CTRL.."\"")
+    file.writeline('module.SLEEP_TIME_MOISTURE=\"'..module.SLEEP_TIME_MOISTURE.."\"")
+    file.writeline('module.MOISTURE_NSAMPLE=\"'..module.MOISTURE_NSAMPLE.."\"")
+    file.writeline('module.MOISTURE_NSAMPLE_TIME=\"'..module.MOISTURE_NSAMPLE_TIME.."\"")
+
     file.close()
   end
 
@@ -75,6 +81,9 @@ function update(data)
     end
     if (RES.mns ~= nil) then
       module.MOISTURE_NSAMPLE = tonumber(RES.mns)
+    end
+    if (RES.mnst ~= nil) then
+      module.MOISTURE_NSAMPLE_TIME = tonumber(RES.mnst)
     end
     if (RES.mcctrl ~= nil) then
       module.MASK_CRON_CTRL=RES.mcctrl
