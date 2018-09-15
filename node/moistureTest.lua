@@ -22,16 +22,15 @@ function moisture()
     tmr.delay(module.MOISTURE_NSAMPLE_TIME)
   end
   analogic = analogic/module.MOISTURE_NSAMPLE
-
   -- power OFF sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
-  print("[Moisture]"..analogic)
   local parms = {}
   table.insert(parms, "id:"..node.chipid())
   table.insert(parms, ";value:"..analogic)
   table.insert(parms, ";stm:"..module.SLEEP_TIME_MOISTURE)
   table.insert(parms, ";mns:"..module.MOISTURE_NSAMPLE)
   table.insert(parms, ";mnst:"..module.MOISTURE_NSAMPLE_TIME)
+  print("[Moisture] "..table.concat(parms,""))
   publish("/moisture", table.concat(parms,""))
 end
 

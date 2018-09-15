@@ -186,14 +186,29 @@ function control(action)
   -- power ON moisture sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.HIGH)
   local status, measured_temp, measured_humi, measured_temp_dec, measured_humi_dec = dht.read(module.PIN_DHT)
-  tmr.delay(module.SLEEP_TIME_MOISTURE) -- time to moisture computes its values
+  tmr.delay(module.SLEEP_TIME_MOISTURE) -- time to "warmup"
   -- analogic 0 to 1024, where:
   -- [WET] low resistance  --- digital = 0 & led = ON
   -- [DRY] high resistance --- digital = 1 & led = OFF
-  local mma = gpio.read(module.PIN_MOISTURE_A)
-  local mmb = gpio.read(module.PIN_MOISTURE_B)
-  local mmc = gpio.read(module.PIN_MOISTURE_C)
-  local mmd = gpio.read(module.PIN_MOISTURE_D)
+  local mma = 0
+  local mmb = 0
+  local mmc = 0
+  local mmd = 0
+
+  for i=1,module.MOISTURE_NSAMPLE do
+    mma = mma + gpio.read(module.PIN_MOISTURE_A)
+    mmb = mmb + gpio.read(module.PIN_MOISTURE_B)
+    mmc = mmc + gpio.read(module.PIN_MOISTURE_C)
+    mmd = mmd + gpio.read(module.PIN_MOISTURE_D)
+    tmr.delay(module.MOISTURE_NSAMPLE_TIME)
+  end
+
+  local threshold = module.MOISTURE_NSAMPLE / 2;
+  mma = if mma > threshold then 1 else 0 end
+  mmb = if mmb > threshold then 1 else 0 end
+  mmc = if mmc > threshold then 1 else 0 end
+  mmd = if mmd > threshold then 1 else 0 end
+
   -- power OFF sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
     -- power OFF solenoid - just in case someone forgot to finish setup
