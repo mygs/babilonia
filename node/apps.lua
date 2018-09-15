@@ -202,12 +202,29 @@ function control(action)
     mmd = mmd + gpio.read(module.PIN_MOISTURE_D)
     tmr.delay(module.MOISTURE_NSAMPLE_TIME)
   end
+  print("[CTRL] Moisture:["..mma..","..mmb..","..mmc..","..mmd.."]")
 
-  local threshold = module.MOISTURE_NSAMPLE / 2;
-  mma = if mma > threshold then 1 else 0 end
-  mmb = if mmb > threshold then 1 else 0 end
-  mmc = if mmc > threshold then 1 else 0 end
-  mmd = if mmd > threshold then 1 else 0 end
+  local threshold = module.MOISTURE_NSAMPLE / 2
+  if mma > threshold then
+    mma = 1
+  else
+    mma = 0
+  end
+  if mmb > threshold then
+    mmb = 1
+  else
+    mmb = 0
+  end
+  if mmc > threshold then
+    mmc = 1
+  else
+    mmc = 0
+  end
+  if mmd > threshold then
+    mmd = 1
+  else
+    mmd = 0
+  end
 
   -- power OFF sensors
   gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)

@@ -59,6 +59,8 @@ if (module.MODE == 0) then -- indoor
 elseif(module.MODE == 1) then
   print("MODE: OUTDOOR")
   print("SLEEP_TIME_SPRINKLE: "..module.SLEEP_TIME_SPRINKLE)
+  print("MOISTURE_NSAMPLE: "..module.MOISTURE_NSAMPLE)
+  print("MOISTURE_NSAMPLE_TIME: "..module.MOISTURE_NSAMPLE_TIME)
 elseif(module.MODE == 2) then
   print("MODE: MOISTURE TEST")
   print("MOISTURE_NSAMPLE: "..module.MOISTURE_NSAMPLE)
