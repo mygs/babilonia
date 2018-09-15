@@ -33,7 +33,7 @@ module.SLEEP_TIME_WIFI = 5 -- seconds
 module.SLEEP_TIME_MQTT = 5 -- seconds
 module.SLEEP_TIME_MOISTURE = 5000000 -- 5 seconds
 module.MOISTURE_NSAMPLE = 500
-module.MOISTURE_NSAMPLE_TIME = 20000
+module.MOISTURE_NSAMPLE_TIME = 50000 -- 500 *50000 = 25 seconds
 module.SLEEP_TIME_SPRINKLE = 240000000 -- 4 min
 module.TEMPERATURE_THRESHOLD = 25 -- above this temperature, fan should be off
 module.TEMPERATURE_NSAMPLES = 10 -- https://goo.gl/3bLYao
