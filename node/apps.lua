@@ -254,7 +254,6 @@ function control(action)
       end
     end
   end
-  reboot() -- TODO: find out why if code reach this point, lost communication
 end
 ----- INIT SETUP -----
 print("[SETUP] Started")

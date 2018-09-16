@@ -24,6 +24,7 @@ function conn_pub_sub(client)
 				MQTTCLIENT:publish("/online", table.concat(parms,""), 0, 0)	-- request conf.
 			else
 				print("[APP] Babilonia App already started")
+				node.restart() -- FIXME: if reach this point, node lost communication
 			end
 		end)
 	module.MQTT_STATUS = 0;
