@@ -183,6 +183,7 @@ function sprinkle(duration)
   tmr.delay(duration)
   gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
   print("[SPRINKLE] OFF")
+  reboot()
 end
 ------ CONTROL -------
 function control(action)
