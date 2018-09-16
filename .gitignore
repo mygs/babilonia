@@ -1,5 +1,7 @@
 luac.cross
 log/
+.Rproj.user/
+*.Rproj
 *.lc
 profile.lua
 config.json
