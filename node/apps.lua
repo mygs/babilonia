@@ -183,7 +183,6 @@ function sprinkle(duration)
   tmr.delay(duration)
   gpio.write(module.PIN_PUMP_SOLENOID, gpio.LOW)
   print("[SPRINKLE] OFF")
-  reboot()
 end
 ------ CONTROL -------
 function control(action)
@@ -255,7 +254,8 @@ function control(action)
       end
     end
   end
-  end
+  reboot() -- TODO: find out why if code reach this point, lost communication
+end
 ----- INIT SETUP -----
 print("[SETUP] Started")
 if (module.MODE == 0) then -- indoor
