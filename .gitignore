@@ -10,3 +10,6 @@ config.json
 __pycache__
 .webassets-cache
 assets
+.Rproj.user
+.RData
+.Rhistory

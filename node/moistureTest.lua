@@ -92,6 +92,7 @@ function update(data)
           if cmd == 0 then reboot()
           elseif cmd == 1 then moisture()
           elseif cmd == 2 then collectgarbage()
+          elseif cmd == 3 then save_configuration()
           else                 print("command not found")
           end
     end
