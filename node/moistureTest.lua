@@ -43,10 +43,9 @@ function save_configuration()
   if file.open("nconfig.lua", "w+") then
     -- writing new parameters
     file.writeline('module.MASK_CRON_CTRL=\"'..module.MASK_CRON_CTRL.."\"")
-    file.writeline('module.SLEEP_TIME_MOISTURE=\"'..module.SLEEP_TIME_MOISTURE.."\"")
-    file.writeline('module.MOISTURE_NSAMPLE=\"'..module.MOISTURE_NSAMPLE.."\"")
-    file.writeline('module.MOISTURE_NSAMPLE_TIME=\"'..module.MOISTURE_NSAMPLE_TIME.."\"")
-
+    file.writeline('module.SLEEP_TIME_MOISTURE='..module.SLEEP_TIME_MOISTURE)
+    file.writeline('module.MOISTURE_NSAMPLE='..module.MOISTURE_NSAMPLE)
+    file.writeline('module.MOISTURE_NSAMPLE_TIME='..module.MOISTURE_NSAMPLE_TIME)
     file.close()
   end
 

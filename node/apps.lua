@@ -46,9 +46,9 @@ function save_configuration()
     file.writeline('module.MASK_CRON_LIGHT_ON=\"'..module.MASK_CRON_LIGHT_ON.."\"")
     file.writeline('module.MASK_CRON_LIGHT_OFF=\"'..module.MASK_CRON_LIGHT_OFF.."\"")
     file.writeline('module.MASK_CRON_CTRL=\"'..module.MASK_CRON_CTRL.."\"")
-    file.writeline('module.SLEEP_TIME_MOISTURE=\"'..module.SLEEP_TIME_MOISTURE.."\"")
-    file.writeline('module.MOISTURE_NSAMPLE=\"'..module.MOISTURE_NSAMPLE.."\"")
-    file.writeline('module.MOISTURE_NSAMPLE_TIME=\"'..module.MOISTURE_NSAMPLE_TIME.."\"")
+    file.writeline('module.SLEEP_TIME_MOISTURE='..module.SLEEP_TIME_MOISTURE)
+    file.writeline('module.MOISTURE_NSAMPLE='..module.MOISTURE_NSAMPLE)
+    file.writeline('module.MOISTURE_NSAMPLE_TIME='..module.MOISTURE_NSAMPLE_TIME)
     file.close()
   end
 
