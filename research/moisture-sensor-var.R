@@ -1,13 +1,14 @@
 library(dplyr)
 #suppressPackageStartupMessages(library(dplyr))
-#moisture-nickelchromeplate-soilwet.csv
-#moisture-nickelchromeplate-supersoilwet.csv
-#moisture-nickelchromeplate-water.csv
-#moisture-sensor-var.R
-#moisture-shortcircuit.csv
-#moisture-soilwet.csv
-#moisture-supersoilwet.csv
-#moisture-water.csv
-moisture_nickelchromeplate_soilwet <- read.csv("./moisture-nickelchromeplate-soilwet.csv", head = TRUE, sep=",");
-moisture_nickelchromeplate_soilwet <- group_by(moisture_nickelchromeplate_soilwet, SLEEP_TIME_MOISTURE, MOISTURE_NSAMPLE, MOISTURE_NSAMPLE_TIME)
-summarise(moisture_nickelchromeplate_soilwet, count = n(), mean = mean(VALUE), stddev = sd(VALUE))
+analyze <- function(filename){
+  moisture_data <- read.csv(filename, head = TRUE, sep=",");
+  moisture_data <- group_by(moisture_data, SLEEP_TIME_MOISTURE, MOISTURE_NSAMPLE, MOISTURE_NSAMPLE_TIME)
+  summarise(moisture_data, count = n(), mean = mean(VALUE), stddev = sd(VALUE))
+}
+analyze("./moisture-nickelchromeplate-soilwet.csv")
+analyze("./moisture-nickelchromeplate-supersoilwet.csv")
+analyze("./moisture-nickelchromeplate-water.csv")
+analyze("./moisture-shortcircuit.csv")
+analyze("./moisture-soilwet.csv")
+analyze("./moisture-supersoilwet.csv")
+analyze("./moisture-water.csv")
