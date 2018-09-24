@@ -5,6 +5,7 @@ analyze <- function(filename){
   moisture_data <- group_by(moisture_data, SLEEP_TIME_MOISTURE, MOISTURE_NSAMPLE, MOISTURE_NSAMPLE_TIME)
   summarise(moisture_data, count = n(), mean = mean(VALUE), stddev = sd(VALUE))
 }
+analyze("./moisture-nickelchromeplate-soildry.csv")
 analyze("./moisture-nickelchromeplate-soilwet.csv")
 analyze("./moisture-nickelchromeplate-supersoilwet.csv")
 analyze("./moisture-nickelchromeplate-water.csv")
