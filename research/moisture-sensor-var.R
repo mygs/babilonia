@@ -1,6 +1,6 @@
 library(dplyr)
-#setwd("/data/github/babilonia/research")
-setwd("~/Development/babilonia/research")
+setwd("/data/github/babilonia/research")
+#setwd("~/Development/babilonia/research")
 suppressPackageStartupMessages(library(dplyr))
 
 analyze <- function(filename){
@@ -18,6 +18,7 @@ analyze('soildry-nickel-plate')
 analyze('soildry-galvanized-wire')
 analyze('soilwet-nickel-plate')
 analyze('soilwet-galvanized-wire')
+analyze('soilwet2-galvanized-wire')
 analyze('supersoilwet-nickel-plate')
 analyze('supersoilwet-galvanized-wire')
 analyze('supersoilwet2-nickel-plate')
