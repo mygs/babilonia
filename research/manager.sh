@@ -30,7 +30,7 @@ test(){
         then
           mosquitto_pub -h $MQTT_HOST -t "/cfg" -m $PARM
           echo 'WARN: Republished command PARM='$PARM
-          COUNT_READ = 0
+          COUNT_READ=0
         fi
         COUNT_READ=$(expr $COUNT_READ + 1)
         echo 'WARN: COUNT still ZERO. Forgot it for the '$COUNT_READ' times'
