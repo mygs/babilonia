@@ -1,24 +1,27 @@
 library(dplyr)
-setwd("/data/github/babilonia/research")
+#setwd("/data/github/babilonia/research")
+setwd("~/Development/babilonia/research")
 suppressPackageStartupMessages(library(dplyr))
 
 analyze <- function(filename){
-  print('===========================================================================')
+#  print('===========================================================================')
+  file=paste(paste("./",filename, sep=""),"csv", sep=".");
   print(toupper(filename))
-  moisture_data <- read.csv(filename, head = TRUE, sep=",");
+  moisture_data <- read.csv(file, head = TRUE, sep=",");
   moisture_data <- group_by(moisture_data, SLEEP_TIME_MOISTURE, MOISTURE_NSAMPLE, MOISTURE_NSAMPLE_TIME)
-  summarise(moisture_data, count = n(), mean = mean(VALUE), stddev = sd(VALUE))
+  summarise(moisture_data, TEST=filename, COUNT = n(), MEAN = mean(VALUE), SD = sd(VALUE))
 }
 
-analyze("./moisture-nickelchromeplate-soildry.csv")
-analyze("./moisture-nickelchromeplate-soilwet.csv")
-analyze("./moisture-nickelchromeplate-supersoilwet.csv")
-analyze("./moisture-nickelchromeplate-supersoilwet2.csv")
-analyze("./moisture-nickelchromeplate-water.csv")
-analyze("./moisture-nickelchromeplate-water2.csv")
-analyze("./moisture-shortcircuit.csv")
-analyze("./moisture-soildry.csv")
-analyze("./moisture-soilwet.csv")
-analyze("./moisture-supersoilwet.csv")
-analyze("./moisture-supersoilwet2.csv")
-analyze("./moisture-water.csv")
+
+analyze('shortcircuit-galvanized-wire')
+analyze('soildry-nickel-plate')
+analyze('soildry-galvanized-wire')
+analyze('soilwet-nickel-plate')
+analyze('soilwet-galvanized-wire')
+analyze('supersoilwet-nickel-plate')
+analyze('supersoilwet-galvanized-wire')
+analyze('supersoilwet2-nickel-plate')
+analyze('supersoilwet2-galvanized-wire')
+analyze('water-nickel-plate')
+analyze('water-galvanized-wire')
+analyze('water2-nickel-plate')
