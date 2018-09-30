@@ -39,13 +39,13 @@ test(){
   done
 }
 
-test '1s sleep time' 1000000 200 100000
-test '2s sleep time' 2000000 200 100000
-test '4s sleep time' 4000000 200 100000
-test '8s sleep time' 8000000 200 100000
-test '100 samples' 5000000 100 200000
-test '200 samples' 5000000 200 100000
-test '400 samples' 5000000 400 50000
-test '800 samples' 5000000 800 25000
+test '[1s200x0.100s] 1s sleep time' 1000000 200 100000
+test '[2s200x0.100s] 2s sleep time' 2000000 200 100000
+test '[4s200x0.100s] 4s sleep time' 4000000 200 100000
+test '[8s200x0.100s] 8s sleep time' 8000000 200 100000
+test '[5s100x0.200s] 100 samples' 5000000 100 200000
+test '[5s200x0.100s] 200 samples' 5000000 200 100000
+test '[5s400x0.050s]  400 samples' 5000000 400 50000
+test '[5s800x0.025s] 800 samples' 5000000 800 25000
 
 echo "FINISHED"
