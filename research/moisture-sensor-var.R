@@ -4,7 +4,7 @@ setwd("~/Development/babilonia/research")
 suppressPackageStartupMessages(library(dplyr))
 
 analyze <- function(testname, testnumber, metal, type, filename){
-  file=paste(paste("./",filename, sep=""),"csv", sep=".");
+  file=paste(paste("./data/",filename, sep=""),"csv", sep=".");
   moisture_data <- group_by(read.csv(file, head = TRUE, sep=","), 
                               SLEEP_TIME_MOISTURE, 
                               MOISTURE_NSAMPLE, 
