@@ -93,6 +93,10 @@ result <- analyze('soildry', 2,'galvanized', 'wire', 'soildry2-galvanized-wire')
 data <- rbind(data,result$data)
 graph_soildry <- append(graph_soildry,list(result$graph))
 
+result <- analyze('soildry', 1,'copper', 'wire', 'soildry-copper-wire')
+data <- rbind(data,result$data)
+graph_soildry <- append(graph_soildry,list(result$graph))
+
 result <- analyze('soilwet', 1,'copper', 'wire','soilwet-copper-wire')
 data <- rbind(data,result$data)
 graph_soilwet <- append(graph_soilwet,list(result$graph))
@@ -150,4 +154,4 @@ data <- rbind(data,result$data)
 graph_water <- append(graph_water,list(result$graph))
 
 print (data)
-multiplot(graph_water, cols=2)
+multiplot(graph_soildry, cols=2)
