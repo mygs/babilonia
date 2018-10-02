@@ -9,10 +9,11 @@ module.BABILONIA_SERVER = profile.BABILONIA_SERVER
 profile = nil
 -- I/O ports
 if (module.MODE == 0) then -- indoor
-  module.PIN_SENSORS_SWITCH     = 1
-  module.PIN_MOISTURE_A         = 2
+  module.PIN_SENSORS_SWITCH     = 2
+  module.PIN_MOISTURE_A         = 1
   module.PIN_MOISTURE_B         = 0
   module.PIN_MOISTURE_C         = 5
+  module.PIN_MOISTURE_D         = 8 -- dummy
   module.PIN_DHT                = 4 -- fixed at shield
   module.PIN_FAN                = 6
   module.PIN_LIGHT              = 7

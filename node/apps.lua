@@ -258,6 +258,12 @@ end
 ----- INIT SETUP -----
 print("[SETUP] Started")
 if (module.MODE == 0) then -- indoor
+  gpio.mode(module.PIN_MOISTURE_A, gpio.INPUT)
+  gpio.mode(module.PIN_MOISTURE_B, gpio.INPUT)
+  gpio.mode(module.PIN_MOISTURE_C, gpio.INPUT)
+  gpio.mode(module.PIN_MOISTURE_D, gpio.INPUT)
+  -- power OFF sensors
+  gpio.write(module.PIN_SENSORS_SWITCH, gpio.LOW)
   gpio.mode(module.PIN_FAN, gpio.OUTPUT)
   gpio.mode(module.PIN_LIGHT, gpio.OUTPUT)
   if file.exists("fan.on") then fan(1) else fan(0) end
