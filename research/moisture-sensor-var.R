@@ -66,12 +66,14 @@ analyze <- function(testname, testnumber, metal, type, filename){
   graph <- ggplot(result_df,  aes(x = TEST_ID,  y = MEAN)) +
     geom_errorbar(aes(ymin = MEAN-SD, ymax =  MEAN+SD), width = 0.05,  size  = 0.5) +
     geom_point(shape = 15,  size  = 4) +
-    theme_bw() + ggtitle(paste(testname, metal, type, sep='-')) + ylab("Moisture")
+    theme_bw() + ggtitle(paste(testname, testnumber, metal, type, sep='-')) + ylab("Moisture")+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
   result$data <- result_df
   result$graph  <- graph
   return (result)
 }
 graph_shortcircuit <- list()
+graph_galvanized <- list()
 graph_soildry <- list()
 graph_soilwet <- list()
 graph_supersoilwet <- list()
@@ -88,6 +90,7 @@ graph_soildry <- append(graph_soildry,list(result$graph))
 result <- analyze('soildry', 1,'galvanized', 'wire', 'soildry-galvanized-wire')
 data <- rbind(data,result$data)
 graph_soildry <- append(graph_soildry,list(result$graph))
+graph_galvanized <- append(graph_galvanized,list(result$graph))
 
 result <- analyze('soildry', 2,'galvanized', 'wire', 'soildry2-galvanized-wire')
 data <- rbind(data,result$data)
@@ -99,15 +102,16 @@ graph_soildry <- append(graph_soildry,list(result$graph))
 
 result <- analyze('soilwet', 1,'copper', 'wire','soilwet-copper-wire')
 data <- rbind(data,result$data)
-graph_soilwet <- append(graph_soilwet,list(result$graph))
+#graph_soilwet <- append(graph_soilwet,list(result$graph))
 
 result <- analyze('soilwet', 1,'nickel', 'plate','soilwet-nickel-plate')
 data <- rbind(data,result$data)
-graph_soilwet <- append(graph_soilwet,list(result$graph))
+#graph_soilwet <- append(graph_soilwet,list(result$graph))
 
 result <- analyze('soilwet', 1,'galvanized', 'wire','soilwet-galvanized-wire')
 data <- rbind(data,result$data)
 graph_soilwet <- append(graph_soilwet,list(result$graph))
+graph_galvanized <- append(graph_galvanized,list(result$graph))
 
 result <- analyze('soilwet', 2,'galvanized', 'wire','soilwet2-galvanized-wire')
 data <- rbind(data,result$data)
@@ -128,6 +132,7 @@ graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
 result <- analyze('supersoilwet', 1,'galvanized', 'wire','supersoilwet-galvanized-wire')
 data <- rbind(data,result$data)
 graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
+graph_galvanized <- append(graph_galvanized,list(result$graph))
 
 result <- analyze('supersoilwet', 2,'nickel', 'plate','supersoilwet2-nickel-plate')
 data <- rbind(data,result$data)
@@ -137,6 +142,11 @@ result <- analyze('supersoilwet', 2,'galvanized', 'wire','supersoilwet2-galvaniz
 data <- rbind(data,result$data)
 graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
 
+
+result <- analyze('water', 1,'copper', 'wire','water-copper-wire')
+data <- rbind(data,result$data)
+graph_water <- append(graph_water,list(result$graph))
+
 result <- analyze('water', 1,'nickel', 'plate','water-nickel-plate')
 data <- rbind(data,result$data)
 graph_water <- append(graph_water,list(result$graph))
@@ -144,6 +154,7 @@ graph_water <- append(graph_water,list(result$graph))
 result <- analyze('water', 1,'galvanized', 'wire','water-galvanized-wire')
 data <- rbind(data,result$data)
 graph_water <- append(graph_water,list(result$graph))
+graph_galvanized <- append(graph_galvanized,list(result$graph))
 
 result <- analyze('water', 2,'galvanized', 'wire','water2-galvanized-wire')
 data <- rbind(data,result$data)
@@ -154,4 +165,4 @@ data <- rbind(data,result$data)
 graph_water <- append(graph_water,list(result$graph))
 
 print (data)
-multiplot(graph_soildry, cols=2)
+multiplot(graph_galvanized, cols=2)
