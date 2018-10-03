@@ -72,97 +72,115 @@ analyze <- function(testname, testnumber, metal, type, filename){
   result$graph  <- graph
   return (result)
 }
-graph_shortcircuit <- list()
 graph_galvanized <- list()
+graph_nickel <- list()
+graph_copper <- list()
+data <- list()
+#graph_shortcircuit <- list()
 graph_soildry <- list()
 graph_soilwet <- list()
 graph_supersoilwet <- list()
 graph_water <- list()
 
-result <- analyze('shortcircuit', 1, 'galvanized', 'wire', 'shortcircuit-galvanized-wire')
-data <- result$data
-graph_shortcircuit <- append(graph_shortcircuit,list(result$graph))
+#result <- analyze('shortcircuit', 1, 'galvanized', 'wire', 'shortcircuit-galvanized-wire')
+#data <- result$data
+#graph_shortcircuit <- append(graph_shortcircuit,list(result$graph))
 
 result <- analyze('soildry', 1,'nickel', 'plate', 'soildry-nickel-plate')
 data <- rbind(data,result$data)
 graph_soildry <- append(graph_soildry,list(result$graph))
+graph_nickel <- append(graph_nickel,list(result$graph))
 
 result <- analyze('soildry', 1,'galvanized', 'wire', 'soildry-galvanized-wire')
 data <- rbind(data,result$data)
 graph_soildry <- append(graph_soildry,list(result$graph))
 graph_galvanized <- append(graph_galvanized,list(result$graph))
 
-result <- analyze('soildry', 2,'galvanized', 'wire', 'soildry2-galvanized-wire')
-data <- rbind(data,result$data)
-graph_soildry <- append(graph_soildry,list(result$graph))
+#result <- analyze('soildry', 2,'galvanized', 'wire', 'soildry2-galvanized-wire')
+#data <- rbind(data,result$data)
+#graph_soildry <- append(graph_soildry,list(result$graph))
 
 result <- analyze('soildry', 1,'copper', 'wire', 'soildry-copper-wire')
 data <- rbind(data,result$data)
 graph_soildry <- append(graph_soildry,list(result$graph))
+graph_copper <- append(graph_copper,list(result$graph))
 
 result <- analyze('soilwet', 1,'copper', 'wire','soilwet-copper-wire')
 data <- rbind(data,result$data)
-#graph_soilwet <- append(graph_soilwet,list(result$graph))
+graph_soilwet <- append(graph_soilwet,list(result$graph))
+graph_copper <- append(graph_copper,list(result$graph))
 
 result <- analyze('soilwet', 1,'nickel', 'plate','soilwet-nickel-plate')
 data <- rbind(data,result$data)
-#graph_soilwet <- append(graph_soilwet,list(result$graph))
+graph_soilwet <- append(graph_soilwet,list(result$graph))
+graph_nickel <- append(graph_nickel,list(result$graph))
 
 result <- analyze('soilwet', 1,'galvanized', 'wire','soilwet-galvanized-wire')
 data <- rbind(data,result$data)
 graph_soilwet <- append(graph_soilwet,list(result$graph))
 graph_galvanized <- append(graph_galvanized,list(result$graph))
 
-result <- analyze('soilwet', 2,'galvanized', 'wire','soilwet2-galvanized-wire')
-data <- rbind(data,result$data)
-graph_soilwet <- append(graph_soilwet,list(result$graph))
+#result <- analyze('soilwet', 2,'galvanized', 'wire','soilwet2-galvanized-wire')
+#data <- rbind(data,result$data)
+#graph_soilwet <- append(graph_soilwet,list(result$graph))
 
-result <- analyze('soilwet', 3,'galvanized', 'wire','soilwet3-galvanized-wire')
-data <- rbind(data,result$data)
-graph_soilwet <- append(graph_soilwet,list(result$graph))
+#result <- analyze('soilwet', 3,'galvanized', 'wire','soilwet3-galvanized-wire')
+#data <- rbind(data,result$data)
+#graph_soilwet <- append(graph_soilwet,list(result$graph))
 
 result <- analyze('supersoilwet', 1,'copper', 'wire','supersoilwet-copper-wire')
 data <- rbind(data,result$data)
 graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
+graph_copper <- append(graph_copper,list(result$graph))
 
 result <- analyze('supersoilwet', 1,'nickel', 'plate','supersoilwet-nickel-plate')
 data <- rbind(data,result$data)
 graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
+graph_nickel <- append(graph_nickel,list(result$graph))
 
 result <- analyze('supersoilwet', 1,'galvanized', 'wire','supersoilwet-galvanized-wire')
 data <- rbind(data,result$data)
 graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
 graph_galvanized <- append(graph_galvanized,list(result$graph))
 
-result <- analyze('supersoilwet', 2,'nickel', 'plate','supersoilwet2-nickel-plate')
-data <- rbind(data,result$data)
-graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
+#result <- analyze('supersoilwet', 2,'nickel', 'plate','supersoilwet2-nickel-plate')
+#data <- rbind(data,result$data)
+#graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
 
-result <- analyze('supersoilwet', 2,'galvanized', 'wire','supersoilwet2-galvanized-wire')
-data <- rbind(data,result$data)
-graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
+#result <- analyze('supersoilwet', 2,'galvanized', 'wire','supersoilwet2-galvanized-wire')
+#data <- rbind(data,result$data)
+#graph_supersoilwet <- append(graph_supersoilwet,list(result$graph))
 
 
 result <- analyze('water', 1,'copper', 'wire','water-copper-wire')
 data <- rbind(data,result$data)
 graph_water <- append(graph_water,list(result$graph))
+graph_copper <- append(graph_copper,list(result$graph))
 
 result <- analyze('water', 1,'nickel', 'plate','water-nickel-plate')
 data <- rbind(data,result$data)
 graph_water <- append(graph_water,list(result$graph))
+graph_nickel <- append(graph_nickel,list(result$graph))
 
 result <- analyze('water', 1,'galvanized', 'wire','water-galvanized-wire')
 data <- rbind(data,result$data)
 graph_water <- append(graph_water,list(result$graph))
 graph_galvanized <- append(graph_galvanized,list(result$graph))
 
-result <- analyze('water', 2,'galvanized', 'wire','water2-galvanized-wire')
-data <- rbind(data,result$data)
-graph_water <- append(graph_water,list(result$graph))
+#result <- analyze('water', 2,'galvanized', 'wire','water2-galvanized-wire')
+#data <- rbind(data,result$data)
+#graph_water <- append(graph_water,list(result$graph))
 
-result <- analyze('water', 2,'nickel', 'plate','water2-nickel-plate')
-data <- rbind(data,result$data)
-graph_water <- append(graph_water,list(result$graph))
+#result <- analyze('water', 2,'nickel', 'plate','water2-nickel-plate')
+#data <- rbind(data,result$data)
+#graph_water <- append(graph_water,list(result$graph))
 
 print (data)
 multiplot(graph_galvanized, cols=2)
+multiplot(graph_nickel, cols=2)
+multiplot(graph_copper, cols=2)
+
+multiplot(graph_soildry, cols=2)
+multiplot(graph_soilwet, cols=2)
+multiplot(graph_supersoilwet, cols=2)
+multiplot(graph_water, cols=2)
