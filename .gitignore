@@ -14,3 +14,10 @@ assets
 .RData
 .Rhistory
 *.out
+# LaTex
+*.aux
+*.fls
+*.log
+*.gz
+*.fdb_latexmk
+*.pdf
