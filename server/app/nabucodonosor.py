@@ -179,7 +179,7 @@ def utility_processor():
     def format_humidity(value):
         return u'{0:.2f}%'.format(value)
     def format_moisture(value, mode):
-        if mode is None or mode=="" or int(mode) == 0:
+        if mode is None or mode=="" or int(value) == -1:
             return 'N/A'
         if int(value) == 1:
             return 'SECO' #DRY: GPIO = 1 / BUILD IN LED = OFF
