@@ -398,25 +398,13 @@ $(document).ready(function() {
       $('#temp_' + id).html(data.mt + String.fromCharCode(176) + 'C');
     }
     if (data.mma != null) {
-      if($('#mma_' + id).hasClass('indoor')){
-        $('#mma_' + id).html('N/A');
-      } else {
-        $('#mma_' + id).html((data.mma == 1) ? 'SECO' : 'MOLHADO');
-      }
+      $('#mma_' + id).html((data.mma == 1) ? 'SECO' : 'MOLHADO');
     }
     if (data.mmb != null) {
-      if($('#mmb_' + id).hasClass('indoor')){
-        $('#mmb_' + id).html('N/A');
-      } else {
-        $('#mmb_' + id).html((data.mmb == 1) ? 'SECO' : 'MOLHADO');
-      }
+      $('#mmb_' + id).html((data.mmb == 1) ? 'SECO' : 'MOLHADO');
     }
     if (data.mmc != null) {
-      if($('#mmc_' + id).hasClass('indoor')){
-        $('#mmc_' + id).html('N/A');
-      } else {
-        $('#mmc_' + id).html((data.mmc == 1) ? 'SECO' : 'MOLHADO');
-      }
+      $('#mmc_' + id).html((data.mmc == 1) ? 'SECO' : 'MOLHADO');
     }
     if (data.mmd != null) {
       if($('#mmd_' + id).hasClass('indoor')){

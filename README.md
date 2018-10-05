@@ -128,7 +128,7 @@ sudo apt-get install python3-mysqldb
 
 subscribe all topics
 ```
-mosquitto_sub -h 192.168.1.60 -t "#" -v
+mosquitto_sub -h 192.168.2.1 -t "#" -v
 ```
 send message
 ```
