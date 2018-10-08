@@ -16,7 +16,9 @@ function conn_pub_sub(client)
 			end
 			if(module.BABILONIA_STATUS == 1) then
 				print("[APP] Starting Babilonia App")
-				if(module.MODE == 2) then
+				if(module.MODE == 3) then
+					require("moi")
+				elseif(module.MODE == 2) then
 					require("moistureTest")
 				else
 					require("apps")

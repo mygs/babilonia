@@ -73,8 +73,20 @@ analyze <- function(testname, testnumber, metal, type, filename){
   return (result)
 }
 data <- list()
+graph <- list()
 result <- analyze('soilwet', 1,'galvanized', 'wire', 'freq-soilwet-galvanized-wire')
 data <- rbind(data,result$data)
+graph <- append(graph,list(result$graph))
+
+result <- analyze('soilwet', 1,'nickel', 'plate', 'freq-soilwet-nickel-plate')
+data <- rbind(data,result$data)
+graph <- append(graph,list(result$graph))
+
+
+result <- analyze('soilwet', 1,'copper', 'wire', 'freq-soilwet-copper-wire')
+data <- rbind(data,result$data)
+graph <- append(graph,list(result$graph))
+
 print (data)
-multiplot(list(result$graph), cols=2)
+multiplot(graph, cols=2)
 

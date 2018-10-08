@@ -14,7 +14,7 @@ test(){
   STM=$2
   MNS=$3
   MNST=$4
-  PARM="stm:"$((1*STM))";mns:"$((1*MNS))";mnst:"$((1*MNST))";cmd:3"
+  PARM="id:3767310;stm:"$((1*STM))";mns:"$((1*MNS))";mnst:"$((1*MNST))";cmd:3"
   mosquitto_pub -h $MQTT_HOST -t "/cfg" -m $PARM
   COUNT_READ=0
   while : ; do

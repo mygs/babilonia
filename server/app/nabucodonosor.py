@@ -306,6 +306,7 @@ if cfg["mode"]["mqtt"] == True:
         mqtt.subscribe("/data")
         mqtt.subscribe("/cmd-ack")
         mqtt.subscribe("/moisture")
+        mqtt.subscribe("/moi")
 
     # The callback for when a PUBLISH message is received from the server.
     @mqtt.on_message()
@@ -336,7 +337,10 @@ if cfg["mode"]["mqtt"] == True:
             values['timestamp']=timestamp
             socketio.emit('moisture', data=values)
             database.insert_moisture(values)
-
+        if topic == "/moi":
+            timestamp = int(time.time())
+            values['timestamp']=timestamp
+            database.insert_moi(values)
 if __name__ == '__main__':
     print("*** STARTING NABUCODONOSOR SYSTEM ***")
     user_reload = True

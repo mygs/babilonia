@@ -19,13 +19,15 @@ function publish_data(status_dht, measured_temp, measured_humi, mma, mmb, mmc, m
   table.insert(parms, ";mma:"..mma)
   table.insert(parms, ";mmb:"..mmb)
   table.insert(parms, ";mmc:"..mmc)
-  table.insert(parms, ";mmd:"..mmd)
   if (module.MODE == 1) then -- outdoor
     table.insert(parms, ";sf:-1")
     table.insert(parms, ";sl:-1")
+    table.insert(parms, ";mmd:"..mmd)
+
   else
     table.insert(parms, ";sf:"..fan())
     table.insert(parms, ";sl:"..light())
+    table.insert(parms, ";mmd:-1")
   end
   publish("/data", table.concat(parms,""))
 end

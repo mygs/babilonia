@@ -51,6 +51,7 @@ module.TEMPERATURE_SMA = 25 -- Simple Moving Average Temperature
 module.MASK_CRON_LIGHT_ON="0 11 * * *"  -- 8AM SP time (LocalTime+3H)
 module.MASK_CRON_LIGHT_OFF="0 20 * * *" -- 5PM SP time (LocalTime+3H)
 module.MASK_CRON_CTRL="0 20 * * *" -- 5PM SP time (LocalTime+3H)
+module.MASK_CRON_MOI="* * * * *" -- every min
 
 -- overwrite variables
 if file.exists("nconfig.lua") then
@@ -74,6 +75,8 @@ elseif(module.MODE == 2) then
   print("MODE: MOISTURE TEST")
   print("MOISTURE_NSAMPLE: "..module.MOISTURE_NSAMPLE)
   print("MOISTURE_NSAMPLE_TIME: "..module.MOISTURE_NSAMPLE_TIME)
+elseif(module.MODE == 3) then
+  print("MODE: MOI TEST")
 end
 print("SLEEP_TIME_MOISTURE: "..module.SLEEP_TIME_MOISTURE)
 print("MASK_CRON_CTRL: "..module.MASK_CRON_CTRL)

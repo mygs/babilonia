@@ -28,6 +28,25 @@ def insert_moisture(values):
         cur.execute(query);
         con.commit();
 
+def insert_moi(values):
+    con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
+    with con:
+        cur = con.cursor()
+        query = """INSERT INTO MOISTURE_TEST_DATA (NODE,
+                                                    TIMESTAMP,
+                                                    VALUE,SLEEP_TIME_MOISTURE,
+                                                     MOISTURE_NSAMPLE,
+                                                     MOISTURE_NSAMPLE_TIME)
+                        VALUES ({},{},{},{},{},{})""".format(
+                            values['id'],
+                            values['timestamp'],
+                            values['value'],
+                            "-1",
+                            "-1",
+                            "-1");
+        #print (query);
+        cur.execute(query);
+        con.commit();
 
 def insert_data(time, values):
     con = mdb.connect(cfg["db"]["host"], cfg["db"]["user"], cfg["db"]["password"], cfg["db"]["schema"])
