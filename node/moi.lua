@@ -6,7 +6,7 @@ function publish(value)
   table.insert(parms, ";value:"..value)
 
   if(module.MQTT_STATUS == 0)then
-    print("[MQTT] Publishing:")
+    print("[MQTT] Publishing")
     MQTTCLIENT:publish("/moi",table.concat(parms,""), 0, 0)	-- publish
   else
     print("[MQTT] Not connected")
