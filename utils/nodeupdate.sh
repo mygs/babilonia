@@ -7,7 +7,7 @@ echo ""
 NODE_IS_PLUGGED=$(lsusb | grep -e "1a86:7523")
 if [[ ! -z $NODE_IS_PLUGGED ]]; then
   echo "Building binaries..."
-  cd /babilonia/node
+  cd /babilonia/node/lua
   ./luac.cross -o config.lc config.lua
   ./luac.cross -o apps.lc apps.lua
   ./luac.cross -o moistureTest.lc moistureTest.lua
