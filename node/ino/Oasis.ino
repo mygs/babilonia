@@ -1,18 +1,15 @@
-//espmake flash BOARD=nodemcuv2
-//espmake ota BOARD=nodemcuv2 ESP_ADDR=HOSTNAME.local ESP_PORT=8266 ESP_PWD=PASSWORD
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include "Profile.h"
 
-const char* ssid = "xxxx";
-const char* password = "yyyyy";
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Booting");
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFi.begin( Profile::WIFI_SSID, Profile::WIFI_PASSWORD);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.println("Connection Failed! Rebooting...");
     delay(5000);
@@ -20,17 +17,11 @@ void setup() {
   }
 
   // Port defaults to 8266
-  ArduinoOTA.setPort(8266);
-
+  ArduinoOTA.setPort(Profile::PORT);
   // Hostname defaults to esp8266-[ChipID]
-  ArduinoOTA.setHostname("oasisx");
-
+  ArduinoOTA.setHostname(Profile::HOSTNAME);
   // No authentication by default
-  ArduinoOTA.setPassword("oasisx");
-
-  // Password can be set with it's md5 value as well
-  // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
-  // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
+  ArduinoOTA.setPassword(Profile::PASSWORD);
 
   ArduinoOTA.onStart([]() {
     String type;
@@ -39,7 +30,6 @@ void setup() {
     } else { // U_SPIFFS
       type = "filesystem";
     }
-
     // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
     Serial.println("Start updating " + type);
   });
@@ -67,7 +57,7 @@ void setup() {
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-  Serial.print("XXXXXXXXXXXXXXX");
+  Serial.print("zzzzzzzz");
 }
 void loop() {
   ArduinoOTA.handle();

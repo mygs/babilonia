@@ -4,6 +4,7 @@ log/
 *.Rproj
 *.lc
 profile.lua
+Profile.h
 config.json
 *.db
 *.pyc
