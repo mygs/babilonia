@@ -1,43 +1,45 @@
 #include <ESP8266WiFi.h>
+#include "PubSubClient.h"
 #include <ESP8266mDNS.h>
+#include <sstream>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include "Profile.h"
 
+char HOSTNAME[8];
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Booting");
+//MQTT client
+WiFiClient espClient;
+PubSubClient mqtt_client(espClient);
+
+void setup_wifi() {
+  Serial.print("[WIFI] Connecting to SSID: ");
+  Serial.println(Profile::WIFI_SSID);
   WiFi.mode(WIFI_STA);
   WiFi.begin( Profile::WIFI_SSID, Profile::WIFI_PASSWORD);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("Connection Failed! Rebooting...");
+    Serial.println("[WIFI] Connection Failed! Rebooting...");
     delay(5000);
     ESP.restart();
   }
+  Serial.print("[WIFI] IP address: ");
+  Serial.println(WiFi.localIP());
+}
 
-  // Port defaults to 8266
+void setup() {
+  sprintf( HOSTNAME, "%lu", ESP.getChipId() );
+  Serial.begin(115200);
+  Serial.print("[OASIS] HOSTNAME: ");
+  Serial.println(HOSTNAME);
+  Serial.println("[OASIS] Starting Setup");
+  setup_wifi();
   ArduinoOTA.setPort(Profile::PORT);
-  // Hostname defaults to esp8266-[ChipID]
-  ArduinoOTA.setHostname(Profile::HOSTNAME);
-  // No authentication by default
+  ArduinoOTA.setHostname(HOSTNAME);
   ArduinoOTA.setPassword(Profile::PASSWORD);
-
-  ArduinoOTA.onStart([]() {
-    String type;
-    if (ArduinoOTA.getCommand() == U_FLASH) {
-      type = "sketch";
-    } else { // U_SPIFFS
-      type = "filesystem";
-    }
-    // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-    Serial.println("Start updating " + type);
-  });
-  ArduinoOTA.onEnd([]() {
-    Serial.println("\nEnd");
-  });
+  ArduinoOTA.onStart([]() { Serial.println("[OTA] Starting "); });
+  ArduinoOTA.onEnd([]() { Serial.println("\n[OTA] Update finished! Rebooting"); });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    Serial.printf("[OTA] Progress: %u%%\r", (progress / (total / 100)));
   });
   ArduinoOTA.onError([](ota_error_t error) {
     Serial.printf("Error[%u]: ", error);
@@ -54,11 +56,33 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
-  Serial.println("Ready");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("zzzzzzzz");
+  mqtt_client.setServer(Profile::MQTT_SERVER, Profile::MQTT_PORT);
+  Serial.println("[OASIS] Setup Completed");
 }
+
+void mqtt_reconnect() {
+  // Loop until we're reconnected
+  while (!mqtt_client.connected()) {
+    Serial.print("[MQTT] Attempting connection...");
+    if (mqtt_client.connect(HOSTNAME)) {
+      Serial.println("connected");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(mqtt_client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
+
 void loop() {
   ArduinoOTA.handle();
+
+  if (!mqtt_client.connected()) {
+    mqtt_reconnect();
+  }
+  mqtt_client.loop();
+  //mqtt_client.publish("/arduino", "XYZ", true);
+
 }

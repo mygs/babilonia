@@ -185,7 +185,13 @@ sudo update-rc.d nabucodonosor.sh defaults
 sudo /etc/init.d/nabucodonosor.sh start
 sudo /etc/init.d/nabucodonosor.sh status
 ```
-
+### Arduino
+/etc/profile
+```bash
+BABILONIA_LIBS=/Users/msaito/Development
+export BABILONIA_LIBS
+alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
+```
 ### Over The Air
 First update, must be through USB
 ```bash
@@ -193,5 +199,5 @@ espmake flash BOARD=nodemcuv2
 ```
 Then, OTA
 ```bash
-espmake ota BOARD=nodemcuv2 ESP_ADDR=HOSTNAME.local ESP_PORT=8266 ESP_PWD=PASSWORD
+espmake ota ESP_ADDR=HOSTNAME.local ESP_PWD=PASSWORD
 ```
