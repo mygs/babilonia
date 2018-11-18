@@ -4,7 +4,8 @@
 #include <sstream>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
-#include "Profile.h"
+#include "Config.h"
+#include "WifiSec.h"
 
 char hostname[15];
 WiFiClient espClient;
@@ -22,9 +23,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void setup_wifi() {
   Serial.print("[WIFI] Connecting to SSID: ");
-  Serial.println(Profile::WIFI_SSID);
+  Serial.println(WifiSec::SSID);
   WiFi.mode(WIFI_STA);
-  WiFi.begin( Profile::WIFI_SSID, Profile::WIFI_PASSWORD);
+  WiFi.begin( WifiSec::SSID, WifiSec::PASSWORD);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.println("[WIFI] Connection Failed! Rebooting...");
     delay(5000);
@@ -42,7 +43,7 @@ void setup() {
   Serial.println("[OASIS] Starting Setup");
   setup_wifi();
   ArduinoOTA.setHostname(hostname);
-  ArduinoOTA.setPort(Profile::PORT);
+  ArduinoOTA.setPort(Config::OTA_PORT);
   ArduinoOTA.onStart([]() { Serial.println("[OTA] Starting "); });
   ArduinoOTA.onEnd([]() { Serial.println("\n[OTA] Update finished! Rebooting"); });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
@@ -63,7 +64,7 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
-  mqtt_client.setServer(Profile::MQTT_SERVER, Profile::MQTT_PORT);
+  mqtt_client.setServer(Config::MQTT_SERVER, Config::MQTT_PORT);
   mqtt_client.setCallback(callback);
   Serial.println("[OASIS] Setup Completed");
 }
