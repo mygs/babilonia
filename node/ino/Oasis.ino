@@ -7,7 +7,6 @@
 #include "Profile.h"
 
 char HOSTNAME[8];
-
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
 
@@ -38,13 +37,12 @@ void setup_wifi() {
 void setup() {
   sprintf( HOSTNAME, "%lu", ESP.getChipId() );
   Serial.begin(115200);
-  Serial.print("[OASIS] HOSTNAME: ");
+  Serial.print("\n\n\n[OASIS] HOSTNAME: ");
   Serial.println(HOSTNAME);
   Serial.println("[OASIS] Starting Setup");
   setup_wifi();
   ArduinoOTA.setPort(Profile::PORT);
   ArduinoOTA.setHostname(HOSTNAME);
-  ArduinoOTA.setPassword(Profile::PASSWORD);
   ArduinoOTA.onStart([]() { Serial.println("[OTA] Starting "); });
   ArduinoOTA.onEnd([]() { Serial.println("\n[OTA] Update finished! Rebooting"); });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {

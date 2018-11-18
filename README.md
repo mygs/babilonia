@@ -217,5 +217,5 @@ espmake flash
 ```
 Then, OTA
 ```bash
-espmake ota ESP_ADDR=HOSTNAME.local ESP_PWD=PASSWORD
+espmake ota ESP_ADDR=HOSTNAME.local
 ```
