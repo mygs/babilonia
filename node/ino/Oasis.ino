@@ -8,9 +8,18 @@
 
 char HOSTNAME[8];
 
-//MQTT client
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("[MQTT] Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
 
 void setup_wifi() {
   Serial.print("[WIFI] Connecting to SSID: ");
@@ -57,6 +66,7 @@ void setup() {
   });
   ArduinoOTA.begin();
   mqtt_client.setServer(Profile::MQTT_SERVER, Profile::MQTT_PORT);
+  mqtt_client.setCallback(callback);
   Serial.println("[OASIS] Setup Completed");
 }
 
@@ -76,6 +86,7 @@ void mqtt_reconnect() {
   }
 }
 
+
 void loop() {
   ArduinoOTA.handle();
 
@@ -84,5 +95,6 @@ void loop() {
   }
   mqtt_client.loop();
   //mqtt_client.publish("/arduino", "XYZ", true);
+  mqtt_client.subscribe("/commands");
 
 }
