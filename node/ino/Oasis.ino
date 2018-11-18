@@ -6,7 +6,7 @@
 #include <ArduinoOTA.h>
 #include "Profile.h"
 
-char HOSTNAME[8];
+char hostname[15];
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
 
@@ -35,14 +35,14 @@ void setup_wifi() {
 }
 
 void setup() {
-  sprintf( HOSTNAME, "%lu", ESP.getChipId() );
   Serial.begin(115200);
-  Serial.print("\n\n\n[OASIS] HOSTNAME: ");
-  Serial.println(HOSTNAME);
+  sprintf(hostname, "oasis-%06x", ESP.getChipId());
+  Serial.print("\n\n\n[OASIS] Hostname: ");
+  Serial.println(hostname);
   Serial.println("[OASIS] Starting Setup");
   setup_wifi();
+  ArduinoOTA.setHostname(hostname);
   ArduinoOTA.setPort(Profile::PORT);
-  ArduinoOTA.setHostname(HOSTNAME);
   ArduinoOTA.onStart([]() { Serial.println("[OTA] Starting "); });
   ArduinoOTA.onEnd([]() { Serial.println("\n[OTA] Update finished! Rebooting"); });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
@@ -72,7 +72,7 @@ void mqtt_reconnect() {
   // Loop until we're reconnected
   while (!mqtt_client.connected()) {
     Serial.print("[MQTT] Attempting connection...");
-    if (mqtt_client.connect(HOSTNAME)) {
+    if (mqtt_client.connect(hostname)) {
       Serial.println("connected");
     } else {
       Serial.print("failed, rc=");
