@@ -1,8 +1,10 @@
 SKETCH = Oasis.ino
 
 ESP_ROOT=$(BABILONIA_LIBS)/esp8266
+ESP_LIBS=$(ESP_ROOT)/libraries
 
-CUSTOM_LIBS =	$(BABILONIA_LIBS)/pubsubclient
+CUSTOM_LIBS =	$(BABILONIA_LIBS)/pubsubclient \
+							$(BABILONIA_LIBS)/ArduinoJson/src
 
 BOARD = nodemcuv2
 

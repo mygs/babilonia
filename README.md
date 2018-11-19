@@ -209,6 +209,8 @@ git clone https://github.com/esp8266/Arduino.git esp8266
 git checkout tags/2.4.2
 cd esp8266/tools
 python get.py
+git clone https://github.com/bblanchon/ArduinoJson.git
+git checkout tags/v5.13.3
 ```
 ### Over The Air
 First update, must be through USB
