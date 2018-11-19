@@ -42,7 +42,9 @@ void setup() {
   sprintf(hostname, "oasis-%06x", ESP.getChipId());
   Serial.print("\n\n\n[OASIS] Hostname: ");
   Serial.println(hostname);
-  Serial.println("[OASIS] Starting Setup");
+  #ifdef DEBUG_ESP_OASIS
+    DEBUG_OASIS("[OASIS] Starting Setup");
+  #endif
   setup_wifi();
   ArduinoOTA.setHostname(hostname);
   ArduinoOTA.setPort(Config::OTA_PORT);
@@ -68,7 +70,9 @@ void setup() {
   ArduinoOTA.begin();
   mqtt_client.setServer(Config::MQTT_SERVER, Config::MQTT_PORT);
   mqtt_client.setCallback(callback);
-  Serial.println("[OASIS] Setup Completed");
+  #ifdef DEBUG_ESP_OASIS
+    DEBUG_OASIS("[OASIS] Setup Completed");
+  #endif
 }
 
 void mqtt_reconnect() {
