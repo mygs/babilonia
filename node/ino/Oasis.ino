@@ -1,15 +1,14 @@
-#include "Config.h"
-#include "WifiSec.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoOTA.h>
+#include "WifiSec.h"
 #include "PubSubClient.h"
 #include "ArduinoJson.h"
-
+#include "Oasis.h"
 
 char hostname[15];
 WiFiClient espClient;
-PubSubClient mqtt_client(espClient);
+PubSubClient mqtt(espClient);
 // Memory pool for JSON object tree.
 // Use arduinojson.org/assistant to compute the capacity.
 StaticJsonBuffer<200> jsonBuffer;
@@ -17,23 +16,23 @@ StaticJsonBuffer<200> jsonBuffer;
 // replaced by DynamicJsonBuffer which allocates in the heap.
 // DynamicJsonBuffer  jsonBuffer(200);
 
-void callback(char* topic, byte* payload, unsigned int length) {
+void onMqttMessage(char* topic, byte* payload, unsigned int length) {
   JsonObject& msg = jsonBuffer.parseObject(payload);
   if (!msg.success()) {
     Serial.println("[MQTT] JSON parsing failed");
     return;
   }
 
-#ifdef DEBUG_ESP_OASIS
-  DEBUG_OASIS("\n[MQTT] Message arrived [");
-  DEBUG_OASIS(topic);
-  DEBUG_OASIS("] ");
-  DEBUG_OASIS(msg.printTo(Serial));
-  DEBUG_OASIS("\n");
-#endif
+  #ifdef DEBUG_ESP_OASIS
+    DEBUG_OASIS("\n[MQTT] Message arrived [");
+    DEBUG_OASIS(topic);
+    DEBUG_OASIS("] ");
+    DEBUG_OASIS(msg.printTo(Serial));
+    DEBUG_OASIS("\n");
+  #endif
 }
 
-void setup_wifi() {
+void setupWifi() {
   Serial.print("[WIFI] Connecting to SSID: ");
   Serial.println(WifiSec::SSID);
   WiFi.mode(WIFI_STA);
@@ -55,9 +54,9 @@ void setup() {
   #ifdef DEBUG_ESP_OASIS
     DEBUG_OASIS("[OASIS] Starting Setup\n");
   #endif
-  setup_wifi();
+  setupWifi();
   ArduinoOTA.setHostname(hostname);
-  ArduinoOTA.setPort(Config::OTA_PORT);
+  ArduinoOTA.setPort(OTA_PORT);
   ArduinoOTA.onStart([]() { Serial.println("[OTA] Starting "); });
   ArduinoOTA.onEnd([]() { Serial.println("\n[OTA] Update finished! Rebooting"); });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
@@ -78,44 +77,40 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
-  mqtt_client.setServer(Config::MQTT_SERVER, Config::MQTT_PORT);
-  mqtt_client.setCallback(callback);
+  mqtt.setServer(MQTT_SERVER,MQTT_PORT);
+  mqtt.setCallback(onMqttMessage);
+  mqttReconnect();
   #ifdef DEBUG_ESP_OASIS
     DEBUG_OASIS("[OASIS] Setup Completed\n");
   #endif
 }
 
-void mqtt_reconnect() {
-  #ifdef DEBUG_ESP_OASIS
-    DEBUG_OASIS("[WiFi] status:");
-    DEBUG_OASIS(WiFi.status());
-    DEBUG_OASIS("\n");
-  #endif
+void mqttReconnect() {
+  mqtt.disconnect();
   // Loop until we're reconnected
-  while (!mqtt_client.connected()) {
+  while (!mqtt.connected()) {
     Serial.print("[MQTT] Attempting connection...");
-    if (mqtt_client.connect(hostname)) {
+    if (mqtt.connect(hostname)) {
       Serial.println("connected");
+      mqtt.subscribe("/commands");
     } else {
       Serial.print("failed, rc=");
-      Serial.print(mqtt_client.state());
+      Serial.print(mqtt.state());
       Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
+      delay(5000); // Wait 5 seconds before retrying
     }
   }
 }
-
 
 void loop() {
 
   ArduinoOTA.handle();
 
-  if (!mqtt_client.connected()) {
-    mqtt_reconnect();
+  if (!mqtt.connected()) {
+    mqttReconnect();
+  }else{
+    mqtt.loop();
+    //mqtt.publish("/arduino", "XYZ", true);
   }
-  mqtt_client.loop();
-  //mqtt_client.publish("/arduino", "XYZ", true);
-  mqtt_client.subscribe("/commands");
 
 }
