@@ -7,12 +7,16 @@
 
 #define MQTT_SERVER "192.168.2.1"
 #define MQTT_PORT 1883
+#define MQTT_TOPIC_INBOUND "/oasis-inbound"
+#define MQTT_TOPIC_OUTBOUND "/oasis-inbound"
+
 #define OTA_PORT 8266
 
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
 void mqttReconnect();
 void setupWifi();
 void setup();
+void collectSensorData();
 void loop();
 
 #endif

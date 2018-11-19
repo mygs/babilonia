@@ -1,10 +1,11 @@
+#include "Oasis.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoOTA.h>
+#include <Ticker.h>
 #include "WifiSec.h"
 #include "PubSubClient.h"
 #include "ArduinoJson.h"
-#include "Oasis.h"
 
 char hostname[15];
 WiFiClient espClient;
@@ -15,6 +16,8 @@ StaticJsonBuffer<200> jsonBuffer;
 // StaticJsonBuffer allocates memory on the stack, it can be
 // replaced by DynamicJsonBuffer which allocates in the heap.
 // DynamicJsonBuffer  jsonBuffer(200);
+
+Ticker sensors;
 
 void onMqttMessage(char* topic, byte* payload, unsigned int length) {
   JsonObject& msg = jsonBuffer.parseObject(payload);
@@ -83,6 +86,8 @@ void setup() {
   #ifdef DEBUG_ESP_OASIS
     DEBUG_OASIS("[OASIS] Setup Completed\n");
   #endif
+
+  sensors.attach(180/*segs*/, collectSensorData);
 }
 
 void mqttReconnect() {
@@ -92,7 +97,7 @@ void mqttReconnect() {
     Serial.print("[MQTT] Attempting connection...");
     if (mqtt.connect(hostname)) {
       Serial.println("connected");
-      mqtt.subscribe("/commands");
+      mqtt.subscribe(MQTT_TOPIC_INBOUND);
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqtt.state());
@@ -102,6 +107,13 @@ void mqttReconnect() {
   }
 }
 
+void collectSensorData(){
+  mqtt.publish(MQTT_TOPIC_OUTBOUND, "XYZ", true);
+
+}
+
+
+
 void loop() {
 
   ArduinoOTA.handle();
@@ -110,7 +122,6 @@ void loop() {
     mqttReconnect();
   }else{
     mqtt.loop();
-    //mqtt.publish("/arduino", "XYZ", true);
   }
 
 }
