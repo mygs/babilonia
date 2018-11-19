@@ -1,6 +1,11 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#define DEBUG_ESP_OASIS true
+#define DEBUG_ESP_PORT Serial
+
+#define DEBUG_OASIS(...) DEBUG_ESP_PORT.print( __VA_ARGS__ )
+
 namespace Config
 {
   const char* MQTT_SERVER = "192.168.2.1";

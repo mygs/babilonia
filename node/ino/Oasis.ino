@@ -1,24 +1,26 @@
+#include "Config.h"
+#include "WifiSec.h"
 #include <ESP8266WiFi.h>
 #include "PubSubClient.h"
 #include <ESP8266mDNS.h>
-#include <sstream>
-#include <WiFiUdp.h>
 #include <ArduinoOTA.h>
-#include "Config.h"
-#include "WifiSec.h"
+
 
 char hostname[15];
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("[MQTT] Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
+  //TODO: DO something with the received message
+#ifdef DEBUG_ESP_OASIS
+  DEBUG_OASIS("[MQTT] Message arrived [");
+  DEBUG_OASIS(topic);
+  DEBUG_OASIS("] ");
   for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
+    DEBUG_OASIS((char)payload[i]);
   }
-  Serial.println();
+  DEBUG_OASIS("\n");
+#endif
 }
 
 void setup_wifi() {
