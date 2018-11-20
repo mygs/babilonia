@@ -139,7 +139,7 @@ mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "id:3765036;mclon:0 7 * * *;mcloff:0 
 mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "id:3765036;cmd:3"
 mosquitto_pub -h 192.168.1.60 -t "/online" -m "id:3765036;rb:0"
 mosquitto_pub -h 192.168.1.60 -t "/cfg" -m "setup:10"
-mosquitto_pub -h 192.168.2.1 -t "/commands" -m "TESTECXXX"
+mosquitto_pub -h 192.168.1.70 -t "/oasis-inbound" -m "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}"
 
 
 ```

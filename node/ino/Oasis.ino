@@ -7,12 +7,12 @@
 #include "PubSubClient.h"
 #include "ArduinoJson.h"
 
-char hostname[15];
+char hostname[HOSTNAME_SIZE];
 WiFiClient espClient;
 PubSubClient mqtt(espClient);
 // Memory pool for JSON object tree.
 // Use arduinojson.org/assistant to compute the capacity.
-StaticJsonBuffer<200> jsonBuffer;
+StaticJsonBuffer<JSON_MEMORY_SIZE> jsonBuffer;
 // StaticJsonBuffer allocates memory on the stack, it can be
 // replaced by DynamicJsonBuffer which allocates in the heap.
 // DynamicJsonBuffer  jsonBuffer(200);
@@ -20,6 +20,7 @@ StaticJsonBuffer<200> jsonBuffer;
 Ticker sensors;
 
 void onMqttMessage(char* topic, byte* payload, unsigned int length) {
+
   JsonObject& msg = jsonBuffer.parseObject(payload);
   if (!msg.success()) {
     Serial.println("[MQTT] JSON parsing failed");
@@ -41,8 +42,8 @@ void setupWifi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin( WifiSec::SSID, WifiSec::PASSWORD);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("[WIFI] Connection Failed! Rebooting...");
-    delay(5000);
+    Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...", RETRY_CONNECTION_DELAY/1000);
+    delay(RETRY_CONNECTION_DELAY);
     ESP.restart();
   }
   Serial.print("[WIFI] IP address: ");
@@ -50,9 +51,9 @@ void setupWifi() {
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(SERIAL_BAUDRATE);
   sprintf(hostname, "oasis-%06x", ESP.getChipId());
-  Serial.print("\n\n\n[OASIS] Hostname: ");
+  Serial.print("\n\n\n[OASIS] Hostname  : ");
   Serial.println(hostname);
   #ifdef DEBUG_ESP_OASIS
     DEBUG_OASIS("[OASIS] Starting Setup\n");
@@ -87,7 +88,7 @@ void setup() {
     DEBUG_OASIS("[OASIS] Setup Completed\n");
   #endif
 
-  sensors.attach(180/*segs*/, collectSensorData);
+  sensors.attach(SENSOR_COLLECT_DATA_PERIOD, collectSensorData);
 }
 
 void mqttReconnect() {
@@ -101,14 +102,14 @@ void mqttReconnect() {
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqtt.state());
-      Serial.println(" try again in 5 seconds");
-      delay(5000); // Wait 5 seconds before retrying
+      Serial.printf(" try again in %i seconds", RETRY_CONNECTION_DELAY/1000);
+      delay(RETRY_CONNECTION_DELAY);
     }
   }
 }
 
 void collectSensorData(){
-  mqtt.publish(MQTT_TOPIC_OUTBOUND, "XYZ", true);
+  mqtt.publish(MQTT_TOPIC_OUTBOUND, "XYZW");
 
 }
 
