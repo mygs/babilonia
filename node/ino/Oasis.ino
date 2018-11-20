@@ -18,7 +18,6 @@ StaticJsonBuffer<JSON_MEMORY_SIZE> jsonBuffer;
 // DynamicJsonBuffer  jsonBuffer(200);
 
 Ticker sensors;
-
 void onMqttMessage(char* topic, byte* payload, unsigned int length) {
 
   JsonObject& msg = jsonBuffer.parseObject(payload);

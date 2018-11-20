@@ -1,0 +1,13 @@
+{
+  "cfg":{
+        "t_sensor": 300,
+
+  },
+  "cmd":{
+  			"light":"on",
+			  "fan":"off",
+  			"water":"on",
+  			"reboot",
+  			"status":"all"|"light"|"fan"|"water",
+	}
+}
