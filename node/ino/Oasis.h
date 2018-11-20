@@ -2,9 +2,8 @@
 #define Oasis_h
 
 // ***** DEBUG *****
-#define DEBUG_ESP_OASIS true
-#define DEBUG_ESP_PORT Serial
-#define DEBUG_OASIS(...) DEBUG_ESP_PORT.print( __VA_ARGS__ )
+//comment the line below to disable debug mode
+#define DEBUG_ESP_OASIS
 
 // ***** DEFINITIONS *****
 #define JSON_MEMORY_SIZE 200

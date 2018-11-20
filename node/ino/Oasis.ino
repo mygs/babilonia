@@ -28,11 +28,10 @@ void onMqttMessage(char* topic, byte* payload, unsigned int length) {
   }
 
   #ifdef DEBUG_ESP_OASIS
-    DEBUG_OASIS("\n[MQTT] Message arrived [");
-    DEBUG_OASIS(topic);
-    DEBUG_OASIS("] ");
-    DEBUG_OASIS(msg.printTo(Serial));
-    DEBUG_OASIS("\n");
+    Serial.print("\n[MQTT] Message arrived [");
+    Serial.print(topic);
+    Serial.print("] ");
+    Serial.println(msg.printTo(Serial));
   #endif
 }
 
@@ -53,10 +52,10 @@ void setupWifi() {
 void setup() {
   Serial.begin(SERIAL_BAUDRATE);
   sprintf(hostname, "oasis-%06x", ESP.getChipId());
-  Serial.print("\n\n\n[OASIS] Hostname  : ");
+  Serial.print("\n\n\n[OASIS] Hostname: ");
   Serial.println(hostname);
   #ifdef DEBUG_ESP_OASIS
-    DEBUG_OASIS("[OASIS] Starting Setup\n");
+    Serial.println("[OASIS] Starting Setup");
   #endif
   setupWifi();
   ArduinoOTA.setHostname(hostname);
@@ -85,7 +84,7 @@ void setup() {
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
   #ifdef DEBUG_ESP_OASIS
-    DEBUG_OASIS("[OASIS] Setup Completed\n");
+    Serial.println("[OASIS] Setup Completed");
   #endif
 
   sensors.attach(SENSOR_COLLECT_DATA_PERIOD, collectSensorData);
