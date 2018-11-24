@@ -1,0 +1,12 @@
+{
+  "cfg":{
+    "period": 300
+  },
+  "cmd":{
+    "light":true,
+    "fan":true,
+    "water":true,
+    "reboot":true,
+    "status":["node","soil","dht","light","fan","water"]
+	}
+}
