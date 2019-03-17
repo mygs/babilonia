@@ -13,24 +13,53 @@ PubSubClient mqtt(espClient);
 // Memory pool for JSON object tree.
 // Use arduinojson.org/assistant to compute the capacity.
 StaticJsonBuffer<JSON_MEMORY_SIZE> jsonBuffer;
+StaticJsonBuffer<JSON_MEMORY_SIZE> jsonBufferOut;
 // StaticJsonBuffer allocates memory on the stack, it can be
 // replaced by DynamicJsonBuffer which allocates in the heap.
 // DynamicJsonBuffer  jsonBuffer(200);
-
 Ticker sensors;
-void onMqttMessage(char* topic, byte* payload, unsigned int length) {
 
-  JsonObject& msg = jsonBuffer.parseObject(payload);
+void postResponse(JsonObject& msg){
+
+  //const char* cfg = msg["cfg"];
+  //const char* cmd = msg["cmd"];
+  JsonObject& output = jsonBufferOut.createObject();
+  output["node"] = hostname;
+  JsonArray& resp = output.createNestedArray("resp");
+  resp.add("cfg");
+  char messageBuffer[64];
+  output.printTo(messageBuffer, sizeof(messageBuffer));
+
+  mqtt.publish(MQTT_TOPIC_OUTBOUND, messageBuffer);
+
+}
+
+
+void onMqttMessage(char* topic, byte* payload, unsigned int length) {
+  // handle message arrived
+  char inData[80];
+
+
+ Serial.print("payload: ");
+ for(int i =0; i<length; i++){
+   Serial.print((char)payload[i]);
+   inData[i] = (char)payload[i];
+ }
+ Serial.println();
+  JsonObject& msg = jsonBuffer.parseObject(inData);
   if (!msg.success()) {
-    Serial.println("[MQTT] JSON parsing failed");
+    Serial.print("[MQTT] JSON parsing failed ");
+    Serial.println(length);
     return;
   }
+
+  postResponse(msg);
 
   #ifdef DEBUG_ESP_OASIS
     Serial.print("\n[MQTT] Message arrived [");
     Serial.print(topic);
     Serial.print("] ");
-    Serial.println(msg.printTo(Serial));
+    //Serial.println(msg.prettyPrintTo(Serial));
   #endif
 }
 
@@ -48,8 +77,10 @@ void setupWifi() {
   Serial.println(WiFi.localIP());
 }
 
+/* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
   Serial.begin(SERIAL_BAUDRATE);
+  while (!Serial) continue;
   sprintf(hostname, "oasis-%06x", ESP.getChipId());
   Serial.print("\n\n\n[OASIS] Hostname: ");
   Serial.println(hostname);
@@ -108,11 +139,10 @@ void mqttReconnect() {
 
 void collectSensorData(){
   mqtt.publish(MQTT_TOPIC_OUTBOUND, "XYZW");
-
 }
 
 
-
+/* DO NOT CHANGE this function name - Arduino hook */
 void loop() {
 
   ArduinoOTA.handle();

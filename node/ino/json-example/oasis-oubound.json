@@ -1,21 +1,20 @@
 {
-  "node":{
-    "hostname": "oasis-311de9",
-    "ip":"192.168.2.200"
-  },
-  "resp":["light","fan","water","reboot"],
-  "data":{
-    "node":{
-      "free-heap": 100,
-      "chip-size":100,
-      "chip-id":"311de9",
-      "sdk-version":1,
-
-    },
-    "soil":[1,0,1,1],
-    "dht":{
-      "temperature": 25,
-      "humidity": 0.7
-    }
+	"node": {
+		"hostname": "oasis-311de9",
+		"ip": "192.168.2.200"
+	},
+	"resp": ["cfg", "node", "soil", "dht", "light", "fan", "water", "reboot"],
+	"data": {
+		"node": {
+			"free-heap": 100,
+			"chip-size": 100,
+			"chip-id": "311de9",
+			"sdk-version": 1
+		},
+		"soil": [1, 0, 1, 1],
+		"dht": {
+			"temperature": 25,
+			"humidity": 0.7
+		}
 	}
 }

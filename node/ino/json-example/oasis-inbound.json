@@ -1,12 +1,24 @@
 {
-  "cfg":{
-    "period": 300
-  },
-  "cmd":{
-    "light":true,
-    "fan":true,
-    "water":true,
-    "reboot":true,
-    "status":["node","soil","dht","light","fan","water"]
+	"cfg": {
+		"period": 300
+	},
+	"cmd": {
+		"light": true,
+		"fan": true,
+		"water": true,
+		"reboot": true,
+		"status": ["node", "soil", "dht", "light", "fan", "water"]
 	}
 }
+
+
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"cfg\":{\"period\": 300},\"cmd\":{\"light\":true,\"fan\":true,\"water\":true,\"reboot\":true,\"status\":[\"node\",\"soil\",\"dht\",\"light\",\"fan\",\"water\"]}}"
+
+
+
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"cfg\":{\"period\": 300},\"cmd\":{\"light\":true,\"reboot\":true}}"
+
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"cfg\":{\"period\": 300},\"cmd\":{\"reboot\":true}}"
+
+
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"cfg\":{\"period\": 300}}"

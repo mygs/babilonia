@@ -1,6 +1,5 @@
 #ifndef Oasis_h
 #define Oasis_h
-
 // ***** DEBUG *****
 //comment the line below to disable debug mode
 #define DEBUG_ESP_OASIS
@@ -21,6 +20,7 @@
 
 // ***** functions *****
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
+//void postResponse(JsonObject& msg);
 void mqttReconnect();
 void setupWifi();
 void setup();
