@@ -1,4 +1,4 @@
-# babilonia
+cat 00  # babilonia
 
 ### Env variables
 /etc/profile.d/00-babilonia.sh
@@ -186,31 +186,37 @@ sudo update-rc.d nabucodonosor.sh defaults
 sudo /etc/init.d/nabucodonosor.sh start
 sudo /etc/init.d/nabucodonosor.sh status
 ```
-
+---
+---
+---
+---
+---
 ## Arduino
 
 ### ENVIRONMENT
 /etc/profile
 /etc/profile.d/00-babilonia.sh
 ```bash
-export BABILONIA_LIBS=/Users/msaito/Development
-export BABILONIA_HOME=/Users/msaito/Development/babilonia
+export BABILONIA_LIBS=/github
+export BABILONIA_HOME=/github/babilonia
 alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
 ```
 
 ### DEPS
 In $BABILONIA_LIBS
 ```bash
+git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
+make
 git clone https://github.com/plerup/makeEspArduino.git
-git checkout tags/4.14.2
+git checkout tags/4.16.1
 git clone https://github.com/knolleary/pubsubclient.git
 git checkout tags/v2.7
 git clone https://github.com/esp8266/Arduino.git esp8266
-git checkout tags/2.4.2
+git checkout tags/2.5.0
 cd esp8266/tools
 python get.py
 git clone https://github.com/bblanchon/ArduinoJson.git
-git checkout tags/v5.13.3
+git checkout tags/v6.9.1
 ```
 ### Over The Air
 First update, must be through USB
