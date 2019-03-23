@@ -17,7 +17,7 @@ StaticJsonDocument<JSON_MEMORY_SIZE> jsonDocOut;
 
 Ticker sensors;
 
-void postResponse(JsonObject& msg){
+void postResponse(JsonObject msg){
 
         jsonDocOut["node"] = hostname;
         JsonArray resp = jsonDocOut.createNestedArray("resp");
