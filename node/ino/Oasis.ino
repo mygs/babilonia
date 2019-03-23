@@ -54,7 +54,8 @@ void onMqttMessage(char* topic, byte* payload, unsigned int length) {
         Serial.print("\n[MQTT] Message arrived [");
         Serial.print(topic);
         Serial.print("] ");
-        Serial.println(msg.prettyPrintTo(Serial));
+        deserializeJson(jsonDoc,Serial);
+        //Serial.println(msg.prettyPrintTo(Serial));
   #endif
 }
 
