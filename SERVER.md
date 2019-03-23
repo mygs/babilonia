@@ -40,3 +40,14 @@ Then, OTA
 ```bash
 espmake ota ESP_ADDR=IP
 ```
+
+### mqtt commands
+
+subscribe all topics
+```
+mosquitto_sub -h 192.168.2.1 -t "#" -v
+```
+send message
+```
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}"
+```
