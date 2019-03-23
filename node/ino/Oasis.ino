@@ -12,23 +12,19 @@ WiFiClient espClient;
 PubSubClient mqtt(espClient);
 // Memory pool for JSON object tree.
 // Use arduinojson.org/assistant to compute the capacity.
-StaticJsonBuffer<JSON_MEMORY_SIZE> jsonBuffer;
-StaticJsonBuffer<JSON_MEMORY_SIZE> jsonBufferOut;
-// StaticJsonBuffer allocates memory on the stack, it can be
-// replaced by DynamicJsonBuffer which allocates in the heap.
-// DynamicJsonBuffer  jsonBuffer(200);
+StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
+StaticJsonDocument<JSON_MEMORY_SIZE> jsonDocOut;
+
 Ticker sensors;
 
 void postResponse(JsonObject& msg){
 
-  //const char* cfg = msg["cfg"];
-  //const char* cmd = msg["cmd"];
-  JsonObject& output = jsonBufferOut.createObject();
-  output["node"] = hostname;
-  JsonArray& resp = output.createNestedArray("resp");
+  //JsonObject& output = jsonDocOut.createObject();
+  jsonDocOut["node"] = hostname;
+  JsonArray& resp = jsonDocOut.createNestedArray("resp");
   resp.add("cfg");
   char messageBuffer[64];
-  output.printTo(messageBuffer, sizeof(messageBuffer));
+  jsonDocOut.printTo(messageBuffer, sizeof(messageBuffer));
 
   mqtt.publish(MQTT_TOPIC_OUTBOUND, messageBuffer);
 
@@ -46,8 +42,10 @@ void onMqttMessage(char* topic, byte* payload, unsigned int length) {
    inData[i] = (char)payload[i];
  }
  Serial.println();
-  JsonObject& msg = jsonBuffer.parseObject(inData);
-  if (!msg.success()) {
+  //JsonObject& msg = jsonDoc.parseObject(inData);
+  DeserializationError error = deserializeJson(inData, jsonDoc);
+
+  if (error) {
     Serial.print("[MQTT] JSON parsing failed ");
     Serial.println(length);
     return;
