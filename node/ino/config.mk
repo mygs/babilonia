@@ -6,7 +6,7 @@ ESP_LIBS=$(ESP_ROOT)/libraries
 CUSTOM_LIBS =	$(BABILONIA_LIBS)/pubsubclient \
 							$(BABILONIA_LIBS)/ArduinoJson/src
 
-BOARD = nodemcuv2
+CHIP = esp8266
 
 ESP_PORT=8266
 
