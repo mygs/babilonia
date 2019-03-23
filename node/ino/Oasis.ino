@@ -17,7 +17,7 @@ StaticJsonDocument<JSON_MEMORY_SIZE> jsonDocOut;
 
 Ticker sensors;
 
-void postResponse(JsonObject msg){
+void postResponse(){
 
         jsonDocOut["node"] = hostname;
         JsonArray resp = jsonDocOut.createNestedArray("resp");
@@ -44,18 +44,17 @@ void onMqttMessage(char* topic, byte* payload, unsigned int length) {
         DeserializationError error = deserializeJson(jsonDoc, inData);
 
         if (error) {
-                Serial.print("[MQTT] JSON parsing failed ");
-                Serial.println(length);
-                return;
+                Serial.print(F("deserializeJson() failed with code "));
+                Serial.println(error.c_str());
         }
 
-        postResponse(jsonDoc);
+        postResponse();
 
   #ifdef DEBUG_ESP_OASIS
         Serial.print("\n[MQTT] Message arrived [");
         Serial.print(topic);
         Serial.print("] ");
-        //Serial.println(msg.prettyPrintTo(Serial));
+        Serial.println(msg.prettyPrintTo(Serial));
   #endif
 }
 
