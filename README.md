@@ -186,38 +186,3 @@ sudo update-rc.d nabucodonosor.sh defaults
 sudo /etc/init.d/nabucodonosor.sh start
 sudo /etc/init.d/nabucodonosor.sh status
 ```
-
-## Arduino
-
-### ENVIRONMENT
-/etc/profile
-/etc/profile.d/00-babilonia.sh
-```bash
-export BABILONIA_LIBS=/Users/msaito/Development
-export BABILONIA_HOME=/Users/msaito/Development/babilonia
-alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
-```
-
-### DEPS
-In $BABILONIA_LIBS
-```bash
-git clone https://github.com/plerup/makeEspArduino.git
-git checkout tags/4.14.2
-git clone https://github.com/knolleary/pubsubclient.git
-git checkout tags/v2.7
-git clone https://github.com/esp8266/Arduino.git esp8266
-git checkout tags/2.4.2
-cd esp8266/tools
-python get.py
-git clone https://github.com/bblanchon/ArduinoJson.git
-git checkout tags/v5.13.3
-```
-### Over The Air
-First update, must be through USB
-```bash
-espmake flash
-```
-Then, OTA
-```bash
-espmake ota ESP_ADDR=HOSTNAME.local
-```
