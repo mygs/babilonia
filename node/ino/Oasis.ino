@@ -21,6 +21,7 @@ StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
 Ticker sensors;
 
 void postResponse() {
+	jsonDoc.clear();
   jsonDoc["node"] = hostname;
   JsonArray resp = jsonDoc.createNestedArray("resp");
   resp.add("cfg");
@@ -35,13 +36,14 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   char inData[80];
 
 
-  Serial.print("payload: ");
-
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-    inData[i] = (char)payload[i];
-  }
-  Serial.println();
+  // Serial.print("payload: ");
+	//
+  // for (int i = 0; i < length; i++) {
+  //   Serial.print((char)payload[i]);
+  //   inData[i] = (char)payload[i];
+  // }
+  // Serial.println();
+	jsonDoc.clear();
   DeserializationError error = deserializeJson(jsonDoc, inData);
 
   if (error) {
