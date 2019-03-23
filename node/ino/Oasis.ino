@@ -19,12 +19,11 @@ Ticker sensors;
 
 void postResponse(JsonObject& msg){
 
-        //JsonObject& output = jsonDocOut.createObject();
         jsonDocOut["node"] = hostname;
-        JsonArray& resp = jsonDocOut.createNestedArray("resp");
+        JsonArray resp = jsonDocOut.createNestedArray("resp");
         resp.add("cfg");
         char messageBuffer[64];
-        jsonDocOut.printTo(messageBuffer, sizeof(messageBuffer));
+        serializeJson(jsonDocOut, messageBuffer, sizeof(messageBuffer));
 
         mqtt.publish(MQTT_TOPIC_OUTBOUND, messageBuffer);
 
@@ -50,7 +49,7 @@ void onMqttMessage(char* topic, byte* payload, unsigned int length) {
                 return;
         }
 
-        postResponse(msg);
+        postResponse(jsonDoc);
 
   #ifdef DEBUG_ESP_OASIS
         Serial.print("\n[MQTT] Message arrived [");
