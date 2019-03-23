@@ -6,8 +6,9 @@ ESP_LIBS=$(ESP_ROOT)/libraries
 CUSTOM_LIBS =	$(BABILONIA_LIBS)/pubsubclient \
 							$(BABILONIA_LIBS)/ArduinoJson/src
 
-CHIP = esp8266
+#Board type
+BOARD = nodemcuv2
 
-ESP_PORT=8266
+ESP_PORT = 8266
 
 UPLOAD_SPEED = 115200

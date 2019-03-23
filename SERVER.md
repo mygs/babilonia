@@ -14,6 +14,8 @@ cd esp8266/tools
 python get.py
 git clone https://github.com/bblanchon/ArduinoJson.git
 git checkout tags/v6.9.1
+https://github.com/espressif/esptool.git
+git checkout tags/v2.6
 ```
 
 
@@ -36,5 +38,5 @@ espmake flash
 ```
 Then, OTA
 ```bash
-espmake ota ESP_ADDR=HOSTNAME.local
+espmake ota ESP_ADDR=IP
 ```
