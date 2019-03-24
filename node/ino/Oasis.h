@@ -5,13 +5,16 @@
 #define DEBUG_ESP_OASIS
 
 // ***** DEFINITIONS *****
-#define JSON_MEMORY_SIZE 200
+// Use arduinojson.org/assistant to compute the capacity.
+#define JSON_MEMORY_SIZE 512
 #define HOSTNAME_SIZE 15
 #define SENSOR_COLLECT_DATA_PERIOD 180 //seconds
 #define RETRY_CONNECTION_DELAY 5000 // ms
 #define SERIAL_BAUDRATE 115200
 #define OTA_PORT 8266
 
+
+#define MQTT_MAX_PACKET_SIZE 256
 // ***** MQTT *****
 #define MQTT_SERVER "192.168.2.1"
 #define MQTT_PORT 1883
@@ -20,7 +23,7 @@
 
 // ***** functions *****
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
-//void postResponse(JsonObject& msg);
+void postResponse();
 void mqttReconnect();
 void setupWifi();
 void setup();

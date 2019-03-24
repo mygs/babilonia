@@ -49,5 +49,6 @@ mosquitto_sub -h 192.168.2.1 -t "#" -v
 ```
 send message
 ```
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"config\":[{\"period\":300}],\"command\":{\"start\":[\"light\",\"fan\",\"water\",\"reboot\"],\"stop\":[]},\"status\":[\"node\",\"soil\",\"dht\",\"light\",\"fan\",\"water\"]}"
+
 ```

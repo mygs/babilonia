@@ -9,7 +9,8 @@
 			"free-heap": 100,
 			"chip-size": 100,
 			"chip-id": "311de9",
-			"sdk-version": 1
+			"hw-ver": "x.y.z",
+			"sw-ver": "x.y.z"
 		},
 		"soil": [1, 0, 1, 1],
 		"dht": {

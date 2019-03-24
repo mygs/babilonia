@@ -7,48 +7,45 @@
 #include "PubSubClient.h"
 #include "ArduinoJson.h"
 
-char hostname[HOSTNAME_SIZE];
-WiFiClient   espClient;
-PubSubClient mqtt(espClient);
+WiFiClient   wifiClient;
+PubSubClient mqtt(wifiClient);
+char payload[JSON_MEMORY_SIZE];
+char HOSTNAME[HOSTNAME_SIZE];
 
 // Memory pool for JSON object tree.
 // Because it doesn’t call malloc() and free(),
 // StaticJsonDocument is slightly faster than DynamicJsonDocument
-// Use arduinojson.org/assistant to compute the capacity.
 StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
-
-// StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
 
 Ticker sensors;
 
 void postResponse() {
-	jsonDoc.clear();
-  jsonDoc["node"] = hostname;
+  jsonDoc.clear();
+  jsonDoc["node"] = HOSTNAME;
   JsonArray resp = jsonDoc.createNestedArray("resp");
   resp.add("cfg");
-  char messageBuffer[64];
-  serializeJson(jsonDoc, messageBuffer, sizeof(messageBuffer));
 
-  mqtt.publish(MQTT_TOPIC_OUTBOUND, messageBuffer);
+  // Produce a minified JSON document
+  int plength = measureJson(jsonDoc);
+  serializeJson(jsonDoc, payload, JSON_MEMORY_SIZE);
+  mqtt.publish(MQTT_TOPIC_OUTBOUND, payload, plength);
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
-
   DeserializationError error = deserializeJson(jsonDoc, (char *)payload, length);
 
   if (error) {
-    Serial.print(F("deserializeJson() failed with code "));
+    Serial.print(F("[JSON] Deserialize failed with code "));
     Serial.println(error.c_str());
+  } else {
+                 #ifdef DEBUG_ESP_OASIS
+    Serial.print("\n[MQTT] Message arrived [");
+    Serial.print(topic);
+    Serial.print("] ");
+    serializeJsonPretty(jsonDoc, Serial);
+                 #endif // ifdef DEBUG_ESP_OASIS
+    postResponse();
   }
-
- #ifdef DEBUG_ESP_OASIS
-  Serial.print("\n[MQTT] Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  serializeJsonPretty(jsonDoc, Serial);
- #endif // ifdef DEBUG_ESP_OASIS
-
- postResponse();
 }
 
 void setupWifi() {
@@ -72,14 +69,14 @@ void setup() {
   Serial.begin(SERIAL_BAUDRATE);
 
   while (!Serial) continue;
-  sprintf(hostname, "oasis-%06x", ESP.getChipId());
+  sprintf(HOSTNAME, "oasis-%06x", ESP.getChipId());
   Serial.print("\n\n\n[OASIS] Hostname: ");
-  Serial.println(hostname);
+  Serial.println(HOSTNAME);
  #ifdef DEBUG_ESP_OASIS
   Serial.println("[OASIS] Starting Setup");
  #endif // ifdef DEBUG_ESP_OASIS
   setupWifi();
-  ArduinoOTA.setHostname(hostname);
+  ArduinoOTA.setHostname(HOSTNAME);
   ArduinoOTA.setPort(OTA_PORT);
   ArduinoOTA.onStart([]() {
     Serial.println("[OTA] Starting ");
@@ -123,7 +120,7 @@ void mqttReconnect() {
   while (!mqtt.connected()) {
     Serial.print("[MQTT] Attempting connection...");
 
-    if (mqtt.connect(hostname)) {
+    if (mqtt.connect(HOSTNAME)) {
       Serial.println("connected");
       mqtt.subscribe(MQTT_TOPIC_INBOUND);
     } else {
