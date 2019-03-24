@@ -14,7 +14,7 @@ cd esp8266/tools
 python get.py
 git clone https://github.com/bblanchon/ArduinoJson.git
 git checkout tags/v6.9.1
-https://github.com/espressif/esptool.git
+git clone https://github.com/espressif/esptool.git
 git checkout tags/v2.6
 ```
 
@@ -24,7 +24,7 @@ Set the following environment variables
 /etc/profile.d/00-babilonia.sh
 ```bash
 export BABILONIA_LIBS=/github
-PATH=$PATH:$BABILONIA_LIBS/esp-open-sdk/xtensa-lx106-elf/bin
+PATH=$PATH:$BABILONIA_LIBS/esptool:$BABILONIA_LIBS/esp-open-sdk/xtensa-lx106-elf/bin
 alias xgcc="xtensa-lx106-elf-gcc"
 alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
 export BABILONIA_HOME=/github/babilonia
@@ -38,7 +38,7 @@ espmake flash
 ```
 Then, OTA
 ```bash
-espmake ota ESP_ADDR=IP
+espmake ota ESP_ADDR=192.168.2.60
 ```
 
 ### mqtt commands

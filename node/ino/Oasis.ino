@@ -12,11 +12,12 @@ WiFiClient   espClient;
 PubSubClient mqtt(espClient);
 
 // Memory pool for JSON object tree.
-//Because it doesn’t call malloc() and free(),
-//StaticJsonDocument is slightly faster than DynamicJsonDocument
+// Because it doesn’t call malloc() and free(),
+// StaticJsonDocument is slightly faster than DynamicJsonDocument
 // Use arduinojson.org/assistant to compute the capacity.
 StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
-//StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
+
+// StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
 
 Ticker sensors;
 
@@ -32,34 +33,22 @@ void postResponse() {
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
-  // handle message arrived
-  char inData[80];
 
-
-  // Serial.print("payload: ");
-	//
-  // for (int i = 0; i < length; i++) {
-  //   Serial.print((char)payload[i]);
-  //   inData[i] = (char)payload[i];
-  // }
-  // Serial.println();
-	jsonDoc.clear();
-  DeserializationError error = deserializeJson(jsonDoc, inData);
+  DeserializationError error = deserializeJson(jsonDoc, (char *)payload, length);
 
   if (error) {
     Serial.print(F("deserializeJson() failed with code "));
     Serial.println(error.c_str());
   }
 
-  postResponse();
-
  #ifdef DEBUG_ESP_OASIS
   Serial.print("\n[MQTT] Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  deserializeJson(jsonDoc, Serial);
-
+  serializeJsonPretty(jsonDoc, Serial);
  #endif // ifdef DEBUG_ESP_OASIS
+
+ postResponse();
 }
 
 void setupWifi() {
