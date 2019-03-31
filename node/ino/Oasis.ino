@@ -1,4 +1,5 @@
 #include "Oasis.h"
+#include "Oasis.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoOTA.h>
@@ -32,18 +33,21 @@ void postResponse() {
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
+
   DeserializationError error = deserializeJson(jsonDoc, (char *)payload, length);
 
   if (error) {
-    Serial.print(F("[JSON] Deserialize failed with code "));
+    #ifdef DEBUG_ESP_OASIS
+    Serial.print("\n\n[JSON] Deserialize failed with code ");
     Serial.println(error.c_str());
+    #endif // ifdef DEBUG_ESP_OASIS
   } else {
-                 #ifdef DEBUG_ESP_OASIS
+    #ifdef DEBUG_ESP_OASIS
     Serial.print("\n[MQTT] Message arrived [");
     Serial.print(topic);
-    Serial.print("] ");
+    Serial.println("]");
     serializeJsonPretty(jsonDoc, Serial);
-                 #endif // ifdef DEBUG_ESP_OASIS
+    #endif // ifdef DEBUG_ESP_OASIS
     postResponse();
   }
 }

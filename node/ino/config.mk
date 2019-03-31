@@ -6,9 +6,13 @@ ESP_LIBS=$(ESP_ROOT)/libraries
 CUSTOM_LIBS =	$(BABILONIA_LIBS)/pubsubclient \
 							$(BABILONIA_LIBS)/ArduinoJson/src
 
+BUILD_EXTRA_FLAGS=-DMQTT_MAX_PACKET_SIZE=1024
+
 #Board type
 BOARD = nodemcuv2
 
 ESP_PORT = 8266
 
 UPLOAD_SPEED = 115200
+
+VERBOSE = 0

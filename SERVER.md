@@ -49,6 +49,6 @@ mosquitto_sub -h 192.168.2.1 -t "#" -v
 ```
 send message
 ```
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"config\":[{\"period\":300}],\"command\":{\"start\":[\"light\",\"fan\",\"water\",\"reboot\"],\"stop\":[]},\"status\":[\"node\",\"soil\",\"dht\",\"light\",\"fan\",\"water\"]}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"id\":\"a12dc89b\",\"config\":[{\"period\":300,\"pin\":{\"0\":\"IDLE\",\"1\":\"water\",\"2\":\"light\",\"3\":\"soil.X\",\"4\":\"soil.1\",\"5\":\"soil.2\",\"6\":\"soil.3\",\"7\":\"soil.4\"}}],\"command\":{\"light\":true,\"fan\":true,\"water\":true,\"reboot\":true},\"status\":[\"node\",\"soil\",\"dht\",\"light\",\"fan\",\"water\"]}"
 
 ```
