@@ -4,7 +4,7 @@ log/
 *.Rproj
 *.lc
 profile.lua
-WifiSec.h
+IniCfg.h
 config.json
 *.db
 *.pyc

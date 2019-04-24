@@ -1,7 +1,6 @@
 #ifndef Oasis_h
 #define Oasis_h
 
-
 // ***** DEBUG *****
 //comment the line below to disable debug mode
 #define DEBUG_ESP_OASIS
@@ -16,13 +15,11 @@
 #define OTA_PORT 8266
 
 
-// ***** MQTT *****
-#define MQTT_SERVER "192.168.2.1"
-#define MQTT_PORT 1883
-#define MQTT_TOPIC_INBOUND "/oasis-inbound"
-#define MQTT_TOPIC_OUTBOUND "/oasis-outbound"
+// Configuration that we'll store on disk
+const char *CONFIG_FILE = "/configuration.json";
 
 // ***** functions *****
+void loadConfiguration();
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
 void postResponse();
 void mqttReconnect();

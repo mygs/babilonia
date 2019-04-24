@@ -1,17 +1,22 @@
-#include "Oasis.h"
-#include "Oasis.h"
+#include <IniCfg.h>
+#include <Configuration.h>
+#include <Oasis.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoOTA.h>
 #include <Ticker.h>
-#include "WifiSec.h"
-#include "PubSubClient.h"
-#include "ArduinoJson.h"
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
+#include <SD.h>
+#include <SPI.h>
 
 WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
 char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
+// ***** CONFIGURATION *****
+StaticJsonDocument<512> config;
+
 
 // Memory pool for JSON object tree.
 // Because it doesn’t call malloc() and free(),
@@ -19,6 +24,58 @@ char HOSTNAME[HOSTNAME_SIZE];
 StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
 
 Ticker sensors;
+
+// Loads the configuration from a file
+void loadConfiguration() {
+  Serial.println("[CONFIG] Loading configuration ");
+
+  if (SD.exists(CONFIG_FILE)){
+    Serial.println("[CONFIG] Loading existing file configuration");
+    // Open file for reading
+    File file = SD.open(CONFIG_FILE);
+    DeserializationError error = deserializeJson(config, file);
+    if (error) {
+      #ifdef DEBUG_ESP_OASIS
+      Serial.println("\n\n[CONFIG] Failed to read file, using default configuration");
+      #endif // ifdef DEBUG_ESP_OASIS
+    } else {
+      #ifdef DEBUG_ESP_OASIS
+      serializeJsonPretty(config, Serial);
+      #endif // ifdef DEBUG_ESP_OASIS
+    }
+    file.close();
+  }else{
+    File file = SD.open(CONFIG_FILE);
+    Serial.println("[CONFIG] File not found, using default configuration");
+    config["SSID"] = IniCfg::SSID;
+    config["PASSWORD"] = IniCfg::PASSWORD;
+    config["MQTT_SERVER"] = IniCfg::MQTT_SERVER;
+    config["MQTT_PORT"] = IniCfg::MQTT_PORT;
+    config["MQTT_TOPIC_INBOUND"] = IniCfg::MQTT_TOPIC_INBOUND;
+    config["MQTT_TOPIC_OUTBOUND"] = IniCfg::MQTT_TOPIC_OUTBOUND;
+    serializeJsonPretty(config, file);
+    file.close();
+  }
+
+  //
+  // // Parse the root object
+  // JsonObject &root = jsonBuffer.parseObject(file);
+  //
+  // if (!root.success())
+  //   Serial.println(F("Failed to read file, using default configuration"));
+  //
+  // // Copy values from the JsonObject to the Config
+  // config.port = root["port"] | 2731;
+  // strlcpy(config.hostname,                   // <- destination
+  //         root["hostname"] | "example.com",  // <- source
+  //         sizeof(config.hostname));          // <- destination's capacity
+  //
+  // // Close the file (File's destructor doesn't close the file)
+  // file.close();
+}
+
+
+
 
 void postResponse() {
   jsonDoc.clear();
@@ -29,7 +86,7 @@ void postResponse() {
   // Produce a minified JSON document
   int plength = measureJson(jsonDoc);
   serializeJson(jsonDoc, payload, JSON_MEMORY_SIZE);
-  mqtt.publish(MQTT_TOPIC_OUTBOUND, payload, plength);
+  mqtt.publish(config["MQTT_TOPIC_OUTBOUND"], payload, plength);
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
@@ -54,9 +111,9 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
 
 void setupWifi() {
   Serial.print("[WIFI] Connecting to SSID: ");
-  Serial.println(WifiSec::SSID);
+  Serial.println(config["SSID"]);
   WiFi.mode(WIFI_STA);
-  WiFi.begin(WifiSec::SSID, WifiSec::PASSWORD);
+  WiFi.begin(config["SSID"], config["PASSWORD"]);
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...",
@@ -71,7 +128,6 @@ void setupWifi() {
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
   Serial.begin(SERIAL_BAUDRATE);
-
   while (!Serial) continue;
   sprintf(HOSTNAME, "oasis-%06x", ESP.getChipId());
   Serial.print("\n\n\n[OASIS] Hostname: ");
@@ -79,6 +135,7 @@ void setup() {
  #ifdef DEBUG_ESP_OASIS
   Serial.println("[OASIS] Starting Setup");
  #endif // ifdef DEBUG_ESP_OASIS
+ loadConfiguration();
   setupWifi();
   ArduinoOTA.setHostname(HOSTNAME);
   ArduinoOTA.setPort(OTA_PORT);
@@ -107,7 +164,7 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
-  mqtt.setServer(MQTT_SERVER, MQTT_PORT);
+  mqtt.setServer(config["MQTT_SERVER"], config["MQTT_PORT"]);
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
  #ifdef DEBUG_ESP_OASIS
@@ -126,7 +183,7 @@ void mqttReconnect() {
 
     if (mqtt.connect(HOSTNAME)) {
       Serial.println("connected");
-      mqtt.subscribe(MQTT_TOPIC_INBOUND);
+      mqtt.subscribe(config["MQTT_TOPIC_INBOUND"]);
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqtt.state());
@@ -137,7 +194,7 @@ void mqttReconnect() {
 }
 
 void collectSensorData() {
-  mqtt.publish(MQTT_TOPIC_OUTBOUND, "XYZW");
+  mqtt.publish(config["MQTT_TOPIC_OUTBOUND"], "XYZW");
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */
