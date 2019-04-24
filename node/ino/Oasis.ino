@@ -45,7 +45,6 @@ void loadConfiguration() {
     }
     file.close();
   }else{
-    File file = SD.open(CONFIG_FILE);
     Serial.println("[CONFIG] File not found, using default configuration");
     config["SSID"] = IniCfg::SSID;
     config["PASSWORD"] = IniCfg::PASSWORD;
@@ -53,25 +52,23 @@ void loadConfiguration() {
     config["MQTT_PORT"] = IniCfg::MQTT_PORT;
     config["MQTT_TOPIC_INBOUND"] = IniCfg::MQTT_TOPIC_INBOUND;
     config["MQTT_TOPIC_OUTBOUND"] = IniCfg::MQTT_TOPIC_OUTBOUND;
-    serializeJsonPretty(config, file);
-    file.close();
-  }
 
-  //
-  // // Parse the root object
-  // JsonObject &root = jsonBuffer.parseObject(file);
-  //
-  // if (!root.success())
-  //   Serial.println(F("Failed to read file, using default configuration"));
-  //
-  // // Copy values from the JsonObject to the Config
-  // config.port = root["port"] | 2731;
-  // strlcpy(config.hostname,                   // <- destination
-  //         root["hostname"] | "example.com",  // <- source
-  //         sizeof(config.hostname));          // <- destination's capacity
-  //
-  // // Close the file (File's destructor doesn't close the file)
-  // file.close();
+    Serial.println("[CONFIG] creating default configuration file");
+
+    File file = SD.open(CONFIG_FILE, FILE_WRITE);
+
+    if (!file) {
+      Serial.println("[CONFIG] Failed to create configuration file");
+      return;
+    }else{
+      //serializeJsonPretty(config, file);
+      // Serialize JSON to file
+      if (serializeJson(config, file) == 0) {
+        Serial.println("[CONFIG] Failed to write configuration file");
+      }
+      file.close();
+    }
+  }
 }
 
 
@@ -111,9 +108,9 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
 
 void setupWifi() {
   Serial.print("[WIFI] Connecting to SSID: ");
-  Serial.println(config["SSID"]);
+  Serial.println(config["SSID"].as<char*>());
   WiFi.mode(WIFI_STA);
-  WiFi.begin(config["SSID"], config["PASSWORD"]);
+  WiFi.begin(config["SSID"].as<char*>(), config["PASSWORD"].as<char*>());
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...",
@@ -135,7 +132,7 @@ void setup() {
  #ifdef DEBUG_ESP_OASIS
   Serial.println("[OASIS] Starting Setup");
  #endif // ifdef DEBUG_ESP_OASIS
- loadConfiguration();
+  loadConfiguration();
   setupWifi();
   ArduinoOTA.setHostname(HOSTNAME);
   ArduinoOTA.setPort(OTA_PORT);
@@ -164,7 +161,7 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
-  mqtt.setServer(config["MQTT_SERVER"], config["MQTT_PORT"]);
+  mqtt.setServer(config["MQTT_SERVER"].as<char*>(), config["MQTT_PORT"].as<int>());
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
  #ifdef DEBUG_ESP_OASIS
