@@ -16,7 +16,7 @@
 
 
 // Configuration that we'll store on disk
-const char *CONFIG_FILE = "/configuration.json";
+const char *CONFIG_FILE = "/config.json";
 
 // ***** functions *****
 void loadConfiguration();

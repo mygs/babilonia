@@ -7,8 +7,7 @@
 #include <Ticker.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-#include <SD.h>
-#include <SPI.h>
+#include <FS.h> // Include the SPIFFS library
 
 WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
@@ -27,12 +26,24 @@ Ticker sensors;
 
 // Loads the configuration from a file
 void loadConfiguration() {
-  Serial.println("[CONFIG] Loading configuration ");
+  Serial.println("[CONFIG] Loading configuration");
+  if (!SPIFFS.begin()) {
+    Serial.println("[CONFIG] Failed to mount file system");
+  }
+  FSInfo info;
+  SPIFFS.info(info);
+  Serial.printf("TB: %u\r\n",info.totalBytes);
+  Serial.printf("UB: %u\r\n",info.usedBytes);
+  Serial.printf("BS: %u\r\n",info.blockSize);
+  Serial.printf("PS: %u\r\n",info.pageSize);
+  Serial.printf("MO: %u\r\n",info.maxOpenFiles);
+  Serial.printf("MP: %u\r\n",info.maxPathLength);
 
-  if (SD.exists(CONFIG_FILE)){
+
+  if (SPIFFS.exists(CONFIG_FILE)){
     Serial.println("[CONFIG] Loading existing file configuration");
     // Open file for reading
-    File file = SD.open(CONFIG_FILE);
+    File file = SPIFFS.open(CONFIG_FILE, "r");
     DeserializationError error = deserializeJson(config, file);
     if (error) {
       #ifdef DEBUG_ESP_OASIS
@@ -52,10 +63,9 @@ void loadConfiguration() {
     config["MQTT_PORT"] = IniCfg::MQTT_PORT;
     config["MQTT_TOPIC_INBOUND"] = IniCfg::MQTT_TOPIC_INBOUND;
     config["MQTT_TOPIC_OUTBOUND"] = IniCfg::MQTT_TOPIC_OUTBOUND;
-
     Serial.println("[CONFIG] creating default configuration file");
 
-    File file = SD.open(CONFIG_FILE, FILE_WRITE);
+    File file = SPIFFS.open(CONFIG_FILE, "w");
 
     if (!file) {
       Serial.println("[CONFIG] Failed to create configuration file");
