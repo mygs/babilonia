@@ -1,6 +1,8 @@
 {
+  "SSID": "babilonia",
+  "PASSWORD": "secret",
   "MQTT_SERVER": "192.168.2.1",
   "MQTT_PORT": 1883,
-  "MQTT_TOPIC_INBOUND":"/oasis-inbound",
-  "MQTT_TOPIC_OUTBOUND":"/oasis-outbound"
+  "MQTT_TOPIC_INBOUND": "/oasis-inbound",
+  "MQTT_TOPIC_OUTBOUND": "/oasis-outbound"
 }

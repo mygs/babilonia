@@ -1,5 +1,4 @@
 #include <IniCfg.h>
-#include <Configuration.h>
 #include <Oasis.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
@@ -30,15 +29,17 @@ void loadConfiguration() {
   if (!SPIFFS.begin()) {
     Serial.println("[CONFIG] Failed to mount file system");
   }
+
+  #ifdef DEBUG_ESP_OASIS
   FSInfo info;
   SPIFFS.info(info);
-  Serial.printf("TB: %u\r\n",info.totalBytes);
-  Serial.printf("UB: %u\r\n",info.usedBytes);
-  Serial.printf("BS: %u\r\n",info.blockSize);
-  Serial.printf("PS: %u\r\n",info.pageSize);
-  Serial.printf("MO: %u\r\n",info.maxOpenFiles);
-  Serial.printf("MP: %u\r\n",info.maxPathLength);
-
+  Serial.printf("Total Bytes: %u\r\n",info.totalBytes);
+  Serial.printf("Used Bytes: %u\r\n",info.usedBytes);
+  Serial.printf("Block Size: %u\r\n",info.blockSize);
+  Serial.printf("Page Size: %u\r\n",info.pageSize);
+  Serial.printf("Max Open Files: %u\r\n",info.maxOpenFiles);
+  Serial.printf("Max Path Length: %u\r\n",info.maxPathLength);
+  #endif // ifdef DEBUG_ESP_OASIS
 
   if (SPIFFS.exists(CONFIG_FILE)){
     Serial.println("[CONFIG] Loading existing file configuration");
@@ -52,6 +53,7 @@ void loadConfiguration() {
     } else {
       #ifdef DEBUG_ESP_OASIS
       serializeJsonPretty(config, Serial);
+      Serial.println("\n");
       #endif // ifdef DEBUG_ESP_OASIS
     }
     file.close();
@@ -71,18 +73,14 @@ void loadConfiguration() {
       Serial.println("[CONFIG] Failed to create configuration file");
       return;
     }else{
-      //serializeJsonPretty(config, file);
       // Serialize JSON to file
-      if (serializeJson(config, file) == 0) {
+      if (serializeJsonPretty(config, file) == 0) {
         Serial.println("[CONFIG] Failed to write configuration file");
       }
       file.close();
     }
   }
 }
-
-
-
 
 void postResponse() {
   jsonDoc.clear();

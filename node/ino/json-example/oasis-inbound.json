@@ -1,23 +1,29 @@
 {
-  "id": "a12dc89b",
-  "config": [{
-    "period": 300,
-    "pin":{
+  "ID": "a12dc89b",
+  "CONFIG": [{
+    "PERIOD": 300,
+    "SSID": "babilonia",
+    "PASSWORD": "secret",
+    "MQTT_SERVER": "192.168.2.1",
+    "MQTT_PORT": 1883,
+    "MQTT_TOPIC_INBOUND": "/oasis-inbound",
+    "MQTT_TOPIC_OUTBOUND": "/oasis-outbound",
+    "PIN":{
       "0": "IDLE",
-      "1": "water",
-      "2": "light",
-      "3": "soil.X",
-      "4": "soil.1",
-      "5": "soil.2",
-      "6": "soil.3",
-      "7": "soil.4"
+      "1": "WATER",
+      "2": "LIGHT",
+      "3": "SOIL.X",
+      "4": "SOIL.1",
+      "5": "SOIL.2",
+      "6": "SOIL.3",
+      "7": "SOIL.4"
     }
   }],
-  "command": {
-    "light": true,
-    "fan": true,
-    "water": true,
-    "reboot": true
+  "COMMAND": {
+    "LIGHT": true,
+    "FAN": true,
+    "WATER": true,
+    "REBOOT": true
   },
-  "status": ["node", "soil", "dht", "light", "fan", "water"]
+  "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER"]
 }

@@ -1,32 +1,32 @@
 {
-	"id": "a12dc89b",
-	"data": {
-		"node": {
-			"hostname": "oasis-311de9",
-			"ip": "192.168.2.200",
-			"free-heap": 100,
-			"chip-size": 100,
-			"chip-id": "311de9",
-			"hw-ver": "x.y.z",
-			"sw-ver": "x.y.z",
-			"pin":{
+	"ID": "a12dc89b",
+	"DATA": {
+		"NODE": {
+			"HOSTNAME": "oasis-311de9",
+			"IP": "192.168.2.200",
+			"FREE-HEAP": 100,
+			"CHIP-SIZE": 100,
+			"CHIP-ID": "311de9",
+			"HW-VER": "x.y.z",
+			"SW-VER": "x.y.z",
+			"PIN":{
 				"0": "IDLE",
-				"1": "water",
-				"2": "light",
-				"3": "soil.X",
-				"4": "soil.1",
-				"5": "soil.2",
-				"6": "soil.3",
-				"7": "soil.4"
+				"1": "WATER",
+				"2": "LIGHT",
+				"3": "SOIL.X",
+				"4": "SOIL.1",
+				"5": "SOIL.2",
+				"6": "SOIL.3",
+				"7": "SOIL.4"
 			}
 		},
-		"soil": [1, 0, 1, 1],
-		"dht": {
-			"temperature": 25,
-			"humidity": 0.7
+		"SOIL": [1, 0, 1, 1],
+		"DHT": {
+			"TEMPERATURE": 25,
+			"HUMIDITY": 0.7
 		},
-		"fan": true,
-		"light": true,
-		"water": true
+		"FAN": true,
+		"LIGHT": true,
+		"WATER": true
 	}
 }
