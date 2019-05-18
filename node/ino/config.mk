@@ -15,7 +15,13 @@ FLASH_DEF=4M1M
 
 ESP_PORT = 8266
 
-UPLOAD_PORT = /dev/tty.wchusbserial1420
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    UPLOAD_PORT = /dev/ttyUSB0
+endif
+ifeq ($(UNAME_S),Darwin)
+    UPLOAD_PORT = /dev/tty.wchusbserial1420
+endif
 
 UPLOAD_SPEED = 115200
 

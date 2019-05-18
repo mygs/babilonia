@@ -5,7 +5,7 @@ In $BABILONIA_LIBS
 git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
 make
 git clone https://github.com/plerup/makeEspArduino.git
-git checkout tags/4.16.1
+git checkout tags/4.17.0
 git clone https://github.com/knolleary/pubsubclient.git
 git checkout tags/v2.7
 git clone https://github.com/esp8266/Arduino.git esp8266
