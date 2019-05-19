@@ -1,4 +1,4 @@
-#include <IniCfg.h>
+#include "Config.h"
 #include <Oasis.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
@@ -12,9 +12,7 @@ WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
 char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
-// ***** CONFIGURATION *****
 StaticJsonDocument<512> CONFIG;
-
 
 // Memory pool for JSON object tree.
 // Because it doesn’t call malloc() and free(),
@@ -24,7 +22,9 @@ StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
 Ticker sensors;
 
 // Save configuration to a file
+void saveConfiguration() {
 
+}
 
 // Loads the configuration from a file
 void loadConfiguration() {
@@ -48,23 +48,23 @@ void loadConfiguration() {
     file.close();
   }else{
     Serial.println("[CONFIG] File not found, using default configuration");
-    CONFIG["SSID"] = IniCfg::SSID;
-    CONFIG["PASSWORD"] = IniCfg::PASSWORD;
-    CONFIG["MQTT_SERVER"] = IniCfg::MQTT_SERVER;
-    CONFIG["MQTT_PORT"] = IniCfg::MQTT_PORT;
-    CONFIG["MQTT_TOPIC_INBOUND"] = IniCfg::MQTT_TOPIC_INBOUND;
-    CONFIG["MQTT_TOPIC_OUTBOUND"] = IniCfg::MQTT_TOPIC_OUTBOUND;
-    CONFIG["PERIOD"] = IniCfg::PERIOD;
+    CONFIG["SSID"] = Config::SSID;
+    CONFIG["PASSWORD"] = Config::PASSWORD;
+    CONFIG["MQTT_SERVER"] = Config::MQTT_SERVER;
+    CONFIG["MQTT_PORT"] = Config::MQTT_PORT;
+    CONFIG["MQTT_TOPIC_INBOUND"] = Config::MQTT_TOPIC_INBOUND;
+    CONFIG["MQTT_TOPIC_OUTBOUND"] = Config::MQTT_TOPIC_OUTBOUND;
+    CONFIG["PERIOD"] = Config::PERIOD;
     JsonObject PIN = CONFIG.createNestedObject("PIN");
-    PIN["0"] = IniCfg::PIN0;
-    PIN["1"] = IniCfg::PIN1;
-    PIN["2"] = IniCfg::PIN2;
-    PIN["3"] = IniCfg::PIN3;
-    PIN["4"] = IniCfg::PIN4;
-    PIN["5"] = IniCfg::PIN5;
-    PIN["6"] = IniCfg::PIN6;
-    PIN["7"] = IniCfg::PIN7;
-    PIN["8"] = IniCfg::PIN8;
+    PIN["0"] = Config::PIN0;
+    PIN["1"] = Config::PIN1;
+    PIN["2"] = Config::PIN2;
+    PIN["3"] = Config::PIN3;
+    PIN["4"] = Config::PIN4;
+    PIN["5"] = Config::PIN5;
+    PIN["6"] = Config::PIN6;
+    PIN["7"] = Config::PIN7;
+    PIN["8"] = Config::PIN8;
 
     Serial.println("[CONFIG] creating default configuration file");
 
