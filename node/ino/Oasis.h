@@ -19,8 +19,11 @@
 const char *CONFIG_FILE = "/config.json";
 
 // ***** functions *****
+int diffi(JsonVariant _base, JsonVariant _arrived);
+const char* diffs(JsonVariant _base, JsonVariant _arrived);
 void loadConfiguration();
-void saveConfiguration();
+void saveConfiguration(JsonDocument& CONFIG);
+void mergeConfiguration(JsonDocument& base, JsonDocument& arrived);
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
 void postResponse();
 void mqttReconnect();
