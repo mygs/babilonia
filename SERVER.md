@@ -1,6 +1,19 @@
-Install the following tools
+## ENVIRONMENT VARIABLE
+Set the following environment variables
+
+/etc/profile.d/00-babilonia.sh
+```bash
+export BABILONIA_LIBS=/github
+export BABILONIA_HOME=/github/babilonia
+PATH=$PATH:$BABILONIA_LIBS/esptool:$BABILONIA_LIBS/esp-open-sdk/xtensa-lx106-elf/bin
+alias xgcc="xtensa-lx106-elf-gcc"
+alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
+```
+
+
+
 ## TOOLS
-In $BABILONIA_LIBS
+Install the following tools in $BABILONIA_LIBS
 ```bash
 git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
 make
@@ -17,19 +30,6 @@ git checkout tags/v6.9.1
 git clone https://github.com/espressif/esptool.git
 git checkout tags/v2.6
 ```
-
-
-Set the following environment variables
-## ENVIRONMENT VARIABLE
-/etc/profile.d/00-babilonia.sh
-```bash
-export BABILONIA_LIBS=/github
-PATH=$PATH:$BABILONIA_LIBS/esptool:$BABILONIA_LIBS/esp-open-sdk/xtensa-lx106-elf/bin
-alias xgcc="xtensa-lx106-elf-gcc"
-alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
-export BABILONIA_HOME=/github/babilonia
-```
-
 
 ## Over The Air
 First update, must be through USB

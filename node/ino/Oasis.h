@@ -20,6 +20,7 @@ const char *CONFIG_FILE = "/config.json";
 
 // ***** functions *****
 void loadConfiguration();
+void saveConfiguration();
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
 void postResponse();
 void mqttReconnect();

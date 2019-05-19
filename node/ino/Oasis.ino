@@ -13,7 +13,7 @@ PubSubClient mqtt(wifiClient);
 char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
 // ***** CONFIGURATION *****
-StaticJsonDocument<512> config;
+StaticJsonDocument<512> CONFIG;
 
 
 // Memory pool for JSON object tree.
@@ -23,48 +23,49 @@ StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
 
 Ticker sensors;
 
+// Save configuration to a file
+
+
 // Loads the configuration from a file
 void loadConfiguration() {
   Serial.println("[CONFIG] Loading configuration");
-  if (!SPIFFS.begin()) {
-    Serial.println("[CONFIG] Failed to mount file system");
-  }
-
-  #ifdef DEBUG_ESP_OASIS
-  FSInfo info;
-  SPIFFS.info(info);
-  Serial.printf("Total Bytes: %u\r\n",info.totalBytes);
-  Serial.printf("Used Bytes: %u\r\n",info.usedBytes);
-  Serial.printf("Block Size: %u\r\n",info.blockSize);
-  Serial.printf("Page Size: %u\r\n",info.pageSize);
-  Serial.printf("Max Open Files: %u\r\n",info.maxOpenFiles);
-  Serial.printf("Max Path Length: %u\r\n",info.maxPathLength);
-  #endif // ifdef DEBUG_ESP_OASIS
 
   if (SPIFFS.exists(CONFIG_FILE)){
     Serial.println("[CONFIG] Loading existing file configuration");
     // Open file for reading
     File file = SPIFFS.open(CONFIG_FILE, "r");
-    DeserializationError error = deserializeJson(config, file);
+    DeserializationError error = deserializeJson(CONFIG, file);
     if (error) {
       #ifdef DEBUG_ESP_OASIS
       Serial.println("\n\n[CONFIG] Failed to read file, using default configuration");
       #endif // ifdef DEBUG_ESP_OASIS
     } else {
       #ifdef DEBUG_ESP_OASIS
-      serializeJsonPretty(config, Serial);
+      serializeJsonPretty(CONFIG, Serial);
       Serial.println("\n");
       #endif // ifdef DEBUG_ESP_OASIS
     }
     file.close();
   }else{
     Serial.println("[CONFIG] File not found, using default configuration");
-    config["SSID"] = IniCfg::SSID;
-    config["PASSWORD"] = IniCfg::PASSWORD;
-    config["MQTT_SERVER"] = IniCfg::MQTT_SERVER;
-    config["MQTT_PORT"] = IniCfg::MQTT_PORT;
-    config["MQTT_TOPIC_INBOUND"] = IniCfg::MQTT_TOPIC_INBOUND;
-    config["MQTT_TOPIC_OUTBOUND"] = IniCfg::MQTT_TOPIC_OUTBOUND;
+    CONFIG["SSID"] = IniCfg::SSID;
+    CONFIG["PASSWORD"] = IniCfg::PASSWORD;
+    CONFIG["MQTT_SERVER"] = IniCfg::MQTT_SERVER;
+    CONFIG["MQTT_PORT"] = IniCfg::MQTT_PORT;
+    CONFIG["MQTT_TOPIC_INBOUND"] = IniCfg::MQTT_TOPIC_INBOUND;
+    CONFIG["MQTT_TOPIC_OUTBOUND"] = IniCfg::MQTT_TOPIC_OUTBOUND;
+    CONFIG["PERIOD"] = IniCfg::PERIOD;
+    JsonObject PIN = CONFIG.createNestedObject("PIN");
+    PIN["0"] = IniCfg::PIN0;
+    PIN["1"] = IniCfg::PIN1;
+    PIN["2"] = IniCfg::PIN2;
+    PIN["3"] = IniCfg::PIN3;
+    PIN["4"] = IniCfg::PIN4;
+    PIN["5"] = IniCfg::PIN5;
+    PIN["6"] = IniCfg::PIN6;
+    PIN["7"] = IniCfg::PIN7;
+    PIN["8"] = IniCfg::PIN8;
+
     Serial.println("[CONFIG] creating default configuration file");
 
     File file = SPIFFS.open(CONFIG_FILE, "w");
@@ -74,7 +75,7 @@ void loadConfiguration() {
       return;
     }else{
       // Serialize JSON to file
-      if (serializeJsonPretty(config, file) == 0) {
+      if (serializeJsonPretty(CONFIG, file) == 0) {
         Serial.println("[CONFIG] Failed to write configuration file");
       }
       file.close();
@@ -91,7 +92,7 @@ void postResponse() {
   // Produce a minified JSON document
   int plength = measureJson(jsonDoc);
   serializeJson(jsonDoc, payload, JSON_MEMORY_SIZE);
-  mqtt.publish(config["MQTT_TOPIC_OUTBOUND"], payload, plength);
+  mqtt.publish(CONFIG["MQTT_TOPIC_OUTBOUND"], payload, plength);
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
@@ -116,9 +117,9 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
 
 void setupWifi() {
   Serial.print("[WIFI] Connecting to SSID: ");
-  Serial.println(config["SSID"].as<char*>());
+  Serial.println(CONFIG["SSID"].as<char*>());
   WiFi.mode(WIFI_STA);
-  WiFi.begin(config["SSID"].as<char*>(), config["PASSWORD"].as<char*>());
+  WiFi.begin(CONFIG["SSID"].as<char*>(), CONFIG["PASSWORD"].as<char*>());
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...",
@@ -140,6 +141,22 @@ void setup() {
  #ifdef DEBUG_ESP_OASIS
   Serial.println("[OASIS] Starting Setup");
  #endif // ifdef DEBUG_ESP_OASIS
+
+ if (!SPIFFS.begin()) {
+   Serial.println("Failed to mount file system");
+ }
+
+ #ifdef DEBUG_ESP_OASIS
+ FSInfo info;
+ SPIFFS.info(info);
+ Serial.printf("Total Bytes: %u\r\n",info.totalBytes);
+ Serial.printf("Used Bytes: %u\r\n",info.usedBytes);
+ Serial.printf("Block Size: %u\r\n",info.blockSize);
+ Serial.printf("Page Size: %u\r\n",info.pageSize);
+ Serial.printf("Max Open Files: %u\r\n",info.maxOpenFiles);
+ Serial.printf("Max Path Length: %u\r\n",info.maxPathLength);
+ #endif // ifdef DEBUG_ESP_OASIS
+
   loadConfiguration();
   setupWifi();
   ArduinoOTA.setHostname(HOSTNAME);
@@ -169,7 +186,7 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
-  mqtt.setServer(config["MQTT_SERVER"].as<char*>(), config["MQTT_PORT"].as<int>());
+  mqtt.setServer(CONFIG["MQTT_SERVER"].as<char*>(), CONFIG["MQTT_PORT"].as<int>());
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
  #ifdef DEBUG_ESP_OASIS
@@ -188,7 +205,7 @@ void mqttReconnect() {
 
     if (mqtt.connect(HOSTNAME)) {
       Serial.println("connected");
-      mqtt.subscribe(config["MQTT_TOPIC_INBOUND"]);
+      mqtt.subscribe(CONFIG["MQTT_TOPIC_INBOUND"]);
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqtt.state());
@@ -199,7 +216,7 @@ void mqttReconnect() {
 }
 
 void collectSensorData() {
-  mqtt.publish(config["MQTT_TOPIC_OUTBOUND"], "XYZW");
+  mqtt.publish(CONFIG["MQTT_TOPIC_OUTBOUND"], "XYZW");
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */
