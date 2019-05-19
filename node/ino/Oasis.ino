@@ -1,4 +1,4 @@
-#include "Config.h"
+#include "PrivateInitConfig.h"
 #include <Oasis.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
@@ -48,23 +48,23 @@ void loadConfiguration() {
     file.close();
   }else{
     Serial.println("[CONFIG] File not found, using default configuration");
-    CONFIG["SSID"] = Config::SSID;
-    CONFIG["PASSWORD"] = Config::PASSWORD;
-    CONFIG["MQTT_SERVER"] = Config::MQTT_SERVER;
-    CONFIG["MQTT_PORT"] = Config::MQTT_PORT;
-    CONFIG["MQTT_TOPIC_INBOUND"] = Config::MQTT_TOPIC_INBOUND;
-    CONFIG["MQTT_TOPIC_OUTBOUND"] = Config::MQTT_TOPIC_OUTBOUND;
-    CONFIG["PERIOD"] = Config::PERIOD;
+    CONFIG["SSID"] = PrivateInitConfig::SSID;
+    CONFIG["PASSWORD"] = PrivateInitConfig::PASSWORD;
+    CONFIG["MQTT_SERVER"] = PrivateInitConfig::MQTT_SERVER;
+    CONFIG["MQTT_PORT"] = PrivateInitConfig::MQTT_PORT;
+    CONFIG["MQTT_TOPIC_INBOUND"] = PrivateInitConfig::MQTT_TOPIC_INBOUND;
+    CONFIG["MQTT_TOPIC_OUTBOUND"] = PrivateInitConfig::MQTT_TOPIC_OUTBOUND;
+    CONFIG["PERIOD"] = PrivateInitConfig::PERIOD;
     JsonObject PIN = CONFIG.createNestedObject("PIN");
-    PIN["0"] = Config::PIN0;
-    PIN["1"] = Config::PIN1;
-    PIN["2"] = Config::PIN2;
-    PIN["3"] = Config::PIN3;
-    PIN["4"] = Config::PIN4;
-    PIN["5"] = Config::PIN5;
-    PIN["6"] = Config::PIN6;
-    PIN["7"] = Config::PIN7;
-    PIN["8"] = Config::PIN8;
+    PIN["0"] = PrivateInitConfig::PIN0;
+    PIN["1"] = PrivateInitConfig::PIN1;
+    PIN["2"] = PrivateInitConfig::PIN2;
+    PIN["3"] = PrivateInitConfig::PIN3;
+    PIN["4"] = PrivateInitConfig::PIN4;
+    PIN["5"] = PrivateInitConfig::PIN5;
+    PIN["6"] = PrivateInitConfig::PIN6;
+    PIN["7"] = PrivateInitConfig::PIN7;
+    PIN["8"] = PrivateInitConfig::PIN8;
 
     Serial.println("[CONFIG] creating default configuration file");
 
