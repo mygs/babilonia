@@ -7,6 +7,7 @@ CUSTOM_LIBS =	$(BABILONIA_LIBS)/pubsubclient \
 							$(BABILONIA_LIBS)/ArduinoJson/src
 
 BUILD_EXTRA_FLAGS=-DMQTT_MAX_PACKET_SIZE=1024
+#								-Og -ggdb -DDEBUG_ESP_PORT=Serial
 
 #Board type
 BOARD = nodemcuv2

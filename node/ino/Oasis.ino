@@ -24,24 +24,20 @@ Ticker sensors;
 // Save State to a file
 void saveState(JsonDocument& _state) {
 
-  Serial.println("[STATE] Saving");
-
-  if (!SPIFFS.exists(STATE_FILE)) {
+  if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Removing existing file");
-
     SPIFFS.remove(STATE_FILE);
   }
+
   File file = SPIFFS.open(STATE_FILE, "w");
 
   if (!file) {
     Serial.println("[STATE] Failed to create file");
     return;
   } else {
-    // Serialize JSON to file
     mergeState(STATE, _state);
-    Serial.println("[STATE] Merged");
-
-    if (serializeJsonPretty(STATE, file) == 0) {
+    Serial.println("[STATE] Saving");
+    if (serializeJson(STATE, file) == 0) {
       Serial.println("[STATE] Failed to write file");
     }
     file.close();
@@ -77,10 +73,11 @@ bool diffb(JsonVariant _base, JsonVariant _arrived) {
 // Merge state
 void mergeState(JsonDocument& base, JsonDocument& arrived) {
 
-  JsonObject baseConfig = base["CONFIG"];
   JsonObject arrivedConfig = arrived["CONFIG"];
 
   if(!arrivedConfig.isNull()){
+    JsonObject baseConfig = base["CONFIG"];
+
     #ifdef DEBUG_ESP_OASIS
     Serial.println("[STATE] Merging CONFIG");
     #endif // ifdef DEBUG_ESP_OASIS
@@ -94,9 +91,11 @@ void mergeState(JsonDocument& base, JsonDocument& arrived) {
     baseConfig["MQTT_TOPIC_OUTBOUND"] =
       diffs(baseConfig["MQTT_TOPIC_OUTBOUND"], arrivedConfig["MQTT_TOPIC_OUTBOUND"]);
     baseConfig["PERIOD"] = diffi(base["PERIOD"], arrivedConfig["PERIOD"]);
-    JsonObject basePIN    = baseConfig["PIN"];
+
     JsonObject arrivedPIN = arrivedConfig["PIN"];
     if(!arrivedPIN.isNull()){
+      JsonObject basePIN    = baseConfig["PIN"];
+
       #ifdef DEBUG_ESP_OASIS
       Serial.println("[STATE] Merging PIN");
       #endif // ifdef DEBUG_ESP_OASIS
@@ -111,9 +110,11 @@ void mergeState(JsonDocument& base, JsonDocument& arrived) {
       basePIN["8"] = diffs(basePIN["8"], arrivedPIN["8"]);
     }
   }
+
   JsonObject arrivedCommand = arrived["COMMAND"];
-  JsonObject baseCommand = base["COMMAND"];
   if(!arrivedCommand.isNull()){
+    JsonObject baseCommand = base["COMMAND"];
+
     #ifdef DEBUG_ESP_OASIS
     Serial.println("[STATE] Merging COMMAND");
     #endif // ifdef DEBUG_ESP_OASIS
@@ -126,8 +127,6 @@ void mergeState(JsonDocument& base, JsonDocument& arrived) {
 
 // Load state from a file
 void loadState() {
-  Serial.println("[STATE] Loading");
-
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Loading existing file");
 
@@ -137,20 +136,13 @@ void loadState() {
     file.close();
 
     if (error) {
-      #ifdef DEBUG_ESP_OASIS
-      Serial.println(
-        "\n\n[STATE] Failed to read file, using default");
-        loadDefaultState();
-        Serial.println("[STATE] creating default file");
-        saveState(STATE);
-      #endif // ifdef DEBUG_ESP_OASIS
+      Serial.println("[STATE] Failed to read file, using default");
+      loadDefaultState();
     }
 
   } else {
     Serial.println("[STATE] File not found, using default");
     loadDefaultState();
-    Serial.println("[STATE] creating default file");
-    saveState(STATE);
   }
 
   #ifdef DEBUG_ESP_OASIS
@@ -160,6 +152,7 @@ void loadState() {
 }
 
 void loadDefaultState(){
+  STATE.clear();
   JsonObject CONFIG = STATE.createNestedObject("CONFIG");
   CONFIG["SSID"]                = InitialConfiguration::SSID;
   CONFIG["PASSWORD"]            = InitialConfiguration::PASSWORD;
@@ -183,6 +176,9 @@ void loadDefaultState(){
   COMMAND["LIGHT"] = false;
   COMMAND["FAN"] = false;
   COMMAND["WATER"] = false;
+
+  Serial.println("[STATE] creating default file");
+  saveState(STATE);
 }
 
 void postResponse() {
@@ -194,7 +190,7 @@ void postResponse() {
   // Produce a minified JSON document
   int plength = measureJson(jsonDoc);
   serializeJson(jsonDoc, payload, JSON_MEMORY_SIZE);
-  mqtt.publish(STATE["MQTT_TOPIC_OUTBOUND"], payload, plength);
+  mqtt.publish(STATE["CONFIG"]["MQTT_TOPIC_OUTBOUND"], payload, plength);
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
@@ -214,8 +210,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     JsonObject CONFIG = jsonDoc["CONFIG"];
     JsonObject COMMAND = jsonDoc["COMMAND"];
     if(!CONFIG.isNull() || !COMMAND.isNull()){
-      //saveState(jsonDoc);
-      saveState(STATE);
+      saveState(jsonDoc);
     }
     JsonArray STATUS = jsonDoc["STATUS"];
     if(!STATUS.isNull()){
