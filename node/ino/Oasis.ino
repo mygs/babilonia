@@ -12,7 +12,7 @@ WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
 char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
-StaticJsonDocument<512> CONFIG;
+StaticJsonDocument<JSON_MEMORY_SIZE> STATE;
 
 // Memory pool for JSON object tree.
 // Because it doesn’t call malloc() and free(),
@@ -21,24 +21,24 @@ StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
 
 Ticker sensors;
 
-// Save configuration to a file
-void saveConfiguration(JsonDocument& _config) {
-  Serial.println("[CONFIG] Saving configuration");
+// Save State to a file
+void saveState(JsonDocument& _state) {
+  Serial.println("[STATE] Saving");
 
-  if (SPIFFS.exists(CONFIG_FILE)) {
-    SPIFFS.remove(CONFIG_FILE);
+  if (!SPIFFS.exists(STATE_FILE)) {
+    SPIFFS.remove(STATE_FILE);
   }
-  File file = SPIFFS.open(CONFIG_FILE, "w");
+  File file = SPIFFS.open(STATE_FILE, "w");
 
   if (!file) {
-    Serial.println("[CONFIG] Failed to create configuration file");
+    Serial.println("[STATE] Failed to create file");
     return;
   } else {
     // Serialize JSON to file
-    mergeConfiguration(CONFIG, _config);
+    mergeState(STATE, _state);
 
-    if (serializeJsonPretty(CONFIG, file) == 0) {
-      Serial.println("[CONFIG] Failed to write configuration file");
+    if (serializeJsonPretty(STATE, file) == 0) {
+      Serial.println("[STATE] Failed to write file");
     }
     file.close();
   }
@@ -62,20 +62,23 @@ int diffi(JsonVariant _base, JsonVariant _arrived) {
   }
 }
 
-// Merge configuration
-void mergeConfiguration(JsonDocument& base, JsonDocument& arrived) {
-  base["SSID"]        = diffs(base["SSID"], arrived["SSID"]);
-  base["PASSWORD"]    = diffs(base["PASSWORD"], arrived["PASSWORD"]);
-  base["MQTT_SERVER"] = diffs(base["MQTT_SERVER"], arrived["MQTT_SERVER"]);
-  base["MQTT_PORT"]   = diffi(base["MQTT_PORT"],
-                              arrived["MQTT_PORT"]);
-  base["MQTT_TOPIC_INBOUND"] =
-    diffs(base["MQTT_TOPIC_INBOUND"],  arrived["MQTT_TOPIC_INBOUND"]);
-  base["MQTT_TOPIC_OUTBOUND"] =
-    diffs(base["MQTT_TOPIC_OUTBOUND"], arrived["MQTT_TOPIC_OUTBOUND"]);
-  base["PERIOD"] = diffi(base["PERIOD"], arrived["PERIOD"]);
-  JsonObject basePIN    = base["PIN"];
-  JsonObject arrivedPIN = arrived["PIN"];
+// Merge state
+void mergeState(JsonDocument& base, JsonDocument& arrived) {
+  JsonObject baseConfig = base["CONFIG"];
+  JsonObject arrivedConfig = arrived["CONFIG"];
+
+  baseConfig["SSID"]        = diffs(baseConfig["SSID"], arrivedConfig["SSID"]);
+  baseConfig["PASSWORD"]    = diffs(baseConfig["PASSWORD"], arrivedConfig["PASSWORD"]);
+  baseConfig["MQTT_SERVER"] = diffs(baseConfig["MQTT_SERVER"], arrivedConfig["MQTT_SERVER"]);
+  baseConfig["MQTT_PORT"]   = diffi(baseConfig["MQTT_PORT"],
+                              arrivedConfig["MQTT_PORT"]);
+  baseConfig["MQTT_TOPIC_INBOUND"] =
+    diffs(baseConfig["MQTT_TOPIC_INBOUND"],  arrivedConfig["MQTT_TOPIC_INBOUND"]);
+  baseConfig["MQTT_TOPIC_OUTBOUND"] =
+    diffs(baseConfig["MQTT_TOPIC_OUTBOUND"], arrivedConfig["MQTT_TOPIC_OUTBOUND"]);
+  baseConfig["PERIOD"] = diffi(base["PERIOD"], arrivedConfig["PERIOD"]);
+  JsonObject basePIN    = baseConfig["PIN"];
+  JsonObject arrivedPIN = arrivedConfig["PIN"];
   basePIN["0"] = diffs(basePIN["0"], arrivedPIN["0"]);
   basePIN["1"] = diffs(basePIN["1"], arrivedPIN["1"]);
   basePIN["2"] = diffs(basePIN["2"], arrivedPIN["2"]);
@@ -87,52 +90,65 @@ void mergeConfiguration(JsonDocument& base, JsonDocument& arrived) {
   basePIN["8"] = diffs(basePIN["8"], arrivedPIN["8"]);
 }
 
-// Loads the configuration from a file
-void loadConfiguration() {
-  Serial.println("[CONFIG] Loading configuration");
+// Load state from a file
+void loadState() {
+  Serial.println("[STATE] Loading");
 
-  if (SPIFFS.exists(CONFIG_FILE)) {
-    Serial.println("[CONFIG] Loading existing file configuration");
+  if (SPIFFS.exists(STATE_FILE)) {
+    Serial.println("[STATE] Loading existing file");
 
     // Open file for reading
-    File file                  = SPIFFS.open(CONFIG_FILE, "r");
-    DeserializationError error = deserializeJson(CONFIG, file);
+    File file                  = SPIFFS.open(STATE_FILE, "r");
+    DeserializationError error = deserializeJson(STATE, file);
+    file.close();
 
     if (error) {
       #ifdef DEBUG_ESP_OASIS
       Serial.println(
-        "\n\n[CONFIG] Failed to read file, using default configuration");
-      #endif // ifdef DEBUG_ESP_OASIS
-    } else {
-      #ifdef DEBUG_ESP_OASIS
-      serializeJsonPretty(CONFIG, Serial);
-      Serial.println("\n");
+        "\n\n[STATE] Failed to read file, using default");
+        loadDefaultState();
+        Serial.println("[STATE] creating default file");
+        saveState(STATE);
       #endif // ifdef DEBUG_ESP_OASIS
     }
-    file.close();
-  } else {
-    Serial.println("[CONFIG] File not found, using default configuration");
-    CONFIG["SSID"]                = InitialConfiguration::SSID;
-    CONFIG["PASSWORD"]            = InitialConfiguration::PASSWORD;
-    CONFIG["MQTT_SERVER"]         = InitialConfiguration::MQTT_SERVER;
-    CONFIG["MQTT_PORT"]           = InitialConfiguration::MQTT_PORT;
-    CONFIG["MQTT_TOPIC_INBOUND"]  = InitialConfiguration::MQTT_TOPIC_INBOUND;
-    CONFIG["MQTT_TOPIC_OUTBOUND"] = InitialConfiguration::MQTT_TOPIC_OUTBOUND;
-    CONFIG["PERIOD"]              = InitialConfiguration::PERIOD;
-    JsonObject PIN = CONFIG.createNestedObject("PIN");
-    PIN["0"] = InitialConfiguration::PIN0;
-    PIN["1"] = InitialConfiguration::PIN1;
-    PIN["2"] = InitialConfiguration::PIN2;
-    PIN["3"] = InitialConfiguration::PIN3;
-    PIN["4"] = InitialConfiguration::PIN4;
-    PIN["5"] = InitialConfiguration::PIN5;
-    PIN["6"] = InitialConfiguration::PIN6;
-    PIN["7"] = InitialConfiguration::PIN7;
-    PIN["8"] = InitialConfiguration::PIN8;
 
-    Serial.println("[CONFIG] creating default configuration file");
-    saveConfiguration(CONFIG);
+  } else {
+    Serial.println("[STATE] File not found, using default");
+    loadDefaultState();
+    Serial.println("[STATE] creating default file");
+    saveState(STATE);
   }
+
+  #ifdef DEBUG_ESP_OASIS
+  serializeJsonPretty(STATE, Serial);
+  Serial.println("\n");
+  #endif // ifdef DEBUG_ESP_OASIS
+}
+
+void loadDefaultState(){
+  JsonObject CONFIG = STATE.createNestedObject("CONFIG");
+  CONFIG["SSID"]                = InitialConfiguration::SSID;
+  CONFIG["PASSWORD"]            = InitialConfiguration::PASSWORD;
+  CONFIG["MQTT_SERVER"]         = InitialConfiguration::MQTT_SERVER;
+  CONFIG["MQTT_PORT"]           = InitialConfiguration::MQTT_PORT;
+  CONFIG["MQTT_TOPIC_INBOUND"]  = InitialConfiguration::MQTT_TOPIC_INBOUND;
+  CONFIG["MQTT_TOPIC_OUTBOUND"] = InitialConfiguration::MQTT_TOPIC_OUTBOUND;
+  CONFIG["PERIOD"]              = InitialConfiguration::PERIOD;
+  JsonObject PIN = CONFIG.createNestedObject("PIN");
+  PIN["0"] = InitialConfiguration::PIN0;
+  PIN["1"] = InitialConfiguration::PIN1;
+  PIN["2"] = InitialConfiguration::PIN2;
+  PIN["3"] = InitialConfiguration::PIN3;
+  PIN["4"] = InitialConfiguration::PIN4;
+  PIN["5"] = InitialConfiguration::PIN5;
+  PIN["6"] = InitialConfiguration::PIN6;
+  PIN["7"] = InitialConfiguration::PIN7;
+  PIN["8"] = InitialConfiguration::PIN8;
+
+  JsonObject COMMAND = STATE.createNestedObject("COMMAND");
+  COMMAND["LIGHT"] = false;
+  COMMAND["FAN"] = false;
+  COMMAND["WATER"] = false;
 }
 
 void postResponse() {
@@ -144,7 +160,7 @@ void postResponse() {
   // Produce a minified JSON document
   int plength = measureJson(jsonDoc);
   serializeJson(jsonDoc, payload, JSON_MEMORY_SIZE);
-  mqtt.publish(CONFIG["MQTT_TOPIC_OUTBOUND"], payload, plength);
+  mqtt.publish(STATE["MQTT_TOPIC_OUTBOUND"], payload, plength);
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
@@ -157,10 +173,21 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     #endif // ifdef DEBUG_ESP_OASIS
   } else {
     #ifdef DEBUG_ESP_OASIS
-    Serial.print("\n[MQTT] Message arrived [");
-    Serial.print(topic);
+    Serial.print("\n[MQTT] Message arrived ID[");
+    const char* ID = jsonDoc["ID"];
+    Serial.print(ID);
     Serial.println("]");
-    serializeJsonPretty(jsonDoc, Serial);
+    JsonObject CONFIG = jsonDoc["CONFIG"];
+    JsonObject COMMAND = jsonDoc["COMMAND"];
+    if(!CONFIG.isNull() || !COMMAND.isNull()){
+      saveState(jsonDoc);
+    }
+    JsonArray STATUS = jsonDoc["STATUS"];
+    if(!STATUS.isNull()){
+      Serial.println("TEM STATUS");
+
+    }
+    //serializeJsonPretty(jsonDoc, Serial);
     #endif // ifdef DEBUG_ESP_OASIS
     postResponse();
   }
@@ -168,9 +195,9 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
 
 void setupWifi() {
   Serial.print("[WIFI] Connecting to SSID: ");
-  Serial.println(CONFIG["SSID"].as<char *>());
+  Serial.println(STATE["CONFIG"]["SSID"].as<char *>());
   WiFi.mode(WIFI_STA);
-  WiFi.begin(CONFIG["SSID"].as<char *>(), CONFIG["PASSWORD"].as<char *>());
+  WiFi.begin(STATE["CONFIG"]["SSID"].as<char *>(), STATE["CONFIG"]["PASSWORD"].as<char *>());
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...",
@@ -209,7 +236,10 @@ void setup() {
   Serial.printf("Max Path Length: %u\r\n", info.maxPathLength);
  #endif // ifdef DEBUG_ESP_OASIS
 
-  loadConfiguration();
+ //TODO: REMOVEME
+  //SPIFFS.remove(STATE_FILE);
+
+  loadState();
   setupWifi();
   ArduinoOTA.setHostname(HOSTNAME);
   ArduinoOTA.setPort(OTA_PORT);
@@ -238,8 +268,8 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
-  mqtt.setServer(CONFIG["MQTT_SERVER"].as<char *>(),
-                 CONFIG["MQTT_PORT"].as<int>());
+  mqtt.setServer(STATE["CONFIG"]["MQTT_SERVER"].as<char *>(),
+                 STATE["CONFIG"]["MQTT_PORT"].as<int>());
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
  #ifdef DEBUG_ESP_OASIS
@@ -258,7 +288,7 @@ void mqttReconnect() {
 
     if (mqtt.connect(HOSTNAME)) {
       Serial.println("connected");
-      mqtt.subscribe(CONFIG["MQTT_TOPIC_INBOUND"]);
+      mqtt.subscribe(STATE["CONFIG"]["MQTT_TOPIC_INBOUND"]);
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqtt.state());
@@ -269,7 +299,7 @@ void mqttReconnect() {
 }
 
 void collectSensorData() {
-  mqtt.publish(CONFIG["MQTT_TOPIC_OUTBOUND"], "XYZW");
+  mqtt.publish(STATE["CONFIG"]["MQTT_TOPIC_OUTBOUND"], "XYZW");
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */

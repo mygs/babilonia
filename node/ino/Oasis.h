@@ -15,15 +15,15 @@
 #define OTA_PORT 8266
 
 
-// Configuration that we'll store on disk
-const char *CONFIG_FILE = "/config.json";
+// State that we'll store on disk
+const char *STATE_FILE = "/state.json";
 
 // ***** functions *****
 int diffi(JsonVariant _base, JsonVariant _arrived);
 const char* diffs(JsonVariant _base, JsonVariant _arrived);
-void loadConfiguration();
-void saveConfiguration(JsonDocument& CONFIG);
-void mergeConfiguration(JsonDocument& base, JsonDocument& arrived);
+void loadState();
+void saveState(JsonDocument& CONFIG);
+void mergeState(JsonDocument& base, JsonDocument& arrived);
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
 void postResponse();
 void mqttReconnect();
@@ -31,5 +31,5 @@ void setupWifi();
 void setup();
 void collectSensorData();
 void loop();
-
+void loadDefaultState();
 #endif

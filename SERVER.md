@@ -47,8 +47,26 @@ subscribe all topics
 ```
 mosquitto_sub -h 192.168.2.1 -t "#" -v
 ```
-send message
+full message
 ```
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"id\":\"a12dc89b\",\"config\":[{\"period\":300,\"pin\":{\"0\":\"IDLE\",\"1\":\"water\",\"2\":\"light\",\"3\":\"soil.X\",\"4\":\"soil.1\",\"5\":\"soil.2\",\"6\":\"soil.3\",\"7\":\"soil.4\"}}],\"command\":{\"light\":true,\"fan\":true,\"water\":true,\"reboot\":true},\"status\":[\"node\",\"soil\",\"dht\",\"light\",\"fan\",\"water\"]}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"ID\": \"a12dc89b\",\"CONFIG\": {\"SSID\": \"babilonia\",\"PASSWORD\": \"secret\",\"MQTT_SERVER\": \"192.168.2.1\",\"MQTT_PORT\": 1883,\"MQTT_TOPIC_INBOUND\": \"\/oasis-inbound\",\"MQTT_TOPIC_OUTBOUND\": \"\/oasis-outbound\",\"PERIOD\": 300,\"PIN\":{\"0\": \"IDLE\",\"1\": \"WATER\", \"2\": \"LIGHT\", \"3\": \"SOIL.X\",\"4\": \"DHT\",\"5\": \"SOIL.1\", \"6\": \"SOIL.2\",\"7\": \"SOIL.3\", \"8\": \"SOIL.4\"}},\"COMMAND\": {\"LIGHT\": true,\"FAN\": true,\"WATER\": true,\"REBOOT\": true},\"STATUS\": [\"NODE\", \"SOIL\", \"DHT\", \"LIGHT\", \"FAN\", \"WATER\"]}"
+```
 
+config message
+```
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"ID\": \"a12dc89b\",\"CONFIG\": {\"SSID\": \"babilonia\",\"PASSWORD\": \"secret\",\"MQTT_SERVER\": \"192.168.2.1\",\"MQTT_PORT\": 1883,\"MQTT_TOPIC_INBOUND\": \"\/oasis-inbound\",\"MQTT_TOPIC_OUTBOUND\": \"\/oasis-outbound\",\"PERIOD\": 300,\"PIN\":{\"0\": \"IDLE\",\"1\": \"WATER\", \"2\": \"LIGHT\", \"3\": \"SOIL.X\",\"4\": \"DHT\",\"5\": \"SOIL.1\", \"6\": \"SOIL.2\",\"7\": \"SOIL.3\", \"8\": \"SOIL.4\"}}}"
+```
+command and status message
+```
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"ID\": \"a12dc89b\",\"COMMAND\": {\"LIGHT\": true,\"FAN\": true,\"WATER\": true,\"REBOOT\": true},\"STATUS\": [\"NODE\", \"SOIL\", \"DHT\", \"LIGHT\", \"FAN\", \"WATER\"]}"
+```
+
+command message
+```
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"ID\": \"a12dc89b\",\"COMMAND\": {\"LIGHT\": true,\"FAN\": true,\"WATER\": true,\"REBOOT\": true}}"
+```
+
+status message
+```
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"ID\": \"a12dc89b\",\"STATUS\": [\"NODE\", \"SOIL\", \"DHT\", \"LIGHT\", \"FAN\", \"WATER\"]}"
 ```

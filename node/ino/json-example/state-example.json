@@ -1,6 +1,5 @@
 {
-  "ID": "a12dc89b",
-  "CONFIG": {
+  "CONFIG":{
     "SSID": "babilonia",
     "PASSWORD": "secret",
     "MQTT_SERVER": "192.168.2.1",
@@ -18,13 +17,10 @@
       "6": "SOIL.2",
       "7": "SOIL.3",
       "8": "SOIL.4"
+    },
+    "COMMAND":{
+      "LIGHT": true,
+      "FAN": true,
+      "WATER": true
     }
-  },
-  "COMMAND": {
-    "LIGHT": true,
-    "FAN": true,
-    "WATER": true,
-    "REBOOT": true
-  },
-  "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER"]
 }
