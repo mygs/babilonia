@@ -68,7 +68,7 @@ mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"ID\": \"a12dc89b\",\"COM
 
 command message
 ```
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"ID\": \"a12dc89b\",\"COMMAND\": {\"LIGHT\": true,\"FAN\": true,\"WATER\": true,\"REBOOT\": true}}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"ID\": \"a12dc89b\",\"COMMAND\": {\"LIGHT\": true,\"FAN\": true,\"WATER\": true,\"REBOOT\": false}}"
 ```
 
 status message

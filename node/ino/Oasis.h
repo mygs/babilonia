@@ -15,13 +15,7 @@
 #define OTA_PORT 8266
 
 
-// State that we'll store on disk
-const char *STATE_FILE = "/state.json";
-
 // ***** functions *****
-void loadState();
-void saveState(JsonDocument& CONFIG);
-void mergeState(JsonDocument& base, JsonDocument& arrived);
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
 void postResponse();
 void mqttReconnect();
@@ -29,5 +23,4 @@ void setupWifi();
 void setup();
 void collectSensorData();
 void loop();
-void loadDefaultState();
 #endif
