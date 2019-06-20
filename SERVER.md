@@ -32,10 +32,10 @@ git checkout tags/v2.6
 ```
 
 ## DECODE EXCEPTION
-
-./decoder.py -p ESP8266 -t $BABILONIA_LIBS/esp-open-sdk/xtensa-lx106-elf -e /tmp/mkESP/Oasis_nodemcuv2/Oasis.elf -f dump
+```bash
+git clone https://github.com/janLo/EspArduinoExceptionDecoder.git
 ./decoder.py -e /tmp/mkESP/Oasis_nodemcuv2/Oasis.elf myStackTrace.txt
-
+```
 ## Over The Air
 First update, must be through USB
 ```bash

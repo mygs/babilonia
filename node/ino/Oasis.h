@@ -19,9 +19,6 @@
 const char *STATE_FILE = "/state.json";
 
 // ***** functions *****
-int diffi(JsonVariant _base, JsonVariant _arrived);
-bool diffb(JsonVariant _base, JsonVariant _arrived);
-const char* diffs(JsonVariant _base, JsonVariant _arrived);
 void loadState();
 void saveState(JsonDocument& CONFIG);
 void mergeState(JsonDocument& base, JsonDocument& arrived);
