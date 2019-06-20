@@ -23,9 +23,12 @@ Ticker sensors;
 
 // Save State to a file
 void saveState(JsonDocument& _state) {
+
   Serial.println("[STATE] Saving");
 
   if (!SPIFFS.exists(STATE_FILE)) {
+    Serial.println("[STATE] Removing existing file");
+
     SPIFFS.remove(STATE_FILE);
   }
   File file = SPIFFS.open(STATE_FILE, "w");
@@ -36,6 +39,7 @@ void saveState(JsonDocument& _state) {
   } else {
     // Serialize JSON to file
     mergeState(STATE, _state);
+    Serial.println("[STATE] Merged");
 
     if (serializeJsonPretty(STATE, file) == 0) {
       Serial.println("[STATE] Failed to write file");
@@ -62,32 +66,62 @@ int diffi(JsonVariant _base, JsonVariant _arrived) {
   }
 }
 
+bool diffb(JsonVariant _base, JsonVariant _arrived) {
+  if (!_arrived.isNull()) {
+    return _arrived.as<bool>();
+  } else {
+    return _base.as<bool>();
+  }
+}
+
 // Merge state
 void mergeState(JsonDocument& base, JsonDocument& arrived) {
+
   JsonObject baseConfig = base["CONFIG"];
   JsonObject arrivedConfig = arrived["CONFIG"];
 
-  baseConfig["SSID"]        = diffs(baseConfig["SSID"], arrivedConfig["SSID"]);
-  baseConfig["PASSWORD"]    = diffs(baseConfig["PASSWORD"], arrivedConfig["PASSWORD"]);
-  baseConfig["MQTT_SERVER"] = diffs(baseConfig["MQTT_SERVER"], arrivedConfig["MQTT_SERVER"]);
-  baseConfig["MQTT_PORT"]   = diffi(baseConfig["MQTT_PORT"],
-                              arrivedConfig["MQTT_PORT"]);
-  baseConfig["MQTT_TOPIC_INBOUND"] =
-    diffs(baseConfig["MQTT_TOPIC_INBOUND"],  arrivedConfig["MQTT_TOPIC_INBOUND"]);
-  baseConfig["MQTT_TOPIC_OUTBOUND"] =
-    diffs(baseConfig["MQTT_TOPIC_OUTBOUND"], arrivedConfig["MQTT_TOPIC_OUTBOUND"]);
-  baseConfig["PERIOD"] = diffi(base["PERIOD"], arrivedConfig["PERIOD"]);
-  JsonObject basePIN    = baseConfig["PIN"];
-  JsonObject arrivedPIN = arrivedConfig["PIN"];
-  basePIN["0"] = diffs(basePIN["0"], arrivedPIN["0"]);
-  basePIN["1"] = diffs(basePIN["1"], arrivedPIN["1"]);
-  basePIN["2"] = diffs(basePIN["2"], arrivedPIN["2"]);
-  basePIN["3"] = diffs(basePIN["3"], arrivedPIN["3"]);
-  basePIN["4"] = diffs(basePIN["4"], arrivedPIN["4"]);
-  basePIN["5"] = diffs(basePIN["5"], arrivedPIN["5"]);
-  basePIN["6"] = diffs(basePIN["6"], arrivedPIN["6"]);
-  basePIN["7"] = diffs(basePIN["7"], arrivedPIN["7"]);
-  basePIN["8"] = diffs(basePIN["8"], arrivedPIN["8"]);
+  if(!arrivedConfig.isNull()){
+    #ifdef DEBUG_ESP_OASIS
+    Serial.println("[STATE] Merging CONFIG");
+    #endif // ifdef DEBUG_ESP_OASIS
+    baseConfig["SSID"]        = diffs(baseConfig["SSID"], arrivedConfig["SSID"]);
+    baseConfig["PASSWORD"]    = diffs(baseConfig["PASSWORD"], arrivedConfig["PASSWORD"]);
+    baseConfig["MQTT_SERVER"] = diffs(baseConfig["MQTT_SERVER"], arrivedConfig["MQTT_SERVER"]);
+    baseConfig["MQTT_PORT"]   = diffi(baseConfig["MQTT_PORT"],
+                                arrivedConfig["MQTT_PORT"]);
+    baseConfig["MQTT_TOPIC_INBOUND"] =
+      diffs(baseConfig["MQTT_TOPIC_INBOUND"],  arrivedConfig["MQTT_TOPIC_INBOUND"]);
+    baseConfig["MQTT_TOPIC_OUTBOUND"] =
+      diffs(baseConfig["MQTT_TOPIC_OUTBOUND"], arrivedConfig["MQTT_TOPIC_OUTBOUND"]);
+    baseConfig["PERIOD"] = diffi(base["PERIOD"], arrivedConfig["PERIOD"]);
+    JsonObject basePIN    = baseConfig["PIN"];
+    JsonObject arrivedPIN = arrivedConfig["PIN"];
+    if(!arrivedPIN.isNull()){
+      #ifdef DEBUG_ESP_OASIS
+      Serial.println("[STATE] Merging PIN");
+      #endif // ifdef DEBUG_ESP_OASIS
+      basePIN["0"] = diffs(basePIN["0"], arrivedPIN["0"]);
+      basePIN["1"] = diffs(basePIN["1"], arrivedPIN["1"]);
+      basePIN["2"] = diffs(basePIN["2"], arrivedPIN["2"]);
+      basePIN["3"] = diffs(basePIN["3"], arrivedPIN["3"]);
+      basePIN["4"] = diffs(basePIN["4"], arrivedPIN["4"]);
+      basePIN["5"] = diffs(basePIN["5"], arrivedPIN["5"]);
+      basePIN["6"] = diffs(basePIN["6"], arrivedPIN["6"]);
+      basePIN["7"] = diffs(basePIN["7"], arrivedPIN["7"]);
+      basePIN["8"] = diffs(basePIN["8"], arrivedPIN["8"]);
+    }
+  }
+  JsonObject arrivedCommand = arrived["COMMAND"];
+  JsonObject baseCommand = base["COMMAND"];
+  if(!arrivedCommand.isNull()){
+    #ifdef DEBUG_ESP_OASIS
+    Serial.println("[STATE] Merging COMMAND");
+    #endif // ifdef DEBUG_ESP_OASIS
+    baseCommand["LIGHT"] = diffb(baseCommand["LIGHT"], arrivedCommand["LIGHT"]);
+    baseCommand["FAN"] = diffb(baseCommand["FAN"], arrivedCommand["FAN"]);
+    baseCommand["WATER"] = diffb(baseCommand["WATER"], arrivedCommand["WATER"]);
+
+  }
 }
 
 // Load state from a file
@@ -180,7 +214,8 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     JsonObject CONFIG = jsonDoc["CONFIG"];
     JsonObject COMMAND = jsonDoc["COMMAND"];
     if(!CONFIG.isNull() || !COMMAND.isNull()){
-      saveState(jsonDoc);
+      //saveState(jsonDoc);
+      saveState(STATE);
     }
     JsonArray STATUS = jsonDoc["STATUS"];
     if(!STATUS.isNull()){
