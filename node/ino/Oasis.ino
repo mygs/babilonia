@@ -14,6 +14,7 @@ char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
 StaticJsonDocument<JSON_MEMORY_SIZE> STATE;
 
+State state;
 Command command;
 
 // Memory pool for JSON object tree.
@@ -52,7 +53,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     JsonObject CONFIG = data["CONFIG"];
     JsonObject COMMAND = data["COMMAND"];
     if(!CONFIG.isNull() || !COMMAND.isNull()){
-      saveState(STATE, data);
+      state.saveState(STATE, data);
       command.execute(STATE, COMMAND);
     }
     JsonArray STATUS = data["STATUS"];
@@ -94,7 +95,8 @@ void setup() {
   Serial.println("[OASIS] Starting Setup");
  #endif // ifdef DEBUG_ESP_OASIS
 
-  loadState(STATE);
+  state.printFileSystemDetails();
+  state.loadState(STATE);
 
   setupWifi();
   ArduinoOTA.setHostname(HOSTNAME);

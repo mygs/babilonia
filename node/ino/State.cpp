@@ -2,7 +2,14 @@
 #include <InitialConfiguration.h>
 #include <FS.h> // Include the SPIFFS library
 
-const char* diffs(JsonVariant _base, JsonVariant _arrived) {
+
+State::State(){
+  if (!SPIFFS.begin()) {
+      Serial.println("Failed to mount file system");
+  }
+}
+
+const char* State::diffs(JsonVariant _base, JsonVariant _arrived) {
   const char *arrived = _arrived.as<char *>();
   if ((arrived != NULL) && (arrived[0] != '\0')) {
     return arrived;
@@ -11,7 +18,7 @@ const char* diffs(JsonVariant _base, JsonVariant _arrived) {
   }
 }
 
-int diffi(JsonVariant _base, JsonVariant _arrived) {
+int State::diffi(JsonVariant _base, JsonVariant _arrived) {
   int arrived = _arrived.as<int>();
   if (arrived >= 0) {
     return arrived;
@@ -20,7 +27,7 @@ int diffi(JsonVariant _base, JsonVariant _arrived) {
   }
 }
 
-bool diffb(JsonVariant _base, JsonVariant _arrived) {
+bool State::diffb(JsonVariant _base, JsonVariant _arrived) {
   if (!_arrived.isNull()) {
     return _arrived.as<bool>();
   } else {
@@ -29,7 +36,7 @@ bool diffb(JsonVariant _base, JsonVariant _arrived) {
 }
 
 // Merge state
-void mergeState(JsonDocument& base, JsonDocument& arrived) {
+void State::mergeState(JsonDocument& base, JsonDocument& arrived) {
 
   JsonObject arrivedConfig = arrived["CONFIG"];
 
@@ -72,7 +79,7 @@ void mergeState(JsonDocument& base, JsonDocument& arrived) {
     baseCommand["WATER"] = diffb(baseCommand["WATER"], arrivedCommand["WATER"]);
   }
 }
-void loadDefaultState(JsonDocument& state){
+void State::loadDefaultState(JsonDocument& state){
   state.clear();
   JsonObject CONFIG = state.createNestedObject("CONFIG");
   CONFIG["SSID"]                = InitialConfiguration::SSID;
@@ -104,12 +111,7 @@ void loadDefaultState(JsonDocument& state){
 }
 
 // Save State to a file
-void saveDefaultState(JsonDocument& state) {
-  if (!SPIFFS.begin()) {
-      Serial.println("Failed to mount file system");
-      return;
-  }
-
+void State::saveDefaultState(JsonDocument& state) {
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Removing existing file");
     SPIFFS.remove(STATE_FILE);
@@ -130,12 +132,7 @@ void saveDefaultState(JsonDocument& state) {
 }
 
 // Save State to a file
-void saveState(JsonDocument& currentState, JsonDocument& newState) {
-  if (!SPIFFS.begin()) {
-      Serial.println("Failed to mount file system");
-      return;
-  }
-
+void State::saveState(JsonDocument& currentState, JsonDocument& newState) {
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Removing existing file");
     SPIFFS.remove(STATE_FILE);
@@ -157,23 +154,7 @@ void saveState(JsonDocument& currentState, JsonDocument& newState) {
 }
 
 // Load state from a file
-void loadState(JsonDocument& state) {
-
-  if (!SPIFFS.begin()) {
-      Serial.println("Failed to mount file system");
-      return;
-  }
-
-  #ifdef DEBUG_ESP_OASIS
-   FSInfo info;
-   SPIFFS.info(info);
-   Serial.printf("Total Bytes: %u\r\n",     info.totalBytes);
-   Serial.printf("Used Bytes: %u\r\n",      info.usedBytes);
-   Serial.printf("Block Size: %u\r\n",      info.blockSize);
-   Serial.printf("Page Size: %u\r\n",       info.pageSize);
-   Serial.printf("Max Open Files: %u\r\n",  info.maxOpenFiles);
-   Serial.printf("Max Path Length: %u\r\n", info.maxPathLength);
-  #endif // ifdef DEBUG_ESP_OASIS
+void State::loadState(JsonDocument& state) {
 
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Loading existing file");
@@ -197,4 +178,15 @@ void loadState(JsonDocument& state) {
   serializeJsonPretty(state, Serial);
   Serial.println("\n");
   #endif // ifdef DEBUG_ESP_OASIS
+}
+
+void State::printFileSystemDetails(){
+     FSInfo info;
+     SPIFFS.info(info);
+     Serial.printf("[STATE] Total Bytes: %u\r\n",     info.totalBytes);
+     Serial.printf("[STATE] Used Bytes: %u\r\n",      info.usedBytes);
+     Serial.printf("[STATE] Block Size: %u\r\n",      info.blockSize);
+     Serial.printf("[STATE] Page Size: %u\r\n",       info.pageSize);
+     Serial.printf("[STATE] Max Open Files: %u\r\n",  info.maxOpenFiles);
+     Serial.printf("[STATE] Max Path Length: %u\r\n", info.maxPathLength);
 }
