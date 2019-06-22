@@ -12,17 +12,12 @@ WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
 char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
-StaticJsonDocument<JSON_MEMORY_SIZE> STATE;
 
-State state;
-Command command;
-
-// Memory pool for JSON object tree.
-// Because it doesn’t call malloc() and free(),
-// StaticJsonDocument is slightly faster than DynamicJsonDocument
 StaticJsonDocument<JSON_MEMORY_SIZE> data;
 
 Ticker sensors;
+State state;
+Command command;
 
 void postResponse() {
   data.clear();
@@ -33,7 +28,7 @@ void postResponse() {
   // Produce a minified JSON document
   int plength = measureJson(data);
   serializeJson(data, payload, JSON_MEMORY_SIZE);
-  mqtt.publish(STATE["CONFIG"]["MQTT_TOPIC_OUTBOUND"], payload, plength);
+  mqtt.publish(state.getMqttOutboundTopic(), payload, plength);
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
@@ -53,8 +48,8 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     JsonObject CONFIG = data["CONFIG"];
     JsonObject COMMAND = data["COMMAND"];
     if(!CONFIG.isNull() || !COMMAND.isNull()){
-      state.saveState(STATE, data);
-      command.execute(STATE, COMMAND);
+      state.saveState(data);
+      //command.execute(STATE, COMMAND);
     }
     JsonArray STATUS = data["STATUS"];
     if(!STATUS.isNull()){
@@ -69,9 +64,9 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
 
 void setupWifi() {
   Serial.print("[WIFI] Connecting to SSID: ");
-  Serial.println(STATE["CONFIG"]["SSID"].as<char *>());
+  Serial.println(state.getSsid());
   WiFi.mode(WIFI_STA);
-  WiFi.begin(STATE["CONFIG"]["SSID"].as<char *>(), STATE["CONFIG"]["PASSWORD"].as<char *>());
+  WiFi.begin(state.getSsid(), state.getPassword());
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...",
@@ -95,8 +90,7 @@ void setup() {
   Serial.println("[OASIS] Starting Setup");
  #endif // ifdef DEBUG_ESP_OASIS
 
-  state.printFileSystemDetails();
-  state.loadState(STATE);
+  state.loadState();
 
   setupWifi();
   ArduinoOTA.setHostname(HOSTNAME);
@@ -126,8 +120,8 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
-  mqtt.setServer(STATE["CONFIG"]["MQTT_SERVER"].as<char *>(),
-                 STATE["CONFIG"]["MQTT_PORT"].as<int>());
+  mqtt.setServer(state.getMqttServer(),
+                 state.getMqttPort());
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
  #ifdef DEBUG_ESP_OASIS
@@ -146,7 +140,7 @@ void mqttReconnect() {
 
     if (mqtt.connect(HOSTNAME)) {
       Serial.println("connected");
-      mqtt.subscribe(STATE["CONFIG"]["MQTT_TOPIC_INBOUND"]);
+      mqtt.subscribe(state.getMqttInboundTopic());
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqtt.state());
@@ -157,7 +151,7 @@ void mqttReconnect() {
 }
 
 void collectSensorData() {
-  mqtt.publish(STATE["CONFIG"]["MQTT_TOPIC_OUTBOUND"], "XYZW");
+  mqtt.publish(state.getMqttOutboundTopic(), "XYZW");
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */

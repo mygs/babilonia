@@ -36,12 +36,12 @@ bool State::diffb(JsonVariant _base, JsonVariant _arrived) {
 }
 
 // Merge state
-void State::mergeState(JsonDocument& base, JsonDocument& arrived) {
+void State::mergeState(JsonDocument& arrived) {
 
   JsonObject arrivedConfig = arrived["CONFIG"];
 
   if(!arrivedConfig.isNull()){
-    JsonObject baseConfig = base["CONFIG"];
+    JsonObject baseConfig = currentState["CONFIG"];
 
     baseConfig["SSID"]        = diffs(baseConfig["SSID"], arrivedConfig["SSID"]);
     baseConfig["PASSWORD"]    = diffs(baseConfig["PASSWORD"], arrivedConfig["PASSWORD"]);
@@ -52,7 +52,7 @@ void State::mergeState(JsonDocument& base, JsonDocument& arrived) {
       diffs(baseConfig["MQTT_TOPIC_INBOUND"],  arrivedConfig["MQTT_TOPIC_INBOUND"]);
     baseConfig["MQTT_TOPIC_OUTBOUND"] =
       diffs(baseConfig["MQTT_TOPIC_OUTBOUND"], arrivedConfig["MQTT_TOPIC_OUTBOUND"]);
-    baseConfig["PERIOD"] = diffi(base["PERIOD"], arrivedConfig["PERIOD"]);
+    baseConfig["PERIOD"] = diffi(currentState["PERIOD"], arrivedConfig["PERIOD"]);
 
     JsonObject arrivedPIN = arrivedConfig["PIN"];
     if(!arrivedPIN.isNull()){
@@ -72,16 +72,16 @@ void State::mergeState(JsonDocument& base, JsonDocument& arrived) {
 
   JsonObject arrivedCommand = arrived["COMMAND"];
   if(!arrivedCommand.isNull()){
-    JsonObject baseCommand = base["COMMAND"];
+    JsonObject baseCommand = currentState["COMMAND"];
 
     baseCommand["LIGHT"] = diffb(baseCommand["LIGHT"], arrivedCommand["LIGHT"]);
     baseCommand["FAN"] = diffb(baseCommand["FAN"], arrivedCommand["FAN"]);
     baseCommand["WATER"] = diffb(baseCommand["WATER"], arrivedCommand["WATER"]);
   }
 }
-void State::loadDefaultState(JsonDocument& state){
-  state.clear();
-  JsonObject CONFIG = state.createNestedObject("CONFIG");
+void State::loadDefaultState(){
+  currentState.clear();
+  JsonObject CONFIG = currentState.createNestedObject("CONFIG");
   CONFIG["SSID"]                = InitialConfiguration::SSID;
   CONFIG["PASSWORD"]            = InitialConfiguration::PASSWORD;
   CONFIG["MQTT_SERVER"]         = InitialConfiguration::MQTT_SERVER;
@@ -100,13 +100,13 @@ void State::loadDefaultState(JsonDocument& state){
   PIN["7"] = InitialConfiguration::PIN7;
   PIN["8"] = InitialConfiguration::PIN8;
 
-  JsonObject COMMAND = state.createNestedObject("COMMAND");
+  JsonObject COMMAND = currentState.createNestedObject("COMMAND");
   COMMAND["LIGHT"] = false;
   COMMAND["FAN"] = false;
   COMMAND["WATER"] = false;
 
   Serial.println("[STATE] creating default file");
-  saveDefaultState(state);
+  saveDefaultState(currentState);
 
 }
 
@@ -132,7 +132,7 @@ void State::saveDefaultState(JsonDocument& state) {
 }
 
 // Save State to a file
-void State::saveState(JsonDocument& currentState, JsonDocument& newState) {
+void State::saveState(JsonDocument& newState) {
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Removing existing file");
     SPIFFS.remove(STATE_FILE);
@@ -144,7 +144,7 @@ void State::saveState(JsonDocument& currentState, JsonDocument& newState) {
     Serial.println("[STATE] Failed to create file");
     return;
   } else {
-    mergeState(currentState, newState);
+    mergeState(newState);
     Serial.println("[STATE] Saving");
     if (serializeJson(currentState, file) == 0) {
       Serial.println("[STATE] Failed to write file");
@@ -154,28 +154,31 @@ void State::saveState(JsonDocument& currentState, JsonDocument& newState) {
 }
 
 // Load state from a file
-void State::loadState(JsonDocument& state) {
+void State::loadState() {
+  #ifdef DEBUG_ESP_OASIS
+  printFileSystemDetails();
+  #endif // ifdef DEBUG_ESP_OASIS
 
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Loading existing file");
 
     // Open file for reading
     File file                  = SPIFFS.open(STATE_FILE, "r");
-    DeserializationError error = deserializeJson(state, file);
+    DeserializationError error = deserializeJson(currentState, file);
     file.close();
 
     if (error) {
       Serial.println("[STATE] Failed to read file, using default");
-      loadDefaultState(state);
+      loadDefaultState();
     }
 
   } else {
     Serial.println("[STATE] File not found, using default");
-    loadDefaultState(state);
+    loadDefaultState();
   }
 
   #ifdef DEBUG_ESP_OASIS
-  serializeJsonPretty(state, Serial);
+  serializeJsonPretty(currentState, Serial);
   Serial.println("\n");
   #endif // ifdef DEBUG_ESP_OASIS
 }
