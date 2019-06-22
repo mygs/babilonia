@@ -7,6 +7,7 @@
 #define JSON_MEMORY_SIZE 1024
 
 namespace NODE {
+  extern const char* ID;
 
   extern const char* CONFIG;
   extern const char* SSID;

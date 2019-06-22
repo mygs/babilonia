@@ -7,6 +7,7 @@
 #include "Oasis.h"
 #include "State.h"
 #include "Command.h"
+#include "OasisConstants.h"
 
 WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
@@ -42,17 +43,17 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   } else {
     #ifdef DEBUG_ESP_OASIS
     Serial.print("\n[MQTT] Message arrived ID[");
-    const char* ID = data["ID"];
+    const char* ID = data[NODE::ID];
     Serial.print(ID);
     Serial.println("]");
-    JsonObject CONFIG = data["CONFIG"];
-    JsonObject COMMAND = data["COMMAND"];
-    if(!CONFIG.isNull() || !COMMAND.isNull()){
+    JsonObject config = data[NODE::CONFIG];
+    JsonObject cmd = data[NODE::COMMAND];
+    if(!config.isNull() || !cmd.isNull()){
       state.saveState(data);
-      command.execute(state, COMMAND);
+      command.execute(state, cmd);
     }
-    JsonArray STATUS = data["STATUS"];
-    if(!STATUS.isNull()){
+    JsonArray status = data[NODE::STATUS];
+    if(!status.isNull()){
       Serial.println("TEM STATUS");
 
     }
