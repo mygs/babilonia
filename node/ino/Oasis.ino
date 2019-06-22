@@ -14,6 +14,8 @@ char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
 StaticJsonDocument<JSON_MEMORY_SIZE> STATE;
 
+Command command;
+
 // Memory pool for JSON object tree.
 // Because it doesn’t call malloc() and free(),
 // StaticJsonDocument is slightly faster than DynamicJsonDocument
@@ -51,7 +53,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     JsonObject COMMAND = data["COMMAND"];
     if(!CONFIG.isNull() || !COMMAND.isNull()){
       saveState(STATE, data);
-      Command::execute(STATE, COMMAND);
+      command.execute(STATE, COMMAND);
     }
     JsonArray STATUS = data["STATUS"];
     if(!STATUS.isNull()){

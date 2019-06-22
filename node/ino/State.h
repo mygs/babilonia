@@ -2,6 +2,7 @@
 #define State_h
 #include <Arduino.h>
 #include <ArduinoJson.h>
+using namespace std;
 
 //comment the line below to disable debug mode
 #define DEBUG_ESP_OASIS
