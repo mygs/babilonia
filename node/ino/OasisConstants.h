@@ -37,6 +37,8 @@ namespace NODE {
   char* WATER   = "WATER";
   char* LIGHT   = "LIGHT";
   char* REBOOT  = "REBOOT";
+  char* RESET  = "RESET";
+
 
   char* STATUS  = "STATUS";
   char* DHT     = "DHT";

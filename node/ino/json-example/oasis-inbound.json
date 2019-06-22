@@ -27,7 +27,8 @@
     "LIGHT": true,
     "FAN": true,
     "WATER": true,
-    "REBOOT": true
+    "REBOOT": true,
+    "RESET": true,
   },
   "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER"]
 }
