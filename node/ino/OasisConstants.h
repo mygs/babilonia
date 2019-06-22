@@ -8,47 +8,47 @@
 
 namespace NODE {
 
-  char* CONFIG      = "CONFIG";
-  char* SSID        = "SSID";
-  char* PASSWORD    = "PASSWORD";
-  char* MQTT_SERVER = "MQTT_SERVER";
-  char* MQTT_PORT   = "MQTT_PORT";
-  char* MQTT_TOPIC_INBOUND = "MQTT_TOPIC_INBOUND";
-  char* MQTT_TOPIC_OUTBOUND = "MQTT_TOPIC_OUTBOUND";
-  char* SENSOR_COLLECT_DATA_PERIOD = "SENSOR_COLLECT_DATA_PERIOD";
+  const char* CONFIG      = "CONFIG";
+  const char* SSID        = "SSID";
+  const char* PASSWORD    = "PASSWORD";
+  const char* MQTT_SERVER = "MQTT_SERVER";
+  const char* MQTT_PORT   = "MQTT_PORT";
+  const char* MQTT_TOPIC_INBOUND = "MQTT_TOPIC_INBOUND";
+  const char* MQTT_TOPIC_OUTBOUND = "MQTT_TOPIC_OUTBOUND";
+  const char* SENSOR_COLLECT_DATA_PERIOD = "SENSOR_COLLECT_DATA_PERIOD";
 
-  char* RETRY_WIFI_CONN_DELAY = "RETRY_WIFI_CONN_DELAY";
-  char* SERIAL_BAUDRATE = "SERIAL_BAUDRATE";
-  char* OTA_PORT = "OTA_PORT";
+  const char* RETRY_WIFI_CONN_DELAY = "RETRY_WIFI_CONN_DELAY";
+  const char* SERIAL_BAUDRATE = "SERIAL_BAUDRATE";
+  const char* OTA_PORT = "OTA_PORT";
 
-  char* PIN  = "PIN";
-  char* PIN0 = "0";
-  char* PIN1 = "1";
-  char* PIN2 = "2";
-  char* PIN3 = "3";
-  char* PIN4 = "4";
-  char* PIN5 = "5";
-  char* PIN6 = "6";
-  char* PIN7 = "7";
-  char* PIN8 = "8";
+  const char* PIN  = "PIN";
+  const char* PIN0 = "0";
+  const char* PIN1 = "1";
+  const char* PIN2 = "2";
+  const char* PIN3 = "3";
+  const char* PIN4 = "4";
+  const char* PIN5 = "5";
+  const char* PIN6 = "6";
+  const char* PIN7 = "7";
+  const char* PIN8 = "8";
 
-  char* COMMAND = "COMMAND";
-  char* FAN     = "FAN";
-  char* WATER   = "WATER";
-  char* LIGHT   = "LIGHT";
-  char* REBOOT  = "REBOOT";
-  char* RESET  = "RESET";
+  const char* COMMAND = "COMMAND";
+  const char* FAN     = "FAN";
+  const char* WATER   = "WATER";
+  const char* LIGHT   = "LIGHT";
+  const char* REBOOT  = "REBOOT";
+  const char* RESET   = "RESET";
 
 
-  char* STATUS  = "STATUS";
-  char* DHT     = "DHT";
-  char* SOIL1   = "SOIL.1";
-  char* SOIL2   = "SOIL.2";
-  char* SOIL3   = "SOIL.3";
-  char* SOIL4   = "SOIL.4";
-  char* SOILX   = "SOIL.X";
+  const char* STATUS  = "STATUS";
+  const char* DHT     = "DHT";
+  const char* SOIL1   = "SOIL.1";
+  const char* SOIL2   = "SOIL.2";
+  const char* SOIL3   = "SOIL.3";
+  const char* SOIL4   = "SOIL.4";
+  const char* SOILX   = "SOIL.X";
 
-  char* IDLE    = "IDLE";
+  const char* IDLE    = "IDLE";
 
 }
 #endif

@@ -1,7 +1,7 @@
 #include "State.h"
 #include <FS.h> // Include the SPIFFS library
-#include "OasisConstants.h"
 #include "InitialConfiguration.h"
+#include "OasisConstants.h"
 
 State::State(){
   if (!SPIFFS.begin()) {

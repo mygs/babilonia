@@ -49,7 +49,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     JsonObject COMMAND = data["COMMAND"];
     if(!CONFIG.isNull() || !COMMAND.isNull()){
       state.saveState(data);
-      //command.execute(STATE, COMMAND);
+      //command.execute(state, COMMAND);
     }
     JsonArray STATUS = data["STATUS"];
     if(!STATUS.isNull()){
