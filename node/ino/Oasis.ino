@@ -70,8 +70,8 @@ void setupWifi() {
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...",
-                  RETRY_CONNECTION_DELAY / 1000);
-    delay(RETRY_CONNECTION_DELAY);
+                  state.getWifiRetryConnectionDelay() / 1000);
+    delay(state.getWifiRetryConnectionDelay());
     ESP.restart();
   }
   Serial.print("[WIFI] IP address: ");
@@ -80,21 +80,25 @@ void setupWifi() {
 
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
-  Serial.begin(SERIAL_BAUDRATE);
+  //state.remove();
+  state.loadState();
 
+  Serial.begin(state.getSerialBaudRate());
   while (!Serial) continue;
+
+  state.print();
+
   sprintf(HOSTNAME, "oasis-%06x", ESP.getChipId());
   Serial.print("\n\n\n[OASIS] Hostname: ");
   Serial.println(HOSTNAME);
- #ifdef DEBUG_ESP_OASIS
+  #ifdef DEBUG_ESP_OASIS
   Serial.println("[OASIS] Starting Setup");
- #endif // ifdef DEBUG_ESP_OASIS
-
-  state.loadState();
+  #endif // ifdef DEBUG_ESP_OASIS
 
   setupWifi();
+
   ArduinoOTA.setHostname(HOSTNAME);
-  ArduinoOTA.setPort(OTA_PORT);
+  ArduinoOTA.setPort(state.getOtaPort());
   ArduinoOTA.onStart([]() {
     Serial.println("[OTA] Starting ");
   });
@@ -128,7 +132,7 @@ void setup() {
   Serial.println("[OASIS] Setup Completed");
  #endif // ifdef DEBUG_ESP_OASIS
 
-  sensors.attach(SENSOR_COLLECT_DATA_PERIOD, collectSensorData);
+  sensors.attach(state.getSensorCollectDataPeriod(), collectSensorData);
 }
 
 void mqttReconnect() {
@@ -144,8 +148,8 @@ void mqttReconnect() {
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqtt.state());
-      Serial.printf(" try again in %i seconds", RETRY_CONNECTION_DELAY / 1000);
-      delay(RETRY_CONNECTION_DELAY);
+      Serial.printf(" try again in %i seconds", state.getWifiRetryConnectionDelay() / 1000);
+      delay(state.getWifiRetryConnectionDelay());
     }
   }
 }

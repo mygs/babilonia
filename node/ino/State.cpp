@@ -1,12 +1,52 @@
-#include <State.h>
-#include <InitialConfiguration.h>
+#include "State.h"
 #include <FS.h> // Include the SPIFFS library
-
+#include "OasisConstants.h"
+#include "InitialConfiguration.h"
 
 State::State(){
   if (!SPIFFS.begin()) {
       Serial.println("Failed to mount file system");
   }
+}
+
+const char * State::getMqttServer(){
+  return currentState[NODE::CONFIG][NODE::MQTT_SERVER];
+}
+
+int State::getSensorCollectDataPeriod(){
+  return currentState[NODE::CONFIG][NODE::SENSOR_COLLECT_DATA_PERIOD].as<int>();
+}
+
+int State::getWifiRetryConnectionDelay(){
+  return currentState[NODE::CONFIG][NODE::RETRY_WIFI_CONN_DELAY].as<int>();
+}
+
+int State::getSerialBaudRate(){
+  return currentState[NODE::CONFIG][NODE::SERIAL_BAUDRATE].as<int>();
+}
+
+int State::getOtaPort(){
+  return currentState[NODE::CONFIG][NODE::OTA_PORT].as<int>();
+}
+
+int State::getMqttPort(){
+  return currentState[NODE::CONFIG][NODE::MQTT_PORT].as<int>();
+}
+
+const char * State::getMqttInboundTopic(){
+  return currentState[NODE::CONFIG][NODE::MQTT_TOPIC_INBOUND];
+}
+
+const char * State::getMqttOutboundTopic(){
+  return currentState[NODE::CONFIG][NODE::MQTT_TOPIC_OUTBOUND];
+}
+
+const char * State::getSsid(){
+  return currentState[NODE::CONFIG][NODE::SSID];
+}
+
+const char * State::getPassword(){
+  return currentState[NODE::CONFIG][NODE::PASSWORD];
 }
 
 const char* State::diffs(JsonVariant _base, JsonVariant _arrived) {
@@ -38,72 +78,83 @@ bool State::diffb(JsonVariant _base, JsonVariant _arrived) {
 // Merge state
 void State::mergeState(JsonDocument& arrived) {
 
-  JsonObject arrivedConfig = arrived["CONFIG"];
+  JsonObject arrivedConfig = arrived[NODE::CONFIG];
 
   if(!arrivedConfig.isNull()){
-    JsonObject baseConfig = currentState["CONFIG"];
+    JsonObject baseConfig = currentState[NODE::CONFIG];
 
-    baseConfig["SSID"]        = diffs(baseConfig["SSID"], arrivedConfig["SSID"]);
-    baseConfig["PASSWORD"]    = diffs(baseConfig["PASSWORD"], arrivedConfig["PASSWORD"]);
-    baseConfig["MQTT_SERVER"] = diffs(baseConfig["MQTT_SERVER"], arrivedConfig["MQTT_SERVER"]);
-    baseConfig["MQTT_PORT"]   = diffi(baseConfig["MQTT_PORT"],
-                                arrivedConfig["MQTT_PORT"]);
-    baseConfig["MQTT_TOPIC_INBOUND"] =
-      diffs(baseConfig["MQTT_TOPIC_INBOUND"],  arrivedConfig["MQTT_TOPIC_INBOUND"]);
-    baseConfig["MQTT_TOPIC_OUTBOUND"] =
-      diffs(baseConfig["MQTT_TOPIC_OUTBOUND"], arrivedConfig["MQTT_TOPIC_OUTBOUND"]);
-    baseConfig["PERIOD"] = diffi(currentState["PERIOD"], arrivedConfig["PERIOD"]);
+    baseConfig[NODE::SSID]        = diffs(baseConfig[NODE::SSID], arrivedConfig[NODE::SSID]);
+    baseConfig[NODE::PASSWORD]    = diffs(baseConfig[NODE::PASSWORD], arrivedConfig[NODE::PASSWORD]);
+    baseConfig[NODE::MQTT_SERVER] = diffs(baseConfig[NODE::MQTT_SERVER], arrivedConfig[NODE::MQTT_SERVER]);
+    baseConfig[NODE::MQTT_PORT]   = diffi(baseConfig[NODE::MQTT_PORT],
+                                arrivedConfig[NODE::MQTT_PORT]);
+    baseConfig[NODE::MQTT_TOPIC_INBOUND] =
+      diffs(baseConfig[NODE::MQTT_TOPIC_INBOUND],  arrivedConfig[NODE::MQTT_TOPIC_INBOUND]);
+    baseConfig[NODE::MQTT_TOPIC_OUTBOUND] =
+      diffs(baseConfig[NODE::MQTT_TOPIC_OUTBOUND], arrivedConfig[NODE::MQTT_TOPIC_OUTBOUND]);
+    baseConfig[NODE::SENSOR_COLLECT_DATA_PERIOD] = diffi(currentState[NODE::SENSOR_COLLECT_DATA_PERIOD],
+       arrivedConfig[NODE::SENSOR_COLLECT_DATA_PERIOD]);
 
-    JsonObject arrivedPIN = arrivedConfig["PIN"];
+    baseConfig[NODE::RETRY_WIFI_CONN_DELAY]   = diffi(baseConfig[NODE::RETRY_WIFI_CONN_DELAY],
+                                   arrivedConfig[NODE::RETRY_WIFI_CONN_DELAY]);
+    baseConfig[NODE::SERIAL_BAUDRATE]   = diffi(baseConfig[NODE::SERIAL_BAUDRATE],
+                                   arrivedConfig[NODE::SERIAL_BAUDRATE]);
+    baseConfig[NODE::OTA_PORT]   = diffi(baseConfig[NODE::OTA_PORT],
+                                  arrivedConfig[NODE::OTA_PORT]);
+    JsonObject arrivedPIN = arrivedConfig[NODE::PIN];
     if(!arrivedPIN.isNull()){
-      JsonObject basePIN    = baseConfig["PIN"];
+      JsonObject basePIN    = baseConfig[NODE::PIN];
 
-      basePIN["0"] = diffs(basePIN["0"], arrivedPIN["0"]);
-      basePIN["1"] = diffs(basePIN["1"], arrivedPIN["1"]);
-      basePIN["2"] = diffs(basePIN["2"], arrivedPIN["2"]);
-      basePIN["3"] = diffs(basePIN["3"], arrivedPIN["3"]);
-      basePIN["4"] = diffs(basePIN["4"], arrivedPIN["4"]);
-      basePIN["5"] = diffs(basePIN["5"], arrivedPIN["5"]);
-      basePIN["6"] = diffs(basePIN["6"], arrivedPIN["6"]);
-      basePIN["7"] = diffs(basePIN["7"], arrivedPIN["7"]);
-      basePIN["8"] = diffs(basePIN["8"], arrivedPIN["8"]);
+      basePIN[NODE::PIN0] = diffs(basePIN[NODE::PIN0], arrivedPIN[NODE::PIN0]);
+      basePIN[NODE::PIN1] = diffs(basePIN[NODE::PIN1], arrivedPIN[NODE::PIN1]);
+      basePIN[NODE::PIN2] = diffs(basePIN[NODE::PIN2], arrivedPIN[NODE::PIN2]);
+      basePIN[NODE::PIN3] = diffs(basePIN[NODE::PIN3], arrivedPIN[NODE::PIN3]);
+      basePIN[NODE::PIN4] = diffs(basePIN[NODE::PIN4], arrivedPIN[NODE::PIN4]);
+      basePIN[NODE::PIN5] = diffs(basePIN[NODE::PIN5], arrivedPIN[NODE::PIN5]);
+      basePIN[NODE::PIN6] = diffs(basePIN[NODE::PIN6], arrivedPIN[NODE::PIN6]);
+      basePIN[NODE::PIN7] = diffs(basePIN[NODE::PIN7], arrivedPIN[NODE::PIN7]);
+      basePIN[NODE::PIN8] = diffs(basePIN[NODE::PIN8], arrivedPIN[NODE::PIN8]);
     }
   }
 
-  JsonObject arrivedCommand = arrived["COMMAND"];
+  JsonObject arrivedCommand = arrived[NODE::COMMAND];
   if(!arrivedCommand.isNull()){
-    JsonObject baseCommand = currentState["COMMAND"];
+    JsonObject baseCommand = currentState[NODE::COMMAND];
 
-    baseCommand["LIGHT"] = diffb(baseCommand["LIGHT"], arrivedCommand["LIGHT"]);
-    baseCommand["FAN"] = diffb(baseCommand["FAN"], arrivedCommand["FAN"]);
-    baseCommand["WATER"] = diffb(baseCommand["WATER"], arrivedCommand["WATER"]);
+    baseCommand[NODE::LIGHT] = diffb(baseCommand[NODE::LIGHT], arrivedCommand[NODE::LIGHT]);
+    baseCommand[NODE::FAN] = diffb(baseCommand[NODE::FAN], arrivedCommand[NODE::FAN]);
+    baseCommand[NODE::WATER] = diffb(baseCommand[NODE::WATER], arrivedCommand[NODE::WATER]);
   }
 }
 void State::loadDefaultState(){
   currentState.clear();
-  JsonObject CONFIG = currentState.createNestedObject("CONFIG");
-  CONFIG["SSID"]                = InitialConfiguration::SSID;
-  CONFIG["PASSWORD"]            = InitialConfiguration::PASSWORD;
-  CONFIG["MQTT_SERVER"]         = InitialConfiguration::MQTT_SERVER;
-  CONFIG["MQTT_PORT"]           = InitialConfiguration::MQTT_PORT;
-  CONFIG["MQTT_TOPIC_INBOUND"]  = InitialConfiguration::MQTT_TOPIC_INBOUND;
-  CONFIG["MQTT_TOPIC_OUTBOUND"] = InitialConfiguration::MQTT_TOPIC_OUTBOUND;
-  CONFIG["PERIOD"]              = InitialConfiguration::PERIOD;
-  JsonObject PIN = CONFIG.createNestedObject("PIN");
-  PIN["0"] = InitialConfiguration::PIN0;
-  PIN["1"] = InitialConfiguration::PIN1;
-  PIN["2"] = InitialConfiguration::PIN2;
-  PIN["3"] = InitialConfiguration::PIN3;
-  PIN["4"] = InitialConfiguration::PIN4;
-  PIN["5"] = InitialConfiguration::PIN5;
-  PIN["6"] = InitialConfiguration::PIN6;
-  PIN["7"] = InitialConfiguration::PIN7;
-  PIN["8"] = InitialConfiguration::PIN8;
+  JsonObject CONFIG = currentState.createNestedObject(NODE::CONFIG);
+  CONFIG[NODE::SSID]                = InitialConfiguration::SSID;
+  CONFIG[NODE::PASSWORD]            = InitialConfiguration::PASSWORD;
+  CONFIG[NODE::MQTT_SERVER]         = InitialConfiguration::MQTT_SERVER;
+  CONFIG[NODE::MQTT_PORT]           = InitialConfiguration::MQTT_PORT;
+  CONFIG[NODE::MQTT_TOPIC_INBOUND]  = InitialConfiguration::MQTT_TOPIC_INBOUND;
+  CONFIG[NODE::MQTT_TOPIC_OUTBOUND] = InitialConfiguration::MQTT_TOPIC_OUTBOUND;
+  CONFIG[NODE::SENSOR_COLLECT_DATA_PERIOD] = InitialConfiguration::SENSOR_COLLECT_DATA_PERIOD;
+  CONFIG[NODE::RETRY_WIFI_CONN_DELAY] = InitialConfiguration::RETRY_WIFI_CONN_DELAY;
+  CONFIG[NODE::SERIAL_BAUDRATE] = InitialConfiguration::SERIAL_BAUDRATE;
+  CONFIG[NODE::OTA_PORT] = InitialConfiguration::OTA_PORT;
 
-  JsonObject COMMAND = currentState.createNestedObject("COMMAND");
-  COMMAND["LIGHT"] = false;
-  COMMAND["FAN"] = false;
-  COMMAND["WATER"] = false;
+  JsonObject PIN = CONFIG.createNestedObject(NODE::PIN);
+  PIN[NODE::PIN0] = InitialConfiguration::PIN0;
+  PIN[NODE::PIN1] = InitialConfiguration::PIN1;
+  PIN[NODE::PIN2] = InitialConfiguration::PIN2;
+  PIN[NODE::PIN3] = InitialConfiguration::PIN3;
+  PIN[NODE::PIN4] = InitialConfiguration::PIN4;
+  PIN[NODE::PIN5] = InitialConfiguration::PIN5;
+  PIN[NODE::PIN6] = InitialConfiguration::PIN6;
+  PIN[NODE::PIN7] = InitialConfiguration::PIN7;
+  PIN[NODE::PIN8] = InitialConfiguration::PIN8;
+
+  JsonObject COMMAND = currentState.createNestedObject(NODE::COMMAND);
+  COMMAND[NODE::LIGHT] = false;
+  COMMAND[NODE::FAN] = false;
+  COMMAND[NODE::WATER] = false;
 
   Serial.println("[STATE] creating default file");
   saveDefaultState(currentState);
@@ -155,9 +206,6 @@ void State::saveState(JsonDocument& newState) {
 
 // Load state from a file
 void State::loadState() {
-  #ifdef DEBUG_ESP_OASIS
-  printFileSystemDetails();
-  #endif // ifdef DEBUG_ESP_OASIS
 
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Loading existing file");
@@ -177,13 +225,10 @@ void State::loadState() {
     loadDefaultState();
   }
 
-  #ifdef DEBUG_ESP_OASIS
-  serializeJsonPretty(currentState, Serial);
-  Serial.println("\n");
-  #endif // ifdef DEBUG_ESP_OASIS
+
 }
 
-void State::printFileSystemDetails(){
+void State::print(){
      FSInfo info;
      SPIFFS.info(info);
      Serial.printf("[STATE] Total Bytes: %u\r\n",     info.totalBytes);
@@ -192,4 +237,16 @@ void State::printFileSystemDetails(){
      Serial.printf("[STATE] Page Size: %u\r\n",       info.pageSize);
      Serial.printf("[STATE] Max Open Files: %u\r\n",  info.maxOpenFiles);
      Serial.printf("[STATE] Max Path Length: %u\r\n", info.maxPathLength);
+
+     serializeJsonPretty(currentState, Serial);
+     Serial.println("\n");
+}
+
+void State::remove(){
+  if (SPIFFS.exists(STATE_FILE)) {
+    Serial.println("[STATE] Removing file");
+    SPIFFS.remove(STATE_FILE);
+  }else{
+    Serial.println("[STATE] file do not exists");
+  }
 }

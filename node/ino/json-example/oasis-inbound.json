@@ -7,7 +7,10 @@
     "MQTT_PORT": 1883,
     "MQTT_TOPIC_INBOUND": "/oasis-inbound",
     "MQTT_TOPIC_OUTBOUND": "/oasis-outbound",
-    "PERIOD": 300,
+    "SENSOR_COLLECT_DATA_PERIOD": 300,
+    "RETRY_WIFI_CONN_DELAY": 5000,
+    "SERIAL_BAUDRATE": 115200,
+    "OTA_PORT": 8266,
     "PIN":{
       "0": "IDLE",
       "1": "WATER",

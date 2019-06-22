@@ -2,12 +2,11 @@
 #define State_h
 #include <Arduino.h>
 #include <ArduinoJson.h>
+
 using namespace std;
 
 //comment the line below to disable debug mode
 #define DEBUG_ESP_OASIS
-
-// State that we'll store on disk
 #define STATE_FILE "/state.json"
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
@@ -21,18 +20,26 @@ private:
   void mergeState(JsonDocument& arrived);
   void saveDefaultState(JsonDocument& state);
   void loadDefaultState();
-  void printFileSystemDetails();
+
 public:
   State();
+  //get configuration
+  const char * getMqttServer();
+  int getMqttPort();
+  int getSensorCollectDataPeriod();
+  int getWifiRetryConnectionDelay();
+  int getSerialBaudRate();
+  int getOtaPort();
+  const char * getMqttInboundTopic();
+  const char * getMqttOutboundTopic();
+  const char * getSsid();
+  const char * getPassword();
+
+  //procedures
   void loadState();
   void saveState(JsonDocument& newState);
-  const char * getMqttServer(){return currentState["CONFIG"]["MQTT_SERVER"];/*.as<char *>();*/}
-  int getMqttPort(){return currentState["CONFIG"]["MQTT_PORT"].as<int>();}
 
-  const char * getMqttInboundTopic(){return currentState["CONFIG"]["MQTT_TOPIC_INBOUND"];};
-  const char * getMqttOutboundTopic(){return currentState["CONFIG"]["MQTT_TOPIC_OUTBOUND"];};
-  const char * getSsid(){return currentState["CONFIG"]["SSID"];/*.as<char *>();*/}
-  const char * getPassword(){return currentState["CONFIG"]["PASSWORD"];/*.as<char *>();*/}
-
+  void remove();
+  void print();
 };
 #endif

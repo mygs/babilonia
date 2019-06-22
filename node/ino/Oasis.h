@@ -9,11 +9,6 @@
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
 #define HOSTNAME_SIZE 15
-#define SENSOR_COLLECT_DATA_PERIOD 180 //seconds
-#define RETRY_CONNECTION_DELAY 5000 // ms
-#define SERIAL_BAUDRATE 115200
-#define OTA_PORT 8266
-
 
 // ***** functions *****
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
