@@ -6,12 +6,12 @@
 
 //comment the line below to disable debug mode
 #define DEBUG_ESP_OASIS
-
+#define CMD_LENGTH 5
 class Command {
 private:
   static const char * ACTION[];
 public:
   Command();
-  void execute(State& state, JsonObject& command);
+  void execute(State& state, JsonObject& cmd);
 };
 #endif
