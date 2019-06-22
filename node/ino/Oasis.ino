@@ -51,7 +51,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     JsonObject COMMAND = data["COMMAND"];
     if(!CONFIG.isNull() || !COMMAND.isNull()){
       saveState(STATE, data);
-      command(STATE, COMMAND);
+      Command::execute(STATE, COMMAND);
     }
     JsonArray STATUS = data["STATUS"];
     if(!STATUS.isNull()){
