@@ -1,7 +1,7 @@
 #ifndef Sensor_h
 #define Sensor_h
 enum sensor {
-  SOIL = "soil",
-  DHT = "dht"
+  SOIL = "SOIL",
+  DHT = "DHT"
 };
 #endif

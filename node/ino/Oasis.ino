@@ -4,8 +4,9 @@
 #include <ArduinoOTA.h>
 #include <Ticker.h>
 #include <PubSubClient.h>
-#include <Oasis.h>
+#include "Oasis.h"
 #include "State.h"
+#include "Command.h"
 
 WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
@@ -16,24 +17,24 @@ StaticJsonDocument<JSON_MEMORY_SIZE> STATE;
 // Memory pool for JSON object tree.
 // Because it doesn’t call malloc() and free(),
 // StaticJsonDocument is slightly faster than DynamicJsonDocument
-StaticJsonDocument<JSON_MEMORY_SIZE> jsonDoc;
+StaticJsonDocument<JSON_MEMORY_SIZE> data;
 
 Ticker sensors;
 
 void postResponse() {
-  jsonDoc.clear();
-  jsonDoc["node"] = HOSTNAME;
-  JsonArray resp = jsonDoc.createNestedArray("resp");
+  data.clear();
+  data["node"] = HOSTNAME;
+  JsonArray resp = data.createNestedArray("resp");
   resp.add("cfg");
 
   // Produce a minified JSON document
-  int plength = measureJson(jsonDoc);
-  serializeJson(jsonDoc, payload, JSON_MEMORY_SIZE);
+  int plength = measureJson(data);
+  serializeJson(data, payload, JSON_MEMORY_SIZE);
   mqtt.publish(STATE["CONFIG"]["MQTT_TOPIC_OUTBOUND"], payload, plength);
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
-  DeserializationError error = deserializeJson(jsonDoc, (char *)payload, length);
+  DeserializationError error = deserializeJson(data, (char *)payload, length);
 
   if (error) {
     #ifdef DEBUG_ESP_OASIS
@@ -43,20 +44,21 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   } else {
     #ifdef DEBUG_ESP_OASIS
     Serial.print("\n[MQTT] Message arrived ID[");
-    const char* ID = jsonDoc["ID"];
+    const char* ID = data["ID"];
     Serial.print(ID);
     Serial.println("]");
-    JsonObject CONFIG = jsonDoc["CONFIG"];
-    JsonObject COMMAND = jsonDoc["COMMAND"];
+    JsonObject CONFIG = data["CONFIG"];
+    JsonObject COMMAND = data["COMMAND"];
     if(!CONFIG.isNull() || !COMMAND.isNull()){
-      saveState(STATE, jsonDoc);
+      saveState(STATE, data);
+      command(STATE, COMMAND);
     }
-    JsonArray STATUS = jsonDoc["STATUS"];
+    JsonArray STATUS = data["STATUS"];
     if(!STATUS.isNull()){
       Serial.println("TEM STATUS");
 
     }
-    //serializeJsonPretty(jsonDoc, Serial);
+    //serializeJsonPretty(data, Serial);
     #endif // ifdef DEBUG_ESP_OASIS
     postResponse();
   }

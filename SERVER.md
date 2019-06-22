@@ -43,7 +43,7 @@ espmake flash
 ```
 Then, OTA
 ```bash
-espmake ota ESP_ADDR=192.168.2.60
+espmake ota ESP_ADDR=192.168.2.220
 ```
 
 ### mqtt commands

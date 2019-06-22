@@ -164,7 +164,6 @@ void loadState(JsonDocument& state) {
       return;
   }
 
-
   #ifdef DEBUG_ESP_OASIS
    FSInfo info;
    SPIFFS.info(info);
