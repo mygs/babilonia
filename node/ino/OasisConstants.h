@@ -8,47 +8,47 @@
 
 namespace NODE {
 
-  const char* CONFIG      = "CONFIG";
-  const char* SSID        = "SSID";
-  const char* PASSWORD    = "PASSWORD";
-  const char* MQTT_SERVER = "MQTT_SERVER";
-  const char* MQTT_PORT   = "MQTT_PORT";
-  const char* MQTT_TOPIC_INBOUND = "MQTT_TOPIC_INBOUND";
-  const char* MQTT_TOPIC_OUTBOUND = "MQTT_TOPIC_OUTBOUND";
-  const char* SENSOR_COLLECT_DATA_PERIOD = "SENSOR_COLLECT_DATA_PERIOD";
+  extern const char* CONFIG;
+  extern const char* SSID;
+  extern const char* PASSWORD;
+  extern const char* MQTT_SERVER;
+  extern const char* MQTT_PORT;
+  extern const char* MQTT_TOPIC_INBOUND;
+  extern const char* MQTT_TOPIC_OUTBOUND;
+  extern const char* SENSOR_COLLECT_DATA_PERIOD;
 
-  const char* RETRY_WIFI_CONN_DELAY = "RETRY_WIFI_CONN_DELAY";
-  const char* SERIAL_BAUDRATE = "SERIAL_BAUDRATE";
-  const char* OTA_PORT = "OTA_PORT";
+  extern const char* RETRY_WIFI_CONN_DELAY;
+  extern const char* SERIAL_BAUDRATE;
+  extern const char* OTA_PORT;
 
-  const char* PIN  = "PIN";
-  const char* PIN0 = "0";
-  const char* PIN1 = "1";
-  const char* PIN2 = "2";
-  const char* PIN3 = "3";
-  const char* PIN4 = "4";
-  const char* PIN5 = "5";
-  const char* PIN6 = "6";
-  const char* PIN7 = "7";
-  const char* PIN8 = "8";
+  extern const char* PIN;
+  extern const char* PIN0;
+  extern const char* PIN1;
+  extern const char* PIN2;
+  extern const char* PIN3;
+  extern const char* PIN4;
+  extern const char* PIN5;
+  extern const char* PIN6;
+  extern const char* PIN7;
+  extern const char* PIN8;
 
-  const char* COMMAND = "COMMAND";
-  const char* FAN     = "FAN";
-  const char* WATER   = "WATER";
-  const char* LIGHT   = "LIGHT";
-  const char* REBOOT  = "REBOOT";
-  const char* RESET   = "RESET";
+  extern const char* COMMAND;
+  extern const char* FAN;
+  extern const char* WATER;
+  extern const char* LIGHT;
+  extern const char* REBOOT;
+  extern const char* RESET;
 
 
-  const char* STATUS  = "STATUS";
-  const char* DHT     = "DHT";
-  const char* SOIL1   = "SOIL.1";
-  const char* SOIL2   = "SOIL.2";
-  const char* SOIL3   = "SOIL.3";
-  const char* SOIL4   = "SOIL.4";
-  const char* SOILX   = "SOIL.X";
+  extern const char* STATUS;
+  extern const char* DHT;
+  extern const char* SOIL1;
+  extern const char* SOIL2;
+  extern const char* SOIL3;
+  extern const char* SOIL4;
+  extern const char* SOILX;
 
-  const char* IDLE    = "IDLE";
+  extern const char* IDLE;
 
 }
 #endif
