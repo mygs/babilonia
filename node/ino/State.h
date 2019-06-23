@@ -34,8 +34,8 @@ public:
   const char * getPassword();
 
   //procedures
-  void loadState();
-  void saveState(JsonDocument& newState);
+  void load();
+  void save(JsonDocument& newState);
 
   void remove();
   void print();

@@ -49,15 +49,15 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
 
     JsonObject config = data[NODE::CONFIG];
     if(!config.isNull()){
-      state.saveState(data);
+      state.save(data);
     }
 
     JsonObject cmd = data[NODE::COMMAND];
     if(!cmd.isNull()){
-      state.saveState(data);
+      state.save(data);
       command.execute(state, cmd);
     }
-    
+
     JsonArray status = data[NODE::STATUS];
     if(!status.isNull()){
       Serial.println("TEM STATUS");
@@ -87,7 +87,7 @@ void setupWifi() {
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
   //state.remove();
-  state.loadState();
+  state.load();
 
   Serial.begin(state.getSerialBaudRate());
   while (!Serial) continue;

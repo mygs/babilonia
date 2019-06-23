@@ -183,7 +183,7 @@ void State::saveDefaultState(JsonDocument& state) {
 }
 
 // Save State to a file
-void State::saveState(JsonDocument& newState) {
+void State::save(JsonDocument& newState) {
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Removing existing file");
     SPIFFS.remove(STATE_FILE);
@@ -205,7 +205,7 @@ void State::saveState(JsonDocument& newState) {
 }
 
 // Load state from a file
-void State::loadState() {
+void State::load() {
 
   if (SPIFFS.exists(STATE_FILE)) {
     Serial.println("[STATE] Loading existing file");
