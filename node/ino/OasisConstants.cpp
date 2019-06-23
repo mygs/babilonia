@@ -37,6 +37,8 @@ namespace NODE {
 
   extern const char* STATUS  = "STATUS";
   extern const char* DHT     = "DHT";
+  extern const char* NODE    = "NODE";
+  extern const char* SOIL    = "SOIL";
   extern const char* SOIL1   = "SOIL.1";
   extern const char* SOIL2   = "SOIL.2";
   extern const char* SOIL3   = "SOIL.3";

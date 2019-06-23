@@ -46,6 +46,8 @@ namespace NODE {
 
   extern const char* STATUS;
   extern const char* DHT;
+  extern const char* NODE;
+  extern const char* SOIL;
   extern const char* SOIL1;
   extern const char* SOIL2;
   extern const char* SOIL3;
