@@ -5,8 +5,6 @@
 
 using namespace std;
 
-//comment the line below to disable debug mode
-#define DEBUG_ESP_OASIS
 #define STATE_FILE "/state.json"
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
@@ -41,5 +39,7 @@ public:
 
   void remove();
   void print();
+
+  void getPin(int pin[], const char* ACTION[], int length);
 };
 #endif

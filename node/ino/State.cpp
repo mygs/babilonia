@@ -250,3 +250,16 @@ void State::remove(){
     Serial.println("[STATE] file do not exists");
   }
 }
+
+void State::getPin(int pin[], const char* ACTION[], int length){
+  JsonObject currentPIN = currentState[NODE::CONFIG][NODE::PIN];
+  char buffer [1];
+  for(int i = 0 ; i < length ; i++){
+    pin[i] = -1;
+    for(int j = 0 ; j <= PIN_SIZE ; j++ ){
+      if(currentPIN[itoa(j, buffer, 10)] == ACTION[i]){
+        pin[i] = j;
+      }
+    }
+  }
+}

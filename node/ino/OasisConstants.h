@@ -6,6 +6,9 @@
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
 
+#define PIN_SIZE 9
+
+
 namespace NODE {
   extern const char* ID;
 

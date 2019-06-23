@@ -9,7 +9,9 @@
 #define CMD_LENGTH 5
 class Command {
 private:
-  static const char * ACTION[];
+  static const char * ACTION[CMD_LENGTH];
+  int PIN[CMD_LENGTH];
+  void updatePorts(State& state);
 public:
   Command();
   void execute(State& state, JsonObject& cmd);
