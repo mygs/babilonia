@@ -12,6 +12,7 @@ private:
   static const char * ACTION[CMD_LENGTH];
   int PIN[CMD_LENGTH];
   void updatePorts(State& state);
+  void logAction(int idx, const char* action, int pin, bool value);
 public:
   Command();
   void execute(State& state, JsonObject& cmd);

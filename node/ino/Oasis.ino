@@ -46,16 +46,21 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     const char* ID = data[NODE::ID];
     Serial.print(ID);
     Serial.println("]");
+
     JsonObject config = data[NODE::CONFIG];
+    if(!config.isNull()){
+      state.saveState(data);
+    }
+
     JsonObject cmd = data[NODE::COMMAND];
-    if(!config.isNull() || !cmd.isNull()){
+    if(!cmd.isNull()){
       state.saveState(data);
       command.execute(state, cmd);
     }
+    
     JsonArray status = data[NODE::STATUS];
     if(!status.isNull()){
       Serial.println("TEM STATUS");
-
     }
     //serializeJsonPretty(data, Serial);
     #endif // ifdef DEBUG_ESP_OASIS
