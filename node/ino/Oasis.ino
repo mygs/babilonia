@@ -6,6 +6,7 @@
 #include <PubSubClient.h>
 #include "Oasis.h"
 #include "State.h"
+#include "Status.h"
 #include "Command.h"
 #include "OasisConstants.h"
 
@@ -18,6 +19,7 @@ StaticJsonDocument<JSON_MEMORY_SIZE> data;
 
 Ticker sensors;
 State state;
+Status status;
 Command command;
 
 void postResponse() {
@@ -46,6 +48,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     const char* ID = data[NODE::ID];
     Serial.print(ID);
     Serial.println("]");
+    #endif // ifdef DEBUG_ESP_OASIS
 
     JsonObject config = data[NODE::CONFIG];
     if(!config.isNull()){
@@ -58,12 +61,10 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
       command.execute(state, cmd);
     }
 
-    JsonArray status = data[NODE::STATUS];
-    if(!status.isNull()){
-      Serial.println("TEM STATUS");
+    JsonArray stat = data[NODE::STATUS];
+    if(!stat.isNull()){
+      status.collect(state, stat);
     }
-    //serializeJsonPretty(data, Serial);
-    #endif // ifdef DEBUG_ESP_OASIS
     postResponse();
   }
 }
