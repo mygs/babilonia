@@ -34,6 +34,7 @@ namespace NODE {
   extern const char* REBOOT  = "REBOOT";
   extern const char* RESET   = "RESET";
 
+  extern const char* DATA = "DATA";
 
   extern const char* STATUS  = "STATUS";
   extern const char* DHT     = "DHT";
@@ -46,5 +47,10 @@ namespace NODE {
   extern const char* SOILX   = "SOIL.X";
 
   extern const char* IDLE    = "IDLE";
+
+  extern const char* FREEHEAP = "FREE_HEAP";
+  extern const char* FLASHID   = "FLASH_ID";
+  extern const char* FLASHSIZE = "FLASH_SIZE";
+
 
 }

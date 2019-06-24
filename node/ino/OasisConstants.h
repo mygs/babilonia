@@ -43,6 +43,7 @@ namespace NODE {
   extern const char* REBOOT;
   extern const char* RESET;
 
+  extern const char* DATA;
 
   extern const char* STATUS;
   extern const char* DHT;
@@ -56,5 +57,8 @@ namespace NODE {
 
   extern const char* IDLE;
 
+  extern const char* FREEHEAP;
+  extern const char* FLASHID;
+  extern const char* FLASHSIZE;
 }
 #endif

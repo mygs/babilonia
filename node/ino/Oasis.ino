@@ -15,7 +15,8 @@ PubSubClient mqtt(wifiClient);
 char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
 
-StaticJsonDocument<JSON_MEMORY_SIZE> data;
+StaticJsonDocument<JSON_MEMORY_SIZE> inboundData;
+StaticJsonDocument<JSON_MEMORY_SIZE> outboundData;
 
 Ticker sensors;
 State state;
@@ -23,20 +24,16 @@ Status status;
 Command command;
 
 void postResponse() {
-  data.clear();
-  data["node"] = HOSTNAME;
-  JsonArray resp = data.createNestedArray("resp");
-  resp.add("cfg");
-
+  outboundData[NODE::ID] = HOSTNAME;
   // Produce a minified JSON document
-  int plength = measureJson(data);
-  serializeJson(data, payload, JSON_MEMORY_SIZE);
+  int plength = measureJson(outboundData);
+  serializeJson(outboundData, payload, JSON_MEMORY_SIZE);
   mqtt.publish(state.getMqttOutboundTopic(), payload, plength);
 }
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
-  DeserializationError error = deserializeJson(data, (char *)payload, length);
-
+  outboundData.clear();
+  DeserializationError error = deserializeJson(inboundData, (char *)payload, length);
   if (error) {
     #ifdef DEBUG_ESP_OASIS
     Serial.print("\n\n[JSON] Deserialize failed with code ");
@@ -45,28 +42,29 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   } else {
     #ifdef DEBUG_ESP_OASIS
     Serial.print("\n[MQTT] Message arrived ID[");
-    const char* ID = data[NODE::ID];
+    const char* ID = inboundData[NODE::ID];
     Serial.print(ID);
     Serial.println("]");
     #endif // ifdef DEBUG_ESP_OASIS
 
-    JsonObject config = data[NODE::CONFIG];
+    JsonObject config = inboundData[NODE::CONFIG];
     if(!config.isNull()){
-      state.save(data);
+      state.save(inboundData);
     }
 
-    JsonObject cmd = data[NODE::COMMAND];
+    JsonObject cmd = inboundData[NODE::COMMAND];
     if(!cmd.isNull()){
-      state.save(data);
+      state.save(inboundData);
       command.execute(state, cmd);
     }
 
-    JsonArray stat = data[NODE::STATUS];
+    JsonArray stat = inboundData[NODE::STATUS];
     if(!stat.isNull()){
-      status.collect(state, stat);
+      status.collect(state, stat, outboundData);
     }
     postResponse();
   }
+  inboundData.clear();
 }
 
 void setupWifi() {
