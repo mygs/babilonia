@@ -12,7 +12,6 @@
 namespace NODE {
   extern const char* MESSAGE_ID;
   extern const char* NODE_ID;
-
   extern const char* CONFIG;
   extern const char* SSID;
   extern const char* PASSWORD;
@@ -20,12 +19,11 @@ namespace NODE {
   extern const char* MQTT_PORT;
   extern const char* MQTT_TOPIC_INBOUND;
   extern const char* MQTT_TOPIC_OUTBOUND;
+  extern const char* HEARTBEAT_PERIOD;
   extern const char* SENSOR_COLLECT_DATA_PERIOD;
-
   extern const char* RETRY_WIFI_CONN_DELAY;
   extern const char* SERIAL_BAUDRATE;
   extern const char* OTA_PORT;
-
   extern const char* PIN;
   extern const char* PIN0;
   extern const char* PIN1;
@@ -36,16 +34,13 @@ namespace NODE {
   extern const char* PIN6;
   extern const char* PIN7;
   extern const char* PIN8;
-
   extern const char* COMMAND;
   extern const char* FAN;
   extern const char* WATER;
   extern const char* LIGHT;
   extern const char* REBOOT;
   extern const char* RESET;
-
   extern const char* DATA;
-
   extern const char* STATUS;
   extern const char* DHT;
   extern const char* NODE;
@@ -55,9 +50,7 @@ namespace NODE {
   extern const char* SOIL3;
   extern const char* SOIL4;
   extern const char* SOILX;
-
   extern const char* IDLE;
-
   extern const char* FREEHEAP;
   extern const char* FLASHID;
   extern const char* FLASHSIZE;

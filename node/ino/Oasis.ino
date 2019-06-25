@@ -18,7 +18,9 @@ char HOSTNAME[HOSTNAME_SIZE];
 StaticJsonDocument<JSON_MEMORY_SIZE> inboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> outboundData;
 
-Ticker sensors;
+Ticker sensorsTicker;
+Ticker heartBeatTicker;
+
 State state;
 Status status;
 Command command;
@@ -54,8 +56,10 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
 
     JsonObject cmd = inboundData[NODE::COMMAND];
     if(!cmd.isNull()){
-      state.save(inboundData);
       command.execute(state, cmd);
+      if (cmd[NODE::RESET].isNull()){
+        state.save(inboundData);
+      }
     }
 
     JsonArray stat = inboundData[NODE::STATUS];
@@ -137,7 +141,7 @@ void setup() {
   Serial.println("[OASIS] Setup Completed");
  #endif // ifdef DEBUG_ESP_OASIS
 
-  sensors.attach(state.getSensorCollectDataPeriod(), collectSensorData);
+  heartBeatTicker.attach(state.getHeartBeatPeriod(), heartBeat);
 }
 
 void mqttReconnect() {
@@ -159,8 +163,10 @@ void mqttReconnect() {
   }
 }
 
-void collectSensorData() {
-  mqtt.publish(state.getMqttOutboundTopic(), "XYZW");
+void heartBeat() {
+  char message[HEARTBEAT_MESSAGE_SIZE];
+  sprintf(message, "{\"%s\": \"oasis-%06x\"}",NODE::NODE_ID,ESP.getChipId());
+  mqtt.publish(state.getMqttOutboundTopic(), message);
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */

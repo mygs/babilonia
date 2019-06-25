@@ -13,6 +13,10 @@ const char * State::getMqttServer(){
   return currentState[NODE::CONFIG][NODE::MQTT_SERVER];
 }
 
+int State::getHeartBeatPeriod(){
+  return currentState[NODE::CONFIG][NODE::HEARTBEAT_PERIOD].as<int>();
+}
+
 int State::getSensorCollectDataPeriod(){
   return currentState[NODE::CONFIG][NODE::SENSOR_COLLECT_DATA_PERIOD].as<int>();
 }
@@ -96,6 +100,8 @@ void State::mergeState(JsonDocument& arrived) {
       diffs(baseConfig[NODE::MQTT_TOPIC_INBOUND],  arrivedConfig[NODE::MQTT_TOPIC_INBOUND]);
     baseConfig[NODE::MQTT_TOPIC_OUTBOUND] =
       diffs(baseConfig[NODE::MQTT_TOPIC_OUTBOUND], arrivedConfig[NODE::MQTT_TOPIC_OUTBOUND]);
+    baseConfig[NODE::HEARTBEAT_PERIOD] = diffi(currentState[NODE::HEARTBEAT_PERIOD],
+         arrivedConfig[NODE::HEARTBEAT_PERIOD]);
     baseConfig[NODE::SENSOR_COLLECT_DATA_PERIOD] = diffi(currentState[NODE::SENSOR_COLLECT_DATA_PERIOD],
        arrivedConfig[NODE::SENSOR_COLLECT_DATA_PERIOD]);
 
@@ -139,6 +145,7 @@ void State::loadDefaultState(){
   CONFIG[NODE::MQTT_PORT]           = InitialConfiguration::MQTT_PORT;
   CONFIG[NODE::MQTT_TOPIC_INBOUND]  = InitialConfiguration::MQTT_TOPIC_INBOUND;
   CONFIG[NODE::MQTT_TOPIC_OUTBOUND] = InitialConfiguration::MQTT_TOPIC_OUTBOUND;
+  CONFIG[NODE::HEARTBEAT_PERIOD]    = InitialConfiguration::HEARTBEAT_PERIOD;
   CONFIG[NODE::SENSOR_COLLECT_DATA_PERIOD] = InitialConfiguration::SENSOR_COLLECT_DATA_PERIOD;
   CONFIG[NODE::RETRY_WIFI_CONN_DELAY] = InitialConfiguration::RETRY_WIFI_CONN_DELAY;
   CONFIG[NODE::SERIAL_BAUDRATE] = InitialConfiguration::SERIAL_BAUDRATE;

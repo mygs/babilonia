@@ -24,6 +24,7 @@ public:
   //get configuration
   const char * getMqttServer();
   int getMqttPort();
+  int getHeartBeatPeriod();
   int getSensorCollectDataPeriod();
   int getWifiRetryConnectionDelay();
   int getSerialBaudRate();
