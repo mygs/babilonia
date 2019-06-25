@@ -1,8 +1,10 @@
 #include "OasisConstants.h"
 
 namespace NODE {
-  extern const char* MESSAGE_ID      = "MESSAGE_ID";
-  extern const char* NODE_ID      = "NODE_ID";
+  extern const char* MESSAGE_ID  = "MESSAGE_ID";
+  extern const char* NODE_ID     = "NODE_ID";
+  extern const char* ALL         = "ALL";
+  extern const char* ERROR       = "ERROR";
   extern const char* CONFIG      = "CONFIG";
   extern const char* SSID        = "SSID";
   extern const char* PASSWORD    = "PASSWORD";

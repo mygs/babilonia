@@ -26,7 +26,6 @@ Status status;
 Command command;
 
 void postResponse() {
-  outboundData[NODE::NODE_ID] = HOSTNAME;
   // Produce a minified JSON document
   int plength = measureJson(outboundData);
   serializeJson(outboundData, payload, JSON_MEMORY_SIZE);
@@ -35,40 +34,45 @@ void postResponse() {
 
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   outboundData.clear();
+  outboundData[NODE::NODE_ID] = HOSTNAME;
   DeserializationError error = deserializeJson(inboundData, (char *)payload, length);
   if (error) {
-    #ifdef DEBUG_ESP_OASIS
-    Serial.print("\n\n[JSON] Deserialize failed with code ");
-    Serial.println(error.c_str());
-    #endif // ifdef DEBUG_ESP_OASIS
+    char error_message[64];
+    sprintf(error_message, "JSON deserialize failed with code %s",error.c_str());
+    outboundData[NODE::ERROR] = error_message;
+    Serial.println(error_message);
+    postResponse();
+    inboundData.clear();
   } else {
-    #ifdef DEBUG_ESP_OASIS
-    Serial.print("\n[MQTT] Message arrived ID[");
-    const char* MSG_ID = inboundData[NODE::MESSAGE_ID];
-    Serial.print(MSG_ID);
-    Serial.println("]");
-    #endif // ifdef DEBUG_ESP_OASIS
+    if( strcmp(NODE::ALL, inboundData[NODE::NODE_ID]) == 0 ||
+        strcmp(HOSTNAME , inboundData[NODE::NODE_ID]) == 0){
+      outboundData[NODE::MESSAGE_ID] = inboundData[NODE::MESSAGE_ID];
+      Serial.print("\n[MQTT] Message arrived ID[");
+      const char* MSG_ID = inboundData[NODE::MESSAGE_ID];
+      Serial.print(MSG_ID);
+      Serial.println("]");
 
-    JsonObject config = inboundData[NODE::CONFIG];
-    if(!config.isNull()){
-      state.save(inboundData);
-    }
-
-    JsonObject cmd = inboundData[NODE::COMMAND];
-    if(!cmd.isNull()){
-      command.execute(state, cmd);
-      if (cmd[NODE::RESET].isNull()){
+      JsonObject config = inboundData[NODE::CONFIG];
+      if(!config.isNull()){
         state.save(inboundData);
       }
-    }
 
-    JsonArray stat = inboundData[NODE::STATUS];
-    if(!stat.isNull()){
-      status.collect(state, stat, outboundData);
+      JsonObject cmd = inboundData[NODE::COMMAND];
+      if(!cmd.isNull()){
+        command.execute(state, cmd);
+        if (cmd[NODE::RESET].isNull()){
+          state.save(inboundData);
+        }
+      }
+
+      JsonArray stat = inboundData[NODE::STATUS];
+      if(!stat.isNull()){
+        status.collect(state, stat, outboundData);
+      }
+      postResponse();
+      inboundData.clear();
     }
   }
-  postResponse();
-  inboundData.clear();
 }
 
 void setupWifi() {
@@ -141,6 +145,7 @@ void setup() {
   Serial.println("[OASIS] Setup Completed");
  #endif // ifdef DEBUG_ESP_OASIS
 
+  heartBeat(); // Oasis is up and running, notify it
   heartBeatTicker.attach(state.getHeartBeatPeriod(), heartBeat);
 }
 
