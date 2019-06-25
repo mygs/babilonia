@@ -32,6 +32,7 @@ public:
   const char * getMqttOutboundTopic();
   const char * getSsid();
   const char * getPassword();
+  JsonObject getPinSetup();
 
   //procedures
   void load();
@@ -39,7 +40,6 @@ public:
 
   void remove();
   void print();
-
   void getPin(int pin[], const char* ACTION[], int length);
 };
 #endif

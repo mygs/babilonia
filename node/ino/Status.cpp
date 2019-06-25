@@ -52,7 +52,6 @@ void Status::collectNodeData(State& state, JsonObject& data){
   data[NODE::FLASHID] = ESP.getFlashChipId();
   data[NODE::FLASHSIZE] = ESP.getFlashChipSize();
   data[NODE::SSID] = state.getSsid();
-  //data[NODE::PASSWORD] = state.getPassword();
   data[NODE::MQTT_SERVER] = state.getMqttServer();
   data[NODE::MQTT_PORT] = state.getMqttPort();
   data[NODE::MQTT_TOPIC_INBOUND] = state.getMqttInboundTopic();
@@ -61,18 +60,5 @@ void Status::collectNodeData(State& state, JsonObject& data){
   data[NODE::RETRY_WIFI_CONN_DELAY] = state.getWifiRetryConnectionDelay();
   data[NODE::SERIAL_BAUDRATE] = state.getSerialBaudRate();
   data[NODE::OTA_PORT] = state.getOtaPort();
-  /*
-  JsonObject statePIN    = state[NODE::PIN];
-  JsonObject dataPIN = data.createNestedObject(NODE::PIN);
-
-  dataPIN[NODE::PIN0] = statePIN[NODE::PIN0];
-  dataPIN[NODE::PIN1] = statePIN[NODE::PIN1];
-  dataPIN[NODE::PIN2] = statePIN[NODE::PIN2];
-  dataPIN[NODE::PIN3] = statePIN[NODE::PIN3];
-  dataPIN[NODE::PIN4] = statePIN[NODE::PIN4];
-  dataPIN[NODE::PIN5] = statePIN[NODE::PIN5];
-  dataPIN[NODE::PIN6] = statePIN[NODE::PIN6];
-  dataPIN[NODE::PIN7] = statePIN[NODE::PIN7];
-  dataPIN[NODE::PIN8] = statePIN[NODE::PIN8];
-  */
+  data[NODE::PIN] = state.getPinSetup();
 }

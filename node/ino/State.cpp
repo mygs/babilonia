@@ -49,6 +49,10 @@ const char * State::getPassword(){
   return currentState[NODE::CONFIG][NODE::PASSWORD];
 }
 
+JsonObject State::getPinSetup(){
+  return currentState[NODE::CONFIG][NODE::PIN];
+}
+
 const char* State::diffs(JsonVariant _base, JsonVariant _arrived) {
   const char *arrived = _arrived.as<char *>();
   if ((arrived != NULL) && (arrived[0] != '\0')) {
