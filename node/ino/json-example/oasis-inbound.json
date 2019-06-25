@@ -1,5 +1,6 @@
 {
-  "ID": "a12dc89b",
+  "MESSAGE_ID": "a12dc89b",
+  "NODE_ID":"oasis-312193",
   "CONFIG": {
     "SSID": "babilonia",
     "PASSWORD": "secret",

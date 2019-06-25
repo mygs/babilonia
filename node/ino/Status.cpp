@@ -31,7 +31,6 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
   for(JsonVariant s : status) {
     const char* device = s.as<char *>();
     if(strcmp(device, NODE::NODE) == 0){
-      Serial.println("[STATUS] NODE !!!");
       collectNodeData(state, data);
     } else if(strcmp(device, NODE::LIGHT) == 0){
       Serial.println("[STATUS] LIGHT !!!");

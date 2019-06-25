@@ -1,5 +1,7 @@
 {
-	"ID": "a12dc89b",
+	"MESSAGE_ID": "a12dc89b",
+  "NODE_ID":"oasis-312193",
+	"ERROR":"some error message here",
 	"DATA": {
 		"NODE": {
 			"HOSTNAME": "oasis-311de9",

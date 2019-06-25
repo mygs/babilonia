@@ -10,7 +10,8 @@
 
 
 namespace NODE {
-  extern const char* ID;
+  extern const char* MESSAGE_ID;
+  extern const char* NODE_ID;
 
   extern const char* CONFIG;
   extern const char* SSID;

@@ -24,7 +24,7 @@ Status status;
 Command command;
 
 void postResponse() {
-  outboundData[NODE::ID] = HOSTNAME;
+  outboundData[NODE::NODE_ID] = HOSTNAME;
   // Produce a minified JSON document
   int plength = measureJson(outboundData);
   serializeJson(outboundData, payload, JSON_MEMORY_SIZE);
@@ -42,8 +42,8 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   } else {
     #ifdef DEBUG_ESP_OASIS
     Serial.print("\n[MQTT] Message arrived ID[");
-    const char* ID = inboundData[NODE::ID];
-    Serial.print(ID);
+    const char* MSG_ID = inboundData[NODE::MESSAGE_ID];
+    Serial.print(MSG_ID);
     Serial.println("]");
     #endif // ifdef DEBUG_ESP_OASIS
 
@@ -62,8 +62,8 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     if(!stat.isNull()){
       status.collect(state, stat, outboundData);
     }
-    postResponse();
   }
+  postResponse();
   inboundData.clear();
 }
 
