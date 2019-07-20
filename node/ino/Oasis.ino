@@ -175,9 +175,7 @@ void heartBeat() {
 
 void collectSensorData(){
   sensorsTickerData.clear();
-  JsonArray stats = sensorsTickerData.createNestedArray(NODE::STATUS);
-  stats.add();
-  status.collect(state, stats, outboundData);
+  status.collectForSensorTicket(state, sensorsTickerData);
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */

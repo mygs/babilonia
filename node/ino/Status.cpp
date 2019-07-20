@@ -27,7 +27,17 @@ void Status::logAction(int idx, const char* action, int pin, bool value){
 /* user only for sensor ticker procedures */
 void Status::collectForSensorTicket(State& state, JsonDocument& response){
   updatePorts(state);
-  collect(state,status,response);
+  // compute the required size
+  const size_t CAPACITY = JSON_ARRAY_SIZE(DEVICE_LENGTH);
+  // allocate the memory for the document
+  StaticJsonDocument<CAPACITY> doc;
+  // create an empty array
+  JsonArray devices = doc.to<JsonArray>();
+  // add values
+   for(int i = 0 ; i < DEVICE_LENGTH ; i++ ){
+     devices.add(DEVICE[i]);
+   }
+  collect(state,devices,response);
 }
 
 void Status::collect(State& state, JsonArray& status, JsonDocument& response){

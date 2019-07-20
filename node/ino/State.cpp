@@ -275,9 +275,10 @@ void State::getPin(int pin[], const char* DEVICE[], int length){
   char buffer [1];
   for(int i = 0 ; i < length ; i++){
     pin[i] = -1;
-    for(int j = 0 ; j <= PIN_SIZE ; j++ ){
+    for(int j = 0 ; j < PIN_SIZE ; j++ ){
       if(currentPIN[itoa(j, buffer, 10)] == DEVICE[i]){
         pin[i] = j;
+        break;
       }
     }
   }

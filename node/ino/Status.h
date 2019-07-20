@@ -16,5 +16,6 @@ public:
   Status();
   int devices(JsonArray& devices);
   void collect(State& state, JsonArray& status, JsonDocument& response);
+  void collectForSensorTicket(State& state, JsonDocument& response);
 };
 #endif
