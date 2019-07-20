@@ -235,8 +235,6 @@ void State::load() {
     Serial.println("[STATE] File not found, using default");
     loadDefaultState();
   }
-
-
 }
 
 void State::print(){
@@ -261,14 +259,24 @@ void State::remove(){
     Serial.println("[STATE] file do not exists");
   }
 }
-
-void State::getPin(int pin[], const char* ACTION[], int length){
+/*
+ * updates pin[] values based on currentState
+ * Ex:
+ *     DEVICE[6] = "DHT":
+ *        pin[6] = 4
+ *        digitalRead(pin[6]) ~ digitalRead(4)
+ *
+ *    ACTION[2] = "FAN":
+ *         pin[2] = 8
+ *         digitalWrite(pin[2], value) ~ digitalWrite(8, value)
+ */
+void State::getPin(int pin[], const char* DEVICE[], int length){
   JsonObject currentPIN = currentState[NODE::CONFIG][NODE::PIN];
   char buffer [1];
   for(int i = 0 ; i < length ; i++){
     pin[i] = -1;
     for(int j = 0 ; j <= PIN_SIZE ; j++ ){
-      if(currentPIN[itoa(j, buffer, 10)] == ACTION[i]){
+      if(currentPIN[itoa(j, buffer, 10)] == DEVICE[i]){
         pin[i] = j;
       }
     }

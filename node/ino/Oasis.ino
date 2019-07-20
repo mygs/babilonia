@@ -17,6 +17,7 @@ char HOSTNAME[HOSTNAME_SIZE];
 
 StaticJsonDocument<JSON_MEMORY_SIZE> inboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> outboundData;
+StaticJsonDocument<JSON_MEMORY_SIZE> sensorsTickerData;
 
 Ticker sensorsTicker;
 Ticker heartBeatTicker;
@@ -93,10 +94,11 @@ void setupWifi() {
 
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
-  //state.remove();
+
   state.load();
 
   Serial.begin(state.getSerialBaudRate());
+
   while (!Serial) continue;
 
   state.print();
@@ -104,9 +106,7 @@ void setup() {
   sprintf(HOSTNAME, "oasis-%06x", ESP.getChipId());
   Serial.print("\n\n\n[OASIS] Hostname: ");
   Serial.println(HOSTNAME);
-  #ifdef DEBUG_ESP_OASIS
   Serial.println("[OASIS] Starting Setup");
-  #endif // ifdef DEBUG_ESP_OASIS
 
   setupWifi();
 
@@ -141,12 +141,11 @@ void setup() {
                  state.getMqttPort());
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
- #ifdef DEBUG_ESP_OASIS
-  Serial.println("[OASIS] Setup Completed");
- #endif // ifdef DEBUG_ESP_OASIS
 
   heartBeat(); // Oasis is up and running, notify it
   heartBeatTicker.attach(state.getHeartBeatPeriod(), heartBeat);
+
+  Serial.println("[OASIS] Setup Completed");
 }
 
 void mqttReconnect() {
@@ -172,6 +171,13 @@ void heartBeat() {
   char message[HEARTBEAT_MESSAGE_SIZE];
   sprintf(message, "{\"%s\": \"oasis-%06x\"}",NODE::NODE_ID,ESP.getChipId());
   mqtt.publish(state.getMqttOutboundTopic(), message);
+}
+
+void collectSensorData(){
+  sensorsTickerData.clear();
+  JsonArray stats = sensorsTickerData.createNestedArray(NODE::STATUS);
+  stats.add();
+  status.collect(state, stats, outboundData);
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */

@@ -3,8 +3,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include "State.h"
-//comment the line below to disable debug mode
-#define DEBUG_ESP_OASIS
+
 #define DEVICE_LENGTH 10
 class Status {
 private:
@@ -15,6 +14,7 @@ private:
   void collectNodeData(State& state, JsonObject& data);
 public:
   Status();
+  int devices(JsonArray& devices);
   void collect(State& state, JsonArray& status, JsonDocument& response);
 };
 #endif

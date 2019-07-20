@@ -41,6 +41,6 @@ public:
 
   void remove();
   void print();
-  void getPin(int pin[], const char* ACTION[], int length);
+  void getPin(int pin[], const char* DEVICE[], int length);
 };
 #endif

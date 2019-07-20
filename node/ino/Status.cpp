@@ -3,16 +3,16 @@
 using namespace std;
 
 /* order matters here */
-const char * Status::DEVICE[DEVICE_LENGTH] = {  NODE::NODE,
-                                                NODE::SOILX,
-                                                NODE::SOIL1,
-                                                NODE::SOIL2,
-                                                NODE::SOIL3,
-                                                NODE::SOIL4,
-                                                NODE::DHT,
-                                                NODE::LIGHT,
-                                                NODE::FAN,
-                                                NODE::WATER};
+const char * Status::DEVICE[DEVICE_LENGTH] = {/*0*/    NODE::NODE,
+                                              /*1*/    NODE::SOILX,
+                                              /*2*/    NODE::SOIL1,
+                                              /*3*/    NODE::SOIL2,
+                                              /*4*/    NODE::SOIL3,
+                                              /*5*/    NODE::SOIL4,
+                                              /*6*/    NODE::DHT,
+                                              /*7*/    NODE::LIGHT,
+                                              /*8*/    NODE::FAN,
+                                              /*9*/    NODE::WATER};
 
 Status::Status(){
 }
@@ -23,6 +23,11 @@ void Status::updatePorts(State& state){
 
 void Status::logAction(int idx, const char* action, int pin, bool value){
 
+}
+/* user only for sensor ticker procedures */
+void Status::collectForSensorTicket(State& state, JsonDocument& response){
+  updatePorts(state);
+  collect(state,status,response);
 }
 
 void Status::collect(State& state, JsonArray& status, JsonDocument& response){

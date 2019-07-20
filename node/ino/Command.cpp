@@ -3,11 +3,11 @@
 using namespace std;
 
 /* order matters here */
-const char * Command::ACTION[CMD_LENGTH] = {  NODE::LIGHT,
-                                              NODE::WATER,
-                                              NODE::FAN,
-                                              NODE::REBOOT,
-                                              NODE::RESET};
+const char * Command::ACTION[CMD_LENGTH] = {/*0*/  NODE::LIGHT,
+                                            /*1*/  NODE::WATER,
+                                            /*2*/  NODE::FAN,
+                                            /*3*/  NODE::REBOOT,
+                                            /*4*/  NODE::RESET};
 
 Command::Command(){
 }
@@ -50,18 +50,18 @@ void Command::execute(State& state, JsonObject& cmd){
       bool value =  cmd[ACTION[i]].as<bool>();
       logAction(i, ACTION[i], PIN[i], value);
       switch (i) {
-        case 0:
-        case 1:
-        case 2:
+        case 0: //LIGHT
+        case 1: //WATER
+        case 2: //FAN ... all previous cases fall here
           pinMode(PIN[i], OUTPUT);
           digitalWrite(PIN[i], value);
           break;
-        case 3:
+        case 3: //REBOOT
           if(value){
             ESP.restart();
           }
           break;
-        case 4:
+        case 4: //RESET
           if(value){
             state.remove();
           }
