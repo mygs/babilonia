@@ -9,7 +9,7 @@
 
 // ***** functions *****
 void onMqttMessage(char* topic, byte* payload, unsigned int length);
-void postResponse();
+void postResponse(const JsonDocument& message);
 void mqttReconnect();
 void setupWifi();
 void setup();

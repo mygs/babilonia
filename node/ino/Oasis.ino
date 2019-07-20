@@ -26,10 +26,10 @@ State state;
 Status status;
 Command command;
 
-void postResponse() {
+void postResponse(const JsonDocument& message) {
   // Produce a minified JSON document
-  int plength = measureJson(outboundData);
-  serializeJson(outboundData, payload, JSON_MEMORY_SIZE);
+  int plength = measureJson(message);
+  serializeJson(message, payload, JSON_MEMORY_SIZE);
   mqtt.publish(state.getMqttOutboundTopic(), payload, plength);
 }
 
@@ -42,7 +42,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
     sprintf(error_message, "JSON deserialize failed with code %s",error.c_str());
     outboundData[NODE::ERROR] = error_message;
     Serial.println(error_message);
-    postResponse();
+    postResponse(outboundData);
     inboundData.clear();
   } else {
     if( strcmp(NODE::ALL, inboundData[NODE::NODE_ID]) == 0 ||
@@ -70,7 +70,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
       if(!stat.isNull()){
         status.collect(state, stat, outboundData);
       }
-      postResponse();
+      postResponse(outboundData);
       inboundData.clear();
     }
   }
@@ -99,7 +99,7 @@ void setup() {
 
   Serial.begin(state.getSerialBaudRate());
 
-  while (!Serial) continue;
+  //while (!Serial) continue;
 
   state.print();
 
@@ -145,6 +145,7 @@ void setup() {
   heartBeat(); // Oasis is up and running, notify it
   heartBeatTicker.attach(state.getHeartBeatPeriod(), heartBeat);
 
+  sensorsTicker.attach(state.getSensorCollectDataPeriod(), collectSensorData);
   Serial.println("[OASIS] Setup Completed");
 }
 
@@ -176,6 +177,7 @@ void heartBeat() {
 void collectSensorData(){
   sensorsTickerData.clear();
   status.collectForSensorTicket(state, sensorsTickerData);
+  postResponse(sensorsTickerData);
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */
