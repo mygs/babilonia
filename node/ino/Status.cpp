@@ -2,19 +2,18 @@
 #include "OasisConstants.h"
 using namespace std;
 
-/* order matters here */
-const char * Status::DEVICE[DEVICE_LENGTH] = {/*0*/    NODE::NODE,
-                                              /*1*/    NODE::SOILX,
-                                              /*2*/    NODE::SOIL1,
-                                              /*3*/    NODE::SOIL2,
-                                              /*4*/    NODE::SOIL3,
-                                              /*5*/    NODE::SOIL4,
-                                              /*6*/    NODE::DHT,
-                                              /*7*/    NODE::LIGHT,
-                                              /*8*/    NODE::FAN,
-                                              /*9*/    NODE::WATER};
-
 Status::Status(){
+  /* order matters here */
+  DEVICE[IDX_DEVICE_NODE]  = NODE::NODE;
+  DEVICE[IDX_DEVICE_SOILX] = NODE::SOILX;
+  DEVICE[IDX_DEVICE_SOIL1] = NODE::SOIL1;
+  DEVICE[IDX_DEVICE_SOIL2] = NODE::SOIL2;
+  DEVICE[IDX_DEVICE_SOIL3] = NODE::SOIL3;
+  DEVICE[IDX_DEVICE_SOIL4] = NODE::SOIL4;
+  DEVICE[IDX_DEVICE_DHT]   = NODE::DHT;
+  DEVICE[IDX_DEVICE_LIGHT] = NODE::LIGHT;
+  DEVICE[IDX_DEVICE_FAN]   = NODE::FAN;
+  DEVICE[IDX_DEVICE_WATER] = NODE::WATER;
 }
 
 void Status::updatePorts(State& state){
@@ -48,11 +47,11 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
     if(strcmp(device, NODE::NODE) == 0){
       collectNodeData(state, data);
     } else if(strcmp(device, NODE::LIGHT) == 0){
-      Serial.println("[STATUS] LIGHT !!!");
+      data[NODE::LIGHT] = digitalRead(PIN[IDX_DEVICE_LIGHT]);
     } else if(strcmp(device, NODE::FAN) == 0){
-      Serial.println("[STATUS] FAN !!!");
+      data[NODE::FAN] = digitalRead(PIN[IDX_DEVICE_FAN]);
     } else if(strcmp(device, NODE::WATER) == 0){
-      Serial.println("[STATUS] WATER !!!");
+      data[NODE::WATER] = digitalRead(PIN[IDX_DEVICE_WATER]);
     } else if(strcmp(device, NODE::DHT) == 0){
       Serial.println("[STATUS] DHT !!!");
     } else if(strcmp(device, NODE::SOIL) == 0){
@@ -62,17 +61,18 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
 }
 
 void Status::collectNodeData(State& state, JsonObject& data){
-  data[NODE::FREEHEAP] = ESP.getFreeHeap();
-  data[NODE::FLASHID] = ESP.getFlashChipId();
-  data[NODE::FLASHSIZE] = ESP.getFlashChipSize();
-  data[NODE::SSID] = state.getSsid();
-  data[NODE::MQTT_SERVER] = state.getMqttServer();
-  data[NODE::MQTT_PORT] = state.getMqttPort();
-  data[NODE::MQTT_TOPIC_INBOUND] = state.getMqttInboundTopic();
-  data[NODE::MQTT_TOPIC_OUTBOUND] = state.getMqttOutboundTopic();
-  data[NODE::SENSOR_COLLECT_DATA_PERIOD] = state.getSensorCollectDataPeriod();
-  data[NODE::RETRY_WIFI_CONN_DELAY] = state.getWifiRetryConnectionDelay();
-  data[NODE::SERIAL_BAUDRATE] = state.getSerialBaudRate();
-  data[NODE::OTA_PORT] = state.getOtaPort();
-  data[NODE::PIN] = state.getPinSetup();
+  JsonObject node = data.createNestedObject(NODE::NODE);
+  node[NODE::FREEHEAP] = ESP.getFreeHeap();
+  node[NODE::FLASHID] = ESP.getFlashChipId();
+  node[NODE::FLASHSIZE] = ESP.getFlashChipSize();
+  node[NODE::SSID] = state.getSsid();
+  node[NODE::MQTT_SERVER] = state.getMqttServer();
+  node[NODE::MQTT_PORT] = state.getMqttPort();
+  node[NODE::MQTT_TOPIC_INBOUND] = state.getMqttInboundTopic();
+  node[NODE::MQTT_TOPIC_OUTBOUND] = state.getMqttOutboundTopic();
+  node[NODE::SENSOR_COLLECT_DATA_PERIOD] = state.getSensorCollectDataPeriod();
+  node[NODE::RETRY_WIFI_CONN_DELAY] = state.getWifiRetryConnectionDelay();
+  node[NODE::SERIAL_BAUDRATE] = state.getSerialBaudRate();
+  node[NODE::OTA_PORT] = state.getOtaPort();
+  node[NODE::PIN] = state.getPinSetup();
 }

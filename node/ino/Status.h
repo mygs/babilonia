@@ -7,7 +7,7 @@
 #define DEVICE_LENGTH 10
 class Status {
 private:
-  static const char * DEVICE[DEVICE_LENGTH];
+  const char * DEVICE[DEVICE_LENGTH];
   int PIN[DEVICE_LENGTH];
   void updatePorts(State& state);
   void logAction(int idx, const char* action, int pin, bool value);

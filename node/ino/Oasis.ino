@@ -176,6 +176,7 @@ void heartBeat() {
 
 void collectSensorData(){
   sensorsTickerData.clear();
+  sensorsTickerData[NODE::NODE_ID] = HOSTNAME;
   status.collectForSensorTicket(state, sensorsTickerData);
   postResponse(sensorsTickerData);
 }

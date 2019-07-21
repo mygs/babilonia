@@ -8,6 +8,16 @@
 
 #define PIN_SIZE 9
 
+#define IDX_DEVICE_NODE   0
+#define IDX_DEVICE_SOILX  1
+#define IDX_DEVICE_SOIL1  2
+#define IDX_DEVICE_SOIL2  3
+#define IDX_DEVICE_SOIL3  4
+#define IDX_DEVICE_SOIL4  5
+#define IDX_DEVICE_DHT    6
+#define IDX_DEVICE_LIGHT  7
+#define IDX_DEVICE_FAN    8
+#define IDX_DEVICE_WATER  9
 
 namespace NODE {
   extern const char* MESSAGE_ID;
