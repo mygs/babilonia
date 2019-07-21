@@ -53,7 +53,7 @@ void Command::execute(State& state, JsonObject& cmd){
         case 0: //LIGHT
         case 1: //WATER
         case 2: //FAN ... all previous cases fall here
-          pinMode(PIN[i], OUTPUT);
+          pinMode(PIN[i], INPUT);
           digitalWrite(PIN[i], value);
           break;
         case 3: //REBOOT
