@@ -68,7 +68,7 @@ const char* State::diffs(JsonVariant _base, JsonVariant _arrived) {
 
 int State::diffi(JsonVariant _base, JsonVariant _arrived) {
   int arrived = _arrived.as<int>();
-  if (arrived >= 0) {
+  if (arrived > 0) {
     return arrived;
   } else {
     return _base.as<int>();
@@ -85,7 +85,6 @@ bool State::diffb(JsonVariant _base, JsonVariant _arrived) {
 
 // Merge state
 void State::mergeState(JsonDocument& arrived) {
-
   JsonObject arrivedConfig = arrived[NODE::CONFIG];
 
   if(!arrivedConfig.isNull()){
@@ -100,9 +99,9 @@ void State::mergeState(JsonDocument& arrived) {
       diffs(baseConfig[NODE::MQTT_TOPIC_INBOUND],  arrivedConfig[NODE::MQTT_TOPIC_INBOUND]);
     baseConfig[NODE::MQTT_TOPIC_OUTBOUND] =
       diffs(baseConfig[NODE::MQTT_TOPIC_OUTBOUND], arrivedConfig[NODE::MQTT_TOPIC_OUTBOUND]);
-    baseConfig[NODE::HEARTBEAT_PERIOD] = diffi(currentState[NODE::HEARTBEAT_PERIOD],
+    baseConfig[NODE::HEARTBEAT_PERIOD] = diffi(baseConfig[NODE::HEARTBEAT_PERIOD],
          arrivedConfig[NODE::HEARTBEAT_PERIOD]);
-    baseConfig[NODE::SENSOR_COLLECT_DATA_PERIOD] = diffi(currentState[NODE::SENSOR_COLLECT_DATA_PERIOD],
+    baseConfig[NODE::SENSOR_COLLECT_DATA_PERIOD] = diffi(baseConfig[NODE::SENSOR_COLLECT_DATA_PERIOD],
        arrivedConfig[NODE::SENSOR_COLLECT_DATA_PERIOD]);
 
     baseConfig[NODE::RETRY_WIFI_CONN_DELAY]   = diffi(baseConfig[NODE::RETRY_WIFI_CONN_DELAY],
@@ -274,9 +273,10 @@ void State::getPin(int pin[], const char* DEVICE[], int length){
   JsonObject currentPIN = currentState[NODE::CONFIG][NODE::PIN];
   char buffer [1];
   for(int i = 0 ; i < length ; i++){
-    pin[i] = -1;
+    pin[i] = PIN_NOT_CONFIGURED;
     for(int j = 0 ; j < PIN_SIZE ; j++ ){
-      if(currentPIN[itoa(j, buffer, 10)] == DEVICE[i]){
+      //if(currentPIN[itoa(j, buffer, 10)] == DEVICE[i]){
+      if(strcmp(currentPIN[itoa(j, buffer, 10)], DEVICE[i]) == 0){
         pin[i] = j;
         break;
       }

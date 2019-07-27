@@ -19,6 +19,8 @@
 #define IDX_DEVICE_FAN    8
 #define IDX_DEVICE_WATER  9
 
+#define PIN_NOT_CONFIGURED -1
+
 namespace NODE {
   extern const char* MESSAGE_ID;
   extern const char* NODE_ID;
