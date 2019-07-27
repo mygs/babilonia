@@ -3,8 +3,8 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include "State.h"
+#include "OasisConstants.h"
 
-#define DEVICE_LENGTH 10
 class Status {
 private:
   const char * DEVICE[DEVICE_LENGTH];
@@ -12,6 +12,7 @@ private:
   void updatePorts(State& state);
   void logAction(int idx, const char* action, int pin, bool value);
   void collectNodeData(State& state, JsonObject& data);
+  int readDigitalPort(int port);
 public:
   Status();
   int devices(JsonArray& devices);

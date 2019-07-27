@@ -1,44 +1,36 @@
 #include "Command.h"
-#include "OasisConstants.h"
 using namespace std;
 
-/* order matters here */
-const char * Command::ACTION[CMD_LENGTH] = {/*0*/  NODE::LIGHT,
-                                            /*1*/  NODE::WATER,
-                                            /*2*/  NODE::FAN,
-                                            /*3*/  NODE::REBOOT,
-                                            /*4*/  NODE::RESET};
-
 Command::Command(){
+  /* order matters here */
+  ACTION[IDX_ACTION_LIGHT]  = NODE::LIGHT;
+  ACTION[IDX_ACTION_WATER] = NODE::WATER;
+  ACTION[IDX_ACTION_FAN] = NODE::FAN;
+  ACTION[IDX_ACTION_REBOOT] = NODE::REBOOT;
+  ACTION[IDX_ACTION_RESET] = NODE::RESET;
 }
 
 void Command::updatePorts(State& state){
    state.getPin(PIN, ACTION, CMD_LENGTH);
+     for(int i = 0 ; i < CMD_LENGTH ; i++){
+       Serial.printf("[COMMAND] PIN[%d] = %d\r\n", i, PIN[i]);
+     }
 }
 
 void Command::logAction(int idx, const char* action, int pin, bool value){
-  if( idx == 0 /*LIGHT*/ ||
-      idx == 1 /*WATER*/ ||
-      idx == 2 /*FAN*/){
-    if(pin != -1){
-      Serial.print("[COMMAND] ");
-      Serial.print(action);
-      Serial.print("[");
-      Serial.print(pin);
-      Serial.print("] = ");
-      Serial.println(value);
+  if( idx == IDX_ACTION_LIGHT ||
+      idx == IDX_ACTION_WATER ||
+      idx == IDX_ACTION_FAN){
+    if(pin != PIN_NOT_CONFIGURED){
+      Serial.printf("[COMMAND] %s[%d] = %d\r\n", action, pin, value);
     }else{
-      Serial.print("[COMMAND] ");
-      Serial.print(action);
-      Serial.println(" not found");
+      Serial.printf("[COMMAND] %s not found\r\n", action);
     }
   }else{
-    Serial.print("[COMMAND] ");
-    Serial.print(action);
     if(value){
-      Serial.println("ING"); //VERB+ING
+      Serial.printf("[COMMAND] %sING\r\n", action);//VERB+ING
     }else{
-      Serial.println(" value not valid");
+      Serial.printf("[COMMAND] %s value not valid\r\n", action);
     }
   }
 }
@@ -50,9 +42,9 @@ void Command::execute(State& state, JsonObject& cmd){
       bool value =  cmd[ACTION[i]].as<bool>();
       logAction(i, ACTION[i], PIN[i], value);
       switch (i) {
-        case 0: //LIGHT
-        case 1: //WATER
-        case 2: //FAN ... all previous cases fall here
+        case IDX_ACTION_LIGHT:
+        case IDX_ACTION_WATER:
+        case IDX_ACTION_FAN:// ... all previous cases fall here
           pinMode(PIN[i], INPUT);
           if(value){
             digitalWrite(PIN[i], HIGH);
@@ -60,18 +52,17 @@ void Command::execute(State& state, JsonObject& cmd){
             digitalWrite(PIN[i], LOW);
           }
           break;
-        case 3: //REBOOT
+        case IDX_ACTION_REBOOT:
           if(value){
             ESP.restart();
           }
           break;
-        case 4: //RESET
+        case IDX_ACTION_RESET:
           if(value){
             state.remove();
           }
           break;
       }
-
     }
   }
 }
