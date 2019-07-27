@@ -36,6 +36,8 @@ void postResponse(const JsonDocument& message) {
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   outboundData.clear();
   outboundData[NODE::NODE_ID] = HOSTNAME;
+  outboundData[NODE::FIRMWARE_VERSION] = FIRMWARE_VERSION;
+
   DeserializationError error = deserializeJson(inboundData, (char *)payload, length);
   if (error) {
     char error_message[64];
@@ -107,8 +109,8 @@ void setup() {
   state.print();
 
   sprintf(HOSTNAME, "oasis-%06x", ESP.getChipId());
-  Serial.print("\n\n\n[OASIS] Hostname: ");
-  Serial.println(HOSTNAME);
+  Serial.printf("\r\n\r\n[OASIS] Hostname: %s", HOSTNAME);
+  Serial.printf("\r\n[OASIS] Firmware version: %s\r\n", FIRMWARE_VERSION);
   Serial.println("[OASIS] Starting Setup");
 
   setupWifi();
@@ -180,6 +182,7 @@ void heartBeat() {
 void collectSensorData(){
   sensorsTickerData.clear();
   sensorsTickerData[NODE::NODE_ID] = HOSTNAME;
+  sensorsTickerData[NODE::FIRMWARE_VERSION] = FIRMWARE_VERSION;
   status.collectForSensorTicket(state, sensorsTickerData);
   postResponse(sensorsTickerData);
 }

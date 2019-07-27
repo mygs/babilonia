@@ -6,7 +6,11 @@ ESP_LIBS=$(ESP_ROOT)/libraries
 CUSTOM_LIBS =	$(BABILONIA_LIBS)/pubsubclient \
 							$(BABILONIA_LIBS)/ArduinoJson/src
 
-BUILD_EXTRA_FLAGS=-DMQTT_MAX_PACKET_SIZE=1024
+
+GIT_VERSION := $(shell git describe --tags --always)
+
+BUILD_EXTRA_FLAGS= -DMQTT_MAX_PACKET_SIZE=1024 \
+									 -DFIRMWARE_VERSION=\"$(GIT_VERSION)\"
 #								-Og -ggdb -DDEBUG_ESP_PORT=Serial
 
 #Board type
