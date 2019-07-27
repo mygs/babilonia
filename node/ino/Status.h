@@ -13,6 +13,7 @@ private:
   void logAction(int idx, const char* action, int pin, bool value);
   void collectNodeData(State& state, JsonObject& data);
   int readDigitalInputPort(int port);
+  int checkPortConfiguration(int port, int status) ;
 public:
   Status();
   int devices(JsonArray& devices);

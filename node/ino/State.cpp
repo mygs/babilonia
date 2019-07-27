@@ -57,6 +57,10 @@ JsonObject State::getPinSetup(){
   return currentState[NODE::CONFIG][NODE::PIN];
 }
 
+JsonObject State::getCommand(){
+  return currentState[NODE::COMMAND];
+}
+
 int State::getLightStatus(){
   return currentState[NODE::COMMAND][NODE::LIGHT].as<int>();
 }

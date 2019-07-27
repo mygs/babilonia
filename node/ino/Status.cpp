@@ -46,16 +46,24 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
     if(strcmp(device, NODE::NODE) == 0){
       collectNodeData(state, data);
     } else if(strcmp(device, NODE::LIGHT) == 0){
-      data[NODE::LIGHT] = state.getLightStatus();
+      data[NODE::LIGHT] = checkPortConfiguration(PIN[IDX_DEVICE_LIGHT],state.getLightStatus());
     } else if(strcmp(device, NODE::FAN) == 0){
-      data[NODE::FAN] = state.getFanStatus();
+      data[NODE::FAN] = checkPortConfiguration(PIN[IDX_DEVICE_FAN],state.getFanStatus());
     } else if(strcmp(device, NODE::WATER) == 0){
-      data[NODE::WATER] = state.getWaterStatus();
+      data[NODE::WATER] = checkPortConfiguration(PIN[IDX_DEVICE_WATER],state.getWaterStatus());
     } else if(strcmp(device, NODE::DHT) == 0){
       Serial.println("[STATUS] DHT !!!");
     } else if(strcmp(device, NODE::SOIL) == 0){
       Serial.println("[STATUS] SOIL !!!");
     }
+  }
+}
+
+int Status::checkPortConfiguration(int port, int status) {
+  if(port == PIN_NOT_CONFIGURED){
+    return PIN_NOT_CONFIGURED;
+  }else{
+    return status;
   }
 }
 

@@ -12,9 +12,6 @@ Command::Command(){
 
 void Command::updatePorts(State& state){
    state.getPin(PIN, ACTION, CMD_LENGTH);
-     for(int i = 0 ; i < CMD_LENGTH ; i++){
-       Serial.printf("[COMMAND] PIN[%d] = %d\r\n", i, PIN[i]);
-     }
 }
 
 void Command::logAction(int idx, const char* action, int pin, bool value){

@@ -34,6 +34,7 @@ public:
   const char * getSsid();
   const char * getPassword();
   JsonObject getPinSetup();
+  JsonObject getCommand();
   int getLightStatus();
   int getFanStatus();
   int getWaterStatus();

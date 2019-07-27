@@ -97,6 +97,8 @@ void setupWifi() {
 void setup() {
 
   state.load();
+  JsonObject cmd = state.getCommand();
+  command.execute(state, cmd);
 
   Serial.begin(state.getSerialBaudRate());
 
