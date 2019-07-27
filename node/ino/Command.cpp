@@ -45,7 +45,7 @@ void Command::execute(State& state, JsonObject& cmd){
         case IDX_ACTION_LIGHT:
         case IDX_ACTION_WATER:
         case IDX_ACTION_FAN:// ... all previous cases fall here
-          pinMode(PIN[i], INPUT);
+          pinMode(PIN[i], OUTPUT);
           if(value){
             digitalWrite(PIN[i], HIGH);
           }else{

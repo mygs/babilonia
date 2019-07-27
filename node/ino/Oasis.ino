@@ -47,11 +47,11 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   } else {
     if( strcmp(NODE::ALL, inboundData[NODE::NODE_ID]) == 0 ||
         strcmp(HOSTNAME , inboundData[NODE::NODE_ID]) == 0){
-      outboundData[NODE::MESSAGE_ID] = inboundData[NODE::MESSAGE_ID];
-      Serial.print("\n[MQTT] Message arrived ID[");
+
       const char* MSG_ID = inboundData[NODE::MESSAGE_ID];
-      Serial.print(MSG_ID);
-      Serial.println("]");
+
+      Serial.printf("\r\n[MQTT] Message arrived ID[%s]\r\n", MSG_ID);
+      outboundData[NODE::MESSAGE_ID] = MSG_ID;
 
       JsonObject config = inboundData[NODE::CONFIG];
       if(!config.isNull()){
@@ -70,6 +70,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
       if(!stat.isNull()){
         status.collect(state, stat, outboundData);
       }
+
       postResponse(outboundData);
       inboundData.clear();
     }
@@ -170,7 +171,7 @@ void mqttReconnect() {
 
 void heartBeat() {
   char message[HEARTBEAT_MESSAGE_SIZE];
-  sprintf(message, "{\"%s\": \"oasis-%06x\"}",NODE::NODE_ID,ESP.getChipId());
+  sprintf(message, "{\"%s\":\"oasis-%06x\"}",NODE::NODE_ID,ESP.getChipId());
   mqtt.publish(state.getMqttOutboundTopic(), message);
 }
 

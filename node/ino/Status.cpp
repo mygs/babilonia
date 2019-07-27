@@ -46,11 +46,11 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
     if(strcmp(device, NODE::NODE) == 0){
       collectNodeData(state, data);
     } else if(strcmp(device, NODE::LIGHT) == 0){
-      data[NODE::LIGHT] = readDigitalPort(PIN[IDX_DEVICE_LIGHT]);
+      data[NODE::LIGHT] = state.getLightStatus();
     } else if(strcmp(device, NODE::FAN) == 0){
-      data[NODE::FAN] = readDigitalPort(PIN[IDX_DEVICE_FAN]);
+      data[NODE::FAN] = state.getFanStatus();
     } else if(strcmp(device, NODE::WATER) == 0){
-      data[NODE::WATER] = readDigitalPort(PIN[IDX_DEVICE_WATER]);
+      data[NODE::WATER] = state.getWaterStatus();
     } else if(strcmp(device, NODE::DHT) == 0){
       Serial.println("[STATUS] DHT !!!");
     } else if(strcmp(device, NODE::SOIL) == 0){
@@ -59,14 +59,14 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
   }
 }
 
-int Status::readDigitalPort(int port) {
+int Status::readDigitalInputPort(int port) {
   if(port == PIN_NOT_CONFIGURED){
     return PIN_NOT_CONFIGURED;
   }else{
-    return digitalRead(PIN[port]);
+    pinMode(port, INPUT);
+    return digitalRead(port);
   }
 }
-
 
 void Status::collectNodeData(State& state, JsonObject& data){
   JsonObject node = data.createNestedObject(NODE::NODE);

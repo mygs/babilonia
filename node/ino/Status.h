@@ -12,7 +12,7 @@ private:
   void updatePorts(State& state);
   void logAction(int idx, const char* action, int pin, bool value);
   void collectNodeData(State& state, JsonObject& data);
-  int readDigitalPort(int port);
+  int readDigitalInputPort(int port);
 public:
   Status();
   int devices(JsonArray& devices);

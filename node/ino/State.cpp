@@ -57,6 +57,18 @@ JsonObject State::getPinSetup(){
   return currentState[NODE::CONFIG][NODE::PIN];
 }
 
+int State::getLightStatus(){
+  return currentState[NODE::COMMAND][NODE::LIGHT].as<int>();
+}
+
+int State::getFanStatus(){
+  return currentState[NODE::COMMAND][NODE::FAN].as<int>();
+}
+
+int State::getWaterStatus(){
+  return currentState[NODE::COMMAND][NODE::WATER].as<int>();
+}
+
 const char* State::diffs(JsonVariant _base, JsonVariant _arrived) {
   const char *arrived = _arrived.as<char *>();
   if ((arrived != NULL) && (arrived[0] != '\0')) {
