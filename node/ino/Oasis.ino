@@ -36,7 +36,7 @@ void postResponse(const JsonDocument& message) {
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   outboundData.clear();
   outboundData[NODE::NODE_ID] = HOSTNAME;
-  outboundData[NODE::FIRMWARE_VERSION] = FIRMWARE_VERSION;
+  outboundData[NODE::FIRMWARE_VER] = FIRMWARE_VERSION;
 
   DeserializationError error = deserializeJson(inboundData, (char *)payload, length);
   if (error) {
@@ -182,7 +182,7 @@ void heartBeat() {
 void collectSensorData(){
   sensorsTickerData.clear();
   sensorsTickerData[NODE::NODE_ID] = HOSTNAME;
-  sensorsTickerData[NODE::FIRMWARE_VERSION] = FIRMWARE_VERSION;
+  sensorsTickerData[NODE::FIRMWARE_VER] = FIRMWARE_VERSION;
   status.collectForSensorTicket(state, sensorsTickerData);
   postResponse(sensorsTickerData);
 }
