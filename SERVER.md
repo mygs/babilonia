@@ -31,8 +31,6 @@ git clone https://github.com/espressif/esptool.git
 git checkout tags/v2.6
 git clone https://github.com/adafruit/DHT-sensor-library.git
 git checkout tags/1.3.7
-git clone https://github.com/adafruit/Adafruit_Sensor.git
-git checkout tags/1.0.3
 ```
 
 ## DECODE EXCEPTION

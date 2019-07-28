@@ -13,6 +13,7 @@ private:
   void logAction(int idx, const char* action, int pin, bool value);
 public:
   Command();
+  Command(State& state);
   void execute(State& state, JsonObject& cmd);
 };
 #endif

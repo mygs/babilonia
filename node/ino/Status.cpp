@@ -1,8 +1,15 @@
 #include "Status.h"
-
 using namespace std;
 
+#define DHTTYPE DHT11
+
 Status::Status(){
+  init();
+  dht = new DHT(PIN[IDX_DEVICE_DHT], DHTTYPE);
+  dht->begin();
+}
+
+void Status::init(){
   /* order matters here */
   DEVICE[IDX_DEVICE_NODE]  = NODE::NODE;
   DEVICE[IDX_DEVICE_SOILX] = NODE::SOILX;
@@ -25,7 +32,6 @@ void Status::logAction(int idx, const char* action, int pin, bool value){
 }
 /* user only for sensor ticker procedures */
 void Status::collectForSensorTicket(State& state, JsonDocument& response){
-  updatePorts(state);
   // compute the required size
   const size_t CAPACITY = JSON_ARRAY_SIZE(DEVICE_LENGTH);
   // allocate the memory for the document
@@ -40,7 +46,6 @@ void Status::collectForSensorTicket(State& state, JsonDocument& response){
 }
 
 void Status::collect(State& state, JsonArray& status, JsonDocument& response){
-  updatePorts(state);
   JsonObject data = response.createNestedObject(NODE::DATA);
   for(JsonVariant s : status) {
     const char* device = s.as<char *>();
@@ -53,7 +58,6 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
     } else if(strcmp(device, NODE::WATER) == 0){
       data[NODE::WATER] = checkPortConfiguration(PIN[IDX_DEVICE_WATER],state.getWaterStatus());
     } else if(strcmp(device, NODE::DHT) == 0){
-      Serial.println("[STATUS] DHT !!!");
       collectDHTData(data);
     } else if(strcmp(device, NODE::SOIL) == 0){
       Serial.println("[STATUS] SOIL !!!");
@@ -98,37 +102,22 @@ void Status::collectNodeData(State& state, JsonObject& data){
 
 
 void Status::collectDHTData(JsonObject& data){
-  dht(PIN[IDX_DEVICE_DHT], DHTTYPE);
-  dht.begin();
-
+  JsonObject dhtData = data.createNestedObject(NODE::DHT);
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  float h = dht.readHumidity();
+  float h = dht->readHumidity();
   // Read temperature as Celsius (the default)
-  float t = dht.readTemperature();
-  // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f = dht.readTemperature(true);
-
+  float t = dht->readTemperature();
+  // Compute heat index in Celsius (isFahreheit = false)
+  // TODO: float hic = dht.computeHeatIndex(t, h, false);
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t) || isnan(f)) {
-    Serial.println(F("Failed to read from DHT sensor!"));
-    return;
+  if (isnan(h) || isnan(t)) {
+    char error_message[42]  = "[STATUS] Failed to read from DHT sensor";
+    Serial.println(error_message);
+    data[NODE::ERROR] = error_message;
+  }else{
+    dhtData[NODE::TEMPERATURE] = t;
+    dhtData[NODE::HUMIDITY] = h;
   }
 
-  // Compute heat index in Fahrenheit (the default)
-  float hif = dht.computeHeatIndex(f, h);
-  // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht.computeHeatIndex(t, h, false);
-
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%  Temperature: "));
-  Serial.print(t);
-  Serial.print(F("°C "));
-  Serial.print(f);
-  Serial.print(F("°F  Heat index: "));
-  Serial.print(hic);
-  Serial.print(F("°C "));
-  Serial.print(hif);
-  Serial.println(F("°F"));
 }

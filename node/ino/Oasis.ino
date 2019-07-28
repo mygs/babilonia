@@ -99,6 +99,8 @@ void setupWifi() {
 void setup() {
 
   state.load();
+  status.updatePorts(state);
+
   JsonObject cmd = state.getCommand();
   command.execute(state, cmd);
 

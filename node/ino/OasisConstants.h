@@ -28,8 +28,6 @@
 #define PIN_SIZE 9
 #define PIN_NOT_CONFIGURED -1
 
-#define DHTTYPE DHT11 
-
 namespace NODE {
   extern const char* MESSAGE_ID;
   extern const char* NODE_ID;
@@ -67,6 +65,8 @@ namespace NODE {
   extern const char* DATA;
   extern const char* STATUS;
   extern const char* DHT;
+  extern const char* TEMPERATURE;
+  extern const char* HUMIDITY;
   extern const char* NODE;
   extern const char* SOIL;
   extern const char* SOIL1;

@@ -10,8 +10,8 @@ class Status {
 private:
   const char * DEVICE[DEVICE_LENGTH];
   int PIN[DEVICE_LENGTH];
-  DHT dht;
-  void updatePorts(State& state);
+  DHT* dht;
+  void init();
   void logAction(int idx, const char* action, int pin, bool value);
   void collectNodeData(State& state, JsonObject& data);
   int readDigitalInputPort(int port);
@@ -19,6 +19,7 @@ private:
   void collectDHTData(JsonObject& data);
 public:
   Status();
+  void updatePorts(State& state);
   int devices(JsonArray& devices);
   void collect(State& state, JsonArray& status, JsonDocument& response);
   void collectForSensorTicket(State& state, JsonDocument& response);
