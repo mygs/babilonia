@@ -28,6 +28,8 @@
 #define PIN_SIZE 9
 #define PIN_NOT_CONFIGURED -1
 
+#define DHTTYPE DHT11 
+
 namespace NODE {
   extern const char* MESSAGE_ID;
   extern const char* NODE_ID;

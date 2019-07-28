@@ -4,16 +4,19 @@
 #include <ArduinoJson.h>
 #include "State.h"
 #include "OasisConstants.h"
+#include "DHT.h"
 
 class Status {
 private:
   const char * DEVICE[DEVICE_LENGTH];
   int PIN[DEVICE_LENGTH];
+  DHT dht;
   void updatePorts(State& state);
   void logAction(int idx, const char* action, int pin, bool value);
   void collectNodeData(State& state, JsonObject& data);
   int readDigitalInputPort(int port);
-  int checkPortConfiguration(int port, int status) ;
+  int checkPortConfiguration(int port, int status);
+  void collectDHTData(JsonObject& data);
 public:
   Status();
   int devices(JsonArray& devices);

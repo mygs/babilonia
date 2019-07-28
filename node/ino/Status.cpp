@@ -54,7 +54,7 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
       data[NODE::WATER] = checkPortConfiguration(PIN[IDX_DEVICE_WATER],state.getWaterStatus());
     } else if(strcmp(device, NODE::DHT) == 0){
       Serial.println("[STATUS] DHT !!!");
-
+      collectDHTData(data);
     } else if(strcmp(device, NODE::SOIL) == 0){
       Serial.println("[STATUS] SOIL !!!");
     }
@@ -94,4 +94,41 @@ void Status::collectNodeData(State& state, JsonObject& data){
   node[NODE::SERIAL_BAUDRATE] = state.getSerialBaudRate();
   node[NODE::OTA_PORT] = state.getOtaPort();
   node[NODE::PIN] = state.getPinSetup();
+}
+
+
+void Status::collectDHTData(JsonObject& data){
+  dht(PIN[IDX_DEVICE_DHT], DHTTYPE);
+  dht.begin();
+
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  float h = dht.readHumidity();
+  // Read temperature as Celsius (the default)
+  float t = dht.readTemperature();
+  // Read temperature as Fahrenheit (isFahrenheit = true)
+  float f = dht.readTemperature(true);
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(h) || isnan(t) || isnan(f)) {
+    Serial.println(F("Failed to read from DHT sensor!"));
+    return;
+  }
+
+  // Compute heat index in Fahrenheit (the default)
+  float hif = dht.computeHeatIndex(f, h);
+  // Compute heat index in Celsius (isFahreheit = false)
+  float hic = dht.computeHeatIndex(t, h, false);
+
+  Serial.print(F("Humidity: "));
+  Serial.print(h);
+  Serial.print(F("%  Temperature: "));
+  Serial.print(t);
+  Serial.print(F("°C "));
+  Serial.print(f);
+  Serial.print(F("°F  Heat index: "));
+  Serial.print(hic);
+  Serial.print(F("°C "));
+  Serial.print(hif);
+  Serial.println(F("°F"));
 }
