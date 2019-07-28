@@ -1,4 +1,5 @@
 #include "Status.h"
+
 using namespace std;
 
 Status::Status(){
@@ -53,6 +54,7 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
       data[NODE::WATER] = checkPortConfiguration(PIN[IDX_DEVICE_WATER],state.getWaterStatus());
     } else if(strcmp(device, NODE::DHT) == 0){
       Serial.println("[STATUS] DHT !!!");
+
     } else if(strcmp(device, NODE::SOIL) == 0){
       Serial.println("[STATUS] SOIL !!!");
     }
@@ -78,6 +80,7 @@ int Status::readDigitalInputPort(int port) {
 
 void Status::collectNodeData(State& state, JsonObject& data){
   JsonObject node = data.createNestedObject(NODE::NODE);
+  node[NODE::FIRMWARE_VER] = FIRMWARE_VERSION;
   node[NODE::FREEHEAP] = ESP.getFreeHeap();
   node[NODE::FLASHID] = ESP.getFlashChipId();
   node[NODE::FLASHSIZE] = ESP.getFlashChipSize();

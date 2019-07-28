@@ -42,11 +42,13 @@ void Command::execute(State& state, JsonObject& cmd){
         case IDX_ACTION_LIGHT:
         case IDX_ACTION_WATER:
         case IDX_ACTION_FAN:// ... all previous cases fall here
-          pinMode(PIN[i], OUTPUT);
-          if(value){
-            digitalWrite(PIN[i], HIGH);
-          }else{
-            digitalWrite(PIN[i], LOW);
+          if (PIN[i] != PIN_NOT_CONFIGURED){
+            pinMode(PIN[i], OUTPUT);
+            if(value){
+              digitalWrite(PIN[i], HIGH);
+            }else{
+              digitalWrite(PIN[i], LOW);
+            }
           }
           break;
         case IDX_ACTION_REBOOT:
