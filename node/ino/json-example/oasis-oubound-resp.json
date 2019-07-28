@@ -1,6 +1,7 @@
 {
 	"MESSAGE_ID": "a12dc89b",
   "NODE_ID":"oasis-312193",
+	"FIRMWARE_VERSION": "version",
 	"ERROR":"some error message here",
 	"DATA": {
 		"NODE": {
@@ -9,8 +10,6 @@
 			"FREE-HEAP": 100,
 			"CHIP-SIZE": 100,
 			"CHIP-ID": "311de9",
-			"HW-VER": "x.y.z",
-			"SW-VER": "x.y.z",
 			"PIN":{
 				"0": "IDLE",
 				"1": "WATER",
