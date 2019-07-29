@@ -19,7 +19,6 @@ StaticJsonDocument<JSON_MEMORY_SIZE> inboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> outboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> sensorsTickerData;
 
-Ticker sensorsTicker;
 Ticker heartBeatTicker;
 
 State state;
@@ -152,7 +151,6 @@ void setup() {
   heartBeat(); // Oasis is up and running, notify it
   heartBeatTicker.attach(state.getHeartBeatPeriod(), heartBeat);
 
-  sensorsTicker.attach(state.getSensorCollectDataPeriod(), collectSensorData);
   Serial.println("[OASIS] Setup Completed");
 }
 
@@ -189,6 +187,8 @@ void collectSensorData(){
   postResponse(sensorsTickerData);
 }
 
+long previousMillis = 0;
+
 /* DO NOT CHANGE this function name - Arduino hook */
 void loop() {
   ArduinoOTA.handle();
@@ -197,5 +197,11 @@ void loop() {
     mqttReconnect();
   } else {
     mqtt.loop();
+  }
+  // DHT and Ticker does not work together, so ...
+  unsigned long currentMillis = millis();
+  if(currentMillis - previousMillis > state.getSensorCollectDataPeriod()*1000) {
+    previousMillis = currentMillis;
+    collectSensorData();
   }
 }

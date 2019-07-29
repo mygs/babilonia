@@ -41,7 +41,7 @@
 #define DHT21 21 /**< DHT TYPE 21 */
 #define AM2301 21 /**< AM2301 */
 
-/*! 
+/*!
  *  @brief  Class that stores state and functions for DHT
  */
 class DHT {
@@ -72,18 +72,18 @@ class DHT {
 
 };
 
-/*! 
+/*!
  *  @brief  Class that defines Interrupt Lock Avaiability
  */
 class InterruptLock {
   public:
    InterruptLock() {
-#if !defined(ARDUINO_ARCH_NRF52)  
+#if !defined(ARDUINO_ARCH_NRF52)
     noInterrupts();
 #endif
    }
    ~InterruptLock() {
-#if !defined(ARDUINO_ARCH_NRF52)  
+#if !defined(ARDUINO_ARCH_NRF52)
     interrupts();
 #endif
    }
