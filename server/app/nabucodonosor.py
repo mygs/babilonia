@@ -101,7 +101,7 @@ if cfg["MODE"]["MQTT"] == True:
 # The callback for when the client receives a CONNACK response from the server.
     @mqtt.on_connect()
     def handle_mqtt_connect(client, userdata, flags, rc):
-        logger.info("Connected with result code %s",str(rc))
+        logger.debug("Connected with result code %s",str(rc))
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"])
@@ -118,8 +118,7 @@ if cfg["MODE"]["MQTT"] == True:
             logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
             database.update_oasis_heartbeat(jmsg["NODE_ID"], timestamp)
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
-            logger.info("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
-
+            logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
 
 
 ###############################################################################
@@ -127,6 +126,13 @@ if cfg["MODE"]["MQTT"] == True:
 ###############################################################################
 
 if __name__ == '__main__':
+    print("")
+    print("    __            __     _  __               _       ")
+    print("   / /_   ____ _ / /_   (_)/ /____   ____   (_)____ _")
+    print("  / __ \ / __ `// __ \ / // // __ \ / __ \ / // __ `/")
+    print(" / /_/ // /_/ // /_/ // // // /_/ // / / // // /_/ / ")
+    print("/_.___/ \__,_//_.___//_//_/ \____//_/ /_//_/ \__,_/  ")
+    print("")
     print("*** STARTING NABUCODONOSOR SYSTEM ***")
     user_reload = True
     if cfg["MODE"]["MQTT"] == True:
