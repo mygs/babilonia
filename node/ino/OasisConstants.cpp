@@ -11,6 +11,7 @@ namespace NODE {
   extern const char* PASSWORD    = "PASSWORD";
   extern const char* MQTT_SERVER = "MQTT_SERVER";
   extern const char* MQTT_PORT   = "MQTT_PORT";
+  extern const char* MQTT_TOPIC_HEARTBEAT = "MQTT_TOPIC_HEARTBEAT";
   extern const char* MQTT_TOPIC_INBOUND = "MQTT_TOPIC_INBOUND";
   extern const char* MQTT_TOPIC_OUTBOUND = "MQTT_TOPIC_OUTBOUND";
   extern const char* HEARTBEAT_PERIOD = "HEARTBEAT_PERIOD";

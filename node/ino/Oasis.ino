@@ -176,7 +176,7 @@ void mqttReconnect() {
 void heartBeat() {
   char message[HEARTBEAT_MESSAGE_SIZE];
   sprintf(message, "{\"%s\":\"oasis-%06x\"}",NODE::NODE_ID,ESP.getChipId());
-  mqtt.publish(state.getMqttOutboundTopic(), message);
+  mqtt.publish(state.getMqttHeartBeatTopic(), message);
 }
 
 void collectSensorData(){

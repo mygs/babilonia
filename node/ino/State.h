@@ -29,6 +29,7 @@ public:
   int getWifiRetryConnectionDelay();
   int getSerialBaudRate();
   int getOtaPort();
+  const char * getMqttHeartBeatTopic();
   const char * getMqttInboundTopic();
   const char * getMqttOutboundTopic();
   const char * getSsid();

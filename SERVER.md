@@ -10,6 +10,18 @@ alias xgcc="xtensa-lx106-elf-gcc"
 alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
 ```
 
+### python imports
+```
+sudo pip3 install paho-mqtt sqlalchemy flask-mysql flask-socketio simplejson pandas flask-mqtt Pillow Flask-QRcode Flask-Assets jsmin cssmin
+```
+
+### middlwares & tools
+```
+sudo apt-get install mysql-server && sudo apt-get install mysql-client
+sudo apt-get install dos2unix
+sudo apt-get install python3-mysqldb
+```
+
 
 
 ## TOOLS

@@ -37,6 +37,10 @@ int State::getMqttPort(){
   return currentState[NODE::CONFIG][NODE::MQTT_PORT].as<int>();
 }
 
+const char * State::getMqttHeartBeatTopic(){
+  return currentState[NODE::CONFIG][NODE::MQTT_TOPIC_HEARTBEAT];
+}
+
 const char * State::getMqttInboundTopic(){
   return currentState[NODE::CONFIG][NODE::MQTT_TOPIC_INBOUND];
 }
@@ -111,6 +115,8 @@ void State::mergeState(JsonDocument& arrived) {
     baseConfig[NODE::MQTT_SERVER] = diffs(baseConfig[NODE::MQTT_SERVER], arrivedConfig[NODE::MQTT_SERVER]);
     baseConfig[NODE::MQTT_PORT]   = diffi(baseConfig[NODE::MQTT_PORT],
                                 arrivedConfig[NODE::MQTT_PORT]);
+    baseConfig[NODE::MQTT_TOPIC_HEARTBEAT] =
+                                  diffs(baseConfig[NODE::MQTT_TOPIC_HEARTBEAT],  arrivedConfig[NODE::MQTT_TOPIC_HEARTBEAT]);                      
     baseConfig[NODE::MQTT_TOPIC_INBOUND] =
       diffs(baseConfig[NODE::MQTT_TOPIC_INBOUND],  arrivedConfig[NODE::MQTT_TOPIC_INBOUND]);
     baseConfig[NODE::MQTT_TOPIC_OUTBOUND] =
@@ -158,6 +164,7 @@ void State::loadDefaultState(){
   CONFIG[NODE::PASSWORD]            = InitialConfiguration::PASSWORD;
   CONFIG[NODE::MQTT_SERVER]         = InitialConfiguration::MQTT_SERVER;
   CONFIG[NODE::MQTT_PORT]           = InitialConfiguration::MQTT_PORT;
+  CONFIG[NODE::MQTT_TOPIC_HEARTBEAT]  = InitialConfiguration::MQTT_TOPIC_HEARTBEAT;
   CONFIG[NODE::MQTT_TOPIC_INBOUND]  = InitialConfiguration::MQTT_TOPIC_INBOUND;
   CONFIG[NODE::MQTT_TOPIC_OUTBOUND] = InitialConfiguration::MQTT_TOPIC_OUTBOUND;
   CONFIG[NODE::HEARTBEAT_PERIOD]    = InitialConfiguration::HEARTBEAT_PERIOD;
