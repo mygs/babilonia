@@ -5,11 +5,10 @@ import time
 import datetime as dt
 import logging
 import logging.config
-#import database
+import database
 #import analytics
 import simplejson as json
 from flask import Flask, render_template, request
-from flaskext.mysql import MySQL
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_assets import Environment, Bundle
@@ -33,7 +32,6 @@ with open(os.path.join(project_dir, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
 
 ###### Initialisation
-mysql = MySQL()
 app = Flask(__name__, static_url_path='/static')
 
 app.config['MQTT_BROKER_URL'] = cfg["MQTT"]["BROKER"]
@@ -48,7 +46,6 @@ app.config['MYSQL_DATABASE_HOST'] = cfg["DATABASE"]["HOST"]
 if cfg["MODE"]["MQTT"] == True:
     mqtt = Mqtt(app)
 
-mysql.init_app(app)
 socketio = SocketIO(app)
 assets = Environment(app)
 #qrcode = QRcode(app)
@@ -97,7 +94,7 @@ def about():
 
 
 ###############################################################################
-############################## MANAGE MQTT ####################################
+############################## HANDLE MQTT ####################################
 ###############################################################################
 
 if cfg["MODE"]["MQTT"] == True:
@@ -114,13 +111,17 @@ if cfg["MODE"]["MQTT"] == True:
     @mqtt.on_message()
     def handle_mqtt_message(client, userdata, msg):
         topic = msg.topic
-        json_message = json.loads(msg.payload)
+        jmsg = json.loads(msg.payload)
         timestamp = int(time.time())
 
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
-            logger.info("Receive heartbeat from %s at %s", json_message["NODE_ID"], timestamp)
+            logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
+            database.update_oasis_heartbeat(jmsg["NODE_ID"], timestamp)
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
-            logger.info("Receive message from %s at %s", json_message["NODE_ID"], json_message)
+            logger.info("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
+
+
+
 ###############################################################################
 ##################################  START #####################################
 ###############################################################################
