@@ -10,6 +10,9 @@ import database
 import simplejson as json
 from flask import Flask, render_template, request
 from flask_mqtt import Mqtt
+#from flaskext.mysql import MySQL
+#from flask_mysqldb import MySQL
+from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_assets import Environment, Bundle
 from croniter import croniter
@@ -22,12 +25,13 @@ from croniter import croniter
 project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'logging.json'), "r") as logging_json_file:
     logging_config = json.load(logging_json_file)
-    os.makedirs(project_dir+"/../log",exist_ok=True)
+    log_dir = project_dir+"/../log"
+    if os.path.exists(log_dir) == False:
+        os.makedirs(log_dir)
     logging.config.dictConfig(logging_config)
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 ###### reading configuration
-project_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(project_dir, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
 
@@ -38,13 +42,25 @@ app.config['MQTT_BROKER_URL'] = cfg["MQTT"]["BROKER"]
 app.config['MQTT_BROKER_PORT'] = cfg["MQTT"]["PORT"]
 app.config['MQTT_KEEPALIVE'] = cfg["MQTT"]["KEEPALIVE"]
 
-app.config['MYSQL_DATABASE_USER'] =  cfg["DATABASE"]["USER"]
-app.config['MYSQL_DATABASE_PASSWORD'] =  cfg["DATABASE"]["PASSWORD"]
-app.config['MYSQL_DATABASE_DB'] = cfg["DATABASE"]["SCHEMA"]
-app.config['MYSQL_DATABASE_HOST'] = cfg["DATABASE"]["HOST"]
+#app.config['MYSQL_DATABASE_USER'] =  cfg["DATABASE"]["USER"]
+#app.config['MYSQL_DATABASE_PASSWORD'] =  cfg["DATABASE"]["PASSWORD"]
+#app.config['MYSQL_DATABASE_DB'] = cfg["DATABASE"]["SCHEMA"]
+#app.config['MYSQL_DATABASE_HOST'] = cfg["DATABASE"]["HOST"]
+#app.config['MYSQL_HOST'] =      cfg["DATABASE"]["HOST"]
+#app.config['MYSQL_USER'] =      cfg["DATABASE"]["USER"]
+#app.config['MYSQL_PASSWORD'] =  cfg["DATABASE"]["PASSWORD"]
+#app.config['MYSQL_DB'] =        cfg["DATABASE"]["SCHEMA"]
+app.config['SQLALCHEMY_DATABASE_URI'] = cfg["SQLALCHEMY_DATABASE_URI"]
+
 
 if cfg["MODE"]["MQTT"] == True:
     mqtt = Mqtt(app)
+
+mysql = SQLAlchemy(app)
+
+#mysql = MySQL(app)
+#mysql = MySQL(autocommit = True)
+#mysql.init_app(app)
 
 socketio = SocketIO(app)
 assets = Environment(app)
@@ -116,9 +132,16 @@ if cfg["MODE"]["MQTT"] == True:
 
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
             logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
-            database.update_oasis_heartbeat(jmsg["NODE_ID"], timestamp)
+            database.update_oasis_heartbeat(timestamp, jmsg["NODE_ID"])
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
             logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
+            cur = mysql.connection.cursor()
+            cur.execute( """INSERT INTO OASIS_DATA (TIMESTAMP,NODE_ID,DATA)
+                        VALUES (%s,%s,%s)
+                        ON DUPLICATE KEY UPDATE DATA=%s""", (timestamp,jmsg["NODE_ID"],jmsg,jmsg))
+            mysql.connection.commit()
+            cur.close()
+            ##database.save_oasis_data(timestamp, jmsg)
 
 
 ###############################################################################
