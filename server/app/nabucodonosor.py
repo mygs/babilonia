@@ -6,6 +6,8 @@ import datetime as dt
 import logging
 import logging.config
 import database
+#from Models import DB
+from Models import OasisData
 #import analytics
 import simplejson as json
 from flask import Flask, render_template, request
@@ -56,8 +58,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = cfg["SQLALCHEMY_DATABASE_URI"]
 if cfg["MODE"]["MQTT"] == True:
     mqtt = Mqtt(app)
 
-mysql = SQLAlchemy(app)
-
+DB = SQLAlchemy(app)
+#DB.init_app(app)
 #mysql = MySQL(app)
 #mysql = MySQL(autocommit = True)
 #mysql.init_app(app)
@@ -135,12 +137,9 @@ if cfg["MODE"]["MQTT"] == True:
             database.update_oasis_heartbeat(timestamp, jmsg["NODE_ID"])
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
             logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
-            cur = mysql.connection.cursor()
-            cur.execute( """INSERT INTO OASIS_DATA (TIMESTAMP,NODE_ID,DATA)
-                        VALUES (%s,%s,%s)
-                        ON DUPLICATE KEY UPDATE DATA=%s""", (timestamp,jmsg["NODE_ID"],jmsg,jmsg))
-            mysql.connection.commit()
-            cur.close()
+            data = OasisData(TIMESTAMP=timestamp,NODE_ID=jmsg["NODE_ID"],DATA=jmsg)
+            DB.session.add(data)
+            DB.session.commit()
             ##database.save_oasis_data(timestamp, jmsg)
 
 
