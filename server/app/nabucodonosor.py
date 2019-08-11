@@ -5,16 +5,11 @@ import time
 import datetime as dt
 import logging
 import logging.config
-import database
-#from Models import DB
-from Models import OasisData
+from Models import *
 #import analytics
 import simplejson as json
 from flask import Flask, render_template, request
 from flask_mqtt import Mqtt
-#from flaskext.mysql import MySQL
-#from flask_mysqldb import MySQL
-from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_assets import Environment, Bundle
 from croniter import croniter
@@ -43,26 +38,13 @@ app = Flask(__name__, static_url_path='/static')
 app.config['MQTT_BROKER_URL'] = cfg["MQTT"]["BROKER"]
 app.config['MQTT_BROKER_PORT'] = cfg["MQTT"]["PORT"]
 app.config['MQTT_KEEPALIVE'] = cfg["MQTT"]["KEEPALIVE"]
-
-#app.config['MYSQL_DATABASE_USER'] =  cfg["DATABASE"]["USER"]
-#app.config['MYSQL_DATABASE_PASSWORD'] =  cfg["DATABASE"]["PASSWORD"]
-#app.config['MYSQL_DATABASE_DB'] = cfg["DATABASE"]["SCHEMA"]
-#app.config['MYSQL_DATABASE_HOST'] = cfg["DATABASE"]["HOST"]
-#app.config['MYSQL_HOST'] =      cfg["DATABASE"]["HOST"]
-#app.config['MYSQL_USER'] =      cfg["DATABASE"]["USER"]
-#app.config['MYSQL_PASSWORD'] =  cfg["DATABASE"]["PASSWORD"]
-#app.config['MYSQL_DB'] =        cfg["DATABASE"]["SCHEMA"]
 app.config['SQLALCHEMY_DATABASE_URI'] = cfg["SQLALCHEMY_DATABASE_URI"]
-
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 if cfg["MODE"]["MQTT"] == True:
     mqtt = Mqtt(app)
 
-DB = SQLAlchemy(app)
-#DB.init_app(app)
-#mysql = MySQL(app)
-#mysql = MySQL(autocommit = True)
-#mysql.init_app(app)
+DB.init_app(app)
 
 socketio = SocketIO(app)
 assets = Environment(app)
@@ -134,13 +116,16 @@ if cfg["MODE"]["MQTT"] == True:
 
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
             logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
-            database.update_oasis_heartbeat(timestamp, jmsg["NODE_ID"])
+            heartbeat = OasisHeartbeat(NODE_ID=jmsg["NODE_ID"],LAST_UPDATE=timestamp)
+            with app.app_context():
+                DB.session.merge(heartbeat)
+                #DB.session.commit()
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
             logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
             data = OasisData(TIMESTAMP=timestamp,NODE_ID=jmsg["NODE_ID"],DATA=jmsg)
-            DB.session.add(data)
-            DB.session.commit()
-            ##database.save_oasis_data(timestamp, jmsg)
+            with app.app_context():
+                DB.session.add(data)
+                #DB.session.commit()
 
 
 ###############################################################################
