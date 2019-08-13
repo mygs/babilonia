@@ -88,10 +88,16 @@ assets.register('3rdpartyjs',
 ############################# MANAGE WEB REQ/RESP #############################
 ###############################################################################
 
+@app.route('/')
+def index():
+    with app.app_context():
+        modules = OasisData.query.order_by(OasisData.TIMESTAMP).all()
+        print modules
+        return render_template('index.html', modules=modules)
+
 @app.route('/about')
 def about():
     return render_template('about.html')
-
 
 ###############################################################################
 ############################## HANDLE MQTT ####################################
@@ -112,20 +118,19 @@ if cfg["MODE"]["MQTT"] == True:
     def handle_mqtt_message(client, userdata, msg):
         topic = msg.topic
         jmsg = json.loads(msg.payload)
+        node_id = jmsg["NODE_ID"]
         timestamp = int(time.time())
 
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
             logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
-            heartbeat = OasisHeartbeat(NODE_ID=jmsg["NODE_ID"],LAST_UPDATE=timestamp)
+            heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
             with app.app_context():
                 DB.session.merge(heartbeat)
-                #DB.session.commit()
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
             logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
-            data = OasisData(TIMESTAMP=timestamp,NODE_ID=jmsg["NODE_ID"],DATA=jmsg)
+            data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
             with app.app_context():
                 DB.session.add(data)
-                #DB.session.commit()
 
 
 ###############################################################################

@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 id="index">Plantação</h2>
+      <ul class="clearfix" id="sortable">
+        {% for module in modules %}
+          <li>
+            <div class="box">
+              <h4>{{module[0]}}</h4>
+               <p><span>{{ module.TIMESTAMP }} </span></p>
+              <table id="telemetry">
+                <tr>
+                  {{module.DATA['DATA']}}
+                </tr>
+              </table>
+
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
