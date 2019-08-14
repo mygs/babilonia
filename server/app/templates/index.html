@@ -9,8 +9,8 @@
         {% for module in modules %}
           <li>
             <div class="box">
-              <h4>{{module[0]}}</h4>
-               <p><span>{{ module.TIMESTAMP }} </span></p>
+              <h4>{{module.NODE_ID}}</h4>
+               <p><span>{{ format_timestamp(module.TIMESTAMP) }} </span></p>
               <table id="telemetry">
                 <tr>
                   {{module.DATA['DATA']}}

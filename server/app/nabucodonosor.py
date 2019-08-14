@@ -91,14 +91,28 @@ assets.register('3rdpartyjs',
 @app.route('/')
 def index():
     with app.app_context():
+        now = int(time.time())
+        lasthour = now - 1 * 3600
+        nodes = OasisHeartbeat.query.filter(OasisHeartbeat.LAST_UPDATE >= lasthour).all()
         modules = OasisData.query.order_by(OasisData.TIMESTAMP).all()
-        print modules
+        #print modules
         return render_template('index.html', modules=modules)
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
+
+###############################################################################
+################################# PROCESSORS ##################################
+###############################################################################
+
+@app.context_processor
+def utility_processor():
+    def format_timestamp(value):
+        return time.strftime("%d/%m/%Y %H:%M:%S", time.localtime(int(value)))
+    return {'format_timestamp':format_timestamp
+            }
 ###############################################################################
 ############################## HANDLE MQTT ####################################
 ###############################################################################
