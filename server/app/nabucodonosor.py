@@ -14,6 +14,7 @@ from flask_socketio import SocketIO
 from flask_assets import Environment, Bundle
 from croniter import croniter
 #from flask_qrcode import QRcode
+from sqlalchemy import func, and_
 
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
@@ -91,11 +92,10 @@ assets.register('3rdpartyjs',
 @app.route('/')
 def index():
     with app.app_context():
-        now = int(time.time())
-        lasthour = now - 1 * 3600
-        nodes = OasisHeartbeat.query.filter(OasisHeartbeat.LAST_UPDATE >= lasthour).all()
-        modules = OasisData.query.order_by(OasisData.TIMESTAMP).all()
-        #print modules
+        subq = DB.session.query(OasisData.NODE_ID,
+            func.max(OasisData.TIMESTAMP).label('recent')).group_by(OasisData.NODE_ID).subquery('t2')
+        modules = DB.session.query(OasisData).join(
+            subq, and_(OasisData.NODE_ID == subq.c.NODE_ID,OasisData.TIMESTAMP == subq.c.recent))
         return render_template('index.html', modules=modules)
 
 @app.route('/about')

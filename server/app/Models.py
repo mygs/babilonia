@@ -11,6 +11,7 @@ class OasisData(DB.Model):
     def __repr__(self):
         return '<OasisData id:{} time:{}>'.format(self.NODE_ID, self.TIMESTAMP)
 
+
 class OasisHeartbeat(DB.Model):
     __tablename__ = 'OASIS_HEARTBEAT'
     NODE_ID = DB.Column(DB.String(32), primary_key=True)
