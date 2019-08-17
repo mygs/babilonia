@@ -197,8 +197,9 @@ if __name__ == '__main__':
     print(" / /_/ // /_/ // /_/ // // // /_/ // / / // // /_/ / ")
     print("/_.___/ \__,_//_.___//_//_/ \____//_/ /_//_/ \__,_/  ")
     print("")
-    print("version: "+VERSION)
-    print("*** STARTING NABUCODONOSOR SYSTEM ***")
+    logger.info("*** STARTING NABUCODONOSOR SYSTEM ***")
+    logger.info("version: %s", VERSION)
+
     user_reload = True
     if isMQTTDataRecordEnabled:
         user_reload = False # Avoid Bug: TWICE mqtt instances
