@@ -17,7 +17,7 @@ function callbackend(command, img, title, text) {
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Confirm",
     cancelButtonText: "Cancel",
-    closeOnConfirm: false
+    closeOnConfirm: true
   }, function(isConfirm) {
     if (!isConfirm) return;
     $.ajax({

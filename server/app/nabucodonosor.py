@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
+import subprocess
 import json
 import datetime as dt
 import logging
@@ -16,6 +17,9 @@ from flask_assets import Environment, Bundle
 from croniter import croniter
 #from flask_qrcode import QRcode
 from sqlalchemy import func, and_
+
+
+VERSION = subprocess.check_output(["git", "describe", "--tags","--always"]).strip()
 
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
@@ -33,7 +37,7 @@ logger = logging.getLogger(__name__)
 ###### reading configuration
 with open(os.path.join(project_dir, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
-isMQTTenabled = cfg["MODE"]["MQTT"]
+isMQTTDataRecordEnabled = cfg["MODE"]["MQTT"]
 ###### Initialisation
 app = Flask(__name__, static_url_path='/static')
 
@@ -43,11 +47,8 @@ app.config['MQTT_KEEPALIVE'] = cfg["MQTT"]["KEEPALIVE"]
 app.config['SQLALCHEMY_DATABASE_URI'] = cfg["SQLALCHEMY_DATABASE_URI"]
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
-if isMQTTenabled:
-    mqtt = Mqtt(app)
-
+mqtt = Mqtt(app)
 DB.init_app(app)
-
 socketio = SocketIO(app)
 assets = Environment(app)
 #qrcode = QRcode(app)
@@ -108,23 +109,25 @@ def index():
 def refresh():
     message = json.dumps(request.get_json())
     logger.debug("[status] %s", message)
-    if isMQTTenabled:
-        mqtt.publish("/oasis-inbound", message)
+    mqtt.publish("/oasis-inbound", message)
     return json.dumps({'status':'Success!'});
 
 @app.route('/command', methods=['POST'])
 def command():
     message = json.dumps(request.get_json())
     logger.debug("[command] %s", message)
-    if isMQTTenabled:
-        mqtt.publish("/oasis-inbound", message)
+    mqtt.publish("/oasis-inbound", message)
     return json.dumps({'status':'Success!'});
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    message = json.dumps(request.get_json())
+    logger.debug("[webhook] %s", message)
+    subprocess.run(["git", "pull"])
 ###############################################################################
 ################################# PROCESSORS ##################################
 ###############################################################################
@@ -170,14 +173,16 @@ if cfg["MODE"]["MQTT"] == True:
 
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
             logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
-            heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
-            with app.app_context():
-                DB.session.merge(heartbeat)
+            if isMQTTDataRecordEnabled:
+                heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
+                with app.app_context():
+                    DB.session.merge(heartbeat)
         if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
             logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
-            data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
-            with app.app_context():
-                DB.session.add(data)
+            if isMQTTDataRecordEnabled:
+                data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
+                with app.app_context():
+                    DB.session.add(data)
 
 
 ###############################################################################
@@ -192,8 +197,9 @@ if __name__ == '__main__':
     print(" / /_/ // /_/ // /_/ // // // /_/ // / / // // /_/ / ")
     print("/_.___/ \__,_//_.___//_//_/ \____//_/ /_//_/ \__,_/  ")
     print("")
+    print("version: "+VERSION)
     print("*** STARTING NABUCODONOSOR SYSTEM ***")
     user_reload = True
-    if isMQTTenabled:
+    if isMQTTDataRecordEnabled:
         user_reload = False # Avoid Bug: TWICE mqtt instances
     socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)
