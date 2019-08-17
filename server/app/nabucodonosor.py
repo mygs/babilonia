@@ -92,10 +92,11 @@ assets.register('3rdpartyjs',
 @app.route('/')
 def index():
     with app.app_context():
-        subq = DB.session.query(OasisData.NODE_ID,
-            func.max(OasisData.TIMESTAMP).label('recent')).group_by(OasisData.NODE_ID).subquery('t2')
+        latest = DB.session.query(OasisData.NODE_ID,
+            func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).group_by(OasisData.NODE_ID).subquery('t2')
         modules = DB.session.query(OasisData).join(
-            subq, and_(OasisData.NODE_ID == subq.c.NODE_ID,OasisData.TIMESTAMP == subq.c.recent))
+            latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
+
         return render_template('index.html', modules=modules)
 
 @app.route('/about')
