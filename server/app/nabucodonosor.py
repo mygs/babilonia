@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
+import json
 import datetime as dt
 import logging
 import logging.config
@@ -32,7 +33,7 @@ logger = logging.getLogger(__name__)
 ###### reading configuration
 with open(os.path.join(project_dir, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
-
+isMQTTenabled = cfg["MODE"]["MQTT"]
 ###### Initialisation
 app = Flask(__name__, static_url_path='/static')
 
@@ -42,7 +43,7 @@ app.config['MQTT_KEEPALIVE'] = cfg["MQTT"]["KEEPALIVE"]
 app.config['SQLALCHEMY_DATABASE_URI'] = cfg["SQLALCHEMY_DATABASE_URI"]
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
-if cfg["MODE"]["MQTT"] == True:
+if isMQTTenabled:
     mqtt = Mqtt(app)
 
 DB.init_app(app)
@@ -102,6 +103,22 @@ def index():
         logger.debug("[database] call database for index page took %s secs",time.strftime("%S", time.gmtime(delta)))
 
         return render_template('index.html', modules=modules)
+
+@app.route('/status', methods=['POST'])
+def refresh():
+    message = json.dumps(request.get_json())
+    logger.debug("[status] %s", message)
+    if isMQTTenabled:
+        mqtt.publish("/oasis-inbound", message)
+    return json.dumps({'status':'Success!'});
+
+@app.route('/command', methods=['POST'])
+def command():
+    message = json.dumps(request.get_json())
+    logger.debug("[command] %s", message)
+    if isMQTTenabled:
+        mqtt.publish("/oasis-inbound", message)
+    return json.dumps({'status':'Success!'});
 
 @app.route('/about')
 def about():
@@ -177,6 +194,6 @@ if __name__ == '__main__':
     print("")
     print("*** STARTING NABUCODONOSOR SYSTEM ***")
     user_reload = True
-    if cfg["MODE"]["MQTT"] == True:
+    if isMQTTenabled:
         user_reload = False # Avoid Bug: TWICE mqtt instances
     socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)

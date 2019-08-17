@@ -7,9 +7,15 @@
       <h2 id="index">Plantação</h2>
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
-        {%  set id = module.NODE_ID %}
-        {%  set last_update = module.TIMESTAMP %}
-        {%  set sensor_collect_data_period = module.DATA['DATA']['NODE']['SENSOR_COLLECT_DATA_PERIOD'] %}
+          {%  set id = module.NODE_ID %}
+          {%  set firmware_version = module.DATA['FIRMWARE_VERSION'] %}
+          {%  set last_update = module.TIMESTAMP %}
+          {%  set sensor_collect_data_period = module.DATA['DATA']['NODE']['SENSOR_COLLECT_DATA_PERIOD'] %}
+          {%  set temperature = module.DATA['DATA']['DHT']['TEMPERATURE'] %}
+          {%  set humidity = module.DATA['DATA']['DHT']['HUMIDITY'] %}
+          {%  set water = module.DATA['DATA']['WATER'] %}
+          {%  set light = module.DATA['DATA']['LIGHT'] %}
+          {%  set fan = module.DATA['DATA']['FAN'] %}
 
           <li>
             <div class="box {{ status_node(last_update, sensor_collect_data_period) }}">
@@ -18,35 +24,32 @@
               <table id="telemetry">
                 <tr>
                   <td class="param-label">Temperature</td>
-                  <td class="param-value" id='temperature_{{id}}'>{{module.DATA['DATA']['DHT']['TEMPERATURE']}}</td>
+                  <td class="param-value" id='temperature_{{id}}'>{{temperature}}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Humidity</td>
-                  <td class="param-value" id='humidity_{{id}}'>{{module.DATA['DATA']['DHT']['HUMIDITY']}}</td>
+                  <td class="param-value" id='humidity_{{id}}'>{{humidity}}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Software Ver</td>
-                  <td class="param-value" id='sw_ver_{{id}}'>{{module.DATA['FIRMWARE_VERSION']}}</td>
+                  <td class="param-value" id='sw_ver_{{id}}'>{{firmware_version}}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Irrigation</td>
-                  <td class="param-value" id='irrigation_{{id}}'>{{module.DATA['DATA']['WATER']}}</td>
+                  <td class="param-value" id='irrigation_{{id}}'>{{water}}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Light</td>
-                  <td class="param-value" id='light_{{id}}'>{{module.DATA['DATA']['LIGHT']}}</td>
+                  <td class="param-value" id='light_{{id}}'>{{light}}</td>
                 </tr>
                 <tr>
                   <td class="param-label">Fan</td>
-                  <td class="param-value" id='fan_{{id}}'>{{module.DATA['DATA']['FAN']}}</td>
-                </tr>
-                <tr>
-                <!--  {{module.DATA['DATA']}} -->
+                  <td class="param-value" id='fan_{{id}}'>{{fan}}</td>
                 </tr>
               </table>
               <table id="cockpit">
               <tr>
-                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-refresh" data-id="{{id}}"  data-cmd="1"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-warning btn-water" data-id="{{id}}"><i class="wi wi-sprinkle"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-info btn-light" data-id="{{id}}"><i class="wi wi-day-sunny"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-default btn-fan" data-id="{{id}}"><i class="wi wi-cloudy-gusts"></i></button></td>
