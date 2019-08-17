@@ -114,9 +114,20 @@ def about():
 
 @app.context_processor
 def utility_processor():
-    def format_timestamp(value):
+    def format_last_update(value):
         return time.strftime("%d/%m/%Y %H:%M:%S", time.localtime(int(value)))
-    return {'format_timestamp':format_timestamp
+    def status_node(last_update, sensor_collect_data_period):
+        last_update = int(last_update)
+        sensor_collect_data_period = int(sensor_collect_data_period)
+        now = int(time.time())
+        next_data_is_expected = last_update + sensor_collect_data_period
+        if next_data_is_expected >= now: # NEXT is future
+            return "good"
+        else:
+            return "danger"
+    return {
+            'status_node':status_node,
+            'format_last_update':format_last_update
             }
 ###############################################################################
 ############################## HANDLE MQTT ####################################
