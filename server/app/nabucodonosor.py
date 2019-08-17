@@ -92,10 +92,14 @@ assets.register('3rdpartyjs',
 @app.route('/')
 def index():
     with app.app_context():
+        time_start = time.time()
         latest = DB.session.query(OasisData.NODE_ID,
             func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).group_by(OasisData.NODE_ID).subquery('t2')
         modules = DB.session.query(OasisData).join(
             latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
+        time_end = time.time()
+        delta= time_end - time_start
+        logger.debug("[database] call database for index page took %s secs",time.strftime("%S", time.gmtime(delta)))
 
         return render_template('index.html', modules=modules)
 

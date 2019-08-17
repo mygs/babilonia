@@ -13,10 +13,44 @@
                <p><span>{{ format_timestamp(module.TIMESTAMP) }} </span></p>
               <table id="telemetry">
                 <tr>
-                  {{module.DATA['DATA']}}
+                  <td class="param-label">Temperature</td>
+                  <td class="param-value" id='temperature_{{module.NODE_ID}}'>{{module.DATA['DATA']['DHT']['TEMPERATURE']}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Humidity</td>
+                  <td class="param-value" id='humidity_{{module.NODE_ID}}'>{{module.DATA['DATA']['DHT']['HUMIDITY']}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Software Ver</td>
+                  <td class="param-value" id='sw_ver_{{module.NODE_ID}}'>{{module.DATA['FIRMWARE_VERSION']}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Irrigation</td>
+                  <td class="param-value" id='irrigation_{{module.NODE_ID}}'>{{module.DATA['DATA']['WATER']}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Light</td>
+                  <td class="param-value" id='light_{{module.NODE_ID}}'>{{module.DATA['DATA']['LIGHT']}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Fan</td>
+                  <td class="param-value" id='fan_{{module.NODE_ID}}'>{{module.DATA['DATA']['FAN']}}</td>
+                </tr>
+                <tr>
+                <!--  {{module.DATA['DATA']}} -->
                 </tr>
               </table>
-
+              <table id="cockpit">
+              <tr>
+                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-refresh" data-id="{{module.NODE_ID}}"  data-cmd="1"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-water" data-id="{{module.NODE_ID}}"><i class="wi wi-sprinkle"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-info btn-light" data-id="{{module.NODE_ID}}"><i class="wi wi-day-sunny"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-default btn-fan" data-id="{{module.NODE_ID}}"><i class="wi wi-cloudy-gusts"></i></button></td>
+              </tr>
+              <tr>
+                <td><button type="button" class="btn btn-sm btn-block btn-danger btn-restart" data-id="{{module.NODE_ID}}"><i class="fa fa-power-off"></i></button></td>
+              </tr>
+              </table>
             </div>
           </li>
         {% endfor %}
