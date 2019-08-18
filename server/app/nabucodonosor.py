@@ -24,21 +24,21 @@ from sqlalchemy import func, and_
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
 ###### create console handler and set level to debug
-project_dir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(project_dir) #change directory because of log files
+PROJECT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+os.chdir(PROJECT_DIRECTORY) #change directory because of log files
 VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
-                                cwd=project_dir).strip()
+                                cwd=PROJECT_DIRECTORY).strip()
 
-with open(os.path.join(project_dir, 'logging.json'), "r") as logging_json_file:
+with open(os.path.join(PROJECT_DIRECTORY, 'logging.json'), "r") as logging_json_file:
     logging_config = json.load(logging_json_file)
-    log_dir = project_dir+"/../log"
+    log_dir = PROJECT_DIRECTORY+"/../log"
     if os.path.exists(log_dir) == False:
         os.makedirs(log_dir)
     logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
 
 ###### reading configuration
-with open(os.path.join(project_dir, 'config.json'), "r") as config_json_file:
+with open(os.path.join(PROJECT_DIRECTORY, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
 isMQTTDataRecordEnabled = cfg["MODE"]["MQTT"]
 ###### Initialisation
@@ -129,8 +129,10 @@ def about():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     message = json.dumps(request.get_json())
-    logger.debug("[webhook] %s", message)
-    subprocess.run(["git", "pull"])
+    logger.info("[webhook] %s", message)
+    subprocess.run(["git", "pull"], cwd=PROJECT_DIRECTORY)
+    subprocess.run(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY)
+
 ###############################################################################
 ################################# PROCESSORS ##################################
 ###############################################################################
