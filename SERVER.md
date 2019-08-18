@@ -122,4 +122,6 @@ sudo cp nabucodonosor.sh /etc/init.d
 sudo update-rc.d nabucodonosor.sh defaults
 sudo /etc/init.d/nabucodonosor.sh start
 sudo /etc/init.d/nabucodonosor.sh status
+
+sudo service nabucodonosor stop
 ```

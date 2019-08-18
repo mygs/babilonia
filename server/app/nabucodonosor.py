@@ -19,13 +19,16 @@ from flask_assets import Environment, Bundle
 from sqlalchemy import func, and_
 
 
-VERSION = subprocess.check_output(["git", "describe", "--tags","--always"]).strip()
 
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
 ###### create console handler and set level to debug
 project_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(project_dir) #change directory because of log files
+VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
+                                cwd=project_dir).strip()
+
 with open(os.path.join(project_dir, 'logging.json'), "r") as logging_json_file:
     logging_config = json.load(logging_json_file)
     log_dir = project_dir+"/../log"
