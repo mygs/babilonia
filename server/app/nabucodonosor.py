@@ -3,6 +3,7 @@
 import os
 import time
 import subprocess
+import git
 import json
 import datetime as dt
 import logging
@@ -130,7 +131,6 @@ def about():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     message = request.get_json()
-    os.chdir(PROJECT_DIRECTORY) #change directory because of log files
 
     if message is not None:
         logger.info("[webhook] message:%s",message)
@@ -138,10 +138,9 @@ def webhook():
         commit_message = message["head_commit"]["message"]
 
         logger.info("[webhook] commit:%s author:%s",commit_message, committer)
-        update = subprocess.check_output(["git", "pull"], cwd=PROJECT_DIRECTORY).strip()
-        logger.info("[webhook] update:%s",update)
-        restart = subprocess.check_output(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY).strip()
-        logger.info("[webhook] restart:%s",restart)
+        repo = git.Repo(PROJECT_DIRECTORY)
+        repo.remotes.origin.pull()
+        subprocess.check_output(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY)
         return json.dumps({'status':'request!'});
 
     return json.dumps({'status':'request was ignored!'});
