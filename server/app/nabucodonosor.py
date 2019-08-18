@@ -49,6 +49,7 @@ app.config['MQTT_BROKER_PORT'] = cfg["MQTT"]["PORT"]
 app.config['MQTT_KEEPALIVE'] = cfg["MQTT"]["KEEPALIVE"]
 app.config['SQLALCHEMY_DATABASE_URI'] = cfg["SQLALCHEMY_DATABASE_URI"]
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 mqtt = Mqtt(app)
 DB.init_app(app)
@@ -128,10 +129,21 @@ def about():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    message = json.dumps(request.get_json())
-    logger.info("[webhook] %s", message)
-    subprocess.run(["git", "pull"], cwd=PROJECT_DIRECTORY)
-    subprocess.run(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY)
+    message = request.get_json()
+
+    if message is not None:
+        logger.info("[webhook] message:%s",message)
+        committer = message["pusher"]["name"]
+        commit_message = message["head_commit"]["message"]
+
+        logger.info("[webhook] commit:%s author:%s",commit_message, committer)
+        update = subprocess.run(["git", "pull"], cwd=PROJECT_DIRECTORY)
+        update.wait()
+        restart = subprocess.run(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY)
+        restart.wait()
+        return json.dumps({'status':'request!'});
+
+    return json.dumps({'status':'request was ignored!'});
 
 ###############################################################################
 ################################# PROCESSORS ##################################
@@ -205,7 +217,5 @@ if __name__ == '__main__':
     logger.info("*** STARTING NABUCODONOSOR SYSTEM ***")
     logger.info("version: %s", VERSION)
 
-    user_reload = True
-    if isMQTTDataRecordEnabled:
-        user_reload = False # Avoid Bug: TWICE mqtt instances
+    user_reload = False # Avoid Bug: TWICE mqtt instances
     socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)
