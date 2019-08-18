@@ -138,7 +138,7 @@ def webhook():
         commit_message = message["head_commit"]["message"]
 
         logger.info("[webhook] commit:%s author:%s",commit_message, committer)
-        repo = git.Repo(PROJECT_DIRECTORY)
+        repo = git.Repo(os.environ['BABILONIA_HOME'])
         repo.remotes.origin.pull()
         subprocess.check_output(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY)
         return json.dumps({'status':'request!'});
