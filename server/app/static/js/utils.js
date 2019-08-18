@@ -60,11 +60,15 @@ $(".btn-fan").on("click", function() {
 
 $(".btn-water").on("click", function() {
   var id = $(this).data('id');
-  var mode = 'sop';
+  var command = {
+           "NODE_ID": id,
+        "MESSAGE_ID": "a12dc89b",
+            "COMMAND": {"WATER": true}
+        };
   var img = '/static/img/tap.png';
-  var title = "Turn ON Pump/Solenoid for 10 secs?";
-  var text = "after action, please wait";
-  //callbackend(id, mode, 10000000, img, title, text)
+  var title = "Irrigate?";
+  var text = "Do not forget to turn it OFF";
+  callbackend(command, img, title, text);
 });
 
 
