@@ -109,3 +109,17 @@ status message node
 ```
 mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-312193\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"NODE\"]}"
 ```
+
+
+### daemon
+http://blog.scphillips.com/posts/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/
+
+```bash
+dos2unix nabucodonosor.sh
+sudo chmod 755 nabucodonosor.py
+sudo chmod 755 nabucodonosor.sh
+sudo cp nabucodonosor.sh /etc/init.d
+sudo update-rc.d nabucodonosor.sh defaults
+sudo /etc/init.d/nabucodonosor.sh start
+sudo /etc/init.d/nabucodonosor.sh status
+```
