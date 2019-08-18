@@ -50,20 +50,25 @@ $(".btn-light").on("click", function() {
 
 $(".btn-fan").on("click", function() {
   var id = $(this).data('id');
-  var mode = 'fan';
-  var param = ($('#fan_' + id).html() == "on") ? 0 : 1; /* invert! */
+  var param = ($('#fan_' + id).html() == "1") ? False : True; /* invert! */
+  var command = {
+           "NODE_ID": id,
+        "MESSAGE_ID": "a12dc89b",
+            "COMMAND": {"FAN": param}
+        };
   var img = '/static/img/fan.png';
-  var title = "Turn " + (param == 1 ? "ON" : "OFF") + " the fan for " + id + "?";
+  var title = "Turn " + (param == True ? "ON" : "OFF") + " the fan for " + id + "?";
   var text = name + " schedule might overwrite your current action";
   //callbackend(id, mode, param, img, title, text)
 });
 
 $(".btn-water").on("click", function() {
   var id = $(this).data('id');
+  var param = ($('#irrigation_' + id).html() == "1") ? False : True; /* invert! */
   var command = {
            "NODE_ID": id,
         "MESSAGE_ID": "a12dc89b",
-            "COMMAND": {"WATER": true}
+            "COMMAND": {"WATER": param}
         };
   var img = '/static/img/tap.png';
   var title = "Irrigate?";
