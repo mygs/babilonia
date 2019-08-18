@@ -137,9 +137,10 @@ def webhook():
         commit_message = message["head_commit"]["message"]
 
         logger.info("[webhook] commit:%s author:%s",commit_message, committer)
-        subprocess.check_output(["git", "pull"], cwd=PROJECT_DIRECTORY)
-        subprocess.check_output(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY)
-
+        update = subprocess.check_output(["git", "pull"], cwd=PROJECT_DIRECTORY)
+        logger.info("[webhook] update:%s",update)
+        restart = subprocess.check_output(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY)
+        logger.info("[webhook] restart:%s",restart)
         return json.dumps({'status':'request!'});
 
     return json.dumps({'status':'request was ignored!'});
