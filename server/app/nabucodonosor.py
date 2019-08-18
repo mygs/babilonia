@@ -130,6 +130,7 @@ def about():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     message = request.get_json()
+    os.chdir(PROJECT_DIRECTORY) #change directory because of log files
 
     if message is not None:
         logger.info("[webhook] message:%s",message)
