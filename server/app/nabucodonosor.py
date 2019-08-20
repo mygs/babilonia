@@ -140,7 +140,7 @@ def webhook():
         logger.info("[webhook] commit:%s author:%s",commit_message, committer)
         repo = git.Repo(cfg["GIT_REPO"])
         repo.remotes.origin.pull()
-        subprocess.check_output(["service", "nabucodonosor", "restart"], cwd=PROJECT_DIRECTORY)
+        subprocess.check_output(["sudo", "service", "nabucodonosor", "restart"])
         return json.dumps({'status':'request!'});
 
     return json.dumps({'status':'request was ignored!'});
