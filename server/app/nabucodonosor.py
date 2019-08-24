@@ -176,36 +176,35 @@ def utility_processor():
 ############################## HANDLE MQTT ####################################
 ###############################################################################
 
-if cfg["MODE"]["MQTT"] == True:
 # The callback for when the client receives a CONNACK response from the server.
-    @mqtt.on_connect()
-    def handle_mqtt_connect(client, userdata, flags, rc):
-        logger.debug("Connected with result code %s",str(rc))
-        # Subscribing in on_connect() means that if we lose the connection and
-        # reconnect then subscriptions will be renewed.
-        mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"])
-        mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"])
+@mqtt.on_connect()
+def handle_mqtt_connect(client, userdata, flags, rc):
+    logger.debug("Connected with result code %s",str(rc))
+    # Subscribing in on_connect() means that if we lose the connection and
+    # reconnect then subscriptions will be renewed.
+    mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"])
+    mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"])
 
-    # The callback for when a PUBLISH message is received from the server.
-    @mqtt.on_message()
-    def handle_mqtt_message(client, userdata, msg):
-        topic = msg.topic
-        jmsg = json.loads(msg.payload)
-        node_id = jmsg["NODE_ID"]
-        timestamp = int(time.time())
+# The callback for when a PUBLISH message is received from the server.
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, msg):
+    topic = msg.topic
+    jmsg = json.loads(msg.payload)
+    node_id = jmsg["NODE_ID"]
+    timestamp = int(time.time())
 
-        if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
-            logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
-            if isMQTTDataRecordEnabled:
-                heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
-                with app.app_context():
-                    DB.session.merge(heartbeat)
-        if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
-            logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
-            if isMQTTDataRecordEnabled:
-                data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
-                with app.app_context():
-                    DB.session.add(data)
+    if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
+        logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
+        if isMQTTDataRecordEnabled:
+            heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
+            with app.app_context():
+                DB.session.merge(heartbeat)
+    if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
+        logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
+        if isMQTTDataRecordEnabled and "DATA" in jmsg:
+            data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
+            with app.app_context():
+                DB.session.add(data)
 
 
 ###############################################################################
