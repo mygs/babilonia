@@ -11,9 +11,14 @@ alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
 ```
 
 ### python imports
+Simple do:
+```
+pip install -r requirements.txt
+```
+OR
 ```
 sudo pip3 install paho-mqtt sqlalchemy flask-sqlalchemy flask-mysql flask-socketio simplejson pandas flask-mqtt Pillow Flask-QRcode Flask-Assets jsmin cssmin
-pathlib python-git
+pathlib python-git gitpython
 ```
 
 ### middlwares & tools
