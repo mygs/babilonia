@@ -195,7 +195,7 @@ def handle_mqtt_message(client, userdata, msg):
                 DB.session.merge(heartbeat)
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
         logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
-        if isMQTTDataRecordEnabled:
+        if isMQTTDataRecordEnabled and "DATA" in jmsg:
             data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
             with app.app_context():
                 DB.session.add(data)
