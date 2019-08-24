@@ -91,7 +91,10 @@ assets.register('3rdpartyjs',
                 output='assets/3rdparty.js',
                 filters='jsmin')
 
-
+def update_server_software():
+    repo = git.Repo(cfg["GIT_REPO"])
+    repo.remotes.origin.pull()
+    subprocess.check_output(["sudo", "service", "nabucodonosor", "restart"])
 ###############################################################################
 ############################# MANAGE WEB REQ/RESP #############################
 ###############################################################################
@@ -138,9 +141,12 @@ def webhook():
         commit_message = message["head_commit"]["message"]
 
         logger.info("[webhook] commit:%s author:%s",commit_message, committer)
-        repo = git.Repo(cfg["GIT_REPO"])
-        repo.remotes.origin.pull()
-        subprocess.check_output(["sudo", "service", "nabucodonosor", "restart"])
+        if cfg["MODE"]["AUTO_UPDATE_SERVER"] == True:
+            logger.info("[webhook] applying update")
+            update_server_software()
+        else:
+            logger.warn("[webhook] auto updates not applied")
+
         return json.dumps({'status':'request!'});
 
     return json.dumps({'status':'request was ignored!'});
