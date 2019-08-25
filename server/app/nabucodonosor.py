@@ -25,10 +25,9 @@ from sqlalchemy import func, and_
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
 ###### create console handler and set level to debug
-BABILONIA_HOME=os.environ['BABILONIA_HOME']
-SERVER_HOME=os.path.join(BABILONIA_HOME, 'server/app')
-LOG_DIR=os.path.join(BABILONIA_HOME, 'server/log')
-COMMON_DIR=os.path.join(BABILONIA_HOME, 'common')
+SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR=os.path.join(SERVER_HOME, '../log')
+COMMON_DIR=os.path.join(SERVER_HOME, '../../common')
 os.chdir(SERVER_HOME) #change directory because of log files
 with open(os.path.join(SERVER_HOME, 'logging.json'), "r") as logging_json_file:
     logging_config = json.load(logging_json_file)
@@ -38,7 +37,7 @@ with open(os.path.join(SERVER_HOME, 'logging.json'), "r") as logging_json_file:
 logger = logging.getLogger(__name__)
 ###### reading version
 VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
-                                cwd=BABILONIA_HOME).strip()
+                                cwd=SERVER_HOME).strip()
 ###### reading configuration
 with open(os.path.join(SERVER_HOME, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
