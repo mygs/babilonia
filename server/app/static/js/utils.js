@@ -113,3 +113,63 @@ $(".btn-refresh").on("click", function() {
     }
   });
 });
+
+/* MODAL STUFF */
+
+$('#updateNodeModal').on('show.bs.modal', function(event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal
+  var id = button.data('id'); // Extract info from data-* attributes
+  var modal = $(this);
+  $.ajax({
+    url: '/configuration',
+    type: 'POST',
+    data: {
+      "id": id
+    },
+    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    success: function(response) {
+      var resp = JSON.parse(response);
+      //$("#ID").val(id);
+      console.log(resp);
+
+    },
+    error: function(response) {
+      $("#alert").html("ERROR");
+      $("#alert").removeClass('alert alert-success alert-danger').addClass("alert alert-danger");
+      $(".alert").delay(5000).fadeOut(1000);
+    }
+  });
+});
+
+function updatecfg() {
+  swal({
+    title: "Are you sure?",
+    text: "Node will be reboot in order to apply new configuration",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
+    closeOnConfirm: false
+  }, function(isConfirm) {
+    if (isConfirm) {
+      $.ajax({
+        url: '/updatecfg',
+        type: 'POST',
+        data: $('#updateNodeModalForm').serialize(),
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        success: function(response) {
+          resp = JSON.parse(response);
+          swal("Success", resp.message, "success");
+          $("#saveconfig").attr("disabled", "disabled");
+        },
+        error: function(response) {
+          resp = JSON.parse(response);
+          swal("Failed", resp.message, "error");
+        }
+      });
+    } else {
+      swal("You not apply nor save new configuration!");
+    }
+  });
+};

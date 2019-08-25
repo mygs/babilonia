@@ -55,6 +55,7 @@
                 <td><button type="button" class="btn btn-sm btn-block btn-default btn-fan" data-id="{{id}}"><i class="wi wi-cloudy-gusts"></i></button></td>
               </tr>
               <tr>
+                <td><button type="button" class="btn btn-sm btn-block btn-default" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-danger btn-restart" data-id="{{id}}"><i class="fa fa-power-off"></i></button></td>
               </tr>
               </table>
@@ -66,3 +67,5 @@
   </div>
 </div>
 {% endblock %}
+<!-- modals -->
+{% include 'modal-updatenode.html' %}

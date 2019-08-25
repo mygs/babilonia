@@ -25,26 +25,27 @@ from sqlalchemy import func, and_
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
 ###### create console handler and set level to debug
-PROJECT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-os.chdir(PROJECT_DIRECTORY) #change directory because of log files
-VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
-                                cwd=PROJECT_DIRECTORY).strip()
-
-with open(os.path.join(PROJECT_DIRECTORY, 'logging.json'), "r") as logging_json_file:
+BABILONIA_HOME=os.environ['BABILONIA_HOME']
+SERVER_HOME=os.path.join(BABILONIA_HOME, 'server/app')
+LOG_DIR=os.path.join(BABILONIA_HOME, 'server/log')
+COMMON_DIR=os.path.join(BABILONIA_HOME, 'common')
+os.chdir(SERVER_HOME) #change directory because of log files
+with open(os.path.join(SERVER_HOME, 'logging.json'), "r") as logging_json_file:
     logging_config = json.load(logging_json_file)
-    log_dir = PROJECT_DIRECTORY+"/../log"
-    if os.path.exists(log_dir) == False:
-        os.makedirs(log_dir)
+    if os.path.exists(LOG_DIR) == False:
+        os.makedirs(LOG_DIR)
     logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
-
+###### reading version
+VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
+                                cwd=BABILONIA_HOME).strip()
 ###### reading configuration
-with open(os.path.join(PROJECT_DIRECTORY, 'config.json'), "r") as config_json_file:
+with open(os.path.join(SERVER_HOME, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
 isMQTTDataRecordEnabled = cfg["MODE"]["MQTT"]
+
 ###### Initialisation
 app = Flask(__name__, static_url_path='/static')
-
 app.config['MQTT_BROKER_URL'] = cfg["MQTT"]["BROKER"]
 app.config['MQTT_BROKER_PORT'] = cfg["MQTT"]["PORT"]
 app.config['MQTT_KEEPALIVE'] = cfg["MQTT"]["KEEPALIVE"]
@@ -57,7 +58,6 @@ DB.init_app(app)
 socketio = SocketIO(app)
 assets = Environment(app)
 #qrcode = QRcode(app)
-
 
 assets.load_path = [os.path.join(os.path.dirname(__file__), 'static/fonts'),
                     os.path.join(os.path.dirname(__file__), 'static')]
@@ -112,6 +112,18 @@ def index():
         logger.debug("[database] call database for index page took %s secs",time.strftime("%S", time.gmtime(delta)))
 
         return render_template('index.html', modules=modules)
+
+
+@app.route('/configuration', methods=['POST'])
+def node_config():
+    id = request.form['id'];
+    logger.debug("[configuration] getting config for %s", id)
+    #TODO: merge with current config
+    #node = database.get_node_cfg(id);
+    DEFAULT_CONFIG_FILE = os.path.join(COMMON_DIR, 'config/oasis.json')
+    with open(DEFAULT_CONFIG_FILE, "r") as default_config:
+        config = json.load(default_config)
+    return json.dumps(config);
 
 @app.route('/status', methods=['POST'])
 def refresh():
