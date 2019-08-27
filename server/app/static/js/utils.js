@@ -129,7 +129,15 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
     contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
     success: function(response) {
       var resp = JSON.parse(response);
-      //$("#ID").val(id);
+      $("#ID").val(id);
+      $("#SENSOR_COLLECT_DATA_PERIOD").val(resp.SENSOR_COLLECT_DATA_PERIOD);
+      $("#RETRY_WIFI_CONN_DELAY").val(resp.RETRY_WIFI_CONN_DELAY);
+      $("#SERIAL_BAUDRATE").val(resp.SERIAL_BAUDRATE);
+      $("#OTA_PORT").val(resp.OTA_PORT);
+      $("#MODAL_TITLE").text(id);
+      for( idx = 0 ; idx < 9 ; idx++){
+        $("#PIN"+IDX).val(resp.PIN[idx]);
+      }
       console.log(resp);
 
     },
@@ -141,7 +149,7 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
   });
 });
 
-function updatecfg() {
+function updateNodeConfiguration() {
   swal({
     title: "Are you sure?",
     text: "Node will be reboot in order to apply new configuration",
