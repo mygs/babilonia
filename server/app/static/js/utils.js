@@ -136,7 +136,7 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       $("#OTA_PORT").val(resp.OTA_PORT);
       $("#MODAL_TITLE").text(id);
       for( idx = 0 ; idx < 9 ; idx++){
-        $("#PIN"+IDX).val(resp.PIN[idx]);
+        $("#PIN"+idx).val(resp.PIN[idx]);
       }
       console.log(resp);
 
