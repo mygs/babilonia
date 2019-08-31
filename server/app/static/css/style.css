@@ -292,7 +292,12 @@ table.dataTable tbody tr.selected {
   padding: 15px;
   margin: auto;
 }
-
+.form-signin .error{
+  color: red;
+}
+.form-signin .login-logo{
+  margin-bottom: 20px;
+}
 .form-signin .form-control {
   position: relative;
   box-sizing: border-box;

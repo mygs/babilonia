@@ -11,9 +11,13 @@ alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
 ```
 
 ### python imports
+Update requirements.txt
+```
+pipreqs --force .
+```
 Simple do:
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 OR
 ```

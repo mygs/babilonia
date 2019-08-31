@@ -63,9 +63,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 #qrcode = QRcode(app)
 
-# create some users with ids 1 to 20
-users = [User(id) for id in range(1, 21)]
-
 assets.load_path = [os.path.join(os.path.dirname(__file__), 'static/fonts'),
                     os.path.join(os.path.dirname(__file__), 'static')]
 assets.register('3rdpartycss',
@@ -106,8 +103,8 @@ def update_server_software():
 ############################# MANAGE WEB REQ/RESP #############################
 ###############################################################################
 @login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
+def load_user(username):
+    return User.query.get(username)
 
 # somewhere to login
 @app.route("/login", methods=["GET", "POST"])
@@ -116,13 +113,13 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if password == username:
-            id = username.split('user')[1]
-            user = User(id)
-            login_user(user)
-            return redirect('/')
-        else:
+        registered_user = User.query.filter_by(USERNAME=username,PASSWORD=password).first()
+
+        if registered_user is None:
             error = 'Invalid Credentials. Please try again.'
+        else:
+            login_user(registered_user)
+            return redirect('/')
     return render_template('login.html', error=error)
 
 
@@ -141,12 +138,6 @@ def page_not_found(e):
 @app.errorhandler(401)
 def page_not_found(e):
     return redirect('/login')
-
-
-# callback to reload the user object
-@login_manager.user_loader
-def load_user(userid):
-    return User(userid)
 
 
 @app.route('/')

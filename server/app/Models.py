@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
 DB = SQLAlchemy()
 
 class OasisData(DB.Model):
@@ -20,12 +19,26 @@ class OasisHeartbeat(DB.Model):
     def __repr__(self):
         return '<OasisHeartbeat id:{} time:{}>'.format(self.NODE_ID, self.LAST_UPDATE)
 
-class User(UserMixin):
+class User(DB.Model):
+    __tablename__ = 'USER'
+    USERNAME = DB.Column(DB.String(8), primary_key=True)
+    PASSWORD = DB.Column(DB.String(8))
 
-    def __init__(self, id):
-        self.id = id
-        self.name = "user" + str(id)
-        self.password = self.name
+    def __init__(self, USERNAME, PASSWORD):
+        self.USERNAME = USERNAME
+        self.PASSWORD = PASSWORD
 
     def __repr__(self):
-        return "%d/%s/%s" % (self.id, self.name, self.password)
+        return '<User name:{} password:{}>'.format(self.USERNAME, self.PASSWORD)
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.USERNAME
