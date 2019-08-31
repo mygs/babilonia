@@ -11,13 +11,14 @@ import logging.config
 from Models import *
 #import analytics
 import simplejson as json
-from flask import Flask, render_template, request
+from flask import Flask, Response, url_for, redirect, render_template, request, session, abort
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_assets import Environment, Bundle
 #from croniter import croniter
 #from flask_qrcode import QRcode
 from sqlalchemy import func, and_
+from flask_login import LoginManager, login_required, login_user, logout_user
 
 
 
@@ -51,12 +52,19 @@ app.config['MQTT_KEEPALIVE'] = cfg["MQTT"]["KEEPALIVE"]
 app.config['SQLALCHEMY_DATABASE_URI'] = cfg["SQLALCHEMY_DATABASE_URI"]
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = cfg["SECRET_KEY"]
+app.config['LOGIN_DISABLED'] = False
 
 mqtt = Mqtt(app)
 DB.init_app(app)
 socketio = SocketIO(app)
 assets = Environment(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 #qrcode = QRcode(app)
+
+# create some users with ids 1 to 20
+users = [User(id) for id in range(1, 21)]
 
 assets.load_path = [os.path.join(os.path.dirname(__file__), 'static/fonts'),
                     os.path.join(os.path.dirname(__file__), 'static')]
@@ -97,8 +105,52 @@ def update_server_software():
 ###############################################################################
 ############################# MANAGE WEB REQ/RESP #############################
 ###############################################################################
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
+
+# somewhere to login
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if password == username:
+            id = username.split('user')[1]
+            user = User(id)
+            login_user(user)
+            return redirect('/')
+        else:
+            error = 'Invalid Credentials. Please try again.'
+    return render_template('login.html', error=error)
+
+
+# somewhere to logout
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect('/login')
+
+# handle page not found
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+# handle login failed
+@app.errorhandler(401)
+def page_not_found(e):
+    return redirect('/login')
+
+
+# callback to reload the user object
+@login_manager.user_loader
+def load_user(userid):
+    return User(userid)
+
 
 @app.route('/')
+@login_required
 def index():
     with app.app_context():
         time_start = time.time()
@@ -114,6 +166,7 @@ def index():
 
 
 @app.route('/configuration', methods=['POST'])
+@login_required
 def node_config():
     id = request.form['id'];
     logger.debug("[configuration] getting config for %s", id)
@@ -132,6 +185,7 @@ def refresh():
     return json.dumps({'status':'Success!'});
 
 @app.route('/command', methods=['POST'])
+@login_required
 def command():
     message = json.dumps(request.get_json())
     logger.debug("[command] %s", message)

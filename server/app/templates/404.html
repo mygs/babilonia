@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  {% include 'includes/_header.html' %}
+  </head>
+  <body class="text-center">
+    {% assets "3rdpartyjs" %}
+      <script src="{{ ASSET_URL }}" ></script>
+    {% endassets %}
+    <h1 style="color:red;">Page Not Found</h1>
+    <p style="color:red;font-style: italic;">What you were looking for is just not there.
+  </body>
+  {% include 'includes/_footer.html' %}
+</html>

@@ -27,12 +27,12 @@ function callbackend(command, img, title, text) {
       contentType: 'application/json',
       data: JSON.stringify(command),
       success: function(response) {
-        resp = JSON.parse(response);
-        swal(resp.status, "It was succesfully!", "success");
+        console.log(response.status);
+        swal(response.status, "It was succesfully!", "success");
       },
       error: function(response) {
-        resp = JSON.parse(response);
-        swal(resp.status, "XPTO!", "error");
+        console.log(response.status);
+        swal(response.status, "XPTO!", "error");
       }
     });
   });
@@ -105,11 +105,10 @@ $(".btn-refresh").on("click", function() {
     contentType: 'application/json',
     data: JSON.stringify(status),
     success: function(response) {
-      resp = JSON.parse(response);
+      console.log(response.status);
     },
     error: function(response) {
-      resp = JSON.parse(response);
-      swal(resp.status, "XPTO!", "error");
+      swal(response.status, "XPTO!", "error");
     }
   });
 });
@@ -167,13 +166,12 @@ function updateNodeConfiguration() {
         data: $('#updateNodeModalForm').serialize(),
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
-          resp = JSON.parse(response);
-          swal("Success", resp.message, "success");
+          console.log(response.status);
+          swal("Success", response.message, "success");
           $("#saveconfig").attr("disabled", "disabled");
         },
         error: function(response) {
-          resp = JSON.parse(response);
-          swal("Failed", resp.message, "error");
+          swal("Failed", response.message, "error");
         }
       });
     } else {

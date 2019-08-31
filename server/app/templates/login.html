@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  {% include 'includes/_header.html' %}
+  </head>
+  <body class="text-center">
+    {% assets "3rdpartyjs" %}
+      <script src="{{ ASSET_URL }}" ></script>
+    {% endassets %}
+      <form class="form-signin" method="POST" action="">
+        <img class="mb-4" src="../static/img/logo.png" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Please login first</h1>
+        {% if error %}
+          <p class="error"><strong>{{ error }}</strong> 
+        {% endif %}
+        <label for="username" class="sr-only">User</label>
+        <input type="text" id="username" name="username"
+          class="form-control" placeholder="Username"
+          value="{{ request.form.username }}"
+          required autofocus>
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" id="password" name="password"
+          class="form-control" placeholder="Password"
+          value="{{ request.form.password }}"
+          required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+      </form>
+
+  </body>
+  {% include 'includes/_footer.html' %}
+</html>
