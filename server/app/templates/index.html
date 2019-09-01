@@ -4,7 +4,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-      <h2 id="index">Plantação</h2>
+      <h2 id="index">Farm</h2>
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           {%  set id = module.NODE_ID %}
@@ -19,9 +19,13 @@
 
           <li>
             <div class="box {{ status_node(last_update, sensor_collect_data_period) }}">
-              <h4>{{id}}</h4>
+              <h4 class="text-uppercase">{{id}}</h4>
                <p><span>{{ format_last_update(last_update) }} </span></p>
               <table id="telemetry">
+                <tr>
+                  <td class="param-label">Firmware</td>
+                  <td class="param-value" id='sw_ver_{{id}}'>{{firmware_version}}</td>
+                </tr>
                 <tr>
                   <td class="param-label">Temperature</td>
                   <td class="param-value" id='temperature_{{id}}'>{{temperature}}</td>
@@ -31,9 +35,10 @@
                   <td class="param-value" id='humidity_{{id}}'>{{humidity}}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Firmware</td>
-                  <td class="param-value" id='sw_ver_{{id}}'>{{firmware_version}}</td>
+                  <td class="param-label">Soil</td>
+                  <td class="param-value" id='humidity_{{id}}'>???</td>
                 </tr>
+                <!--
                 <tr>
                   <td class="param-label">Irrigation</td>
                   <td class="param-value" id='irrigation_{{id}}'>{{water}}</td>
@@ -46,15 +51,16 @@
                   <td class="param-label">Wind</td>
                   <td class="param-value" id='fan_{{id}}'>{{fan}}</td>
                 </tr>
+                -->
               </table>
               <table id="cockpit">
               <tr>
-                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-warning btn-water" data-id="{{id}}"><i class="wi wi-sprinkle"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-info btn-light" data-id="{{id}}"><i class="wi wi-day-sunny"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-default btn-fan" data-id="{{id}}"><i class="wi wi-cloudy-gusts"></i></button></td>
               </tr>
               <tr>
+                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-default" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-danger btn-restart" data-id="{{id}}"><i class="fa fa-power-off"></i></button></td>
               </tr>
