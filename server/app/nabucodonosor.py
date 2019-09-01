@@ -250,17 +250,20 @@ def handle_mqtt_message(client, userdata, msg):
     timestamp = int(time.time())
 
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
-        logger.debug("[heartbeat] from %s", jmsg["NODE_ID"])
+        heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
+        logger.debug("[heartbeat] %s", heartbeat.toJson())
+        socketio.emit('mqtt_message', data=heartbeat)
         if isMQTTDataRecordEnabled:
-            heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
             with app.app_context():
                 DB.session.merge(heartbeat)
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
-        logger.debug("[data] from %s at %s", jmsg["NODE_ID"], jmsg)
+        data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
+        logger.debug("[data] %s", data.toJson())
+        socketio.emit('mqtt_message', data=data)
         if isMQTTDataRecordEnabled and "DATA" in jmsg:
-            data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
             with app.app_context():
                 DB.session.add(data)
+
 
 
 ###############################################################################
