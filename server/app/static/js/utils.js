@@ -179,3 +179,29 @@ function updateNodeConfiguration() {
     }
   });
 };
+
+
+
+/* Websocket connection to update NODE Status */
+$(document).ready(function() {
+
+  var socket = io.connect();
+  socket.on('ws-oasis-data', function(data) {
+    console.log(data);
+  });
+
+  socket.on('ws-oasis-heartbeat', function(data) {
+    console.log(data);
+  });
+  // get current URL path and assign 'active' class
+  /*
+  var pathname = window.location.pathname;
+  var suffix = pathname.substring(0, pathname.indexOf("/", pathname.indexOf("/") + 1))
+  if (suffix == "") {
+    suffix = pathname;
+  }
+  $('.navbar-nav > li > a[href="' + suffix + '"]').parent().addClass('active');
+  $('.nav-sidebar > li > a[href="' + pathname + '"]').parent().addClass('active');
+*/
+
+});

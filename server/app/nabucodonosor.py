@@ -252,14 +252,14 @@ def handle_mqtt_message(client, userdata, msg):
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
         heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
         logger.debug("[heartbeat] %s", heartbeat.toJson())
-        socketio.emit('mqtt_message', data=heartbeat)
+        socketio.emit('ws-oasis-heartbeat', data=heartbeat.toJson())
         if isMQTTDataRecordEnabled:
             with app.app_context():
                 DB.session.merge(heartbeat)
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
         data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
         logger.debug("[data] %s", data.toJson())
-        socketio.emit('mqtt_message', data=data)
+        socketio.emit('ws-oasis-data', data=data.toJson())
         if isMQTTDataRecordEnabled and "DATA" in jmsg:
             with app.app_context():
                 DB.session.add(data)
