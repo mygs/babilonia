@@ -2,13 +2,21 @@
 <html>
   <head>
   {% include 'includes/_header.html' %}
+  {% if current_user.is_authenticated %}
+    {% include 'includes/_navbar.html' %}
+  {% endif %}
   </head>
-  <body class="text-center">
-    {% assets "3rdpartyjs" %}
-      <script src="{{ ASSET_URL }}" ></script>
-    {% endassets %}
-    <h1 style="color:red;">Page Not Found</h1>
-    <p style="color:red;font-style: italic;">What you were looking for is just not there.
+  <body  style="padding-top:60px;color:red;" class="text-center">
+
+    <div>
+      <h1>Page Not Found</h1>
+      <p style="font-style: italic;">What you were looking for is just not there.
+    </div>
   </body>
-  {% include 'includes/_footer.html' %}
+  {% assets "3rdpartyjs" %}
+    <script src="{{ ASSET_URL }}" ></script>
+  {% endassets %}
+  {% if current_user.is_authenticated %}
+    {% include 'includes/_footer.html' %}
+  {% endif %}
 </html>
