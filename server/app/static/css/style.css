@@ -37,6 +37,20 @@ h2#index {
     padding: 5px;
 }
 
+table#box-header-telemetry {
+    width: 100%;
+}
+
+td#box-header-telemetry-title {
+    width: 80%;
+    text-align: right;
+}
+
+td#box-header-telemetry-hb {
+    width: 20%;
+    text-align: right;
+}
+
 table#telemetry {
     width: 100%;
     table-layout: fixed;
@@ -317,4 +331,27 @@ table.dataTable tbody tr.selected {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+
+@-webkit-keyframes pulsate {
+    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+    50% {opacity: 1.0;}
+    100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+}
+
+.heart-beat-pulsate  {
+    animation: pulsate 5s ease-out;
+    /*animation-iteration-count: infinite;*/
+    animation-iteration-count: 1;
+    opacity: 0.0;
+
+    /* you dont need the stuff below, but its what I used to create the loading circle */
+    border: 3px solid #ff0024;
+    border-radius: 25px;
+    height: 18px;
+    width: 18px;
+    position: relative;
+    display: inline-block;
+    text-align: center;
 }

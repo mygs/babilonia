@@ -19,7 +19,16 @@
 
           <li>
             <div class="box {{ status_node(last_update, sensor_collect_data_period) }}">
-              <h4 class="text-uppercase">{{id}}</h4>
+              <table id="box-header-telemetry">
+                <tr>
+                    <td id="box-header-telemetry-title">
+                        <h4 class="text-uppercase">{{id}}</h4>
+                    </td>
+                    <td id="box-header-telemetry-hb">
+                      <div id="heartbeat_{{id}}" class="heart-beat-pulsate"></div>
+                    </td>
+                </tr>
+              </table>
                <p><span>{{ format_last_update(last_update) }} </span></p>
               <table id="telemetry">
                 <tr>
