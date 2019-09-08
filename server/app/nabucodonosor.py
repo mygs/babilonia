@@ -53,7 +53,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = cfg["SQLALCHEMY_DATABASE_URI"]
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = cfg["SECRET_KEY"]
-app.config['LOGIN_DISABLED'] = False
+app.config['LOGIN_DISABLED'] = cfg["LOGIN_DISABLED"]
 
 mqtt = Mqtt(app)
 DB.init_app(app)
