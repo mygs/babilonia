@@ -2,6 +2,7 @@
 	"MESSAGE_ID": "a12dc89b",
   "NODE_ID":"oasis-312193",
 	"FIRMWARE_VERSION": "version",
+	"NODE_IP": "192.168.2.33",
 	"ERROR":"some error message here",
 	"DATA": {
 		"NODE": {

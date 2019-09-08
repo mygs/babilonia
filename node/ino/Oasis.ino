@@ -14,6 +14,7 @@ WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
 char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
+char NODE_IP[IP_SIZE];
 
 StaticJsonDocument<JSON_MEMORY_SIZE> inboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> outboundData;
@@ -35,6 +36,7 @@ void postResponse(const JsonDocument& message) {
 void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   outboundData.clear();
   outboundData[NODE::NODE_ID] = HOSTNAME;
+  outboundData[NODE::NODE_IP] = NODE_IP;
   outboundData[NODE::FIRMWARE_VER] = FIRMWARE_VERSION;
 
   DeserializationError error = deserializeJson(inboundData, (char *)payload, length);
@@ -90,8 +92,10 @@ void setupWifi() {
     delay(state.getWifiRetryConnectionDelay());
     ESP.restart();
   }
-  Serial.print("[WIFI] IP address: ");
-  Serial.println(WiFi.localIP());
+
+  IPAddress ip = WiFi.localIP();
+  sprintf(NODE_IP, "%d.%d.%d.%d", ip[0],ip[1],ip[2],ip[3]);
+  Serial.printf("[WIFI] IP address: %s\n", NODE_IP);
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */
@@ -182,6 +186,7 @@ void heartBeat() {
 void collectSensorData(){
   sensorsTickerData.clear();
   sensorsTickerData[NODE::NODE_ID] = HOSTNAME;
+  sensorsTickerData[NODE::NODE_IP] = NODE_IP;
   sensorsTickerData[NODE::FIRMWARE_VER] = FIRMWARE_VERSION;
   status.collectForSensorTicket(state, sensorsTickerData);
   postResponse(sensorsTickerData);

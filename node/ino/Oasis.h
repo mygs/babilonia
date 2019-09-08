@@ -5,6 +5,7 @@
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
 #define HOSTNAME_SIZE 15
+#define IP_SIZE 15
 #define HEARTBEAT_MESSAGE_SIZE 64
 
 // ***** functions *****

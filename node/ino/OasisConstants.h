@@ -31,6 +31,7 @@
 namespace NODE {
   extern const char* MESSAGE_ID;
   extern const char* NODE_ID;
+  extern const char* NODE_IP;
   extern const char* FIRMWARE_VER;
   extern const char* ALL;
   extern const char* ERROR;

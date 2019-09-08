@@ -3,6 +3,7 @@
 namespace NODE {
   extern const char* MESSAGE_ID  = "MESSAGE_ID";
   extern const char* NODE_ID     = "NODE_ID";
+  extern const char* NODE_IP     = "NODE_IP";
   extern const char* FIRMWARE_VER = "FIRMWARE_VERSION";
   extern const char* ALL         = "ALL";
   extern const char* ERROR       = "ERROR";
