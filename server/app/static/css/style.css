@@ -71,13 +71,13 @@ table#cockpit {
     text-align: right;
     font-weight: bold;
     padding: 3px;
-    width: 60%;
+    width: 50%;
 }
 
 .param-value {
     text-align: left;
     padding: 3px;
-    width: 40%;
+    width: 50%;
 }
 
 #sortable {
@@ -145,6 +145,7 @@ table#cockpit {
 #sortable li .box h4 {
   margin-top: 0;
   margin-bottom: 5px;
+  padding-right: 5px;
 }
 
 #sortable li .box p {

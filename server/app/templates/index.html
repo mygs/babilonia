@@ -8,6 +8,7 @@
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           {%  set id = module.NODE_ID %}
+          {%  set ip = module.DATA['NODE_IP'] %}
           {%  set firmware_version = module.DATA['FIRMWARE_VERSION'] %}
           {%  set last_update = module.TIMESTAMP %}
           {%  set sensor_collect_data_period = module.DATA['DATA']['NODE']['SENSOR_COLLECT_DATA_PERIOD'] %}
@@ -31,6 +32,10 @@
               </table>
                <p><span id='time_{{id}}'>{{ format_last_update(last_update) }} </span></p>
               <table id="telemetry">
+                <tr>
+                  <td class="param-label">Address</td>
+                  <td class="param-value" id='ip_{{id}}'>{{ip}}</td>
+                </tr>
                 <tr>
                   <td class="param-label">Firmware</td>
                   <td class="param-value" id='sw_ver_{{id}}'>{{firmware_version}}</td>

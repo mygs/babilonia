@@ -6,9 +6,14 @@ $(document).ready(function() {
     var timestamp = oasisData['TIMESTAMP'];
     var node_id = oasisData['NODE_ID'];
     var data = oasisData['DATA'];
+    var node_ip = data['NODE_IP'];
     var firware_version = data['FIRMWARE_VERSION'];
+
     if (timestamp != null) {
       $('#time_' + node_id).html(moment.unix(timestamp).format('DD/MM/YYYY HH:mm:ss'));
+    }
+    if (node_ip != null) {
+      $('#ip_' + node_id).html(node_ip);
     }
     if (firware_version != null) {
       $('#sw_ver_' + node_id).html(firware_version);
