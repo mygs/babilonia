@@ -8,7 +8,9 @@
       <script src="{{ ASSET_URL }}" ></script>
     {% endassets %}
       <form class="form-signin" method="POST" action="">
-        <img class="login-logo" src="../static/img/logo.png" alt="" width="72" height="72">
+        <a href="http://www.babilonia.co/" title="Visit babilônia webpage">
+          <img class="login-logo" src="../../static/img/logo.png" alt="" width="72" height="72">
+        </a>
         {% if error %}
           <p class="error"><strong>{{ error }}</strong>
         {% endif %}

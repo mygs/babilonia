@@ -116,6 +116,7 @@ def login():
         registered_user = User.query.filter_by(USERNAME=username,PASSWORD=password).first()
 
         if registered_user is None:
+            logger.warn("[Invalid Credential] username: %s password: %s",username, password)
             error = 'Invalid Credentials. Please try again.'
         else:
             login_user(registered_user)
