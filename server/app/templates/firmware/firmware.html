@@ -1,0 +1,27 @@
+{% extends 'layout.html' %} {% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-md-9 col-md-offset-1 main">
+      <h2 class="page-header">Firmware</h2>
+      <div class="table-responsive">
+        <table id="firmware" class="firmware table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>FIRMWARE VERSION</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for module in modules %}
+            <tr>
+              <td>{{module.NODE_ID}}</td>
+              <td>{{module.DATA['FIRMWARE_VERSION']}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

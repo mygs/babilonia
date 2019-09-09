@@ -145,14 +145,14 @@ def page_not_found(e):
 @login_required
 def index():
     with app.app_context():
-        time_start = time.time()
+        time_start = dt.datetime.now()
         latest = DB.session.query(OasisData.NODE_ID,
             func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).group_by(OasisData.NODE_ID).subquery('t2')
         modules = DB.session.query(OasisData).join(
             latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
-        time_end = time.time()
-        delta= time_end - time_start
-        logger.debug("[database] call database for index page took %s secs",time.strftime("%S", time.gmtime(delta)))
+        time_end = dt.datetime.now()
+        elapsedTime = time_end - time_start
+        logger.debug("[database] call database for index page took %s secs",elapsedTime.total_seconds())
 
         return render_template('index.html', modules=modules)
 
@@ -183,6 +183,22 @@ def command():
     logger.debug("[command] %s", message)
     mqtt.publish("/oasis-inbound", message)
     return json.dumps({'status':'Success!'});
+
+
+@app.route("/firmware")
+@login_required
+def firmware():
+    with app.app_context():
+        time_start = dt.datetime.now()
+        latest = DB.session.query(OasisData.NODE_ID,
+            func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).group_by(OasisData.NODE_ID).subquery('t2')
+        modules = DB.session.query(OasisData).join(
+            latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
+        time_end = dt.datetime.now()
+        elapsedTime = time_end - time_start
+        logger.debug("[database] call database for index page took %s secs",elapsedTime.total_seconds()x)
+
+        return render_template('firmware/firmware.html', modules=modules)
 
 @app.route('/about')
 def about():
