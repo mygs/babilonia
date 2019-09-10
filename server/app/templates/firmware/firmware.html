@@ -4,11 +4,12 @@
     <div class="col-sm-8 col-sm-offset-2 col-md-9 col-md-offset-1 main">
       <h2 class="page-header">Firmware</h2>
       <div class="table-responsive">
-        <table id="firmware" class="firmware table">
+        <table id="firmware" class="babi-tbl table">
           <thead>
             <tr>
               <th>ID</th>
               <th>FIRMWARE VERSION</th>
+              <th>ACTION</th>
             </tr>
           </thead>
           <tbody>
@@ -16,6 +17,7 @@
             <tr>
               <td>{{module.NODE_ID}}</td>
               <td>{{module.DATA['FIRMWARE_VERSION']}}</td>
+              <td>update</td>
             </tr>
           {% endfor %}
           </tbody>

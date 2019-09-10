@@ -196,7 +196,7 @@ def firmware():
             latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
-        logger.debug("[database] call database for index page took %s secs",elapsedTime.total_seconds()x)
+        logger.debug("[database] call database for firware page took %s secs",elapsedTime.total_seconds())
 
         return render_template('firmware/firmware.html', modules=modules)
 

@@ -243,7 +243,7 @@ canvas {
 }
 
 
-table.firmware {
+table.babi-tbl {
     width: 100% !important;
     text-align: center;
     border-collapse: collapse;
@@ -256,47 +256,19 @@ table.firmware {
   text-align: left;
 }
 
-table.management td, table.management th {
+table.babi-tbl td, table.babi-tbl th {
   border: 0px;
   padding: 3px 2px;
 }
 
-table.management td {
+table.babi-tbl td {
   background: #222 ;
 }
 
-table.management thead th {
+table.babi-tbl thead th {
   background: #000000;
   font-weight: bold;
   text-align: center;
-}
-
-table.dataTable tbody tr.selected {
-    color: yellow !important;
-    background-color: #35376a !important;
-}
-#moistureTestTitle {
-  margin-top: 50px;
-  margin-bottom: 10px;
-  color: #eee;
-  text-align: center;
-}
-#moistureTest {
-  list-style: none;
-  border: solid 4px #62B1F6;
-  margin-left: 25px;
-  margin-right: 15px;
-  padding: 20px;
-  height:350px;
-  overflow-y: auto;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  border-radius: 10px;
-}
-.moistureTestMsg{
-  color: #38fa47;
-  font-size: 20px;
-  font-family: "Courier New", Monospace;
 }
 
 
