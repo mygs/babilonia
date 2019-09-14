@@ -271,6 +271,9 @@ table.babi-tbl thead th {
   text-align: center;
 }
 
+.firware-build-btn {
+  color: red;
+}
 
 /*LOGIN*/
 .form-signin {
