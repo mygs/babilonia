@@ -1,3 +1,25 @@
+$(".btn-refresh-all").on("click", function() {
+  var status = {
+           "NODE_ID": "ALL",
+        "MESSAGE_ID": "a12dc89b",
+            "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER"]
+        };
+
+  $.ajax({
+    url: '/status',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(status),
+    success: function(response) {
+      console.log(response.status);
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+});
+
 /* BUTTON STUFF */
 function callbackend(command, img, title, text) {
   swal({
