@@ -27,7 +27,7 @@ h2#index {
   text-align: center;
   display: inline-block;
 }
-.btn-refresh-all {
+.btn-header {
   margin-top: 20px;
   display: inline-block;
   float:right;
