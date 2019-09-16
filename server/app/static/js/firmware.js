@@ -1,3 +1,16 @@
+
+function buildFirmwareProgress() {
+  var source = new EventSource("/progress");
+	source.onmessage = function(event) {
+		$('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
+		$('.progress-bar-label').text(event.data+'%');
+		if(event.data == 100){
+			source.close()
+		}
+	}
+};
+
+
 $(document).ready(function() {
 
   $('#firmware').on('init.dt', function() {
@@ -7,6 +20,7 @@ $(document).ready(function() {
    });
 
   var table = $('#firmware').DataTable({
+    responsive: true,
     "bLengthChange": false,
     "info": false,
     "bPaginate": false, //hide pagination control
@@ -17,6 +31,7 @@ $(document).ready(function() {
           titleAttr: 'Build Firmware',
           action: function(e, dt, node, config) {
               console.log("build firware");
+              buildFirmwareProgress();
           }
         }]
 

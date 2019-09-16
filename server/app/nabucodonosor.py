@@ -200,6 +200,17 @@ def firmware():
 
         return render_template('firmware/firmware.html', modules=modules)
 
+@app.route('/progress')
+@login_required
+def progress():
+	def generate():
+		x = 0
+		while x <= 100:
+			yield "data:" + str(x) + "\n\n"
+			x = x + 10
+			time.sleep(0.5)
+	return Response(generate(), mimetype= 'text/event-stream')
+
 @app.route('/about')
 def about():
     return render_template('about.html')
