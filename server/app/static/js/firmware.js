@@ -20,8 +20,8 @@ $(document).ready(function() {
    });
 
   var table = $('#firmware').DataTable({
-    responsive: true,
     "bLengthChange": false,
+    "searching": false,
     "info": false,
     "bPaginate": false, //hide pagination control
     "dom": 'Bfrtip',

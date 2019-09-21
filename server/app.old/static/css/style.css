@@ -234,13 +234,13 @@ table.management {
     border-collapse: collapse;
     color: #E6E6E6;
 }
-
+/*
 .dataTables_wrapper .dataTables_filter {
   color: #E6E6E6;
   float: right;
   text-align: left;
 }
-
+*/
 table.management td, table.management th {
   border: 0px;
   padding: 3px 2px;
