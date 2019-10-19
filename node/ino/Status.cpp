@@ -7,6 +7,7 @@ Status::Status(){
   init();
   dht = new DHT(PIN[IDX_DEVICE_DHT], DHTTYPE);
   dht->begin();
+  capacitiveMoisture = new CapacitiveMoisture();
 }
 
 void Status::init(){
@@ -21,6 +22,7 @@ void Status::init(){
   DEVICE[IDX_DEVICE_LIGHT] = NODE::LIGHT;
   DEVICE[IDX_DEVICE_FAN]   = NODE::FAN;
   DEVICE[IDX_DEVICE_WATER] = NODE::WATER;
+  DEVICE[IDX_DEVICE_CAPACITIVEMOISTURE] = NODE::CAPACITIVEMOISTURE;
 }
 
 void Status::updatePorts(State& state){
@@ -61,6 +63,8 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
       collectDHTData(data);
     } else if(strcmp(device, NODE::SOIL) == 0){
       Serial.println("[STATUS] SOIL !!!");
+    } else if(strcmp(device, NODE::CAPACITIVEMOISTURE) == 0){
+      collectCapacitiveMoistureData(data);
     }
   }
 }
@@ -120,4 +124,16 @@ void Status::collectDHTData(JsonObject& data){
     dhtData[NODE::HUMIDITY] = h;
   }
 
+}
+
+void Status::collectCapacitiveMoistureData(JsonObject& data){
+  JsonObject capacitiveMoistureData = data.createNestedObject(NODE::CAPACITIVEMOISTURE);
+  int m = capacitiveMoisture->read();
+  if (isnan(m)) {
+    char error_message[56]  = "[STATUS] Failed to read from Capacitive Moisture sensor";
+    Serial.println(error_message);
+    data[NODE::ERROR] = error_message;
+  }else{
+    capacitiveMoistureData[NODE::CAPACITIVEMOISTURE] = m;
+  }
 }

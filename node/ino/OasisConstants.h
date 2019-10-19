@@ -6,24 +6,25 @@
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
 
-#define DEVICE_LENGTH 10
-#define IDX_DEVICE_NODE   0
-#define IDX_DEVICE_SOILX  1
-#define IDX_DEVICE_SOIL1  2
-#define IDX_DEVICE_SOIL2  3
-#define IDX_DEVICE_SOIL3  4
-#define IDX_DEVICE_SOIL4  5
-#define IDX_DEVICE_DHT    6
-#define IDX_DEVICE_LIGHT  7
-#define IDX_DEVICE_FAN    8
-#define IDX_DEVICE_WATER  9
+#define DEVICE_LENGTH 11
+#define IDX_DEVICE_NODE     0
+#define IDX_DEVICE_SOILX    1
+#define IDX_DEVICE_SOIL1    2
+#define IDX_DEVICE_SOIL2    3
+#define IDX_DEVICE_SOIL3    4
+#define IDX_DEVICE_SOIL4    5
+#define IDX_DEVICE_DHT      6
+#define IDX_DEVICE_LIGHT    7
+#define IDX_DEVICE_FAN      8
+#define IDX_DEVICE_WATER    9
+#define IDX_DEVICE_CAPACITIVEMOISTURE    10
 
 #define CMD_LENGTH 5
-#define IDX_ACTION_LIGHT   0
-#define IDX_ACTION_WATER  1
-#define IDX_ACTION_FAN  2
-#define IDX_ACTION_REBOOT  3
-#define IDX_ACTION_RESET  4
+#define IDX_ACTION_LIGHT    0
+#define IDX_ACTION_WATER    1
+#define IDX_ACTION_FAN      2
+#define IDX_ACTION_REBOOT   3
+#define IDX_ACTION_RESET    4
 
 #define PIN_SIZE 9
 #define PIN_NOT_CONFIGURED -1
@@ -76,6 +77,7 @@ namespace NODE {
   extern const char* SOIL3;
   extern const char* SOIL4;
   extern const char* SOILX;
+  extern const char* CAPACITIVEMOISTURE;
   extern const char* IDLE;
   extern const char* FREEHEAP;
   extern const char* FLASHID;

@@ -5,18 +5,21 @@
 #include "State.h"
 #include "OasisConstants.h"
 #include "DHT.h"
+#include "CapacitiveMoisture.h"
 
 class Status {
 private:
   const char * DEVICE[DEVICE_LENGTH];
   int PIN[DEVICE_LENGTH];
   DHT* dht;
+  CapacitiveMoisture* capacitiveMoisture;
   void init();
   void logAction(int idx, const char* action, int pin, bool value);
   void collectNodeData(State& state, JsonObject& data);
   int readDigitalInputPort(int port);
   int checkPortConfiguration(int port, int status);
   void collectDHTData(JsonObject& data);
+  void collectCapacitiveMoistureData(JsonObject& data);
 public:
   Status();
   void updatePorts(State& state);
