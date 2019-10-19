@@ -21,6 +21,7 @@ namespace NODE {
   extern const char* SERIAL_BAUDRATE = "SERIAL_BAUDRATE";
   extern const char* OTA_PORT = "OTA_PORT";
   extern const char* PIN  = "PIN";
+  extern const char* PINA = "A";
   extern const char* PIN0 = "0";
   extern const char* PIN1 = "1";
   extern const char* PIN2 = "2";

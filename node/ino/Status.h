@@ -17,9 +17,10 @@ private:
   void logAction(int idx, const char* action, int pin, bool value);
   void collectNodeData(State& state, JsonObject& data);
   int readDigitalInputPort(int port);
-  int checkPortConfiguration(int port, int status);
   void collectDHTData(JsonObject& data);
   void collectCapacitiveMoistureData(JsonObject& data);
+  bool checkDev(const char* devA, const char* devB, int port);
+
 public:
   Status();
   void updatePorts(State& state);

@@ -116,7 +116,7 @@ void State::mergeState(JsonDocument& arrived) {
     baseConfig[NODE::MQTT_PORT]   = diffi(baseConfig[NODE::MQTT_PORT],
                                 arrivedConfig[NODE::MQTT_PORT]);
     baseConfig[NODE::MQTT_TOPIC_HEARTBEAT] =
-                                  diffs(baseConfig[NODE::MQTT_TOPIC_HEARTBEAT],  arrivedConfig[NODE::MQTT_TOPIC_HEARTBEAT]);                      
+                                  diffs(baseConfig[NODE::MQTT_TOPIC_HEARTBEAT],  arrivedConfig[NODE::MQTT_TOPIC_HEARTBEAT]);
     baseConfig[NODE::MQTT_TOPIC_INBOUND] =
       diffs(baseConfig[NODE::MQTT_TOPIC_INBOUND],  arrivedConfig[NODE::MQTT_TOPIC_INBOUND]);
     baseConfig[NODE::MQTT_TOPIC_OUTBOUND] =
@@ -135,7 +135,7 @@ void State::mergeState(JsonDocument& arrived) {
     JsonObject arrivedPIN = arrivedConfig[NODE::PIN];
     if(!arrivedPIN.isNull()){
       JsonObject basePIN    = baseConfig[NODE::PIN];
-
+      basePIN[NODE::PINA] = diffs(basePIN[NODE::PINA], arrivedPIN[NODE::PINA]);
       basePIN[NODE::PIN0] = diffs(basePIN[NODE::PIN0], arrivedPIN[NODE::PIN0]);
       basePIN[NODE::PIN1] = diffs(basePIN[NODE::PIN1], arrivedPIN[NODE::PIN1]);
       basePIN[NODE::PIN2] = diffs(basePIN[NODE::PIN2], arrivedPIN[NODE::PIN2]);
@@ -174,6 +174,7 @@ void State::loadDefaultState(){
   CONFIG[NODE::OTA_PORT] = InitialConfiguration::OTA_PORT;
 
   JsonObject PIN = CONFIG.createNestedObject(NODE::PIN);
+  PIN[NODE::PINA] = InitialConfiguration::PINA;
   PIN[NODE::PIN0] = InitialConfiguration::PIN0;
   PIN[NODE::PIN1] = InitialConfiguration::PIN1;
   PIN[NODE::PIN2] = InitialConfiguration::PIN2;
@@ -295,7 +296,7 @@ void State::remove(){
 void State::getPin(int pin[], const char* DEVICE[], int length){
   JsonObject currentPIN = currentState[NODE::CONFIG][NODE::PIN];
   char buffer [1];
-  for(int i = 0 ; i < length ; i++){
+  for(int i = 0 ; i < length ; i++){ // for each DEVICE
     pin[i] = PIN_NOT_CONFIGURED;
     for(int j = 0 ; j < PIN_SIZE ; j++ ){
       if(strcmp(currentPIN[itoa(j, buffer, 10)], DEVICE[i]) == 0){

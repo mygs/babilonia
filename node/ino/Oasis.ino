@@ -100,7 +100,7 @@ void setupWifi() {
 
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
-
+  state.remove();
   state.load();
   status.updatePorts(state);
 
@@ -153,7 +153,13 @@ void setup() {
   mqttReconnect();
 
   heartBeat(); // Oasis is up and running, notify it
-  heartBeatTicker.attach(state.getHeartBeatPeriod(), heartBeat);
+
+  // For sure, we do not need short heartbeat
+  if(state.getHeartBeatPeriod() > THRESHOLD_DISABLE_HEARTBEAT){
+    heartBeatTicker.attach_ms(state.getHeartBeatPeriod(), heartBeat);
+  }else{
+    Serial.println("[OASIS] HeartBeat not enabled");
+  }
 
   Serial.println("[OASIS] Setup Completed");
 }
@@ -205,7 +211,7 @@ void loop() {
   }
   // DHT and Ticker does not work together, so ...
   unsigned long currentMillis = millis();
-  if(currentMillis - previousMillis > state.getSensorCollectDataPeriod()*1000) {
+  if(currentMillis - previousMillis > state.getSensorCollectDataPeriod()) {
     previousMillis = currentMillis;
     collectSensorData();
   }

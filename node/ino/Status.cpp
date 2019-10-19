@@ -53,28 +53,24 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
     const char* device = s.as<char *>();
     if(strcmp(device, NODE::NODE) == 0){
       collectNodeData(state, data);
-    } else if(strcmp(device, NODE::LIGHT) == 0){
-      data[NODE::LIGHT] = checkPortConfiguration(PIN[IDX_DEVICE_LIGHT],state.getLightStatus());
-    } else if(strcmp(device, NODE::FAN) == 0){
-      data[NODE::FAN] = checkPortConfiguration(PIN[IDX_DEVICE_FAN],state.getFanStatus());
-    } else if(strcmp(device, NODE::WATER) == 0){
-      data[NODE::WATER] = checkPortConfiguration(PIN[IDX_DEVICE_WATER],state.getWaterStatus());
-    } else if(strcmp(device, NODE::DHT) == 0){
-      collectDHTData(data);
-    } else if(strcmp(device, NODE::SOIL) == 0){
-      Serial.println("[STATUS] SOIL !!!");
-    } else if(strcmp(device, NODE::CAPACITIVEMOISTURE) == 0){
+    } else if(checkDev(device, NODE::CAPACITIVEMOISTURE, PIN[IDX_DEVICE_CAPACITIVEMOISTURE])){
       collectCapacitiveMoistureData(data);
+    } else if(checkDev(device, NODE::LIGHT, PIN[IDX_DEVICE_LIGHT])){
+      data[NODE::LIGHT] = state.getLightStatus();
+    } else if(checkDev(device, NODE::FAN, PIN[IDX_DEVICE_FAN])){
+      data[NODE::FAN] = state.getFanStatus();
+    } else if(checkDev(device, NODE::WATER, PIN[IDX_DEVICE_WATER])){
+      data[NODE::WATER] = state.getWaterStatus();
+    } else if(checkDev(device, NODE::DHT, PIN[IDX_DEVICE_DHT])){
+      collectDHTData(data);
+    } else if(checkDev(device, NODE::SOIL, PIN[IDX_DEVICE_SOILX])){
+      Serial.println("[STATUS] SOIL !!!");
     }
   }
 }
 
-int Status::checkPortConfiguration(int port, int status) {
-  if(port == PIN_NOT_CONFIGURED){
-    return PIN_NOT_CONFIGURED;
-  }else{
-    return status;
-  }
+bool Status::checkDev(const char* devA, const char* devB, int port){
+  return strcmp(devA, devB) == 0 && port != PIN_NOT_CONFIGURED;
 }
 
 int Status::readDigitalInputPort(int port) {
@@ -98,6 +94,7 @@ void Status::collectNodeData(State& state, JsonObject& data){
   node[NODE::MQTT_TOPIC_INBOUND] = state.getMqttInboundTopic();
   node[NODE::MQTT_TOPIC_OUTBOUND] = state.getMqttOutboundTopic();
   node[NODE::SENSOR_COLLECT_DATA_PERIOD] = state.getSensorCollectDataPeriod();
+  node[NODE::HEARTBEAT_PERIOD] = state.getHeartBeatPeriod();
   node[NODE::RETRY_WIFI_CONN_DELAY] = state.getWifiRetryConnectionDelay();
   node[NODE::SERIAL_BAUDRATE] = state.getSerialBaudRate();
   node[NODE::OTA_PORT] = state.getOtaPort();
@@ -127,13 +124,12 @@ void Status::collectDHTData(JsonObject& data){
 }
 
 void Status::collectCapacitiveMoistureData(JsonObject& data){
-  JsonObject capacitiveMoistureData = data.createNestedObject(NODE::CAPACITIVEMOISTURE);
   int m = capacitiveMoisture->read();
   if (isnan(m)) {
     char error_message[56]  = "[STATUS] Failed to read from Capacitive Moisture sensor";
     Serial.println(error_message);
     data[NODE::ERROR] = error_message;
   }else{
-    capacitiveMoistureData[NODE::CAPACITIVEMOISTURE] = m;
+    data[NODE::CAPACITIVEMOISTURE] = m;
   }
 }

@@ -13,11 +13,11 @@
           {%  set firmware_version = module.DATA['FIRMWARE_VERSION'] %}
           {%  set last_update = module.TIMESTAMP %}
           {%  set sensor_collect_data_period = module.DATA['DATA']['NODE']['SENSOR_COLLECT_DATA_PERIOD'] %}
-          {%  set temperature = module.DATA['DATA']['DHT']['TEMPERATURE'] %}
-          {%  set humidity = module.DATA['DATA']['DHT']['HUMIDITY'] %}
-          {%  set water = module.DATA['DATA']['WATER'] %}
-          {%  set light = module.DATA['DATA']['LIGHT'] %}
-          {%  set fan = module.DATA['DATA']['FAN'] %}
+          {%  set temperature = module.DATA['DATA']['DHT']['TEMPERATURE'] if 'DHT' in module.DATA['DATA'] else 'N/A' %}
+          {%  set humidity = module.DATA['DATA']['DHT']['HUMIDITY'] if 'DHT' in module.DATA['DATA'] else 'N/A' %}
+          {%  set water = module.DATA['DATA']['WATER'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
+          {%  set light = module.DATA['DATA']['LIGHT'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
+          {%  set fan = module.DATA['DATA']['FAN'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
 
           <li>
             <div class="box {{ status_node(last_update, sensor_collect_data_period) }}">

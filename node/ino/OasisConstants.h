@@ -6,6 +6,9 @@
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
 
+#define THRESHOLD_DISABLE_HEARTBEAT 999  // ~ 1 second
+#define MIN_SENSOR_COLLECT_DATA_PERIOD 199  // ~ 1/5 second
+
 #define DEVICE_LENGTH 11
 #define IDX_DEVICE_NODE     0
 #define IDX_DEVICE_SOILX    1
@@ -50,6 +53,7 @@ namespace NODE {
   extern const char* SERIAL_BAUDRATE;
   extern const char* OTA_PORT;
   extern const char* PIN;
+  extern const char* PINA;
   extern const char* PIN0;
   extern const char* PIN1;
   extern const char* PIN2;
