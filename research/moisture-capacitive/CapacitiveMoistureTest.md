@@ -12,9 +12,7 @@ mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39798
 ### Messaging
 
 #### Test Tube
-* TUBE I, II and II : initial weight 145g (glass + dry soil)
-
-
+as of 19/10/2019
 * TUBE I (dry): 145g (glass+soil)
 * TUBE II (semi wet): 145g (glass+soil) + ...
 * TUBE III (wet): 145g (glass+soil) + ...
@@ -30,13 +28,10 @@ Wet| wet00001
 Air| air00001
 
 #### Request
-/oasis-inbound
 ```
 mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
 ```
 #### Response
-* topic: /oasis-outbound
-
 ```
 {"NODE_ID":"oasis-397988","NODE_IP":"192.168.2.102","FIRMWARE_VERSION":"eef666c","MESSAGE_ID":"a12dc89b","DATA":{"CAPACITIVEMOISTURE":301}}
 ```
