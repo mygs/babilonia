@@ -198,7 +198,7 @@ void collectSensorData(){
   postResponse(sensorsTickerData);
 }
 
-long previousMillis = 0;
+long previousMillis = millis();
 
 /* DO NOT CHANGE this function name - Arduino hook */
 void loop() {
