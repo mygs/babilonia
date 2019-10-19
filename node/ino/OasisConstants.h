@@ -29,7 +29,7 @@
 #define IDX_ACTION_REBOOT   3
 #define IDX_ACTION_RESET    4
 
-#define PIN_SIZE 9
+#define PIN_SIZE_DIGITAL 9
 #define PIN_NOT_CONFIGURED -1
 
 namespace NODE {

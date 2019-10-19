@@ -295,45 +295,54 @@ void State::remove(){
  */
 void State::getPin(int pin[], const char* DEVICE[], int length){
   JsonObject currentPIN = currentState[NODE::CONFIG][NODE::PIN];
-  char buffer [1];
+  char buffer [2];
   for(int i = 0 ; i < length ; i++){ // for each DEVICE
     pin[i] = PIN_NOT_CONFIGURED;
-    for(int j = 0 ; j < PIN_SIZE ; j++ ){
-      if(strcmp(currentPIN[itoa(j, buffer, 10)], DEVICE[i]) == 0){
-        int esp8266pin = PIN_NOT_CONFIGURED;
-        switch (j) {
-          // check https://wiki.wemos.cc/products:d1:d1_mini#pin
-          case 0:
-            esp8266pin = 16; //GPIO16
-            break;
-          case 1:
-            esp8266pin = 5; //GPIO5
-            break;
-          case 2:
-            esp8266pin = 4; //GPIO4
-            break;
-          case 3:
-            esp8266pin = 0; //GPIO0
-            break;
-          case 4:
-            esp8266pin = 2; //GPIO2
-            break;
-          case 5:
-            esp8266pin = 14; //GPIO14
-            break;
-          case 6:
-            esp8266pin = 12; //GPIO12
-            break;
-          case 7:
-            esp8266pin = 13; //GPIO13
-            break;
-          case 8:
-            esp8266pin = 15; //GPIO15
-            break;
+    //ANALOGIC PORTS ...
+    if(strcmp( currentPIN[NODE::PINA], DEVICE[i]) == 0){
+        pin[i] = 0; //should not be PIN_NOT_CONFIGURED
+    }else{
+      //DIGITAL PORTS ...
+      for(int j = 0 ; j < PIN_SIZE_DIGITAL ; j++ ){
+        const char *dev = currentPIN[itoa(j, buffer, 10)];
+        if(strcmp(dev, DEVICE[i]) == 0){
+          int esp8266pin = PIN_NOT_CONFIGURED;
+          switch (j) {
+            // check https://wiki.wemos.cc/products:d1:d1_mini#pin
+            case 0:
+              esp8266pin = 16; //GPIO16
+              break;
+            case 1:
+              esp8266pin = 5; //GPIO5
+              break;
+            case 2:
+              esp8266pin = 4; //GPIO4
+              break;
+            case 3:
+              esp8266pin = 0; //GPIO0
+              break;
+            case 4:
+              esp8266pin = 2; //GPIO2
+              break;
+            case 5:
+              esp8266pin = 14; //GPIO14
+              break;
+            case 6:
+              esp8266pin = 12; //GPIO12
+              break;
+            case 7:
+              esp8266pin = 13; //GPIO13
+              break;
+            case 8:
+              esp8266pin = 15; //GPIO15
+              break;
+          }
+          pin[i] = esp8266pin;
+          break;
         }
-        pin[i] = esp8266pin;
-        break;
       }
     }
+
+
   }
 }

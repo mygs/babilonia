@@ -100,7 +100,7 @@ void setupWifi() {
 
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
-  state.remove();
+  //state.remove(); //WORKAROUND
   state.load();
   status.updatePorts(state);
 
