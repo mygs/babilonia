@@ -1,7 +1,7 @@
 #!/bin/bash
 MESSAGE_ID="water001"
 COLLECT_INTERVAL_SECS=1
-TEST_DURATION_SECS=5
+TEST_DURATION_SECS=1
 
 
 
@@ -21,6 +21,10 @@ DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
 
 echo '########################################'
 START=`date +%s`
+
+mysql -h$SERVER -ubabilonia -p$DB_PWD -s -N -e "DELETE FROM farmland.OASIS_DATA WHERE NODE_ID='$MQTT_NODE_ID' AND DATA->'$.MESSAGE_ID' ='$MESSAGE_ID'"
+
+
 OFFSET_COUNT=`mysql -h$SERVER -ubabilonia -p$DB_PWD -s -N -e "SELECT count(*) FROM farmland.OASIS_DATA WHERE NODE_ID='$MQTT_NODE_ID'" 2>/dev/null`
 echo 'Total samples: '$TOTAL_SAMPLES
 LAST_SAMPLE=$((TOTAL_SAMPLES+OFFSET_COUNT))
@@ -32,5 +36,5 @@ while [ "$COUNT" -le "$LAST_SAMPLE" ] ; do
   echo $((COUNT-OFFSET_COUNT))' of '$TOTAL_SAMPLES
 done
 END=`date +%s`
-echo "Execution time was `expr $end - $start` seconds."
+echo "Execution time was `expr $END - $START` seconds."
 echo '########################################'
