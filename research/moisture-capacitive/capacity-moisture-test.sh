@@ -15,7 +15,7 @@ fi
 ##### MQTT
 MQTT_TOPIC="/oasis-inbound"
 MQTT_NODE_ID="oasis-397988"
-MQTT_MSG="{\"NODE_ID\": \"$ID\", \"MESSAGE_ID\": \"$MESSAGE_ID\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
+MQTT_MSG="{\"NODE_ID\": \"$MQTT_NODE_ID\", \"MESSAGE_ID\": \"$MESSAGE_ID\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
 ##### DATABASE
 CONFIG_FILE='../../server/app/config.json'
 DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
