@@ -8,9 +8,9 @@ TEST_DURATION_SECS=5
 #==== Do not touch below here
 TOTAL_SAMPLES=$((TEST_DURATION_SECS/COLLECT_INTERVAL_SECS))
 
-SERVER=192.168.1.70
+SERVER_BAB=192.168.1.70
 if [ `hostname` = "babilonia" ]; then
-  SERVER=192.168.2.1
+  SERVER_BAB=192.168.2.1
 fi
 ##### MQTT
 MQTT_TOPIC="/oasis-inbound"
@@ -20,7 +20,7 @@ MQTT_MSG="{\"NODE_ID\": \"$ID\", \"MESSAGE_ID\": \"$MESSAGE_ID\",\"STATUS\": [\"
 CONFIG_FILE='../../server/app/config.json'
 DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
 SQL='SELECT count(*) FROM farmland.OASIS_DATA WHERE NODE_ID='\'$MQTT_NODE_ID\'
-MYSQL_CMD='mysql -h'$SERVER' -ubabilonia -p'$DB_PWD' -s -N -e '\"$SQL\"' 2>/dev/null'
+MYSQL_CMD='mysql -h\"$SERVER_BAB\" -u\"babilonia\" -p\"$DB_PWD\" -s -N -e \"$SQL\" 2>/dev/null'
 echo 'FULL MYSQL: '$MYSQL_CMD
 INITIAL_COUNT=`$MYSQL_CMD`
 echo 'Total samples: '$TOTAL_SAMPLES
@@ -34,4 +34,4 @@ while : ; do
 done
 echo $MSG
 
-#mosquitto_pub -h $SERVER -t $MQTT_TOPIC -m $MQTT_MSG
+#mosquitto_pub -h $SERVER_BAB -t $MQTT_TOPIC -m $MQTT_MSG
