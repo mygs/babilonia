@@ -22,7 +22,7 @@ DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
 echo '########################################'
 START=`date +%s`
 
-mysql -h$SERVER -ubabilonia -p$DB_PWD -s -N -e "DELETE FROM farmland.OASIS_DATA WHERE NODE_ID='$MQTT_NODE_ID' AND DATA->\'$.MESSAGE_ID\' ='$MESSAGE_ID'" 2>/dev/null
+mysql -h$SERVER -ubabilonia -p$DB_PWD -s -N -e "DELETE FROM farmland.OASIS_DATA WHERE NODE_ID='$MQTT_NODE_ID' AND DATA->'\$.MESSAGE_ID' ='$MESSAGE_ID'" 2>/dev/null
 
 
 OFFSET_COUNT=`mysql -h$SERVER -ubabilonia -p$DB_PWD -s -N -e "SELECT count(*) FROM farmland.OASIS_DATA WHERE NODE_ID='$MQTT_NODE_ID'" 2>/dev/null`
