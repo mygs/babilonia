@@ -19,10 +19,7 @@ MQTT_MSG="{\"NODE_ID\": \"$ID\", \"MESSAGE_ID\": \"$MESSAGE_ID\",\"STATUS\": [\"
 ##### DATABASE
 CONFIG_FILE='../../server/app/config.json'
 DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
-SQL='SELECT count(*) FROM farmland.OASIS_DATA WHERE NODE_ID='\'$MQTT_NODE_ID\'
-MYSQL_CMD='mysql -h\"$SERVER_BAB\" -u\"babilonia\" -p\"$DB_PWD\" -s -N -e \"$SQL\" 2>/dev/null'
-echo 'FULL MYSQL: '$MYSQL_CMD
-INITIAL_COUNT=`$MYSQL_CMD`
+INITIAL_COUNT=`mysql -h$SERVER_BAB -ubabilonia -p$DB_PWD -s -N -e "SELECT count(*) FROM farmland.OASIS_DATA WHERE NODE_ID='$MQTT_NODE_ID'" 2>/dev/null`
 echo 'Total samples: '$TOTAL_SAMPLES
 echo 'Initial count: '$INITIAL_COUNT
 LAST_SAMPLE=$((TOTAL_SAMPLES+INITIAL_COUNT))
