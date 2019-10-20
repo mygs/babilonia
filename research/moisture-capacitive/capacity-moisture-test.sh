@@ -1,32 +1,37 @@
 #!/bin/bash
 MESSAGE_ID="water001"
-SERVER=192.168.2.1
 COLLECT_INTERVAL_SECS=1
 TEST_DURATION_SECS=5
 
 
 
-#==== Do not change below parameters
-
+#==== Do not touch below here
 TOTAL_SAMPLES=$((TEST_DURATION_SECS/COLLECT_INTERVAL_SECS))
-CONFIG_FILE='../../server/app/config.json'
-DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
 
+SERVER=192.168.1.70
+if [ `hostname` = "babilonia" ]; then
+  SERVER=192.168.2.1
+fi
+##### MQTT
 MQTT_TOPIC="/oasis-inbound"
 MQTT_NODE_ID="oasis-397988"
 MQTT_MSG="{\"NODE_ID\": \"$ID\", \"MESSAGE_ID\": \"$MESSAGE_ID\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
+##### DATABASE
+CONFIG_FILE='../../server/app/config.json'
+DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
+MYSQL_CMD='mysql -h'$SERVER' -ubabilonia -p'$DB_PWD' -s -N'
+SQL='SELECT count(*) FROM farmland.OASIS_DATA WHERE NODE_ID='\'$MQTT_NODE_ID\'
+MYSQL_CMD=$MYSQL_CMD' -e '\"$SQL\"
 
 
-MYSQL_INIT_CMD='mysql -h'$SERVER' -ubabilonia -p'$DB_PWD' -s -N'
-DB_TABLE='farmland.OASIS_DATA'
-QUERY='SELECT count(*) FROM '$DB_TABLE' WHERE NODE_ID=\''$MQTT_NODE_ID
-
-
-echo 'DB password:'$DB_PWD
-echo 'Number of samples: '$TOTAL_SAMPLES
-COUNT=`$MYSQL_INIT_CMD -e "$STAT_PREFIX SLEEP_TIME_MOISTURE='$STM' AND MOISTURE_NSAMPLE='$MNS' AND MOISTURE_NSAMPLE_TIME='$MNST'" 2>/dev/null`
+INITIAL_COUNT=`$MYSQL_CMD 2>/dev/null`
+echo 'Total samples: '$TOTAL_SAMPLES
+echo 'Initial count: '$INITIAL_COUNT
+LAST_SAMPLE=$((TOTAL_SAMPLES+INITIAL_COUNT))
+echo 'Last count: '$LAST_SAMPLE
 
 while : ; do
+  COUNT=`$MYSQL_CMD 2>/dev/null`
   break
 done
 echo $MSG
