@@ -15,7 +15,6 @@ fi
 ##### MQTT
 MQTT_TOPIC="/oasis-inbound"
 MQTT_NODE_ID="oasis-397988"
-MQTT_MSG='{\\"NODE_ID\\": \\"$MQTT_NODE_ID\\", \\"MESSAGE_ID\\": \\"$MESSAGE_ID\\",\\"STATUS\\": [\\"CAPACITIVEMOISTURE\\"]}'
 ##### DATABASE
 CONFIG_FILE='../../server/app/config.json'
 DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
@@ -27,7 +26,7 @@ echo 'Total samples: '$TOTAL_SAMPLES
 LAST_SAMPLE=$((TOTAL_SAMPLES+OFFSET_COUNT))
 COUNT=$OFFSET_COUNT
 while [ "$COUNT" -le "$LAST_SAMPLE" ] ; do
-  mosquitto_pub -h $SERVER -t $MQTT_TOPIC -m $MQTT_MSG
+  mosquitto_pub -h $SERVER -t $MQTT_TOPIC -m "{\"NODE_ID\": \"$MQTT_NODE_ID\", \"MESSAGE_ID\": \"$MESSAGE_ID\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
   sleep $COLLECT_INTERVAL_SECS
   COUNT=`mysql -h$SERVER -ubabilonia -p$DB_PWD -s -N -e "SELECT count(*) FROM farmland.OASIS_DATA WHERE NODE_ID='$MQTT_NODE_ID'" 2>/dev/null`
   echo $((COUNT-OFFSET_COUNT))' of '$TOTAL_SAMPLES
