@@ -147,7 +147,9 @@ def index():
     with app.app_context():
         time_start = dt.datetime.now()
         latest = DB.session.query(OasisData.NODE_ID,
-            func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).group_by(OasisData.NODE_ID).subquery('t2')
+            func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).filter(
+            OasisData.DATA['DATA']['NODE'].isnot(None)).group_by(
+            OasisData.NODE_ID).subquery('t2')
         modules = DB.session.query(OasisData).join(
             latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
         time_end = dt.datetime.now()
@@ -170,6 +172,7 @@ def node_config():
     return json.dumps(config);
 
 @app.route('/status', methods=['POST'])
+@login_required
 def refresh():
     message = json.dumps(request.get_json())
     logger.debug("[status] %s", message)
@@ -212,6 +215,7 @@ def progress():
 	return Response(generate(), mimetype= 'text/event-stream')
 
 @app.route('/about')
+@login_required
 def about():
     return render_template('about.html')
 
