@@ -14,8 +14,8 @@ mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39798
 #### Test Tube
 as of 19/10/2019
 * TUBE I (dry): 145g (glass+soil)
-* TUBE II (semi wet): 145g (glass+soil) + 20g (water) = 165g
-* TUBE III (almost wet): 145g (glass+soil) + ... 40?
+* TUBE II (semiwet): 145g (glass+soil) + 20g (water) = 165g
+* TUBE III (almowet1): 145g (glass+soil) + 40g (water) = 185g
 * TUBE I (wet): 145g (glass+soil) + ... 80?
 * TUBE IV (water): 125g (glass+water)
 
