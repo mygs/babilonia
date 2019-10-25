@@ -310,31 +310,40 @@ void State::getPin(int pin[], const char* DEVICE[], int length){
           switch (j) {
             // check https://wiki.wemos.cc/products:d1:d1_mini#pin
             case 0:
-              esp8266pin = 16; //GPIO16
+              //esp8266pin = 16; //GPIO16
+              esp8266pin = D0;
               break;
             case 1:
-              esp8266pin = 5; //GPIO5
+              //esp8266pin = 5; //GPIO5
+              esp8266pin = D1;
               break;
             case 2:
-              esp8266pin = 4; //GPIO4
+              //esp8266pin = 4; //GPIO4
+              esp8266pin = D2;
               break;
             case 3:
-              esp8266pin = 0; //GPIO0
+              //esp8266pin = 0; //GPIO0
+              esp8266pin = D3;
               break;
             case 4:
-              esp8266pin = 2; //GPIO2
+              //esp8266pin = 2; //GPIO2
+              esp8266pin = D4;
               break;
             case 5:
-              esp8266pin = 14; //GPIO14
+              //esp8266pin = 14; //GPIO14
+              esp8266pin = D5;
               break;
             case 6:
-              esp8266pin = 12; //GPIO12
+              //esp8266pin = 12; //GPIO12
+              esp8266pin = D6;
               break;
             case 7:
-              esp8266pin = 13; //GPIO13
+              //esp8266pin = 13; //GPIO13
+              esp8266pin = D7;
               break;
             case 8:
-              esp8266pin = 15; //GPIO15
+              //esp8266pin = 15; //GPIO15
+              esp8266pin = D8;
               break;
           }
           pin[i] = esp8266pin;
