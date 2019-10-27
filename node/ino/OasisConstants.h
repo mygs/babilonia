@@ -10,16 +10,16 @@
 #define MIN_SENSOR_COLLECT_DATA_PERIOD 199  // ~ 1/5 second
 
 #define DEVICE_LENGTH 11
-#define IDX_DEVICE_NODE     0
-#define IDX_DEVICE_SOILX    1
-#define IDX_DEVICE_SOIL1    2
-#define IDX_DEVICE_SOIL2    3
-#define IDX_DEVICE_SOIL3    4
-#define IDX_DEVICE_SOIL4    5
-#define IDX_DEVICE_DHT      6
-#define IDX_DEVICE_LIGHT    7
-#define IDX_DEVICE_FAN      8
-#define IDX_DEVICE_WATER    9
+#define IDX_DEVICE_NODE         0
+#define IDX_DEVICE_SOILX        1
+#define IDX_CHANNEL_SELECT_A    2
+#define IDX_CHANNEL_SELECT_B    3
+#define IDX_CHANNEL_SELECT_C    4
+#define IDX_DEVICE_SOIL4        5
+#define IDX_DEVICE_DHT          6
+#define IDX_DEVICE_LIGHT        7
+#define IDX_DEVICE_FAN          8
+#define IDX_DEVICE_WATER        9
 #define IDX_DEVICE_CAPACITIVEMOISTURE    10
 
 #define CMD_LENGTH 5
@@ -81,6 +81,9 @@ namespace NODE {
   extern const char* SOIL3;
   extern const char* SOIL4;
   extern const char* SOILX;
+  extern const char* CHANNEL_SELECT_A;
+  extern const char* CHANNEL_SELECT_B;
+  extern const char* CHANNEL_SELECT_C;
   extern const char* CAPACITIVEMOISTURE;
   extern const char* IDLE;
   extern const char* FREEHEAP;

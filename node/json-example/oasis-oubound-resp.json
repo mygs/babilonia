@@ -12,17 +12,27 @@
 			"CHIP-SIZE": 100,
 			"CHIP-ID": "311de9",
 			"PIN":{
+				"A": "CAPACITIVEMOISTURE",
 				"0": "IDLE",
 				"1": "WATER",
 				"2": "LIGHT",
 				"3": "SOIL.X",
-				"4": "SOIL.1",
-				"5": "SOIL.2",
-				"6": "SOIL.3",
-				"7": "SOIL.4"
+				"4": "SW.A",
+				"5": "SW.B",
+				"6": "SW.B",
+				"7": "IDLE"
 			}
 		},
-		"SOIL": [1, 0, 1, 1],
+		"CAPACITIVEMOISTURE": {
+			"X0": 200,
+			"X1": 200,
+			"X2": 200,
+			"X3": 200,
+			"X4": 200,
+			"X5": 200,
+			"X6": 200,
+			"X7": 200
+		},
 		"DHT": {
 			"TEMPERATURE": 25,
 			"HUMIDITY": 0.7

@@ -14,9 +14,9 @@ void Status::init(){
   /* order matters here */
   DEVICE[IDX_DEVICE_NODE]  = NODE::NODE;
   DEVICE[IDX_DEVICE_SOILX] = NODE::SOILX;
-  DEVICE[IDX_DEVICE_SOIL1] = NODE::SOIL1;
-  DEVICE[IDX_DEVICE_SOIL2] = NODE::SOIL2;
-  DEVICE[IDX_DEVICE_SOIL3] = NODE::SOIL3;
+  DEVICE[IDX_CHANNEL_SELECT_A] = NODE::CHANNEL_SELECT_A;
+  DEVICE[IDX_CHANNEL_SELECT_B] = NODE::CHANNEL_SELECT_B;
+  DEVICE[IDX_CHANNEL_SELECT_C] = NODE::CHANNEL_SELECT_C;
   DEVICE[IDX_DEVICE_SOIL4] = NODE::SOIL4;
   DEVICE[IDX_DEVICE_DHT]   = NODE::DHT;
   DEVICE[IDX_DEVICE_LIGHT] = NODE::LIGHT;
@@ -54,6 +54,7 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
     if(strcmp(device, NODE::NODE) == 0){
       collectNodeData(state, data);
     } else if(checkDev(device, NODE::CAPACITIVEMOISTURE, PIN[IDX_DEVICE_CAPACITIVEMOISTURE])){
+      updatePorts(state);
       collectCapacitiveMoistureData(data);
     } else if(checkDev(device, NODE::LIGHT, PIN[IDX_DEVICE_LIGHT])){
       data[NODE::LIGHT] = state.getLightStatus();
@@ -124,12 +125,13 @@ void Status::collectDHTData(JsonObject& data){
 }
 
 void Status::collectCapacitiveMoistureData(JsonObject& data){
-  int m = capacitiveMoisture->read();
-  if (isnan(m)) {
-    char error_message[56]  = "[STATUS] Failed to read from Capacitive Moisture sensor";
-    Serial.println(error_message);
-    data[NODE::ERROR] = error_message;
-  }else{
-    data[NODE::CAPACITIVEMOISTURE] = m;
-  }
+  JsonObject moistureData = data.createNestedObject(NODE::CAPACITIVEMOISTURE);
+  moistureData["X0"] = capacitiveMoisture->read(PIN, 0);
+  moistureData["X1"] = capacitiveMoisture->read(PIN, 1);
+  moistureData["X2"] = capacitiveMoisture->read(PIN, 2);
+  moistureData["X3"] = capacitiveMoisture->read(PIN, 3);
+  moistureData["X4"] = capacitiveMoisture->read(PIN, 4);
+  moistureData["X5"] = capacitiveMoisture->read(PIN, 5);
+  moistureData["X6"] = capacitiveMoisture->read(PIN, 6);
+  moistureData["X7"] = capacitiveMoisture->read(PIN, 7);
 }
