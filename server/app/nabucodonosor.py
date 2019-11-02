@@ -207,16 +207,26 @@ def firmware():
 
         return render_template('firmware/firmware.html', modules=modules)
 
+NODE_HOME=os.path.join(cfg["GIT_REPO"], 'node/ino')
+BABILONIA_LIBS = os.environ.get('BABILONIA_LIBS', os.defpath)
+ESPMAKE_PARAM=os.path.join(BABILONIA_LIBS, 'makeEspArduino/makeEspArduino.mk')
+
 @app.route('/progress')
 @login_required
 def progress():
-	def generate():
+    #clean
+    subprocess.check_output(["make","-f", ESPMAKE_PARAM, "clean"], cwd=NODE_HOME)
+    #build
+    build_output = subprocess.Popen(["make","-f",ESPMAKE_PARAM], cwd=NODE_HOME,stdout=subprocess.PIPE)
+    def generate():
 		x = 0
 		while x <= 100:
+			line = build_output.stdout.readline()
 			yield "data:" + str(x) + "\n\n"
-			x = x + 10
-			time.sleep(0.5)
-	return Response(generate(), mimetype= 'text/event-stream')
+			logger.info("build[%i] %s",x,line.rstrip())
+			x = x + 1
+    return Response(generate(), mimetype= 'text/event-stream')
+
 
 @app.route('/about')
 @login_required

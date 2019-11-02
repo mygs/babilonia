@@ -13,6 +13,7 @@
           <thead>
             <tr>
               <th>OASIS</th>
+              <th>IP</th>
               <th>VERSION</th>
               <th>ACTION</th>
             </tr>
@@ -21,6 +22,7 @@
             {% for module in modules %}
             <tr>
               <td>{{module.NODE_ID}}</td>
+              <td>{{module.DATA['NODE_IP']}}</td>
               <td>{{module.DATA['FIRMWARE_VERSION']}}</td>
               <td>update</td>
             </tr>
