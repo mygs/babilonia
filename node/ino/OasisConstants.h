@@ -89,5 +89,13 @@ namespace NODE {
   extern const char* FREEHEAP;
   extern const char* FLASHID;
   extern const char* FLASHSIZE;
+  extern const char* MUX0;
+  extern const char* MUX1;
+  extern const char* MUX2;
+  extern const char* MUX3;
+  extern const char* MUX4;
+  extern const char* MUX5;
+  extern const char* MUX6;
+  extern const char* MUX7;
 }
 #endif

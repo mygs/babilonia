@@ -33,7 +33,6 @@ void Command::logAction(int idx, const char* action, int pin, bool value){
 }
 
 void Command::execute(State& state, JsonObject& cmd){
-  updatePorts(state);
   for (int i = 0; i < CMD_LENGTH; i++) {
     if (!cmd[ACTION[i]].isNull()) {
       bool value =  cmd[ACTION[i]].as<bool>();

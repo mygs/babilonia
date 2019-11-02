@@ -2,7 +2,7 @@ $(".btn-refresh-all").on("click", function() {
   var status = {
            "NODE_ID": "ALL",
         "MESSAGE_ID": "a12dc89b",
-            "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER"]
+            "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER", "CAPACITIVEMOISTURE"]
         };
 
   $.ajax({

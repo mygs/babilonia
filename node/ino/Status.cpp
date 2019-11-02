@@ -13,7 +13,7 @@ Status::Status(){
 void Status::init(){
   /* order matters here */
   DEVICE[IDX_DEVICE_NODE]  = NODE::NODE;
-  DEVICE[IDX_DEVICE_SOILX] = NODE::SOILX;
+  DEVICE[IDX_DEVICE_SOILX] = NODE::SOILX;//TODO: REMOVEME
   DEVICE[IDX_CHANNEL_SELECT_A] = NODE::CHANNEL_SELECT_A;
   DEVICE[IDX_CHANNEL_SELECT_B] = NODE::CHANNEL_SELECT_B;
   DEVICE[IDX_CHANNEL_SELECT_C] = NODE::CHANNEL_SELECT_C;
@@ -54,7 +54,6 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
     if(strcmp(device, NODE::NODE) == 0){
       collectNodeData(state, data);
     } else if(checkDev(device, NODE::CAPACITIVEMOISTURE, PIN[IDX_DEVICE_CAPACITIVEMOISTURE])){
-      updatePorts(state);
       collectCapacitiveMoistureData(data);
     } else if(checkDev(device, NODE::LIGHT, PIN[IDX_DEVICE_LIGHT])){
       data[NODE::LIGHT] = state.getLightStatus();
@@ -126,12 +125,12 @@ void Status::collectDHTData(JsonObject& data){
 
 void Status::collectCapacitiveMoistureData(JsonObject& data){
   JsonObject moistureData = data.createNestedObject(NODE::CAPACITIVEMOISTURE);
-  moistureData["X0"] = capacitiveMoisture->read(PIN, 0);
-  moistureData["X1"] = capacitiveMoisture->read(PIN, 1);
-  moistureData["X2"] = capacitiveMoisture->read(PIN, 2);
-  moistureData["X3"] = capacitiveMoisture->read(PIN, 3);
-  moistureData["X4"] = capacitiveMoisture->read(PIN, 4);
-  moistureData["X5"] = capacitiveMoisture->read(PIN, 5);
-  moistureData["X6"] = capacitiveMoisture->read(PIN, 6);
-  moistureData["X7"] = capacitiveMoisture->read(PIN, 7);
+  moistureData[NODE::MUX0] = capacitiveMoisture->read(PIN, 0);
+  moistureData[NODE::MUX1] = capacitiveMoisture->read(PIN, 1);
+  moistureData[NODE::MUX2] = capacitiveMoisture->read(PIN, 2);
+  moistureData[NODE::MUX3] = capacitiveMoisture->read(PIN, 3);
+  moistureData[NODE::MUX4] = capacitiveMoisture->read(PIN, 4);
+  moistureData[NODE::MUX5] = capacitiveMoisture->read(PIN, 5);
+  moistureData[NODE::MUX6] = capacitiveMoisture->read(PIN, 6);
+  moistureData[NODE::MUX7] = capacitiveMoisture->read(PIN, 7);
 }
