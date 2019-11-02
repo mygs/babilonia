@@ -59,6 +59,8 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
       JsonObject config = inboundData[NODE::CONFIG];
       if(!config.isNull()){
         state.save(inboundData);
+        command.updatePorts(state);
+        status.updatePorts(state);
       }
 
       JsonObject cmd = inboundData[NODE::COMMAND];
@@ -103,6 +105,7 @@ void setup() {
   //state.remove(); //WORKAROUND
   state.load();
   status.updatePorts(state);
+  command.updatePorts(state);
 
   JsonObject cmd = state.getCommand();
   command.execute(state, cmd);

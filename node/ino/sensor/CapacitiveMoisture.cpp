@@ -9,14 +9,14 @@ Analog Multiplexers/Demultiplexers (74HC4051)
 
 C B A | CHANNEL
 ------|--------
-L L L | X0
-L L H | X1
-L H L | X2
-L H H | X3
-H L L | X4
-H L H | X5
-H H L | X6
-H H H | X7
+L L L | MUX0
+L L H | MUX1
+L H L | MUX2
+L H H | MUX3
+H L L | MUX4
+H L H | MUX5
+H H L | MUX6
+H H H | MUX7
 */
 int CapacitiveMoisture::read(int PIN[], int x){
   int CHANNEL_SELECT_A_PORT = PIN[IDX_CHANNEL_SELECT_A];
