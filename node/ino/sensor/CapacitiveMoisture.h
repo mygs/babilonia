@@ -3,6 +3,9 @@
 #include <Arduino.h>
 #include "OasisConstants.h"
 
+// milliseconds
+#define DELAY_TO_MUX 15
+
 class CapacitiveMoisture {
 private:
   const int PIN_ANALOGIC = A0; // pin were sensor is connected

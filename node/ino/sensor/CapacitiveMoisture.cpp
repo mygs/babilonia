@@ -27,7 +27,6 @@ int CapacitiveMoisture::read(int PIN[], int x){
   pinMode(CHANNEL_SELECT_A_PORT, OUTPUT);
   pinMode(CHANNEL_SELECT_B_PORT, OUTPUT);
   pinMode(CHANNEL_SELECT_C_PORT, OUTPUT);
-
   switch (x) {
     case 0:
       digitalWrite(CHANNEL_SELECT_A_PORT, LOW);
@@ -72,5 +71,6 @@ int CapacitiveMoisture::read(int PIN[], int x){
     default:
       break;
   }
+  delay(DELAY_TO_MUX);
   return analogRead(PIN_ANALOGIC);
 }
