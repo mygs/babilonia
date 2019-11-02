@@ -19,6 +19,28 @@
           {%  set light = module.DATA['DATA']['LIGHT'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
           {%  set fan = module.DATA['DATA']['FAN'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
 
+          {%  set hasMoisture = False %}
+          {% if 'CAPACITIVEMOISTURE' in module.DATA['DATA'] %}
+            {%  set hasMoisture = True %}
+            {%  set moisture = module.DATA['DATA']['CAPACITIVEMOISTURE'] %}
+            {%  set mux0 = moisture['MUX0'] %}
+            {%  set mux1 = moisture['MUX1'] %}
+            {%  set mux2 = moisture['MUX2'] %}
+            {%  set mux3 = moisture['MUX3'] %}
+            {%  set mux4 = moisture['MUX4'] %}
+            {%  set mux5 = moisture['MUX5'] %}
+            {%  set mux6 = moisture['MUX6'] %}
+            {%  set mux7 = moisture['MUX7'] %}
+          {% else %}
+          {%  set mux0 = 0 %}
+          {%  set mux1 = 0 %}
+          {%  set mux2 = 0 %}
+          {%  set mux3 = 0 %}
+          {%  set mux4 = 0 %}
+          {%  set mux5 = 0 %}
+          {%  set mux6 = 0 %}
+          {%  set mux7 = 0 %}
+          {% endif %}
           <li>
             <div class="box {{ status_node(last_update, sensor_collect_data_period) }}">
               <table id="box-header-telemetry">
@@ -51,7 +73,7 @@
                 </tr>
                 <tr>
                   <td class="param-label">Soil</td>
-                  <td class="param-value" id='humidity_{{id}}'>???</td>
+                  <td class="param-value" id='humidity_{{id}}'>{{mux0}}</td>
                 </tr>
                 <!--
                 <tr>
