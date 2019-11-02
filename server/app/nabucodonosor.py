@@ -219,12 +219,12 @@ def progress():
     #build
     build_output = subprocess.Popen(["make","-f",ESPMAKE_PARAM], cwd=NODE_HOME,stdout=subprocess.PIPE)
     def generate():
-		x = 0
-		while x <= 100:
-			line = build_output.stdout.readline()
-			yield "data:" + str(x) + "\n\n"
-			logger.info("build[%i] %s",x,line.rstrip())
-			x = x + 1
+        x = 0
+        while x <= 100:
+            line = build_output.stdout.readline()
+            yield "data:" + str(x) + "\n\n"
+            logger.info("build[%i] %s",x,line.rstrip())
+            x = x + 1
     return Response(generate(), mimetype= 'text/event-stream')
 
 
