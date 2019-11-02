@@ -173,8 +173,7 @@ void mqttReconnect() {
   // Loop until we're reconnected
   while (!mqtt.connected()) {
     Serial.print("[MQTT] Attempting connection...");
-
-    if (mqtt.connect(HOSTNAME)) {
+    if (mqtt.connect(HOSTNAME,MQTT_WILL_TOPIC,MQTT_WILL_QOS,MQTT_WILL_RETAIN,MQTT_WILL_MESSAGE)) {
       Serial.println("connected");
       mqtt.subscribe(state.getMqttInboundTopic());
     } else {

@@ -140,24 +140,27 @@ def page_not_found(e):
 def page_not_found(e):
     return redirect('/login')
 
-
 @app.route('/')
 @login_required
 def index():
+    return render_template('index.html')
+
+@app.route('/module')
+@login_required
+def module():
     with app.app_context():
         time_start = dt.datetime.now()
         latest = DB.session.query(OasisData.NODE_ID,
             func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).filter(
             OasisData.DATA['DATA']['NODE'].isnot(None)).group_by(
             OasisData.NODE_ID).subquery('t2')
-
         modules = DB.session.query(OasisData).join(
             latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
         logger.debug("[database] call database for index page took %s secs",elapsedTime.total_seconds())
 
-        return render_template('index.html', modules=modules)
+        return render_template('module.html', modules=modules)
 
 
 @app.route('/configuration', methods=['POST'])

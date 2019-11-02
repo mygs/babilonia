@@ -1,0 +1,114 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2 id="index">Farm</h2>
+      <button class="btn btn-sm btn-danger btn-header btn-refresh-all"><i class="fa fa-refresh"></i></button>
+      <ul class="clearfix" id="sortable">
+        {% for module in modules %}
+          {%  set id = module.NODE_ID %}
+          {%  set ip = module.DATA['NODE_IP'] %}
+          {%  set firmware_version = module.DATA['FIRMWARE_VERSION'] %}
+          {%  set last_update = module.TIMESTAMP %}
+          {%  set sensor_collect_data_period = module.DATA['DATA']['NODE']['SENSOR_COLLECT_DATA_PERIOD'] %}
+          {%  set temperature = module.DATA['DATA']['DHT']['TEMPERATURE'] if 'DHT' in module.DATA['DATA'] else 'N/A' %}
+          {%  set humidity = module.DATA['DATA']['DHT']['HUMIDITY'] if 'DHT' in module.DATA['DATA'] else 'N/A' %}
+          {%  set water = module.DATA['DATA']['WATER'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
+          {%  set light = module.DATA['DATA']['LIGHT'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
+          {%  set fan = module.DATA['DATA']['FAN'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
+
+          {% if 'CAPACITIVEMOISTURE' in module.DATA['DATA'] %}
+            {%  set hasMoisture = True %}
+            {%  set moisture = module.DATA['DATA']['CAPACITIVEMOISTURE'] %}
+            {%  set mux0 = moisture['MUX0'] %}
+            {%  set mux1 = moisture['MUX1'] %}
+            {%  set mux2 = moisture['MUX2'] %}
+            {%  set mux3 = moisture['MUX3'] %}
+            {%  set mux4 = moisture['MUX4'] %}
+            {%  set mux5 = moisture['MUX5'] %}
+            {%  set mux6 = moisture['MUX6'] %}
+            {%  set mux7 = moisture['MUX7'] %}
+          {% else %}
+          {%  set hasMoisture = False %}
+          {%  set mux0 = 0 %}
+          {%  set mux1 = 0 %}
+          {%  set mux2 = 0 %}
+          {%  set mux3 = 0 %}
+          {%  set mux4 = 0 %}
+          {%  set mux5 = 0 %}
+          {%  set mux6 = 0 %}
+          {%  set mux7 = 0 %}
+          {% endif %}
+          <li>
+            <div class="box {{ status_node(last_update, sensor_collect_data_period) }}">
+              <table id="box-header-telemetry">
+                <tr>
+                    <td id="box-header-telemetry-title">
+                        <h4 class="text-uppercase">{{id}}</h4>
+                    </td>
+                    <td id="box-header-telemetry-hb">
+                      <div id="heartbeat_{{id}}" class="heart-beat-pulsate"></div>
+                    </td>
+                </tr>
+              </table>
+               <p><span id='time_{{id}}'>{{ format_last_update(last_update) }} </span></p>
+              <table id="telemetry">
+                <tr>
+                  <td class="param-label">Address</td>
+                  <td class="param-value" id='ip_{{id}}'>{{ip}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Firmware</td>
+                  <td class="param-value" id='sw_ver_{{id}}'>{{firmware_version}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Temperature</td>
+                  <td class="param-value" id='temperature_{{id}}'>{{temperature}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Humidity</td>
+                  <td class="param-value" id='humidity_{{id}}'>{{humidity}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Soil</td>
+                  <td class="param-value" id='humidity_{{id}}'>{{mux0}}</td>
+                </tr>
+                <!--
+                <tr>
+                  <td class="param-label">Irrigation</td>
+                  <td class="param-value" id='irrigation_{{id}}'>{{water}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Light</td>
+                  <td class="param-value" id='light_{{id}}'>{{light}}</td>
+                </tr>
+                <tr>
+                  <td class="param-label">Wind</td>
+                  <td class="param-value" id='fan_{{id}}'>{{fan}}</td>
+                </tr>
+                -->
+              </table>
+              <table id="cockpit">
+              <tr>
+                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-water" data-id="{{id}}"><i class="wi wi-sprinkle"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-info btn-light" data-id="{{id}}"><i class="wi wi-day-sunny"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-default btn-fan" data-id="{{id}}"><i class="wi wi-cloudy-gusts"></i></button></td>
+              </tr>
+              <tr>
+                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-default" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-danger btn-restart" data-id="{{id}}"><i class="fa fa-power-off"></i></button></td>
+              </tr>
+              </table>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+<!-- modals -->
+{% include 'modal-updatenode.html' %}
