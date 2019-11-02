@@ -30,6 +30,14 @@ Semi wet| semiwet1
 Wet| wet00001
 Air| air00001
 
+
+#### Query to extract data
+
+```
+SELECT TIMESTAMP, DATA->'$.DATA.CAPACITIVEMOISTURE' AS MOISTURE FROM farmland.OASIS_DATA WHERE NODE_ID='oasis-397988' AND DATA->'$.MESSAGE_ID' ='water001' ORDER BY TIMESTAMP ASC;
+```
+
+
 #### Request
 ```
 mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"

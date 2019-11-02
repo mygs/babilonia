@@ -150,6 +150,7 @@ def index():
             func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).filter(
             OasisData.DATA['DATA']['NODE'].isnot(None)).group_by(
             OasisData.NODE_ID).subquery('t2')
+
         modules = DB.session.query(OasisData).join(
             latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
         time_end = dt.datetime.now()
