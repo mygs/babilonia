@@ -55,6 +55,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = cfg["SECRET_KEY"]
 app.config['LOGIN_DISABLED'] = cfg["LOGIN_DISABLED"]
 
+NODE_HOME=os.path.join(cfg["GIT_REPO"], 'node/ino')
+BABILONIA_LIBS = os.environ.get('BABILONIA_LIBS', os.defpath)
+ESPMAKE_PARAM=os.path.join(BABILONIA_LIBS, 'makeEspArduino/makeEspArduino.mk')
+logger.info("NODE_HOME: %s",NODE_HOME)
+logger.info("BABILONIA_LIBS: %s",BABILONIA_LIBS)
+logger.info("ESPMAKE_PARAM: %s",ESPMAKE_PARAM)
+
 mqtt = Mqtt(app)
 DB.init_app(app)
 socketio = SocketIO(app)
@@ -206,10 +213,6 @@ def firmware():
         logger.debug("[database] call database for firware page took %s secs",elapsedTime.total_seconds())
 
         return render_template('firmware/firmware.html', modules=modules)
-
-NODE_HOME=os.path.join(cfg["GIT_REPO"], 'node/ino')
-BABILONIA_LIBS = os.environ.get('BABILONIA_LIBS', os.defpath)
-ESPMAKE_PARAM=os.path.join(BABILONIA_LIBS, 'makeEspArduino/makeEspArduino.mk')
 
 @app.route('/progress')
 @login_required
