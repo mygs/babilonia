@@ -20,29 +20,47 @@ request
 ```
 
 #### Test Tube
-as of 19/10/2019
-* TUBE I (dry): 145g (glass+soil)
-* TUBE II (semiwet): 145g (glass+soil) + 20g (water) = 165g
-* TUBE III (almowet1): 145g (glass+soil) + 40g (water) = 185g
-* TUBE I (wet): 145g (glass+soil) + ... 80?
-* TUBE IV (water): 125g (glass+water)
 
 
+###### SET001
+As of 03/Nov/2019 10AM
+* Tube IV (glass only): 60.6g (reference)
+
+* TUBE   I: 130g (glass+soil)
+* TUBE  II: 130g (glass+soil); 150g (glass+soil+water) ~ 20g (water)
+* TUBE III: 130g (glass+soil); 170g (glass+soil+water) ~ 40g (water)
+* TUBE  IV: XXXg (glass+water)
+
+###### SET00?
+* Tube IV (glass only): 60.6g (reference)
+* TUBE   I: ?
+* TUBE  II: ?
+* TUBE III: ?
+* TUBE  IV: ?
 
 #### MESSAGE_ID
-TEST | MESSAGE_ID
----- | ----------
-Water| water001
-Dry| dry00001
-Semi wet| semiwet1
-Wet| wet00001
-Air| air00001
+MESSAGE_ID | TEST CONDITIONS
+---------- | ----------
+air00001| No soil
+test0001| SET001
 
 
 #### Query to extract data
 
 ```
-SELECT TIMESTAMP, DATA->'$.DATA.CAPACITIVEMOISTURE' AS MOISTURE FROM farmland.OASIS_DATA WHERE NODE_ID='oasis-397988' AND DATA->'$.MESSAGE_ID' ='water001' ORDER BY TIMESTAMP ASC;
+SELECT	TIMESTAMP,
+		DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0' AS MUX0,
+        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1' AS MUX1,
+        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2' AS MUX2,
+        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3' AS MUX3,
+        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4' AS MUX4,
+        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5' AS MUX5,
+        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6' AS MUX6,
+        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
+FROM farmland.OASIS_DATA
+WHERE 	NODE_ID='oasis-397988' AND
+		DATA->'$.MESSAGE_ID' ='air00001'
+ORDER BY TIMESTAMP ASC;
 ```
 
 
