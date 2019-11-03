@@ -56,10 +56,8 @@ app.config['SECRET_KEY'] = cfg["SECRET_KEY"]
 app.config['LOGIN_DISABLED'] = cfg["LOGIN_DISABLED"]
 
 NODE_HOME=os.path.join(cfg["GIT_REPO"], 'node/ino')
-BABILONIA_LIBS = os.environ.get('BABILONIA_LIBS', os.defpath)
-ESPMAKE_PARAM=os.path.join(BABILONIA_LIBS, 'makeEspArduino/makeEspArduino.mk')
+ESPMAKE_PARAM=os.path.join(cfg["BABILONIA_LIBS"], 'makeEspArduino/makeEspArduino.mk')
 logger.info("NODE_HOME: %s",NODE_HOME)
-logger.info("BABILONIA_LIBS: %s",BABILONIA_LIBS)
 logger.info("ESPMAKE_PARAM: %s",ESPMAKE_PARAM)
 
 mqtt = Mqtt(app)
