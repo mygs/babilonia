@@ -215,6 +215,7 @@ def firmware():
 @app.route('/progress')
 @login_required
 def progress():
+    os.chdir(NODE_HOME) #change directory because of service issues
     #clean
     logger.info("[firmware] cleaning arduino firmware")
     clean_output=subprocess.check_output(["make","-f", ESPMAKE_PARAM, "clean"],
