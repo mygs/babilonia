@@ -216,17 +216,21 @@ def firmware():
 @login_required
 def progress():
     #clean
-    logger.info("Cleaning arduino firmware")
-    subprocess.check_output(["make","-f", ESPMAKE_PARAM, "clean"], cwd=NODE_HOME)
+    logger.info("[firmware] cleaning arduino firmware")
+    clean_output=subprocess.check_output(["make","-f", ESPMAKE_PARAM, "clean"],
+                                            cwd=NODE_HOME)
+    logger.info("[firmware] %s", clean_output)
     #build
-    logger.info("Building new arduino firmware")
-    build_output = subprocess.Popen(["make","-f",ESPMAKE_PARAM], cwd=NODE_HOME,stdout=subprocess.PIPE)
+    logger.info("[firmware] building new arduino firmware")
+    build_output = subprocess.Popen(["make","-f",ESPMAKE_PARAM],
+                                        cwd=NODE_HOME,
+                                        stdout=subprocess.PIPE)
     def generate():
         x = 0
         while x <= 100:
             line = build_output.stdout.readline()
             yield "data:" + str(x) + "\n\n"
-            logger.info("build[%i] %s",x,line.rstrip())
+            logger.info("[firmware] progress %i: %s",x,line.rstrip())
             x = x + 1
     return Response(generate(), mimetype= 'text/event-stream')
 
