@@ -56,6 +56,15 @@ td#box-header-telemetry-hb {
     text-align: right;
 }
 
+table#moisture {
+    text-align: center;
+    -webkit-border-horizontal-spacing: 14px;
+    -webkit-border-vertical-spacing: 1px;
+    border-collapse: separate;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 table#telemetry {
     width: 100%;
     table-layout: fixed;

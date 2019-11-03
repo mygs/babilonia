@@ -54,6 +54,21 @@
                 </tr>
               </table>
                <p><span id='time_{{id}}'>{{ format_last_update(last_update) }} </span></p>
+
+               <table id="moisture">
+               <tr>
+                 <td><i class="fa fa-2x fa-tint"></i></td>
+                 <td><i class="fa fa-2x fa-tint"></i></td>
+                 <td><i class="fa fa-2x fa-tint"></i></td>
+                 <td><i class="fa fa-2x fa-tint"></i></td>
+               </tr>
+               <tr>
+                 <td><i class="fa fa-2x fa-tint"></i></td>
+                 <td><i class="fa fa-2x fa-tint"></i></td>
+                 <td><i class="fa fa-2x fa-tint"></i></td>
+                 <td><i class="fa fa-2x fa-tint"></i></td>
+              </tr>
+               </table>
               <table id="telemetry">
                 <tr>
                   <td class="param-label">Address</td>
@@ -70,10 +85,6 @@
                 <tr>
                   <td class="param-label">Humidity</td>
                   <td class="param-value" id='humidity_{{id}}'>{{humidity}}</td>
-                </tr>
-                <tr>
-                  <td class="param-label">Soil</td>
-                  <td class="param-value" id='humidity_{{id}}'>{{mux0}}</td>
                 </tr>
                 <!--
                 <tr>

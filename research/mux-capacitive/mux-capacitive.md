@@ -13,6 +13,8 @@ mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39798
 monitoring
 ```
 mosquitto_sub -h 192.168.2.1 -t "#" -v | grep oasis-397988
+mosquitto_sub -h 192.168.1.70 -t "#" -v | grep oasis-397988
+
 ```
 request
 ```
