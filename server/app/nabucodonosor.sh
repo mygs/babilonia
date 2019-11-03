@@ -26,6 +26,7 @@ DAEMON_USER=root
 PIDFILE=/var/run/$DAEMON_NAME.pid
 
 . /lib/lsb/init-functions
+. /etc/profile.d/00-babilonia.sh
 
 do_start () {
     log_daemon_msg "Starting system $DAEMON_NAME daemon"

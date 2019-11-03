@@ -55,10 +55,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = cfg["SECRET_KEY"]
 app.config['LOGIN_DISABLED'] = cfg["LOGIN_DISABLED"]
 
-NODE_HOME=os.path.join(cfg["GIT_REPO"], 'node/ino')
-ESPMAKE_PARAM=os.path.join(cfg["BABILONIA_LIBS"], 'makeEspArduino/makeEspArduino.mk')
+NODE_HOME=os.path.join(os.environ["BABILONIA_HOME"], 'node/ino')
+ESPMAKE_PARAM=os.path.join(os.environ["BABILONIA_LIBS"], 'makeEspArduino/makeEspArduino.mk')
+
+logger.info("BABILONIA_HOME: %s",os.environ["BABILONIA_HOME"])
+logger.info("BABILONIA_LIBS: %s",os.environ["BABILONIA_LIBS"])
 logger.info("NODE_HOME: %s",NODE_HOME)
-logger.info("ESPMAKE_PARAM: %s",ESPMAKE_PARAM)
 
 mqtt = Mqtt(app)
 DB.init_app(app)
@@ -101,7 +103,7 @@ assets.register('3rdpartyjs',
                 filters='jsmin')
 
 def update_server_software():
-    repo = git.Repo(cfg["GIT_REPO"])
+    repo = git.Repo(os.environ["BABILONIA_HOME"])
     repo.remotes.origin.pull()
     subprocess.check_output(["sudo", "service", "nabucodonosor", "restart"])
 ###############################################################################
@@ -215,12 +217,12 @@ def firmware():
 @app.route('/progress')
 @login_required
 def progress():
-    os.chdir(NODE_HOME) #change directory because of service issues
+    logger.info("[firmware] env: %s",os.environ)
     #clean
-#    logger.info("[firmware] cleaning arduino firmware")
-#    clean_output=subprocess.check_output(["make","-f", ESPMAKE_PARAM, "clean"],
-#                                            cwd=NODE_HOME)
-#    logger.info("[firmware] %s", clean_output)
+    logger.info("[firmware] cleaning arduino firmware")
+    clean_output=subprocess.check_output(["make","-f", ESPMAKE_PARAM, "clean"],
+                                            cwd=NODE_HOME)
+    logger.info("[firmware] %s", clean_output)
     #build
     logger.info("[firmware] building new arduino firmware")
     build_output = subprocess.Popen(["make","-f",ESPMAKE_PARAM],
