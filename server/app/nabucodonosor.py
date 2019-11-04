@@ -280,8 +280,16 @@ def utility_processor():
             return "good"
         else:
             return "danger"
+    def status_moisture(hasMoisture, id, mux):
+        moisture = int(mux)
+        if not hasMoisture or mux < 50:
+            return "moisture-disable"
+        else:
+            #TODO: put some brain in here
+            return "moisture-wet"
     return {
             'status_node':status_node,
+            'status_moisture':status_moisture,
             'format_last_update':format_last_update
             }
 ###############################################################################

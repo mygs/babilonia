@@ -65,6 +65,16 @@ table#moisture {
     margin-right: auto;
 }
 
+.moisture-disable {
+  color: grey !important;
+}
+.moisture-dry {
+  color: red !important;
+}
+.moisture-wet {
+  color: blue !important;
+}
+
 table#telemetry {
     width: 100%;
     table-layout: fixed;
