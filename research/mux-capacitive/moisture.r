@@ -1,14 +1,18 @@
+library(psych)
+
 
 setwd("~/Development/babilonia/research/mux-capacitive")
 
+data <- read.csv("./air00001.csv", head = TRUE, sep=",")
 
-moisture_data <- group_by(read.csv("./water001.csv", head = TRUE, sep=","),
-                          TIMESTAMP,MOISTURE)
+#head(data)
+summary(data)
+describe(data)
 
+boxplot(data$MUX0,data$MUX1,data$MUX2,data$MUX3,
+        main="Boxplot comparing Analogic ports",
+        col= rainbow(4),
+        horizontal = TRUE)
 
-COUNT <- length(moisture_data$MOISTURE)
-MEDIAN <- median(moisture_data$MOISTURE)
-MEAN <- mean(moisture_data$MOISTURE)
-SD <- sd(moisture_data$MOISTURE)
-MIN <- min(moisture_data$MOISTURE)
-MAX <- max(moisture_data$MOISTURE)
+hist(data$MUX0,col='skyblue')
+hist(data$MUX6,add=T, col='red')
