@@ -28,10 +28,19 @@ request
 As of 03/Nov/2019 10AM
 * Tube IV (glass only): 60.6g (reference)
 
-* TUBE   I: 130g (glass+soil)
-* TUBE  II: 130g (glass+soil); 150g (glass+soil+water) ~ 20g (water)
-* TUBE III: 130g (glass+soil); 170g (glass+soil+water) ~ 40g (water)
-* TUBE  IV: XXXg (glass+water)
+* MUX0 -> TUBE   I: 130g (glass+soil)
+* MUX1 -> TUBE  II: 130g (glass+soil); 150g (glass+soil+water) ~ 20g (water)
+* MUX2 -> TUBE III: 130g (glass+soil); 170g (glass+soil+water) ~ 40g (water)
+* MUX3 -> TUBE  IV: XXXg (glass+water)
+
+
+###### SET002
+* Tube IV (glass only): 60.6g (reference)
+
+* MUX3 -> TUBE   I: 130g (glass+soil)
+* MUX1 -> TUBE  II: 130g (glass+soil); 160g (glass+soil+water) ~ 30g (water)
+* MUX2 -> TUBE III: 130g (glass+soil); 181g (glass+soil+water) ~ 51g (water)
+* MUX0 -> TUBE  IV: XXXg (glass+water)
 
 ###### SET00?
 * Tube IV (glass only): 60.6g (reference)
@@ -45,6 +54,7 @@ MESSAGE_ID | TEST CONDITIONS
 ---------- | ----------
 air00001| No soil
 test0001| SET001
+test0002| SET002
 
 
 #### Query to extract data
