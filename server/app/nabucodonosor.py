@@ -158,7 +158,7 @@ def weather():
     lat = cfg["LATITUDE"]
     long = cfg["LONGITUDE"]
     response = requests.get('https://api.forecast.io/forecast/%s/%s,%s?units=si'%(
-                                weather_key, lat, long)
+                                weather_key, lat, long))
     logger.debug("[weather] %s", response.json())
 
 @app.route('/module')
