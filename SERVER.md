@@ -1,3 +1,10 @@
+## GEOCODE
+http://www.datasciencetoolkit.org/
+```
+[{"types":["locality","political"],"address_components":[{"types":["locality","political"],"long_name":"Osasco, BR","short_name":"Osasco"},{"types":["country","political"],"long_name":"Brazil","short_name":"BR"}],"geometry":{"location":{"lng":-46.79167,"lat":-23.5325},"location_type":"APPROXIMATE","viewport":{"southwest":{"lng":-46.8106842041,"lat":-23.5616264343},"northeast":{"lng":-46.7097053528,"lat":-23.4430885315}}}}]
+```
+latitude = /results/geometry/location/lat
+longitude = /results/geometry/location/lng
 ## ENVIRONMENT VARIABLE
 Set the following environment variables
 

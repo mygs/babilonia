@@ -11,6 +11,7 @@ import logging.config
 from Models import *
 #import analytics
 import simplejson as json
+import requests
 from flask import Flask, Response, url_for, redirect, render_template, request, session, abort
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
@@ -152,6 +153,14 @@ def page_not_found(e):
 def index():
     return render_template('index.html')
 
+def weather():
+    weather_key = cfg["WEATHER_KEY"]
+    lat = cfg["LATITUDE"]
+    long = cfg["LONGITUDE"]
+    response = requests.get('https://api.forecast.io/forecast/%s/%s,%s?units=si'%(
+                                weather_key, lat, long)
+    logger.debug("[weather] %s", response.json())
+
 @app.route('/module')
 @login_required
 def module():
@@ -241,6 +250,7 @@ def progress():
 @app.route('/about')
 @login_required
 def about():
+    weather()
     return render_template('about.html')
 
 @app.route('/webhook', methods=['POST'])
