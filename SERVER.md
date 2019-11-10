@@ -1,10 +1,20 @@
 ## GEOCODE
+
+#### FIND LAT and LNG
 http://www.datasciencetoolkit.org/
 ```
 [{"types":["locality","political"],"address_components":[{"types":["locality","political"],"long_name":"Osasco, BR","short_name":"Osasco"},{"types":["country","political"],"long_name":"Brazil","short_name":"BR"}],"geometry":{"location":{"lng":-46.79167,"lat":-23.5325},"location_type":"APPROXIMATE","viewport":{"southwest":{"lng":-46.8106842041,"lat":-23.5616264343},"northeast":{"lng":-46.7097053528,"lat":-23.4430885315}}}}]
 ```
 latitude = /results/geometry/location/lat
 longitude = /results/geometry/location/lng
+
+ref: https://github.com/M0nica/flask_weather/blob/master/app.py
+
+
+#### GEODATA
+
+https://api.forecast.io/forecast/4b7af3b7a119ca4b0ea27681f8472504/-46.79167,-23.5325?units=si
+
 ## ENVIRONMENT VARIABLE
 Set the following environment variables
 
