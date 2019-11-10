@@ -12,8 +12,12 @@ ref: https://github.com/M0nica/flask_weather/blob/master/app.py
 
 
 #### GEODATA
-
-https://api.forecast.io/forecast/4b7af3b7a119ca4b0ea27681f8472504/-46.79167,-23.5325?units=si
+https://darksky.net/dev/docs
+```
+https://api.darksky.net/forecast/[key]/[latitude],[longitude]
+```
+https://api.darksky.net/forecast/4b7af3b7a119ca4b0ea27681f8472504/-23.535521,-46.763048?units=si
+https://api.forecast.io/forecast/4b7af3b7a119ca4b0ea27681f8472504/-23.535521,-46.763048?units=si
 
 ## ENVIRONMENT VARIABLE
 Set the following environment variables

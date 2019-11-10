@@ -151,15 +151,18 @@ def page_not_found(e):
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html')
+    weather = weather_currently()
+    return render_template('index.html', weather=weather)
 
-def weather():
+def weather_currently():
     weather_key = cfg["WEATHER_KEY"]
     lat = cfg["LATITUDE"]
     long = cfg["LONGITUDE"]
-    response = requests.get('https://api.forecast.io/forecast/%s/%s,%s?units=si'%(
+    response = requests.get('https://api.forecast.io/forecast/%s/%s,%s?units=si&lang=pt&exclude=flags,hourly,daily'%(
                                 weather_key, lat, long))
-    logger.debug("[weather] %s", response.json())
+    data = response.json()
+    logger.debug("[weather] %s", data)
+    return data['currently']
 
 @app.route('/module')
 @login_required
@@ -250,7 +253,6 @@ def progress():
 @app.route('/about')
 @login_required
 def about():
-    weather()
     return render_template('about.html')
 
 @app.route('/webhook', methods=['POST'])
@@ -297,9 +299,24 @@ def utility_processor():
         else:
             #TODO: put some brain in here
             return "moisture-wet"
+    def weather_icon(argument):
+        switcher = {
+            "clear-day": "wi wi-dashboard wi-day-sunny",
+            "clear-night": "wi wi-dashboard wi-night-clear",
+            "rain": "wi wi-dashboard wi-rain",
+            "snow": "wi wi-dashboard wi-snow",
+            "sleet": "wi wi-dashboard wi-sleet",
+            "wind": "wi wi-dashboard wi-wind",
+            "fog": "wi wi-dashboard wi-fog",
+            "cloudy": "wi wi-cloudy",
+            "partly-cloudy-day": "wi wi-dashboard wi-forecast-io-partly-cloudy-day",
+            "partly-cloudy-night": "wi wi-dashboard wi-forecast-io-partly-cloudy-day"
+        }
+        return switcher.get(argument, "wi wi-dashboard wi-day-sunny")
     return {
             'status_node':status_node,
             'status_moisture':status_moisture,
+            'weather_icon': weather_icon,
             'format_last_update':format_last_update
             }
 ###############################################################################

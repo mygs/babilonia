@@ -1,0 +1,26 @@
+{
+   "latitude":-23.535521,
+   "longitude":-46.763048,
+   "timezone":"America/Sao_Paulo",
+   "currently":{
+      "time":1573359193,
+      "summary":"Overcast",
+      "icon":"cloudy",
+      "precipIntensity":0.1065,
+      "precipProbability":0.07,
+      "precipType":"rain",
+      "temperature":20.74,
+      "apparentTemperature":21.11,
+      "dewPoint":18.33,
+      "humidity":0.86,
+      "pressure":1013.4,
+      "windSpeed":2.11,
+      "windGust":4.35,
+      "windBearing":81,
+      "cloudCover":0.92,
+      "uvIndex":0,
+      "visibility":16.093,
+      "ozone":271.5
+   },
+   "offset":-3
+}

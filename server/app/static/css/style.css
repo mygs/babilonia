@@ -1,3 +1,25 @@
+/* START OF DASHBOARD STUFF */
+.wi-dashboard {
+    font-size: 60px;
+    text-align: center;
+}
+
+.panel-weather{
+  background-color: #03a9f4;
+  border-color: #03a9f4;
+  color: #fff;
+}
+
+.panel-weather-summary{
+
+}
+
+.panel-weather-temperature{
+    font-size: 50px;
+    text-align: center;
+}
+
+/* END OF DASHBOARD STUFF */
 .alert{
     display: none;
 }
@@ -187,20 +209,17 @@ table#cockpit {
 }
 
 .footer {
-  position: absolute;
-  margin-top: 10px;
-  bottom: 0;
+  position: fixed;
+  bottom: 0;/* stick to bottom */
   width: 100%;
   /* Set the fixed height of the footer here */
-  height: 50px;
+  height: 30px;
+  line-height: 30px;
   background-color: #222;
 }
 
 .footer-info {
-	float: left;
-	padding-bottom: 10px;
 	color: #666;
-	text-align: left;
 }
 
 canvas {
