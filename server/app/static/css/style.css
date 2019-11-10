@@ -3,38 +3,43 @@
 #dashboard {
   list-style: none;
   margin: 0;
-  padding: 20px;
+  padding: 5px;
   width: 100%;
 }
 
-#dashboard li {
-  display: inline-block;
-  vertical-align: middle;
-
-}
 
 #dashboard li .panel {
-  height: 150px;
   text-align: center;
-  vertical-align: middle;
 
 }
+#dashboard li .panel-body {
+  padding: 5px;
+}
 
+.panel-weather-col{
+    padding-top: 10px;
+    vertical-align: middle;
+}
 #dashboard li .panel-weather {
   background-color: #03a9f4;
   border-color: #03a9f4;
-  color: #fff;  width: 100%;
+  color: #fff;
+  width: 100%;
+
 }
 
 .wi-dashboard {
     font-size: 50px;
     text-align: center;
-    vertical-align: middle;
+    vertical-align: bottom;
 
 }
 
 
 .panel-weather-summary{
+  font-size: 10px;
+  text-align: center;
+  vertical-align: bottom;
 
 }
 
@@ -42,9 +47,30 @@
     font-size: 40px;
     text-align: center;
     vertical-align: middle;
-
 }
 
+
+.weather-label {
+    font-size: 12px;
+    text-align: right;
+    font-weight: bold;
+    padding: 3px;
+    width: 20%;
+}
+
+.weather-value {
+    font-size: 12px;
+    text-align: left;
+    padding: 3px;
+    width: 60%;
+}
+.weather-value-unit {
+    text-align: left;
+    font-size: 10px;
+    padding: 2px;
+    font-style: italic;
+    width: 20%;
+}
 /* END OF DASHBOARD STUFF */
 .alert{
     display: none;
