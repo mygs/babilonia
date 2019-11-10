@@ -1,22 +1,48 @@
 /* START OF DASHBOARD STUFF */
-.wi-dashboard {
-    font-size: 60px;
-    text-align: center;
+
+#dashboard {
+  list-style: none;
+  margin: 0;
+  padding: 20px;
+  width: 100%;
 }
 
-.panel-weather{
+#dashboard li {
+  display: inline-block;
+  vertical-align: middle;
+
+}
+
+#dashboard li .panel {
+  height: 150px;
+  text-align: center;
+  vertical-align: middle;
+
+}
+
+#dashboard li .panel-weather {
   background-color: #03a9f4;
   border-color: #03a9f4;
-  color: #fff;
+  color: #fff;  width: 100%;
 }
+
+.wi-dashboard {
+    font-size: 50px;
+    text-align: center;
+    vertical-align: middle;
+
+}
+
 
 .panel-weather-summary{
 
 }
 
 .panel-weather-temperature{
-    font-size: 50px;
+    font-size: 40px;
     text-align: center;
+    vertical-align: middle;
+
 }
 
 /* END OF DASHBOARD STUFF */

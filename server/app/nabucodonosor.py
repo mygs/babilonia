@@ -301,18 +301,18 @@ def utility_processor():
             return "moisture-wet"
     def weather_icon(argument):
         switcher = {
-            "clear-day": "wi wi-dashboard wi-day-sunny",
-            "clear-night": "wi wi-dashboard wi-night-clear",
-            "rain": "wi wi-dashboard wi-rain",
-            "snow": "wi wi-dashboard wi-snow",
-            "sleet": "wi wi-dashboard wi-sleet",
-            "wind": "wi wi-dashboard wi-wind",
-            "fog": "wi wi-dashboard wi-fog",
+            "clear-day": "wi wi-day-sunny",
+            "clear-night": "wi wi-night-clear",
+            "rain": "wi wi-rain",
+            "snow": "wi wi-snow",
+            "sleet": "wi wi-sleet",
+            "wind": "wi wi-wind",
+            "fog": "wi wi-fog",
             "cloudy": "wi wi-cloudy",
-            "partly-cloudy-day": "wi wi-dashboard wi-forecast-io-partly-cloudy-day",
-            "partly-cloudy-night": "wi wi-dashboard wi-forecast-io-partly-cloudy-day"
+            "partly-cloudy-day": "wi wi-forecast-io-partly-cloudy-day",
+            "partly-cloudy-night": "wi wi-forecast-io-partly-cloudy-day"
         }
-        return switcher.get(argument, "wi wi-dashboard wi-day-sunny")
+        return switcher.get(argument, "wi wi-day-sunny")
     return {
             'status_node':status_node,
             'status_moisture':status_moisture,

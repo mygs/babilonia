@@ -3,40 +3,45 @@
 {% block body %}
 <div class="container">
   <div class="row">
-    <div class="col-md-5">
-      <div class="panel panel-weather">
-        <div class="panel-body">
-          <div class="container">
-            <div class="row">
-              <div class="col-xs-1">
-                <i class="{{weather_icon(weather['icon'])}}"></i>
-                <p class="panel-weather-summary">{{weather['summary']}}</p>
-              </div>
-              <div class="col-xs-2 panel-weather-temperature">
-                {{weather['apparentTemperature']|round|int}}°
-              </div>
-              <div class="col-xs-2">
+    <div class="col-md-12">
+      <ul class="clearfix" id="dashboard">
+        <!-- WEATHER -->
+        <li class="col-md-4 col-sm-8 col-xs-12">
+          <div class="panel panel-weather">
+            <div class="panel-body">
+              <div class="container">
                 <div class="row">
-                   <i class="wi wi-humidity"></i> {{"%.2f"|format(weather['humidity']*100)}}%
-                 </div>
-                <div class="row">
-                    <i class="wi wi-umbrella"></i> {{"%.2f"|format(weather['precipProbability']*100)}}%
+                  <div class="col-md-1 col-sm-2 col-xs-4">
+                    <i class="wi-dashboard {{weather_icon(weather['icon'])}}"></i>
+                    <p class="panel-weather-summary">{{weather['summary']}}</p>
+                  </div>
+                  <div class="col-md-1 col-sm-2 col-xs-4">
+                    <span class=" panel-weather-temperature align-middle">{{weather['apparentTemperature']|round|int}}°</span>
+                  </div>
+                  <div class="col-md-1 col-sm-2 col-xs-4">
+                    <div class="row">
+                       <i class="wi wi-humidity"></i> {{"%.2f"|format(weather['humidity']*100)}}%
+                     </div>
+                    <div class="row">
+                        <i class="wi wi-umbrella"></i> {{"%.2f"|format(weather['precipProbability']*100)}}%
+                    </div>
+                    <div class="row">
+                        <i class="wi wi-raindrops"></i> {{"%.2f"|format(weather['precipIntensity'])}}mm/h
+                    </div>
+                    <div class="row">
+                        <i class="wi wi-strong-wind"></i> {{"%.2f"|format(weather['windSpeed'])}}m/s
+                    </div>
+                  </div>
                 </div>
-                <div class="row">
-                    <i class="wi wi-raindrops"></i> {{"%.2f"|format(weather['precipIntensity'])}}mm/h
-                </div>
-                <div class="row">
-                    <i class="wi wi-strong-wind"></i> {{"%.2f"|format(weather['windSpeed'])}}m/s
-                </div>
-
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-5">
-      <!-- more panels -->
+        </li>
+        <!-- FARM STATUS -->
+
+        <!-- NODE -->
+
+      </ul>
     </div>
   </div>
 </div>
