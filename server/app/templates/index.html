@@ -14,20 +14,28 @@
                   <div class="panel-weather-col col-md-1 col-sm-2 col-xs-4">
                     <table>
                       <tr>
-                        <i class="wi-dashboard {{weather_icon(weather['icon'])}}"></i>
+                        <td>
+                          <i class="wi-dashboard {{weather_icon(weather['icon'])}}"></i>
+                        </td>
                       </tr>
-                      <p class="panel-weather-summary">{{weather['summary']}}</p>
                       <tr>
+                        <td>
+                          <p class="panel-weather-summary">{{weather['summary']}}</p>
+                        </td>
                       </tr>
                     </table>
                   </div>
                   <div class="panel-weather-col col-md-1 col-sm-2 col-xs-4">
                     <table>
                       <tr>
-                        <i class="wi wi-thermometer"></i>
+                        <td>
+                          <i class="wi wi-thermometer"></i>
+                        </td>
                       </tr>
-                      <span class="panel-weather-temperature">{{weather['apparentTemperature']|round|int}}°</span>
                       <tr>
+                        <td>
+                          <span class="panel-weather-temperature">{{weather['apparentTemperature']|round|int}}°</span>
+                        </td>
                       </tr>
                     </table>
                   </div>

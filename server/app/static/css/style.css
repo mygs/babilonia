@@ -29,7 +29,7 @@
 }
 
 .wi-dashboard {
-    font-size: 50px;
+    font-size: 45px;
     text-align: center;
     vertical-align: bottom;
 
@@ -38,7 +38,6 @@
 
 .panel-weather-summary{
   font-size: 10px;
-  text-align: center;
   vertical-align: bottom;
 
 }
@@ -46,7 +45,6 @@
 .panel-weather-temperature{
     font-size: 40px;
     text-align: center;
-    vertical-align: middle;
 }
 
 
