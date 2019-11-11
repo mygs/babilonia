@@ -11,7 +11,7 @@
             <div class="panel-body">
               <div class="container">
                 <div class="row">
-                  <div class="panel-weather-col col-md-1 col-sm-2 col-xs-4">
+                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
                     <table>
                       <tr>
                         <td>
@@ -25,7 +25,7 @@
                       </tr>
                     </table>
                   </div>
-                  <div class="panel-weather-col col-md-1 col-sm-2 col-xs-4">
+                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
                     <table>
                       <tr>
                         <td>
@@ -39,7 +39,7 @@
                       </tr>
                     </table>
                   </div>
-                  <div class="panel-weather-col col-md-1 col-sm-2 col-xs-4">
+                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
                     <table>
                       <tr>
                         <td class="weather-label"><i class="wi wi-humidity"></i></td>
@@ -65,8 +65,76 @@
           </div>
         </li>
         <!-- FARM STATUS -->
+        <li class="col-md-4 col-sm-8 col-xs-12">
+          <div class="panel panel-farm">
+            <div class="panel-body">
+              <div class="container">
+                <div class="row">
+                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
+                    <img src="../static/img/farm.png">
+                  </div>
 
-        <!-- NODE -->
+                  <div class="panel-dashboard-col col-md-3 col-sm-2 col-xs-4">
+                    <table>
+                      <tr>
+                        <td class="weather-label"><i class="wi wi-humidity"></i></td>
+                        <td class="weather-value">{{"%.2f"|format(weather['humidity']*100)}}<span class="weather-value-unit">%</span></td>
+                      </tr>
+                      <tr>
+                        <td class="weather-label"> <i class="wi wi-umbrella"></i> </td>
+                        <td class="weather-value">{{"%.2f"|format(weather['precipProbability']*100)}}<span class="weather-value-unit">%</span></td>
+                      </tr>
+                      <tr>
+                        <td class="weather-label"><i class="wi wi-raindrops"></i></td>
+                        <td class="weather-value">{{"%.2f"|format(weather['precipIntensity'])}}<span class="weather-value-unit">mm/h</span></td>
+                      </tr>
+                      <tr>
+                        <td class="weather-label"><i class="wi wi-strong-wind"></i></td>
+                        <td class="weather-value">{{"%.2f"|format(weather['windSpeed'])}}<span class="weather-value-unit">m/s</span></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- NODE STATUS -->
+        <li class="col-md-4 col-sm-8 col-xs-12">
+          <div class="panel panel-node">
+            <div class="panel-body">
+              <div class="container">
+                <div class="row">
+                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
+                    <img src="../static/img/iot.png">
+                  </div>
+
+                  <div class="panel-dashboard-col col-md-3 col-sm-2 col-xs-4">
+                    <table>
+                      <tr>
+                        <td class="weather-label"><i class="wi wi-humidity"></i></td>
+                        <td class="weather-value">{{"%.2f"|format(weather['humidity']*100)}}<span class="weather-value-unit">%</span></td>
+                      </tr>
+                      <tr>
+                        <td class="weather-label"> <i class="wi wi-umbrella"></i> </td>
+                        <td class="weather-value">{{"%.2f"|format(weather['precipProbability']*100)}}<span class="weather-value-unit">%</span></td>
+                      </tr>
+                      <tr>
+                        <td class="weather-label"><i class="wi wi-raindrops"></i></td>
+                        <td class="weather-value">{{"%.2f"|format(weather['precipIntensity'])}}<span class="weather-value-unit">mm/h</span></td>
+                      </tr>
+                      <tr>
+                        <td class="weather-label"><i class="wi wi-strong-wind"></i></td>
+                        <td class="weather-value">{{"%.2f"|format(weather['windSpeed'])}}<span class="weather-value-unit">m/s</span></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- RASPBERRY PI STATUS -->
 
       </ul>
     </div>

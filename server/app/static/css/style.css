@@ -16,7 +16,7 @@
   padding: 5px;
 }
 
-.panel-weather-col{
+.panel-dashboard-col{
     padding-top: 10px;
     vertical-align: middle;
 }
@@ -25,14 +25,23 @@
   border-color: #03a9f4;
   color: #fff;
   width: 100%;
-
 }
-
+#dashboard li .panel-farm {
+  background-color: #00c800;
+  border-color: #00c800;
+  color: #fff;
+  width: 100%;
+}
+#dashboard li .panel-node {
+  background-color: #f4c803;
+  border-color: #f4c803;
+  color: #fff;
+  width: 100%;
+}
 .wi-dashboard {
     font-size: 45px;
     text-align: center;
     vertical-align: bottom;
-
 }
 
 
