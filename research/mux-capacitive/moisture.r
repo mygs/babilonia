@@ -1,12 +1,13 @@
 library(psych)
 library(ggplot2)
 library(lmtest)
+library(fpp2)
 
 
 setwd("~/Development/babilonia/research/mux-capacitive")
 
-data <- read.csv("./test0001.csv", head = TRUE, sep=",")
-
+data <- read.csv("./test0002.csv", head = TRUE, sep=",")
+options(tz="America/Sao_Paulo")
 #head(data)
 #summary(data)
 describe(data)
@@ -18,6 +19,9 @@ describe(data)
 #ggplot(data=data, mapping=aes(TIMESTAMP, MUX3)) + geom_line()
 #acf(data)
 mux0 <-data$MUX0
+plot(mux0)
+sm <- ma(mux0,order=12)
+lines(sm,col="red")
 mux0.plot()
 acf(data$MUX0, lag.max=34)
 
