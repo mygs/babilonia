@@ -1,11 +1,11 @@
 import sys,os,time,posix,glob,utmp
 
 def cputemp():
-    f = open("/sys/class/thermal/thermal_zone0/temp")
-    CPUTemp = f.read()
-    f.close()
-    StringToOutput= str(int(CPUTemp)/1000.0)
-    return StringToOutput
+  f = open("/sys/class/thermal/thermal_zone0/temp")
+  CPUTemp = f.read()
+  f.close()
+  StringToOutput= str(int(CPUTemp)/1000.0)
+  return StringToOutput
 
 
 def utmp_count():
