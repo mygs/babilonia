@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import sys,os,time,posix,glob,utmp
 
 def cputemp():
@@ -34,12 +36,12 @@ memperc = "%d%%" % (100-100.*meminfo['MemFree:']/(meminfo['MemTotal:'] or 1))
 swapperc = "%d%%" % (100-100.*meminfo['SwapFree:']/(meminfo['SwapTotal:'] or 1))
 
 
-print "  Temperature:  %s" % (temp)
-print "  System load:  %-5.2f" % (loadav)
-print "  Disk: %.1f%%"% (rootperc)
-print "  Processes: %d "% (processes)
-print "  Users logged in: %d" % (users)
-print "  Memory usage: %-4s" % (memperc)
-print "  Swap usage: %s" % (swapperc)
+print ("  Temperature: ",temp)
+print ("  System load: ",loadav)
+print ("  Disk: ",rootperc)
+print ("  Processes: ", processes)
+print ("  Users logged in: ",users)
+print ("  Memory usage: ", memperc)
+print ("  Swap usage: ", swapperc)
 
 sys.exit(0)
