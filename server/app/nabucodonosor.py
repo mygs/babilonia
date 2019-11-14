@@ -158,14 +158,6 @@ def raspberry_status():
     status["cputemp"] = cputemp()
     return status
 
-
-def cputemp():
-    f = open("/sys/class/thermal/thermal_zone0/temp")
-    CPUTemp = f.read()
-    f.close()
-    StringToOutput= str(int(CPUTemp)/1000.0)
-    return StringToOutput
-
 def weather_currently():
     weather_key = cfg["WEATHER_KEY"]
     lat = cfg["LATITUDE"]

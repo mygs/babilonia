@@ -20,6 +20,14 @@ def default_dev():
       return a[0]
   return None
 
+def cputemp():
+    f = open("/sys/class/thermal/thermal_zone0/temp")
+    CPUTemp = f.read()
+    f.close()
+    StringToOutput= str(int(CPUTemp)/1000.0)
+    return StringToOutput
+
+
 def utmp_count():
   u = utmp.UtmpRecord()
   users = 0
@@ -50,7 +58,6 @@ swapperc = "%d%%" % (100-100.*meminfo['SwapFree:']/(meminfo['SwapTotal:'] or 1))
 
 if meminfo['SwapTotal:'] == 0: swapperc = '---'
 
-print "  System information as of %s\n" % time.asctime()
 print "  System load:  %-5.2f                Processes:           %d" % (loadav, processes)
 print "  Usage of /:   %-20s Users logged in:     %d"% (rootusage, users)
 print "  Memory usage: %-4s                 IP address for %s: %s" % (memperc, defaultdev, ipaddr)
