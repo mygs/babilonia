@@ -151,22 +151,7 @@ def page_not_found(e):
 def page_not_found(e):
     return redirect('/login')
 
-@app.route('/')
-@login_required
-def index():
-    latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LASTEST_BEAT')).all()
-    weather = dashboard.weather_currently()
-    raspberrypi = dashboard.raspberrypi()
-    nodes = dashboard.nodes(latest_beat)
-    logger.debug("[weather] %s", weather)
-    logger.debug("[raspberrypi] %s", raspberrypi)
-    logger.debug("[nodes] %s", nodes)
-
-    return render_template('index.html', weather=weather, raspberrypi=raspberrypi, nodes=nodes)
-
-@app.route('/module')
-@login_required
-def module():
+def get_modules_data():
     with app.app_context():
         time_start = dt.datetime.now()
         latest = DB.session.query(OasisData.NODE_ID,
@@ -178,8 +163,27 @@ def module():
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
         logger.debug("[database] call database for index page took %s secs",elapsedTime.total_seconds())
+        return modules
 
-        return render_template('module.html', modules=modules)
+@app.route('/')
+@login_required
+def index():
+    latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LASTEST_BEAT')).all()
+    modules = get_modules_data().all()
+    weather = dashboard.weather_currently()
+    raspberrypi = dashboard.raspberrypi()
+    nodes = dashboard.nodes(latest_beat)
+    farm = dashboard.farm(modules)
+    logger.debug("[weather] %s", weather)
+    logger.debug("[raspberrypi] %s", raspberrypi)
+    logger.debug("[nodes] %s", nodes)
+    logger.debug("[farm] %s", farm)
+    return render_template('index.html', weather=weather, raspberrypi=raspberrypi, nodes=nodes)
+
+@app.route('/module')
+@login_required
+def module():
+    return render_template('module.html', modules=get_modules_data())
 
 
 @app.route('/configuration', methods=['POST'])

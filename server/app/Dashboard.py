@@ -26,6 +26,27 @@ class Dashboard:
       data['sys_load']=self.__system_load()
       return data
 
+    def farm(self, modules):
+      temperature = 0
+      humidity = 0
+      number_modules = len(modules)
+      data = {}
+      for module in modules:
+          node_data = module.data()
+          dht = node_data.get('DHT')
+          soil = node_data.get('CAPACITIVEMOISTURE')
+          if dht:
+              temperature += int(dht.get('TEMPERATURE'))
+              humidity += int(dht.get('HUMIDITY'))
+          if soil:
+              #{'MUX0': 382, 'MUX1': 354, 'MUX2': 345, 'MUX3': 672, 'MUX4': 27, 'MUX5': 25, 'MUX6': 26, 'MUX7': 26}
+              #TODO: put some brain in here
+              print(soil)
+      data['humidity']=humidity/number_modules
+      data['temperature']=temperature/number_modules
+      #data['soil']=????
+      return data
+
     def nodes(self, latest_beat):
       offline = 0
       online = 0

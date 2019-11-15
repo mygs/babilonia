@@ -16,6 +16,8 @@ class OasisData(DB.Model):
         return '<OasisData id:{} time:{}>'.format(self.NODE_ID, self.TIMESTAMP)
     def toJson(self):
         return {"TIMESTAMP":self.TIMESTAMP,"NODE_ID":self.NODE_ID,"DATA":self.DATA}
+    def data(self):
+        return self.DATA['DATA']
 
 
 class OasisHeartbeat(DB.Model):
