@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import requests,sys,os,glob 
+import requests,sys,os,glob,json
 
 class Dashboard:
     def __init__(self, cfg):

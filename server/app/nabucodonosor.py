@@ -157,16 +157,6 @@ def index():
     weather = dashboard.weather_currently()
     return render_template('index.html', weather=weather)
 
-def weather_currently():
-    weather_key = cfg["WEATHER_KEY"]
-    lat = cfg["LATITUDE"]
-    long = cfg["LONGITUDE"]
-    response = requests.get('https://api.forecast.io/forecast/%s/%s,%s?units=si&lang=pt&exclude=flags,hourly,daily'%(
-                                weather_key, lat, long))
-    data = response.json()
-    logger.debug("[weather] %s", data)
-    return data['currently']
-
 @app.route('/module')
 @login_required
 def module():
