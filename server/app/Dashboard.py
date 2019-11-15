@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import requests,sys,os,glob,json
+import requests,sys,os,glob,json,time
 
 class Dashboard:
+    HEARTBEAT_PERIOD=15000/1000 #seconds
+
     def __init__(self, cfg):
         self.cfg = cfg
 
@@ -25,9 +27,19 @@ class Dashboard:
       return data
 
     def nodes(self, latest_beat):
+      offline = 0
+      online = 0
+      now = int(time.time())
+      for node in latest_beat:
+          diff = now - int(node[0])
+          if diff > self.HEARTBEAT_PERIOD:
+              offline = offline + 1
+          else:
+              online = online + 1
+
       data = {}
-      data['online']=len(latest_beat)
-      data['offline']=0
+      data['online']=online
+      data['offline']=offline
       return data
 
     def __cpu_temperature(self):
