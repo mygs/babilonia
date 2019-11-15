@@ -25,6 +25,7 @@
     padding-top: 5px;
     vertical-align: middle;
 }
+
 #dashboard li .panel-weather {
   background-color: #03a9f4;
   border-color: #03a9f4;
@@ -63,14 +64,12 @@
 .panel-weather-summary{
   font-size: 10px;
   vertical-align: bottom;
-
 }
 
-.panel-temperature{
+.panel-main-number{
     font-size: 40px;
     text-align: center;
 }
-
 
 .dashboard-label {
     font-size: 12px;
