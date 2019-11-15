@@ -178,7 +178,10 @@ def index():
     logger.debug("[raspberrypi] %s", raspberrypi)
     logger.debug("[nodes] %s", nodes)
     logger.debug("[farm] %s", farm)
-    return render_template('index.html', weather=weather, raspberrypi=raspberrypi, nodes=nodes)
+    return render_template('index.html', weather=weather,
+                                         farm=farm, 
+                                         raspberrypi=raspberrypi,
+                                         nodes=nodes)
 
 @app.route('/module')
 @login_required

@@ -15,7 +15,7 @@
                     <table>
                       <tr>
                         <td>
-                          <i class="wi-dashboard fa-dashboard {{weather_icon(weather['icon'])}}"></i>
+                          <i class="wi-dashboard {{weather_icon(weather['icon'])}}"></i>
                         </td>
                       </tr>
                       <tr>
@@ -70,8 +70,8 @@
             <div class="panel-body">
               <div class="container">
                 <div class="row">
-                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
-                    <img src="../static/img/farm.png">
+                  <div class="panel-dashboard-icon-col col-md-1 col-sm-2 col-xs-4">
+                    <i class="fa fa-leaf fa-4x"></i>
                   </div>
 
                   <div class="panel-dashboard-col col-md-3 col-sm-2 col-xs-4">
@@ -106,7 +106,7 @@
               <div class="container">
                 <div class="row">
                   <div class="panel-dashboard-icon-col col-md-1 col-sm-2 col-xs-4">
-                    <i class="fa fa-server fa-4x fa-dashboard"></i>
+                    <i class="fa fa-server fa-4x"></i>
                   </div>
                   <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
                     <table>
@@ -129,7 +129,7 @@
                         <td class="dashboard-value">{{raspberrypi['mem_usage']}}<span class="dashboard-value-unit">%</span></td>
                       </tr>
                       <tr>
-                        <td class="dashboard-label"><i class="fa fa-hdd-o"></i></td>
+                        <td class="dashboard-label"><i class="fa fa-database"></i></td>
                         <td class="dashboard-value">{{raspberrypi['disk_usage']}}<span class="dashboard-value-unit">%</span></td>
                       </tr>
                       <tr>
@@ -137,7 +137,7 @@
                         <td class="dashboard-value">{{raspberrypi['processes']}}</td>
                       </tr>
                       <tr>
-                        <td class="dashboard-label"><i class="fa fa-cog"></i></td>
+                        <td class="dashboard-label"><i class="fa fa-bar-chart"></i></td>
                         <td class="dashboard-value">{{raspberrypi['sys_load']}}</td>
                       </tr>
                     </table>

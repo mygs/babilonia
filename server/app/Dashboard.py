@@ -29,7 +29,7 @@ class Dashboard:
     def farm(self, modules):
       temperature = 0
       humidity = 0
-      number_modules = len(modules)
+      number_dht = 0
       data = {}
       for module in modules:
           node_data = module.data()
@@ -38,12 +38,13 @@ class Dashboard:
           if dht:
               temperature += int(dht.get('TEMPERATURE'))
               humidity += int(dht.get('HUMIDITY'))
+              number_dht = number_dht + 1
           if soil:
               #{'MUX0': 382, 'MUX1': 354, 'MUX2': 345, 'MUX3': 672, 'MUX4': 27, 'MUX5': 25, 'MUX6': 26, 'MUX7': 26}
               #TODO: put some brain in here
               print(soil)
-      data['humidity']=humidity/number_modules
-      data['temperature']=temperature/number_modules
+      data['humidity']=       (humidity/number_dht if number_dht > 0 else '?')
+      data['temperature']= (temperature/number_dht if number_dht > 0 else '?')
       #data['soil']=????
       return data
 

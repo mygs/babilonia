@@ -56,11 +56,6 @@
     font-size: 40px;
 }
 
-.fa-dashboard {
-    text-align: center;
-    vertical-align: bottom;
-}
-
 .panel-weather-summary{
   font-size: 10px;
   -webkit-appearance: textfield;
