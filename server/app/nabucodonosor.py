@@ -9,6 +9,7 @@ import datetime as dt
 import logging
 import logging.config
 from Models import *
+from Dashboard import *
 #import analytics
 import simplejson as json
 import requests
@@ -63,6 +64,8 @@ logger.info("BABILONIA_HOME: %s",os.environ["BABILONIA_HOME"])
 logger.info("BABILONIA_LIBS: %s",os.environ["BABILONIA_LIBS"])
 logger.info("NODE_HOME: %s",NODE_HOME)
 
+
+dashboard = Dashboard(cfg)
 mqtt = Mqtt(app)
 DB.init_app(app)
 socketio = SocketIO(app)
@@ -151,12 +154,8 @@ def page_not_found(e):
 @app.route('/')
 @login_required
 def index():
-    weather = weather_currently()
+    weather = dashboard.weather_currently()
     return render_template('index.html', weather=weather)
-
-def raspberry_status():
-    status["cputemp"] = cputemp()
-    return status
 
 def weather_currently():
     weather_key = cfg["WEATHER_KEY"]
