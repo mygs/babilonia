@@ -26,6 +26,14 @@
     vertical-align: middle;
 }
 
+.panel-dashboard-farm-col{
+    padding-top: 5px;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 7%;
+    vertical-align: middle;
+}
+
 #dashboard li .panel-weather {
   background-color: #03a9f4;
   border-color: #03a9f4;

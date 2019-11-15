@@ -68,29 +68,51 @@
         <li class="col-md-4 col-sm-8 col-xs-12">
           <div class="panel panel-farm">
             <div class="panel-body">
-              <div class="container">
+              <div class="container-fluid">
                 <div class="row">
-                  <div class="panel-dashboard-icon-col col-md-1 col-sm-2 col-xs-4">
+                  <div class="panel-dashboard-icon-col col-md-3 col-sm-2 col-xs-3">
                     <i class="fa fa-leaf fa-4x"></i>
                   </div>
 
-                  <div class="panel-dashboard-col col-md-3 col-sm-2 col-xs-4">
+                  <div class="panel-dashboard-col col-md-3 col-sm-2 col-xs-3">
                     <table>
                       <tr>
-                        <td class="dashboard-label"><i class="wi wi-humidity"></i></td>
-                        <td class="dashboard-value">{{"%.2f"|format(weather['humidity']*100)}}<span class="dashboard-value-unit">%</span></td>
+                        <td>
+                          <i class="wi wi-thermometer"></i>
+                        </td>
                       </tr>
                       <tr>
-                        <td class="dashboard-label"> <i class="wi wi-umbrella"></i> </td>
-                        <td class="dashboard-value">{{"%.2f"|format(weather['precipProbability']*100)}}<span class="dashboard-value-unit">%</span></td>
+                        <td>
+                          <span class="panel-main-number">{{farm['temperature']|round|int}}°</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="panel-dashboard-col col-md-3 col-sm-2 col-xs-3">
+                    <table>
+                      <tr>
+                        <td>
+                          <i class="wi wi-humidity"></i>
+                        </td>
                       </tr>
                       <tr>
-                        <td class="dashboard-label"><i class="wi wi-raindrops"></i></td>
-                        <td class="dashboard-value">{{"%.2f"|format(weather['precipIntensity'])}}<span class="dashboard-value-unit">mm/h</span></td>
+                        <td>
+                          <span class="panel-main-number">{{farm['humidity']|round|int}}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="panel-dashboard-col col-md-3 col-sm-2 col-xs-3">
+                    <table>
+                      <tr>
+                        <td>
+                          <i class="fa fa-eyedropper"></i>
+                        </td>
                       </tr>
                       <tr>
-                        <td class="dashboard-label"><i class="wi wi-strong-wind"></i></td>
-                        <td class="dashboard-value">{{"%.2f"|format(weather['windSpeed'])}}<span class="dashboard-value-unit">m/s</span></td>
+                        <td>
+                          <span class="panel-main-number">N/A</span>
+                        </td>
                       </tr>
                     </table>
                   </div>

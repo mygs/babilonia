@@ -43,9 +43,9 @@ class Dashboard:
               #{'MUX0': 382, 'MUX1': 354, 'MUX2': 345, 'MUX3': 672, 'MUX4': 27, 'MUX5': 25, 'MUX6': 26, 'MUX7': 26}
               #TODO: put some brain in here
               print(soil)
-      data['humidity']=       (humidity/number_dht if number_dht > 0 else '?')
-      data['temperature']= (temperature/number_dht if number_dht > 0 else '?')
-      #data['soil']=????
+      data['humidity'] =       (int(humidity/number_dht) if number_dht > 0 else 0)
+      data['temperature'] = (int(temperature/number_dht) if number_dht > 0 else 0)
+      data['soil'] = 0
       return data
 
     def nodes(self, latest_beat):
