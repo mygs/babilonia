@@ -24,6 +24,12 @@ class Dashboard:
       data['sys_load']=self.__system_load()
       return data
 
+    def nodes(self, latest_beat):
+      data = {}
+      data['online']=len(latest_beat)
+      data['offline']=0
+      return data
+
     def __cpu_temperature(self):
       f = open("/sys/class/thermal/thermal_zone0/temp")
       CPUTemp = f.read()

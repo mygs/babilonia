@@ -20,7 +20,7 @@
                       </tr>
                       <tr>
                         <td>
-                          <p class="panel-weather-summary">{{weather['summary']}}</p>
+                          <span class="panel-weather-summary">{{weather['summary']}}</span>
                         </td>
                       </tr>
                     </table>
@@ -122,7 +122,7 @@
                       </tr>
                     </table>
                   </div>
-                  <div class="panel-dashboard-col col-md-3 col-sm-2 col-xs-4">
+                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
                     <table>
                       <tr>
                         <td class="dashboard-label">memory</td>
@@ -165,7 +165,7 @@
                       </tr>
                       <tr>
                         <td>
-                          <span class="panel-main-number">10</span>
+                          <span class="panel-main-number">{{nodes['online']}}</span>
                         </td>
                       </tr>
                     </table>
@@ -174,12 +174,12 @@
                     <table>
                       <tr>
                         <td>
-                          <i class="fa fa-1x fa-ban"></i>
+                          <i class="fa fa-1x fa-ban text-danger"></i>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <span class="panel-main-number">0</span>
+                          <span class="panel-main-number text-danger">{{nodes['offline']}}</span>
                         </td>
                       </tr>
                     </table>

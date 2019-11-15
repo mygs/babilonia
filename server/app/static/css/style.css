@@ -17,7 +17,7 @@
 }
 
 .panel-dashboard-icon-col{
-    padding-top: 20px;
+    padding-top: 15px;
     vertical-align: middle;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .wi-dashboard {
-    font-size: 45px;
+    font-size: 40px;
 }
 
 .fa-dashboard {
@@ -63,7 +63,8 @@
 
 .panel-weather-summary{
   font-size: 10px;
-  vertical-align: bottom;
+  -webkit-appearance: textfield;
+  padding-top: 9px;
 }
 
 .panel-main-number{

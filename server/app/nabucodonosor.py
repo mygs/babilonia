@@ -154,11 +154,15 @@ def page_not_found(e):
 @app.route('/')
 @login_required
 def index():
+    latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LASTEST_BEAT')).all()
     weather = dashboard.weather_currently()
     raspberrypi = dashboard.raspberrypi()
+    nodes = dashboard.nodes(latest_beat)
     logger.debug("[weather] %s", weather)
     logger.debug("[raspberrypi] %s", raspberrypi)
-    return render_template('index.html', weather=weather, raspberrypi=raspberrypi)
+    logger.debug("[nodes] %s", nodes)
+
+    return render_template('index.html', weather=weather, raspberrypi=raspberrypi, nodes=nodes)
 
 @app.route('/module')
 @login_required
