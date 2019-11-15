@@ -15,26 +15,35 @@ class Dashboard:
         data = response.json()
         return data['currently']
 
-    def cpu_temperature(self):
+    def raspberrypi(self):
+      data = {}
+      data['cpu_temp']=self.__cpu_temperature()
+      data['mem_usage']=self.__memory_usage()
+      data['disk_usage']=self.__disk()
+      data['processes']=self.__processes()
+      data['sys_load']=self.__system_load()
+      return data
+
+    def __cpu_temperature(self):
       f = open("/sys/class/thermal/thermal_zone0/temp")
       CPUTemp = f.read()
       f.close()
-      return "%d°C" % (int(CPUTemp)/1000.0)
+      return int((int(CPUTemp)/1000.0))
 
-    def memory_usage(self):
+    def __memory_usage(self):
       items = {}
       for l in open('/proc/meminfo').readlines():
         a = l.split()
         items[a[0]] = int(a[1])
-      return "%d%%" % (100-100.*items['MemAvailable:']/(items['MemTotal:'] or 1))
+      return int((100-100.*items['MemAvailable:']/(items['MemTotal:'] or 1)))
 
-    def disk(self):
+    def __disk(self):
       items = {}
       statfs = os.statvfs('/')
-      return "%d%%" % (100-100.*statfs.f_bavail/statfs.f_blocks)
+      return int((100-100.*statfs.f_bavail/statfs.f_blocks))
 
-    def processes(self):
+    def __processes(self):
       return len(glob.glob('/proc/[0-9]*'))
 
-    def system_load(self):
+    def __system_load(self):
       return float(open("/proc/loadavg").read().split()[1])

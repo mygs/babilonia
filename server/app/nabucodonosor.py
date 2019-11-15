@@ -155,8 +155,10 @@ def page_not_found(e):
 @login_required
 def index():
     weather = dashboard.weather_currently()
+    raspberrypi = dashboard.raspberrypi()
     logger.debug("[weather] %s", weather)
-    return render_template('index.html', weather=weather)
+    logger.debug("[raspberrypi] %s", raspberrypi)
+    return render_template('index.html', weather=weather, raspberrypi=raspberrypi)
 
 @app.route('/module')
 @login_required
