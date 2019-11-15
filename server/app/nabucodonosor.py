@@ -155,6 +155,7 @@ def page_not_found(e):
 @login_required
 def index():
     weather = dashboard.weather_currently()
+    logger.debug("[weather] %s", weather)
     return render_template('index.html', weather=weather)
 
 @app.route('/module')

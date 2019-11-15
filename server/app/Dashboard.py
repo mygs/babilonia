@@ -13,7 +13,6 @@ class Dashboard:
         response = requests.get('https://api.forecast.io/forecast/%s/%s,%s?units=si&lang=pt&exclude=flags,hourly,daily'%(
                                     weather_key, lat, long))
         data = response.json()
-        logger.debug("[weather] %s", data)
         return data['currently']
 
     def cpu_temperature(self):
