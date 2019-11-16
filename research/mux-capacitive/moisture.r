@@ -3,11 +3,9 @@ library(ggplot2)
 library(lmtest)
 library(fpp2)
 
-
 #setwd("~/Development/babilonia/research/mux-capacitive")
 
-data <- read.csv("./test0002.csv", head = TRUE, sep=",")
-options(tz="America/Sao_Paulo")
+data <- read.csv("./test0001.csv", head = TRUE, sep=",")
 #head(data)
 #summary(data)
 describe(data)
@@ -18,12 +16,12 @@ describe(data)
 #hist(data$MUX6,add=T, col='red')
 #ggplot(data=data, mapping=aes(TIMESTAMP, MUX3)) + geom_line()
 #acf(data)
-mux0 <-data$MUX0
-plot(mux0)
-sm <- ma(mux0,order=12)
+mux <-data$MUX2
+plot(mux)
+sm <- ma(mux,order=1800)
 lines(sm,col="red")
-mux0.plot()
-acf(data$MUX0, lag.max=34)
+
+acf(sm, lag.max=34)
 
 
 fitARIMA <- arima(mux0, order=c(1,1,1),seasonal = list(order = c(1,0,0), period = 12),method="ML")

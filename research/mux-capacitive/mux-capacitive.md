@@ -50,12 +50,12 @@ As of 03/Nov/2019 10AM
 * MUX3 -> TUBE  IV: XXXg (glass+water)
 
 #### MESSAGE_ID
-MESSAGE_ID | TEST CONDITIONS
----------- | ----------
-air00001| No soil
-test0001| SET001
-test0002| SET002
-test0003| SET003
+MESSAGE_ID | TEST CONDITIONS | OBS
+---------- | --------------- |
+air00001| No soil |
+test0001| SET001 |
+test0002| SET002 | data corrupted
+test0003| SET003 |
 
 #### Query to extract data
 
