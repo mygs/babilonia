@@ -21,7 +21,7 @@ from flask_assets import Environment, Bundle
 #from flask_qrcode import QRcode
 from sqlalchemy import func, and_
 from flask_login import LoginManager, login_required, login_user, logout_user
-
+from flask_caching import Cache
 
 
 ###############################################################################
@@ -56,6 +56,7 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = cfg["SECRET_KEY"]
 app.config['LOGIN_DISABLED'] = cfg["LOGIN_DISABLED"]
+app.config['CACHE_TYPE'] = 'simple'
 
 NODE_HOME=os.path.join(os.environ["BABILONIA_HOME"], 'node/ino')
 ESPMAKE_PARAM=os.path.join(os.environ["BABILONIA_LIBS"], 'makeEspArduino/makeEspArduino.mk')
@@ -64,6 +65,8 @@ logger.info("BABILONIA_HOME: %s",os.environ["BABILONIA_HOME"])
 logger.info("BABILONIA_LIBS: %s",os.environ["BABILONIA_LIBS"])
 logger.info("NODE_HOME: %s",NODE_HOME)
 
+cache = Cache(config={'CACHE_TYPE': 'simple'})
+cache.init_app(app)
 
 dashboard = Dashboard(cfg)
 mqtt = Mqtt(app)
@@ -166,6 +169,7 @@ def get_modules_data():
         return modules
 
 @app.route('/')
+@cache.cached(timeout=300)
 @login_required
 def index():
     latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LASTEST_BEAT')).all()
@@ -179,11 +183,12 @@ def index():
     logger.debug("[nodes] %s", nodes)
     logger.debug("[farm] %s", farm)
     return render_template('index.html', weather=weather,
-                                         farm=farm, 
+                                         farm=farm,
                                          raspberrypi=raspberrypi,
                                          nodes=nodes)
 
 @app.route('/module')
+@cache.cached(timeout=300)
 @login_required
 def module():
     return render_template('module.html', modules=get_modules_data())

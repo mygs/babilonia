@@ -1,6 +1,7 @@
 Flask_Assets==0.12
 Flask_Login==0.4.1
 Flask==1.1.1
+flask-caching==1.7.2
 simplejson==3.16.0
 Flask_MQTT==1.0.5
 Flask_SocketIO==4.2.1
