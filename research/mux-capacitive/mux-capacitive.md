@@ -42,12 +42,12 @@ As of 03/Nov/2019 10AM
 * MUX2 -> TUBE III: 130g (glass+soil); 181g (glass+soil+water) ~ 51g (water)
 * MUX0 -> TUBE  IV: XXXg (glass+water)
 
-###### SET00?
+###### SET003
 * Tube IV (glass only): 60.6g (reference)
-* TUBE   I: ?
-* TUBE  II: ?
-* TUBE III: ?
-* TUBE  IV: ?
+* MUX0 -> TUBE   I: 130g (glass+soil)
+* MUX1 -> TUBE  II: 130g (glass+soil); 165g (glass+soil+water) ~ 35g (water)
+* MUX2 -> TUBE III: air
+* MUX3 -> TUBE  IV: XXXg (glass+water)
 
 #### MESSAGE_ID
 MESSAGE_ID | TEST CONDITIONS
@@ -55,7 +55,7 @@ MESSAGE_ID | TEST CONDITIONS
 air00001| No soil
 test0001| SET001
 test0002| SET002
-
+test0003| SET003
 
 #### Query to extract data
 
@@ -71,7 +71,7 @@ SELECT	TIMESTAMP,
         DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
 FROM farmland.OASIS_DATA
 WHERE 	NODE_ID='oasis-397988' AND
-		DATA->'$.MESSAGE_ID' ='air00001'
+		DATA->'$.MESSAGE_ID' ='test0003'
 ORDER BY TIMESTAMP ASC;
 ```
 

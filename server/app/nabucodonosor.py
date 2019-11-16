@@ -224,6 +224,7 @@ def command():
 
 
 @app.route("/firmware")
+@cache.cached(timeout=300)
 @login_required
 def firmware():
     with app.app_context():

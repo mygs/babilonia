@@ -4,7 +4,7 @@ library(lmtest)
 library(fpp2)
 
 
-setwd("~/Development/babilonia/research/mux-capacitive")
+#setwd("~/Development/babilonia/research/mux-capacitive")
 
 data <- read.csv("./test0002.csv", head = TRUE, sep=",")
 options(tz="America/Sao_Paulo")
