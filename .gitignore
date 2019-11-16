@@ -22,3 +22,4 @@ assets
 *.gz
 *.fdb_latexmk
 *.pdf
+*.ipynb_checkpoints

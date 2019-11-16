@@ -12,3 +12,5 @@ cssmin==0.2.0
 jsmin==2.2.2
 nodemcu-uploader==0.4.3
 pyserial==3.4
+matplotlib==3.1.1
+pandas==0.25.3
