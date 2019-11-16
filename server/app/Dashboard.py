@@ -54,7 +54,7 @@ class Dashboard:
       now = int(time.time())
       for node in latest_beat:
           diff = now - int(node[0])
-          if diff > self.HEARTBEAT_PERIOD:
+          if diff > self.HEARTBEAT_PERIOD*2: # OMG lost 2 heartbeats ?
               offline = offline + 1
           else:
               online = online + 1
