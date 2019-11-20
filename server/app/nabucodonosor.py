@@ -10,6 +10,7 @@ import logging
 import logging.config
 from Models import *
 from Dashboard import *
+from SoilMoistureAnalytics import *
 #import analytics
 import simplejson as json
 import requests
@@ -69,6 +70,7 @@ cache = Cache(config={'CACHE_TYPE': 'simple'})
 cache.init_app(app)
 
 dashboard = Dashboard(cfg)
+soilMoistureAnalytics = SoilMoistureAnalytics()
 mqtt = Mqtt(app)
 DB.init_app(app)
 socketio = SocketIO(app)
@@ -305,13 +307,8 @@ def utility_processor():
             return "good"
         else:
             return "danger"
-    def status_moisture(hasMoisture, id, mux):
-        moisture = int(mux)
-        if not hasMoisture or mux < 50:
-            return "moisture-disable"
-        else:
-            #TODO: put some brain in here
-            return "moisture-wet"
+    def status_moisture(id, idx, level):
+        return soilMoistureAnalytics.status(level)
     def weather_icon(argument):
         switcher = {
             "clear-day": "wi wi-day-sunny",

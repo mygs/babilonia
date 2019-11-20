@@ -65,17 +65,26 @@ class Dashboard:
       return data
 
     def __cpu_temperature(self):
-      f = open("/sys/class/thermal/thermal_zone0/temp")
-      CPUTemp = f.read()
-      f.close()
+      CPUTemp = -1
+      try:
+          f = open("/sys/class/thermal/thermal_zone0/temp")
+          CPUTemp = f.read()
+          f.close()
+      except IOError as e:
+          print "I/O error({0}): {1}".format(e.errno, e.strerror)
       return int((int(CPUTemp)/1000.0))
 
     def __memory_usage(self):
       items = {}
-      for l in open('/proc/meminfo').readlines():
-        a = l.split()
-        items[a[0]] = int(a[1])
-      return int((100-100.*items['MemAvailable:']/(items['MemTotal:'] or 1)))
+      mem_usage = -1
+      try:
+          for l in open('/proc/meminfo').readlines():
+            a = l.split()
+            items[a[0]] = int(a[1])
+            mem_usage = int((100-100.*items['MemAvailable:']/(items['MemTotal:'] or 1)))
+      except IOError as e:
+          print "I/O error({0}): {1}".format(e.errno, e.strerror)
+      return mem_usage
 
     def __disk(self):
       items = {}
@@ -86,4 +95,10 @@ class Dashboard:
       return len(glob.glob('/proc/[0-9]*'))
 
     def __system_load(self):
-      return float(open("/proc/loadavg").read().split()[1])
+      sys_load = -1
+      try:
+          f = open("/proc/loadavg")
+          sys_load = float(f.read().split()[1])
+      except IOError as e:
+          print "I/O error({0}): {1}".format(e.errno, e.strerror)
+      return sys_load
