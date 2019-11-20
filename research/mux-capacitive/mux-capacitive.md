@@ -18,7 +18,7 @@ mosquitto_sub -h 192.168.1.70 -t "#" -v | grep oasis-397988
 ```
 request
 ```
- mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
+mosquitto_pub -h 192.168.1.70 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
 ```
 
 #### Test Tube
