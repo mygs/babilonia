@@ -57,16 +57,56 @@
 
                <table id="moisture">
                <tr>
-                 <td><i class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux0) }}"></i></td>
-                 <td><i class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux1) }}"></i></td>
-                 <td><i class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux2) }}"></i></td>
-                 <td><i class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux3) }}"></i></td>
+                 <td>
+                   <span class="fa-stack">
+                     <span class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux0) }}"></span>
+                     <span id='mux0_{{id}}' class="fa-stack-1x moisture-number">{{mux0}}</span>
+                   </span>
+                 </td>
+                 <td>
+                   <span class="fa-stack">
+                     <span class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux1) }}"></span>
+                     <span id='mux1_{{id}}' class="fa-stack-1x moisture-number">{{mux1}}</span>
+                   </span>
+                 </td>
+                 <td>
+                   <span class="fa-stack">
+                     <span class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux2) }}"></span>
+                     <span id='mux2_{{id}}' class="fa-stack-1x moisture-number">{{mux2}}</span>
+                   </span>
+                 </td>
+                 <td>
+                   <span class="fa-stack">
+                     <span class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux3) }}"></span>
+                     <span id='mux3_{{id}}' class="fa-stack-1x moisture-number">{{mux3}}</span>
+                   </span>
+                 </td>
                </tr>
                <tr>
-                 <td><i class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux4) }}"></i></td>
-                 <td><i class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux5) }}"></i></td>
-                 <td><i class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux6) }}"></i></td>
-                 <td><i class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux7) }}"></i></td>
+                 <td>
+                   <span class="fa-stack">
+                     <span class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux4) }}"></span>
+                     <span id='mux4_{{id}}' class="fa-stack-1x moisture-number">{{mux4}}</span>
+                   </span>
+                 </td>
+                 <td>
+                   <span class="fa-stack">
+                     <span class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux5) }}"></span>
+                     <span id='mux5_{{id}}' class="fa-stack-1x moisture-number">{{mux5}}</span>
+                   </span>
+                 </td>
+                 <td>
+                   <span class="fa-stack">
+                     <span class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux6) }}"></span>
+                     <span id='mux6_{{id}}' class="fa-stack-1x moisture-number">{{mux6}}</span>
+                   </span>
+                 </td>
+                 <td>
+                   <span class="fa-stack">
+                     <span class="fa fa-2x fa-tint {{ status_moisture(hasMoisture, id, mux7) }}"></span>
+                     <span id='mux7_{{id}}' class="fa-stack-1x moisture-number">{{mux7}}</span>
+                   </span>
+                 </td>
               </tr>
                </table>
               <table id="telemetry">

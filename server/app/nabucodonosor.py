@@ -188,7 +188,7 @@ def index():
                                          nodes=nodes)
 
 @app.route('/module')
-@cache.cached(timeout=300)
+@cache.cached(timeout=30)
 @login_required
 def module():
     return render_template('module.html', modules=get_modules_data())

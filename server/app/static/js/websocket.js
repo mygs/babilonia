@@ -8,6 +8,7 @@ $(document).ready(function() {
     var data = oasisData['DATA'];
     var node_ip = data['NODE_IP'];
     var firware_version = data['FIRMWARE_VERSION'];
+    var capacitivemoisture = data['DATA']['CAPACITIVEMOISTURE'];
 
     if (timestamp != null) {
       $('#time_' + node_id).html(moment.unix(timestamp).format('DD/MM/YYYY HH:mm:ss'));
@@ -17,6 +18,17 @@ $(document).ready(function() {
     }
     if (firware_version != null) {
       $('#sw_ver_' + node_id).html(firware_version);
+    }
+    if (capacitivemoisture != null) {
+      $('#mux0_' + node_id).html(capacitivemoisture['MUX0']);
+      $('#mux1_' + node_id).html(capacitivemoisture['MUX1']);
+      $('#mux2_' + node_id).html(capacitivemoisture['MUX2']);
+      $('#mux3_' + node_id).html(capacitivemoisture['MUX3']);
+      $('#mux4_' + node_id).html(capacitivemoisture['MUX4']);
+      $('#mux5_' + node_id).html(capacitivemoisture['MUX5']);
+      $('#mux6_' + node_id).html(capacitivemoisture['MUX6']);
+      $('#mux7_' + node_id).html(capacitivemoisture['MUX7']);
+
     }
     console.log(data);
   });
