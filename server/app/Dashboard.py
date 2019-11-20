@@ -81,7 +81,7 @@ class Dashboard:
           for l in open('/proc/meminfo').readlines():
             a = l.split()
             items[a[0]] = int(a[1])
-            mem_usage = int((100-100.*items['MemAvailable:']/(items['MemTotal:'] or 1)))
+          mem_usage = int((100-100.*items['MemAvailable:']/(items['MemTotal:'] or 1)))
       except IOError as e:
           print("[DASHBOARD] memory usage I/O error")
       return mem_usage
