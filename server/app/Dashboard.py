@@ -71,7 +71,7 @@ class Dashboard:
           CPUTemp = f.read()
           f.close()
       except IOError as e:
-          print "I/O error({0}): {1}".format(e.errno, e.strerror)
+          print("[DASHBOARD] cpu temperature I/O error")
       return int((int(CPUTemp)/1000.0))
 
     def __memory_usage(self):
@@ -83,7 +83,7 @@ class Dashboard:
             items[a[0]] = int(a[1])
             mem_usage = int((100-100.*items['MemAvailable:']/(items['MemTotal:'] or 1)))
       except IOError as e:
-          print "I/O error({0}): {1}".format(e.errno, e.strerror)
+          print("[DASHBOARD] memory usage I/O error")
       return mem_usage
 
     def __disk(self):
@@ -100,5 +100,5 @@ class Dashboard:
           f = open("/proc/loadavg")
           sys_load = float(f.read().split()[1])
       except IOError as e:
-          print "I/O error({0}): {1}".format(e.errno, e.strerror)
+          print("[DASHBOARD] system load I/O error")
       return sys_load
