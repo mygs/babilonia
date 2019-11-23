@@ -9,18 +9,17 @@
 #define THRESHOLD_DISABLE_HEARTBEAT 999  // ~ 1 second
 #define MIN_SENSOR_COLLECT_DATA_PERIOD 199  // ~ 1/5 second
 
-#define DEVICE_LENGTH 11
+#define DEVICE_LENGTH 10
 #define IDX_DEVICE_NODE         0
 #define IDX_DEVICE_SOILX        1
 #define IDX_CHANNEL_SELECT_A    2
 #define IDX_CHANNEL_SELECT_B    3
 #define IDX_CHANNEL_SELECT_C    4
-#define IDX_DEVICE_SOIL4        5
-#define IDX_DEVICE_DHT          6
-#define IDX_DEVICE_LIGHT        7
-#define IDX_DEVICE_FAN          8
-#define IDX_DEVICE_WATER        9
-#define IDX_DEVICE_CAPACITIVEMOISTURE    10
+#define IDX_DEVICE_DHT          5
+#define IDX_DEVICE_LIGHT        6
+#define IDX_DEVICE_FAN          7
+#define IDX_DEVICE_WATER        8
+#define IDX_DEVICE_CAPACITIVEMOISTURE    9
 
 #define CMD_LENGTH 5
 #define IDX_ACTION_LIGHT    0
@@ -76,11 +75,8 @@ namespace NODE {
   extern const char* HUMIDITY;
   extern const char* NODE;
   extern const char* SOIL;
-  extern const char* SOIL1;
-  extern const char* SOIL2;
-  extern const char* SOIL3;
-  extern const char* SOIL4;
   extern const char* SOILX;
+  extern const char* WIND;
   extern const char* CHANNEL_SELECT_A;
   extern const char* CHANNEL_SELECT_B;
   extern const char* CHANNEL_SELECT_C;

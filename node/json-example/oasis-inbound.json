@@ -18,12 +18,12 @@
       "0": "IDLE",
       "1": "WATER",
       "2": "LIGHT",
-      "3": "SOIL.X",
+      "3": "WIND",
       "4": "DHT",
-      "5": "SOIL.1",
-      "6": "SOIL.2",
-      "7": "SOIL.3",
-      "8": "SOIL.4"
+      "5": "IDLE",
+      "6": "IDLE",
+      "7": "IDLE",
+      "8": "IDLE"
     }
   },
   "COMMAND": {

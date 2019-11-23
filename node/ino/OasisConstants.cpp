@@ -44,11 +44,8 @@ namespace NODE {
   extern const char* HUMIDITY = "HUMIDITY";
   extern const char* NODE    = "NODE";
   extern const char* SOIL    = "SOIL";
-  extern const char* SOIL1   = "SOIL.1";
-  extern const char* SOIL2   = "SOIL.2";
-  extern const char* SOIL3   = "SOIL.3";
-  extern const char* SOIL4   = "SOIL.4";
   extern const char* SOILX   = "SOIL.X";
+  extern const char* WIND   = "WIND";
   extern const char* CHANNEL_SELECT_A = "SW.A";
   extern const char* CHANNEL_SELECT_B = "SW.B";
   extern const char* CHANNEL_SELECT_C = "SW.C";

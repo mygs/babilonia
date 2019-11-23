@@ -157,7 +157,7 @@ td#box-header-telemetry-hb {
 
 table#moisture {
     text-align: center;
-    -webkit-border-horizontal-spacing: 14px;
+    -webkit-border-horizontal-spacing: 5px;
     -webkit-border-vertical-spacing: 1px;
     border-collapse: separate;
     margin-left: auto;
@@ -175,8 +175,9 @@ table#moisture {
 }
 
 .moisture-number {
-  font-size: 55%;
+  font-size: 60%;
   font-weight: bold;
+  color: white;
 }
 
 table#telemetry {
