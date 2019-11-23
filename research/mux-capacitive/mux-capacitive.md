@@ -49,13 +49,19 @@ As of 03/Nov/2019 10AM
 * MUX2 -> TUBE III: air
 * MUX3 -> TUBE  IV: XXXg (glass+water)
 
+###### SET004
+* BOX with dry soil: 1224g
+* BOX with soil + water: 1500g
+* MUX0, MUX1, MUX2, MUX3
+
 #### MESSAGE_ID
 MESSAGE_ID | TEST CONDITIONS | OBS
 ---------- | --------------- |
 air00001| No soil |
 test0001| SET001 |
-test0002| SET002 | data corrupted
+test0002| SET002 |
 test0003| SET003 |
+test0004| SET004 |
 
 #### Query to extract data
 
@@ -71,16 +77,16 @@ SELECT	TIMESTAMP,
         DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
 FROM farmland.OASIS_DATA
 WHERE 	NODE_ID='oasis-397988' AND
-		DATA->'$.MESSAGE_ID' ='test0003'
+		DATA->'$.MESSAGE_ID' ='test0004'
 ORDER BY TIMESTAMP ASC;
 ```
 
 
 #### Request
 ```
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\", \"MESSAGE_ID\": \"test0004\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
 ```
 #### Response
 ```
-{"NODE_ID":"oasis-397988","NODE_IP":"192.168.2.102","FIRMWARE_VERSION":"eef666c","MESSAGE_ID":"a12dc89b","DATA":{"CAPACITIVEMOISTURE":301}}
+{"NODE_ID":"oasis-397988","NODE_IP":"192.168.2.102","FIRMWARE_VERSION":"eef666c","MESSAGE_ID":"test0004","DATA":{"CAPACITIVEMOISTURE":301}}
 ```
