@@ -280,7 +280,7 @@ def webhook():
         commit_message = message["head_commit"]["message"]
 
         logger.info("[webhook] commit:%s author:%s",commit_message, committer)
-        if cfg["MODE"]["AUTO_UPDATE_SERVER"] == True:
+        if cfg["MODE"]["AUTO_UPDATE_SERVER"] == True and message["ref"] == cfg["GIT_BRANCH"]:
             logger.info("[webhook] applying update")
             update_server_software()
         else:
