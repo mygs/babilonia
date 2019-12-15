@@ -12,6 +12,9 @@
     {% assets "3rdpartyjs" %}
       <script src="{{ ASSET_URL }}" ></script>
     {% endassets %}
+    <script>
+      var soilMoistureAnalytics = {{ geocode|tojson }};
+    </script>
     <script src='../../static/js/action.js'></script>
     <script src='../../static/js/utils.js'></script>
     <script src='../../static/js/websocket.js'></script>
