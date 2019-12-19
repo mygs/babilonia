@@ -14,6 +14,6 @@ class SoilMoistureAnalytics:
             #TODO: put some brain in here
             return "moisture-wet"
 
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-            sort_keys=True, indent=4)
+    def param(self):
+        return {"MUX_PORT_THRESHOLD_IDLE":self.MUX_PORT_THRESHOLD_IDLE,
+                "MUX_PORT_THRESHOLD_DRY":self.MUX_PORT_THRESHOLD_DRY}

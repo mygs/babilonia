@@ -193,7 +193,7 @@ def index():
 @cache.cached(timeout=30)
 @login_required
 def module():
-    return render_template('module.html', modules=get_modules_data())
+    return render_template('module.html',modules=get_modules_data())
 
 
 @app.route('/configuration', methods=['POST'])
@@ -332,7 +332,8 @@ def utility_processor():
             'status_node':status_node,
             'status_moisture':status_moisture,
             'weather_icon': weather_icon,
-            'format_last_update':format_last_update
+            'format_last_update':format_last_update,
+            'soil': soilMoistureAnalytics.param()
             }
 ###############################################################################
 ############################## HANDLE MQTT ####################################
