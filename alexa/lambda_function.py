@@ -7,6 +7,7 @@
 import logging
 import ask_sdk_core.utils as ask_utils
 import requests
+import json
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
@@ -64,15 +65,27 @@ class ManagementIntentHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
+        #message = "{'NODE_ID': 'oasis-39732c','MESSAGE_ID': 'alexa','COMMAND': 'WATER': true}}"
+
+        message = {'NODE_ID': 'oasis-39732c', 'MESSAGE_ID': 'alexa'}
+        action = {}
+
         command = get_slot_value(handler_input=handler_input, slot_name="command")
         module = get_slot_value(handler_input=handler_input, slot_name="module")
         commanding=""
         if command == "irrigar":
-            commanding = "irrigando"
+            commanding = "irrigando a"
+            action = {'WATER': True}
+        if command == "parar":
+            commanding = "parando a irrigação da"
+            action = {'WATER': False}
         if command == "verificar":
-            commanding = "verificando"
-        speak_output = "Estou {} o {}".format(commanding, module)
-        r = requests.post('http://amitis.ddns.net:8181/command-alexa', json={command: module})
+            commanding = "verificando a"
+        speak_output = "Estou {} {}".format(commanding, module)
+
+        message['COMMAND'] = action
+
+        r = requests.post('http://amitis.ddns.net:8181/command-alexa', json=json.dumps(message))
         return (
             handler_input.response_builder
                 .speak(speak_output)

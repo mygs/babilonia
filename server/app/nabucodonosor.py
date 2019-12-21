@@ -228,6 +228,7 @@ def command():
 def command_alexa():
     message = json.dumps(request.get_json())
     logger.debug("[command-alexa] %s", message)
+    mqtt.publish("/oasis-inbound", message)
     return json.dumps({'status':'Success!'});
 
 @app.route("/firmware")
