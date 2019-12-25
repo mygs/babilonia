@@ -1,10 +1,10 @@
 #!/bin/bash
 #length(8)="12345678"
-MESSAGE_ID="test0004"
+MESSAGE_ID="test1000"
 COLLECT_INTERVAL_SECS=1
 #TEST_DURATION_SECS=3600 # 1hrs
-#TEST_DURATION_SECS=36000 # 10hrs
-TEST_DURATION_SECS=108000 # 30hrs
+TEST_DURATION_SECS=36000 # 10hrs
+#TEST_DURATION_SECS=108000 # 30hrs
 #TEST_DURATION_SECS=180000 # 50hrs
 #TEST_DURATION_SECS=300000 # > 80hrs
 
@@ -18,7 +18,7 @@ if [ `hostname` = "babilonia" ]; then
 fi
 ##### MQTT
 MQTT_TOPIC="/oasis-inbound"
-MQTT_NODE_ID="oasis-397988"
+MQTT_NODE_ID="oasis-39732c"
 ##### DATABASE
 CONFIG_FILE='../../server/app/config.json'
 DB_PWD=`cat  $CONFIG_FILE | jq -r .SECRET_KEY`
