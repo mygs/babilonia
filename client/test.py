@@ -3,155 +3,79 @@
 #!/usr/bin/env python
 """
 """
+import random
+
 from pygments.lexers.html import HtmlLexer
 
 from prompt_toolkit.application import Application
 from prompt_toolkit.application.current import get_app
-from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.key_binding.bindings.focus import focus_next, focus_previous
 from prompt_toolkit.layout.containers import Float, HSplit, VSplit
 from prompt_toolkit.layout.dimension import D
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.layout.menus import CompletionsMenu
-from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.styles import Style
 from prompt_toolkit.shortcuts.progress_bar import formatters
 import simplejson as json
 import paho.mqtt.client as mqtt
 from prompt_toolkit.widgets import (
     Box,
-    Button,
-    Checkbox,
-    Dialog,
     Frame,
     Label,
     MenuContainer,
     MenuItem,
-    ProgressBar,
-    RadioList,
-    TextArea,
+    ProgressBar
 )
 
-
-
-custom_formatters = [
-    formatters.Label(),
-    formatters.Text(" "),
-    formatters.SpinningWheel(),
-    formatters.Text(" "),
-    formatters.Bar(sym_a="|", sym_b="|"),
-    formatters.Text(" Value: "),
-    formatters.TimeLeft(),
-]
-#MUX0 = ProgressBar(formatters=custom_formatters)
 MUX0 = ProgressBar()
+MUX1 = ProgressBar()
+MUX2 = ProgressBar()
+MUX3 = ProgressBar()
+MUX4 = ProgressBar()
+MUX5 = ProgressBar()
+MUX6 = ProgressBar()
+MUX7 = ProgressBar()
 
-# The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
-    # O subscribe fica no on_connect pois, caso perca a conexão ele a renova
-    # Lembrando que quando usado o #, você está falando que tudo que chegar após a barra do topico, será recebido
     client.subscribe("/oasis-outbound")
-# Callback responável por receber uma mensagem publicada no tópico acima
 def on_message(client, userdata, msg):
     message = json.loads(msg.payload)
     if message["NODE_ID"] == "oasis-39732c":
-        MUX0.percentage = int(int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX0"])/100)
-        print(MUX0.percentage)
+        #MUX0.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX0"])/100
+        MUX0.percentage = int(random.uniform(0, 100))
+        MUX1.percentage = int(random.uniform(0, 100))
+        MUX2.percentage = int(random.uniform(0, 100))
+        MUX3.percentage = int(random.uniform(0, 100))
+        MUX4.percentage = int(random.uniform(0, 100))
+        MUX5.percentage = int(random.uniform(0, 100))
+        MUX6.percentage = int(random.uniform(0, 100))
+        MUX7.percentage = int(random.uniform(0, 100))
+        get_app().invalidate()
 
-
+def exitX(event):
+    get_app().exit(result=True)
 
 def accept_yes():
     get_app().exit(result=True)
 
-
 def accept_no():
     get_app().exit(result=False)
-
 
 def do_exit():
     get_app().exit(result=False)
 
 
-yes_button = Button(text="Yes", handler=accept_yes)
-no_button = Button(text="No", handler=accept_no)
-textfield = TextArea(lexer=PygmentsLexer(HtmlLexer))
-checkbox1 = Checkbox(text="Checkbox")
-checkbox2 = Checkbox(text="Checkbox")
-
-radios = RadioList(
-    values=[
-        ("Red", "red"),
-        ("Green", "green"),
-        ("Blue", "blue"),
-        ("Orange", "orange"),
-        ("Yellow", "yellow"),
-        ("Purple", "Purple"),
-        ("Brown", "Brown"),
-    ]
-)
-
-animal_completer = WordCompleter(
-    [
-        "alligator",
-        "ant",
-        "ape",
-        "bat",
-        "bear",
-        "beaver",
-        "bee",
-        "bison",
-        "butterfly",
-        "cat",
-        "chicken",
-        "crocodile",
-        "dinosaur",
-        "dog",
-        "dolphin",
-        "dove",
-        "duck",
-        "eagle",
-        "elephant",
-        "fish",
-        "goat",
-        "gorilla",
-        "kangaroo",
-        "leopard",
-        "lion",
-        "mouse",
-        "rabbit",
-        "rat",
-        "snake",
-        "spider",
-        "turkey",
-        "turtle",
-    ],
-    ignore_case=True,
-)
-
 root_container = HSplit(
     [
-        VSplit(
-            [
-                Frame(body=Label(text="Left frame\ncontent")),
-                Dialog(title="The custom window", body=Label("hello\ntest")),
-                textfield,
-            ],
-            height=D(),
-        ),
-        VSplit(
-            [
-                Frame(body=MUX0, title="Progress bar"),
-                Frame(title="Checkbox list", body=HSplit([checkbox1, checkbox2,])),
-                Frame(title="Radio list", body=radios),
-            ],
-            padding=1,
-        ),
-        Box(
-            body=VSplit([yes_button, no_button,], align="CENTER", padding=3),
-            style="class:button-bar",
-            height=3,
-        ),
+        Frame(body=MUX0, title="MUX0"),
+        Frame(body=MUX1, title="MUX1"),
+        Frame(body=MUX2, title="MUX2"),
+        Frame(body=MUX3, title="MUX3"),
+        Frame(body=MUX4, title="MUX4"),
+        Frame(body=MUX5, title="MUX5"),
+        Frame(body=MUX6, title="MUX6"),
+        Frame(body=MUX7, title="MUX7"),
     ]
 )
 
@@ -166,40 +90,11 @@ root_container = MenuContainer(
                     "Open",
                     children=[
                         MenuItem("From file..."),
-                        MenuItem("From URL..."),
-                        MenuItem(
-                            "Something else..",
-                            children=[
-                                MenuItem("A"),
-                                MenuItem("B"),
-                                MenuItem("C"),
-                                MenuItem("D"),
-                                MenuItem("E"),
-                            ],
-                        ),
+                        MenuItem("From URL...")
                     ],
                 ),
-                MenuItem("Save"),
-                MenuItem("Save as..."),
                 MenuItem("-", disabled=True),
                 MenuItem("Exit", handler=do_exit),
-            ],
-        ),
-        MenuItem(
-            "Edit",
-            children=[
-                MenuItem("Undo"),
-                MenuItem("Cut"),
-                MenuItem("Copy"),
-                MenuItem("Paste"),
-                MenuItem("Delete"),
-                MenuItem("-", disabled=True),
-                MenuItem("Find"),
-                MenuItem("Find next"),
-                MenuItem("Replace"),
-                MenuItem("Go To"),
-                MenuItem("Select All"),
-                MenuItem("Time/Date"),
             ],
         ),
         MenuItem("View", children=[MenuItem("Status Bar"),]),
@@ -218,6 +113,7 @@ root_container = MenuContainer(
 bindings = KeyBindings()
 bindings.add("tab")(focus_next)
 bindings.add("s-tab")(focus_previous)
+bindings.add("x")(exitX)
 
 
 style = Style.from_dict(
@@ -239,10 +135,10 @@ style = Style.from_dict(
 
 
 application = Application(
-    layout=Layout(root_container, focused_element=yes_button,),
+    layout=Layout(root_container,focused_element=None),
     key_bindings=bindings,
     style=style,
-    mouse_support=True,
+    mouse_support=False,
     full_screen=True,
 )
 client = mqtt.Client()
