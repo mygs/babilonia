@@ -54,6 +54,15 @@ As of 03/Nov/2019 10AM
 * BOX with soil + water: 1500g
 * MUX0, MUX1, MUX2, MUX3
 
+###### SET1000
+* BOX with dry soil: 1224g
+* BOX with soil + water: ???
+* all MUX
+
+###### SET2000
+* OASIS MODULE @ terrace
+* all MUX
+
 #### MESSAGE_ID
 MESSAGE_ID | TEST CONDITIONS | OBS
 ---------- | --------------- |
@@ -62,6 +71,10 @@ test0001| SET001 |
 test0002| SET002 |
 test0003| SET003 |
 test0004| SET004 |
+test1000| SET1000 |
+test1001| SET1000 |
+test1002| SET1000 |
+test2000| SET2000 |
 
 #### Query to extract data
 
