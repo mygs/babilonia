@@ -28,7 +28,7 @@ from prompt_toolkit.widgets import (
     ProgressBar
 )
 
-MUX0 = ProgressBar()
+MUX0 = ProgressBar(title="MUX0")
 MUX1 = ProgressBar()
 MUX2 = ProgressBar()
 MUX3 = ProgressBar()
@@ -43,26 +43,21 @@ def on_message(client, userdata, msg):
     message = json.loads(msg.payload)
     if message["NODE_ID"] == "oasis-39732c":
         #MUX0.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX0"])/100
-        MUX0.percentage = int(random.uniform(0, 100))
-        MUX1.percentage = int(random.uniform(0, 100))
-        MUX2.percentage = int(random.uniform(0, 100))
-        MUX3.percentage = int(random.uniform(0, 100))
-        MUX4.percentage = int(random.uniform(0, 100))
-        MUX5.percentage = int(random.uniform(0, 100))
-        MUX6.percentage = int(random.uniform(0, 100))
-        MUX7.percentage = int(random.uniform(0, 100))
+        MUX0.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX0"])/100
+        MUX1.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX1"])/100
+        MUX2.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX2"])/100
+        MUX3.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX3"])/100
+        MUX4.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX4"])/100
+        MUX5.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX5"])/100
+        MUX6.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX6"])/100
+        MUX7.percentage = int(message["DATA"]["CAPACITIVEMOISTURE"]["MUX7"])/100
         get_app().invalidate()
 
-def exitX(event):
+def do_exit_kb(event):
     get_app().exit(result=True)
 
-def accept_yes():
-    get_app().exit(result=True)
 
-def accept_no():
-    get_app().exit(result=False)
-
-def do_exit():
+def do_exit_menu():
     get_app().exit(result=False)
 
 
@@ -94,7 +89,7 @@ root_container = MenuContainer(
                     ],
                 ),
                 MenuItem("-", disabled=True),
-                MenuItem("Exit", handler=do_exit),
+                MenuItem("Exit", handler=do_exit_menu),
             ],
         ),
         MenuItem("View", children=[MenuItem("Status Bar"),]),
@@ -113,7 +108,7 @@ root_container = MenuContainer(
 bindings = KeyBindings()
 bindings.add("tab")(focus_next)
 bindings.add("s-tab")(focus_previous)
-bindings.add("x")(exitX)
+bindings.add("x")(do_exit_kb)
 
 
 style = Style.from_dict(
