@@ -1,5 +1,5 @@
 ## NODE SETUP
-NODE_ID = oasis-397988
+NODE_ID = oasis-39732c
 
 
 ### Configuration
