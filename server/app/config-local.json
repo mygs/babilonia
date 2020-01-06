@@ -1,0 +1,31 @@
+{
+    "MODE":{
+        "MQTT":false,
+        "WEB":true,
+	      "AUTO_UPDATE_SERVER": true
+    },
+    "GIT_BRANCH": "refs/heads/deploy-server",
+    "SECRET_KEY": "1q2w3e4r",
+    "WEATHER_KEY": "4b7af3b7a119ca4b0ea27681f8472504",
+    "LATITUDE": "-23.535521",
+    "LONGITUDE": "-46.763048",
+    "LOGIN_DISABLED": true,
+    "BABILONIA_LIBS": "/Users/msaito/Development",
+    "GIT_REPO": "/Users/msaito/Development/babilonia",
+    "SQLALCHEMY_DATABASE_URI": "mysql://babilonia:1q2w3e4r@192.168.1.70/farmland",
+    "MQTT":{
+        "BROKER":"192.168.1.70",
+        "PORT":1883,
+        "KEEPALIVE":60,
+        "MQTT_OASIS_TOPIC_HEARTBEAT": "/oasis-heartbeat",
+        "MQTT_OASIS_TOPIC_INBOUND": "/oasis-inbound",
+        "MQTT_OASIS_TOPIC_OUTBOUND": "/oasis-outbound"
+    },
+    "CACHE":{
+      "CACHE_TYPE": "simple",
+      "CACHE_DEFAULT_TIMEOUT": 30
+    },
+    "DEFAULTS":{
+    }
+
+}

@@ -45,7 +45,7 @@ VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
 ###### reading configuration
 with open(os.path.join(SERVER_HOME, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
-isMQTTDataRecordEnabled = cfg["MODE"]["MQTT"]
+isMqttEnabled = cfg["MODE"]["MQTT"]
 
 ###### Initialisation
 app = Flask(__name__, static_url_path='/static')
@@ -57,7 +57,6 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = cfg["SECRET_KEY"]
 app.config['LOGIN_DISABLED'] = cfg["LOGIN_DISABLED"]
-app.config['CACHE_TYPE'] = 'simple'
 
 NODE_HOME=os.path.join(os.environ["BABILONIA_HOME"], 'node/ino')
 ESPMAKE_PARAM=os.path.join(os.environ["BABILONIA_LIBS"], 'makeEspArduino/makeEspArduino.mk')
@@ -66,7 +65,7 @@ logger.info("BABILONIA_HOME: %s",os.environ["BABILONIA_HOME"])
 logger.info("BABILONIA_LIBS: %s",os.environ["BABILONIA_LIBS"])
 logger.info("NODE_HOME: %s",NODE_HOME)
 
-cache = Cache(config={'CACHE_TYPE': 'simple'})
+cache = Cache(config=cfg['CACHE'])
 cache.init_app(app)
 
 dashboard = Dashboard(cfg)
@@ -171,7 +170,7 @@ def get_modules_data():
         return modules
 
 @app.route('/')
-@cache.cached(timeout=300)
+@cache.cached()
 @login_required
 def index():
     latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LASTEST_BEAT')).all()
@@ -190,7 +189,7 @@ def index():
                                          nodes=nodes)
 
 @app.route('/module')
-@cache.cached(timeout=30)
+@cache.cached()
 @login_required
 def module():
     return render_template('module.html',modules=get_modules_data())
@@ -232,7 +231,7 @@ def command_alexa():
     return json.dumps({'status':'Success!'});
 
 @app.route("/firmware")
-@cache.cached(timeout=300)
+@cache.cached()
 @login_required
 def firmware():
     with app.app_context():
@@ -361,14 +360,14 @@ def handle_mqtt_message(client, userdata, msg):
         heartbeat = OasisHeartbeat(NODE_ID=node_id,LAST_UPDATE=timestamp)
         logger.debug("[heartbeat] %s", heartbeat.toJson())
         socketio.emit('ws-oasis-heartbeat', data=heartbeat.toJson())
-        if isMQTTDataRecordEnabled:
+        if isMqttEnabled:
             with app.app_context():
                 DB.session.merge(heartbeat)
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
         data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
         logger.debug("[data] %s", data.toJson())
         socketio.emit('ws-oasis-data', data=data.toJson())
-        if isMQTTDataRecordEnabled and "DATA" in jmsg:
+        if isMqttEnabled and "DATA" in jmsg:
             with app.app_context():
                 DB.session.add(data)
 
