@@ -90,7 +90,7 @@ function trainOasis(status) {
     data: JSON.stringify(feedback),
     success: function(response) {
       console.log(response.status);
-      $(this).modal('hide');
+      $("#updateNodeModal").modal('hide');
     },
     error: function(response) {
       swal(response.status, "XPTO!", "error");
