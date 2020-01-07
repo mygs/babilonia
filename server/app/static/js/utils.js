@@ -21,7 +21,9 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
     contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
     success: function(response) {
       var resp = JSON.parse(response);
-      $("#ID").val(id);
+      $("#ID_TRAINING_BTN").val(id);
+      $("#ID_PARAMS_FORM").val(id);
+      $("#ID_PIN_FORM").val(id);
       $("#SENSOR_COLLECT_DATA_PERIOD").val(resp.SENSOR_COLLECT_DATA_PERIOD);
       $("#RETRY_WIFI_CONN_DELAY").val(resp.RETRY_WIFI_CONN_DELAY);
       $("#SERIAL_BAUDRATE").val(resp.SERIAL_BAUDRATE);
@@ -69,6 +71,29 @@ function updateNodeConfiguration() {
       });
     } else {
       swal("You not apply nor save new configuration!");
+    }
+  });
+};
+
+function trainOasis(status) {
+  var feedback = {
+                     "NODE_ID": $("#ID_TRAINING_BTN")[0].value,
+                  "MESSAGE_ID": "a12dc89b",
+         "IRRIGATION_FEEDBACK": status
+        };
+
+  $.ajax({
+    url: '/feedback',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(feedback),
+    success: function(response) {
+      console.log(response.status);
+      $(this).modal('hide');
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
     }
   });
 };

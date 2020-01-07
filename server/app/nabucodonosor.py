@@ -207,6 +207,15 @@ def node_config():
         config = json.load(default_config)
     return json.dumps(config);
 
+@app.route('/feedback', methods=['POST'])
+@login_required
+def feedback():
+    message = json.dumps(request.get_json())
+    logger.debug("[feedback] %s", message)
+    #TODO
+    return json.dumps({'status':'Success!'});
+
+
 @app.route('/status', methods=['POST'])
 @login_required
 def refresh():
