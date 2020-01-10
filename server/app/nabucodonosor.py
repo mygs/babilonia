@@ -69,7 +69,7 @@ cache = Cache(config=cfg['CACHE'])
 cache.init_app(app)
 
 dashboard = Dashboard(cfg)
-soilMoistureAnalytics = SoilMoistureAnalytics()
+soilMoistureAnalytics = SoilMoistureAnalytics(logger)
 mqtt = Mqtt(app)
 DB.init_app(app)
 socketio = SocketIO(app)
@@ -207,12 +207,20 @@ def node_config():
         config = json.load(default_config)
     return json.dumps(config);
 
-@app.route('/feedback', methods=['POST'])
+@app.route('/training', methods=['POST'])
 @login_required
-def feedback():
-    message = json.dumps(request.get_json())
+def training():
+    timestamp = int(time.time())
+    message = request.get_json()
+    type='feedback'
     logger.debug("[feedback] %s", message)
-    #TODO
+    node_id = message["NODE_ID"]
+    data = OasisAnalytic(TIMESTAMP=timestamp,
+                            NODE_ID=node_id,
+                            TYPE=type,
+                            DATA=message)
+    with app.app_context():
+        DB.session.add(data)
     return json.dumps({'status':'Success!'});
 
 
@@ -321,8 +329,8 @@ def utility_processor():
             return "good"
         else:
             return "danger"
-    def status_moisture(id, idx, level):
-        return soilMoistureAnalytics.status(level)
+    def status_moisture(node_id, port, level):
+        return soilMoistureAnalytics.status(node_id, port, level)
     def weather_icon(argument):
         switcher = {
             "clear-day": "wi wi-day-sunny",

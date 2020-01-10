@@ -12,9 +12,9 @@
     "LOGIN_DISABLED": true,
     "BABILONIA_LIBS": "/Users/msaito/Development",
     "GIT_REPO": "/Users/msaito/Development/babilonia",
-    "SQLALCHEMY_DATABASE_URI": "mysql://babilonia:1q2w3e4r@192.168.1.70/farmland",
+    "SQLALCHEMY_DATABASE_URI": "mysql://babilonia:1q2w3e4r@amitis.ddns.net/farmland",
     "MQTT":{
-        "BROKER":"192.168.1.70",
+        "BROKER":"amitis.ddns.net",
         "PORT":1883,
         "KEEPALIVE":60,
         "MQTT_OASIS_TOPIC_HEARTBEAT": "/oasis-heartbeat",
@@ -22,7 +22,7 @@
         "MQTT_OASIS_TOPIC_OUTBOUND": "/oasis-outbound"
     },
     "CACHE":{
-      "CACHE_TYPE": "simple",
+      "CACHE_TYPE": "null",
       "CACHE_DEFAULT_TIMEOUT": 30
     },
     "DEFAULTS":{

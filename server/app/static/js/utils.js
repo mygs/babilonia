@@ -83,7 +83,7 @@ function trainOasis(status) {
         };
 
   $.ajax({
-    url: '/feedback',
+    url: '/training',
     type: 'POST',
     dataType: 'json',
     contentType: 'application/json',
