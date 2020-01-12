@@ -77,7 +77,8 @@ test1002| SET1000 |
 test2000| SET2000 |
 test2001| SET2000 |
 test2002| SET2000 |
-test2003| SET2000 |
+test2003| SET2000 | aborted |
+test2004| SET2000 |
 
 #### Query to extract data
 
@@ -93,7 +94,7 @@ SELECT	TIMESTAMP,
         DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
 FROM farmland.OASIS_DATA
 WHERE 	NODE_ID='oasis-39732c' AND
-		DATA->'$.MESSAGE_ID' ='test2003'
+		DATA->'$.MESSAGE_ID' ='test2004'
 ORDER BY TIMESTAMP ASC;
 ```
 
