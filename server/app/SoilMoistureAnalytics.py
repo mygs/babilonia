@@ -13,8 +13,8 @@ class SoilMoistureAnalytics:
         self.logger = logger
 
     def status(self, node_id, port, level):
-        analytics = DB.session.query(OasisAnalytic).one()
-        self.logger.debug("[SoilMoistureAnalytics] %s", analytics.data())
+        #analytics = DB.session.query(OasisAnalytic).one()
+        #self.logger.debug("[SoilMoistureAnalytics] %s", analytics.data())
 
         if level < self.MUX_PORT_THRESHOLD_IDLE:
             return "moisture-disable"
