@@ -154,7 +154,7 @@ td#box-header-telemetry-hb {
     width: 20%;
     text-align: right;
 }
-
+/* START OF MOISTURE SECTION STUFF */
 table#moisture {
     text-align: center;
     -webkit-border-horizontal-spacing: 5px;
@@ -163,22 +163,28 @@ table#moisture {
     margin-left: auto;
     margin-right: auto;
 }
-
-.moisture-disable {
-  color: grey !important;
-}
-.moisture-dry {
-  color: red !important;
-}
-.moisture-wet {
-  color: blue !important;
-}
-
 .moisture-number {
   font-size: 60%;
   font-weight: bold;
   color: white;
 }
+.moisture-offline {
+  color: grey !important;
+}
+.moisture-nosoil {
+  color: brown !important;
+}
+.moisture-dry {
+  color: red !important;
+}
+.moisture-regular {
+  color: yellow !important;
+}
+.moisture-wet {
+  color: blue !important;
+}
+
+/* END OF MOISTURE SECTION STUFF */
 
 table#telemetry {
     width: 100%;
