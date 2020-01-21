@@ -26,6 +26,7 @@ class SoilMoistureAnalytics:
             return "moisture-wet"
 
     def param(self):
-        return {"MUX_PORT_THRESHOLD_OFFLINE":self.MUX_PORT_THRESHOLD_OFFLINE,
-                "MUX_PORT_THRESHOLD_DRY":self.MUX_PORT_THRESHOLD_DRY,
-                "MUX_PORT_THRESHOLD_NOSOIL":self.MUX_PORT_THRESHOLD_NOSOIL}
+        return json.dumps(
+            {'MUX_PORT_THRESHOLD_OFFLINE':self.MUX_PORT_THRESHOLD_OFFLINE,
+            'MUX_PORT_THRESHOLD_DRY':self.MUX_PORT_THRESHOLD_DRY,
+            'MUX_PORT_THRESHOLD_NOSOIL':self.MUX_PORT_THRESHOLD_NOSOIL})

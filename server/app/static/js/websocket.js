@@ -20,15 +20,22 @@ $(document).ready(function() {
       $('#sw_ver_' + node_id).html(firware_version);
     }
     if (capacitivemoisture != null) {
-      $('#mux0_' + node_id).html(capacitivemoisture['MUX0']);
-      $('#mux1_' + node_id).html(capacitivemoisture['MUX1']);
-      $('#mux2_' + node_id).html(capacitivemoisture['MUX2']);
-      $('#mux3_' + node_id).html(capacitivemoisture['MUX3']);
-      $('#mux4_' + node_id).html(capacitivemoisture['MUX4']);
-      $('#mux5_' + node_id).html(capacitivemoisture['MUX5']);
-      $('#mux6_' + node_id).html(capacitivemoisture['MUX6']);
-      $('#mux7_' + node_id).html(capacitivemoisture['MUX7']);
-
+      var sma = $("#modulegrid").data("soilmoistureanalytics");
+      for(var idx = 0 ; idx < 8 ; idx++){
+        var field = $('#mux_field_'+idx+'_'+node_id);
+        field.removeClass(function (index, css) {
+          return (css.match (/\bmoisture-\S+/g) || []).join(' ');
+        });
+        var level = capacitivemoisture['MUX'+idx];
+        if(level < sma.MUX_PORT_THRESHOLD_OFFLINE){
+            field.addClass('moisture-offline');
+        } else if(level > sma.MUX_PORT_THRESHOLD_NOSOIL){
+            field.addClass('moisture-nosoil');
+        } else {
+            field.addClass('moisture-wet');
+        }
+        $('#mux_value_'+idx+'_'+node_id).html(level);
+      }
     }
     console.log(data);
   });
