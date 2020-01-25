@@ -27,12 +27,14 @@ $(document).ready(function() {
           return (css.match (/\bmoisture-\S+/g) || []).join(' ');
         });
         var level = capacitivemoisture['MUX'+idx];
-        if(level < sma.MUX_PORT_THRESHOLD_OFFLINE){
+        if(level <= sma.MUX_PORT_THRESHOLD_OFFLINE){
             field.addClass('moisture-offline');
-        } else if(level > sma.MUX_PORT_THRESHOLD_NOSOIL){
-            field.addClass('moisture-nosoil');
-        } else {
+        } else if(level > sma.MUX_PORT_THRESHOLD_OFFLINE && level <= sma.MUX_PORT_THRESHOLD_WET){
             field.addClass('moisture-wet');
+        } else if(level > sma.MUX_PORT_THRESHOLD_WET && level < sma.MUX_PORT_THRESHOLD_NOSOIL){
+            field.addClass('moisture-dry');
+        } else if(level >= sma.MUX_PORT_THRESHOLD_NOSOIL){
+            field.addClass('moisture-nosoil');
         }
         $('#mux_value_'+idx+'_'+node_id).html(level);
       }

@@ -69,7 +69,7 @@ cache = Cache(config=cfg['CACHE'])
 cache.init_app(app)
 
 dashboard = Dashboard(cfg)
-soilMoistureAnalytics = SoilMoistureAnalytics(logger)
+soilMoistureAnalytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
 mqtt = Mqtt(app)
 DB.init_app(app)
 socketio = SocketIO(app)

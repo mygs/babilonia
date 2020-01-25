@@ -5,28 +5,30 @@ from Models import *
 import logging
 
 class SoilMoistureAnalytics:
-    #default values
-    MUX_PORT_THRESHOLD_OFFLINE=50
-    MUX_PORT_THRESHOLD_DRY=600
-    MUX_PORT_THRESHOLD_NOSOIL=680
 
-    def __init__(self, logger):
+    def __init__(self, logger, defaults):
         self.logger = logger
+        #default values
+        self.OFFLINE = defaults["OFFLINE"]
+        self.WET = defaults["WET"]
+        self.NOSOIL = defaults["NOSOIL"]
+
 
     def status(self, node_id, port, level):
         analytics = DB.session.query(OasisAnalytic).first()
         self.logger.debug("[SoilMoistureAnalytics] %s", analytics.data())
-
-        if level < self.MUX_PORT_THRESHOLD_OFFLINE:
+        #TODO: put some brain in here
+        if level <= self.OFFLINE:
             return "moisture-offline"
-        elif level > self.MUX_PORT_THRESHOLD_NOSOIL:
-            return "moisture-nosoil"
-        else:
-            #TODO: put some brain in here
+        elif level > self.OFFLINE and level <= self.WET:
             return "moisture-wet"
+        elif level > self.WET and level < self.NOSOIL:
+            return "moisture-dry"
+        elif level >= self.NOSOIL:
+            return "moisture-nosoil"
 
     def param(self):
         return json.dumps(
-            {'MUX_PORT_THRESHOLD_OFFLINE':self.MUX_PORT_THRESHOLD_OFFLINE,
-            'MUX_PORT_THRESHOLD_DRY':self.MUX_PORT_THRESHOLD_DRY,
-            'MUX_PORT_THRESHOLD_NOSOIL':self.MUX_PORT_THRESHOLD_NOSOIL})
+            {'MUX_PORT_THRESHOLD_OFFLINE':self.OFFLINE,
+            'MUX_PORT_THRESHOLD_WET':self.WET,
+            'MUX_PORT_THRESHOLD_NOSOIL':self.NOSOIL})
