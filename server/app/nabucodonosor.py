@@ -210,17 +210,8 @@ def node_config():
 @app.route('/training', methods=['POST'])
 @login_required
 def training():
-    timestamp = int(time.time())
     message = request.get_json()
-    type='feedback'
-    logger.debug("[feedback] %s", message)
-    node_id = message["NODE_ID"]
-    data = OasisAnalytic(TIMESTAMP=timestamp,
-                            NODE_ID=node_id,
-                            TYPE=type,
-                            DATA=message)
-    with app.app_context():
-        DB.session.add(data)
+    soilMoistureAnalytics.feedback_online_process(message)
     return json.dumps({'status':'Success!'});
 
 
