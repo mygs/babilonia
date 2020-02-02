@@ -28,7 +28,7 @@ class SoilMoistureAnalytics:
         for i in range(8):
             idx = 'MUX'+str(i)
             avg_mux = AVERAGE.get(idx,0)
-            AVERAGE[idx] = (avg_mux*(N-1) + moisture[idx])/N
+            AVERAGE[idx] = int((avg_mux*(N-1) + moisture[idx])/N)
 
         self.cache[node_id] = { 'SAMPLE':SAMPLE,
                                 'TIMESTAMP':timestamp,
