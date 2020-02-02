@@ -372,7 +372,6 @@ def handle_mqtt_message(client, userdata, msg):
                 DB.session.merge(heartbeat)
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
         data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
-        logger.debug("[data] %s", data.toJson())
         if "DATA" in jmsg:
             if isMqttEnabled:
                 with app.app_context():
@@ -383,7 +382,9 @@ def handle_mqtt_message(client, userdata, msg):
                 logger.debug("[data-moisture] %s", moisture)
                 filtered = analytics.gui_noise_filter(node_id, timestamp, moisture)
                 data.capacitive_moisture(filtered)
-        socketio.emit('ws-oasis-data', data=data.toJson())
+        jsonData = data.toJson()
+        logger.debug("[data] %s", jsonData)
+        socketio.emit('ws-oasis-data', data=jsonData)
 
 
 
