@@ -374,7 +374,9 @@ def handle_mqtt_message(client, userdata, msg):
         data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
         if "DATA" in jmsg:
             if isMqttEnabled:
-]               DB.session.add(data)
+                with app.app_context():
+                    dbdata = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
+                    DB.session.add(dbdata)
             json_data = jmsg["DATA"]
             if "CAPACITIVEMOISTURE" in json_data:
                 moisture = json_data["CAPACITIVEMOISTURE"]
