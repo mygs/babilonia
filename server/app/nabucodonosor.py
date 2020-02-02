@@ -379,8 +379,8 @@ def handle_mqtt_message(client, userdata, msg):
             json_data = jmsg["DATA"]
             if "CAPACITIVEMOISTURE" in json_data:
                 moisture = json_data["CAPACITIVEMOISTURE"]
-                logger.debug("[data-moisture] %s", moisture)
                 filtered = analytics.gui_noise_filter(node_id, timestamp, moisture)
+                logger.debug("[data-filtered] %s", filtered)
                 data.capacitive_moisture(filtered)
         jsonData = data.toJson()
         logger.debug("[data] %s", jsonData)
