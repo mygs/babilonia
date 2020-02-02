@@ -380,11 +380,12 @@ def handle_mqtt_message(client, userdata, msg):
             if "CAPACITIVEMOISTURE" in json_data:
                 moisture = json_data["CAPACITIVEMOISTURE"]
                 filtered = analytics.gui_noise_filter(node_id, timestamp, moisture)
-                logger.debug("[data-filtered] %s", filtered)
                 data.capacitive_moisture(filtered)
+                logger.debug("[data-filtered] %s", filtered)
+
         jsonData = data.toJson()
-        logger.debug("[data] %s", jsonData)
         socketio.emit('ws-oasis-data', data=jsonData)
+        logger.debug("[data] %s", jsonData)
 
 
 
