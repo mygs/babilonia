@@ -9,12 +9,31 @@ import logging
 class SoilMoistureAnalytics:
 
     def __init__(self, logger, defaults):
+        self.cache = {}
         self.logger = logger
         #default values
+        self.WINDOW_SIZE = 5
         self.OFFLINE = defaults["OFFLINE"]
         self.WET = defaults["WET"]
         self.NOSOIL = defaults["NOSOIL"]
 
+    def gui_noise_filter(self, node_id, timestamp, moisture):
+        cache_entry = self.cache.get(node_id, { 'SAMPLE':0,
+                                                'TIMESTAMP':timestamp,
+                                                'AVERAGE':moisture})
+        AVERAGE = cache_entry['AVERAGE']
+        SAMPLE = cache_entry['SAMPLE'] + 1
+        N = min(SAMPLE, self.WINDOW_SIZE)
+
+        for i in range(8):
+            idx = 'MUX'+str(i)
+            avg_mux = AVERAGE.get(idx,0)
+            AVERAGE[idx] = (avg_mux*(N-1) + moisture[idx])/N
+
+        self.cache[node_id] = { 'SAMPLE':SAMPLE,
+                                'TIMESTAMP':timestamp,
+                                'AVERAGE':AVERAGE}
+        return AVERAGE
 
     def status(self, node_id, port, level):
         #analytics = DB.session.query(OasisAnalytic).first()
@@ -50,7 +69,7 @@ class SoilMoistureAnalytics:
         latest_node_data = DB.session.query(OasisData).join(
             latest, and_(OasisData.TIMESTAMP == latest.c.TIMESTAMP))
         self.logger.debug("[feedback-data] %s", latest_node_data)
-        
+
         if status == "wet":
             self.logger.debug("[STATUS]>>>>>>>>WET<<<<<<<<<")
         if status == "dry":

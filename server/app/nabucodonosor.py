@@ -11,7 +11,6 @@ import logging.config
 from Models import *
 from Dashboard import *
 from SoilMoistureAnalytics import *
-#import analytics
 import simplejson as json
 import requests
 from flask import Flask, Response, url_for, redirect, render_template, request, session, abort
@@ -69,7 +68,7 @@ cache = Cache(config=cfg['CACHE'])
 cache.init_app(app)
 
 dashboard = Dashboard(cfg)
-soilMoistureAnalytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
+analytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
 mqtt = Mqtt(app)
 DB.init_app(app)
 socketio = SocketIO(app)
@@ -211,7 +210,7 @@ def node_config():
 @login_required
 def training():
     message = request.get_json()
-    soilMoistureAnalytics.feedback_online_process(message)
+    analytics.feedback_online_process(message)
     return json.dumps({'status':'Success!'});
 
 
@@ -321,7 +320,7 @@ def utility_processor():
         else:
             return "danger"
     def status_moisture(node_id, port, level):
-        return soilMoistureAnalytics.status(node_id, port, level)
+        return analytics.status(node_id, port, level)
     def weather_icon(argument):
         switcher = {
             "clear-day": "wi wi-day-sunny",
@@ -341,7 +340,7 @@ def utility_processor():
             'status_moisture':status_moisture,
             'weather_icon': weather_icon,
             'format_last_update':format_last_update,
-            'soil': soilMoistureAnalytics.param()
+            'soil': analytics.param()
             }
 ###############################################################################
 ############################## HANDLE MQTT ####################################
@@ -374,10 +373,17 @@ def handle_mqtt_message(client, userdata, msg):
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
         data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
         logger.debug("[data] %s", data.toJson())
+        if "DATA" in jmsg:
+            if isMqttEnabled:
+                with app.app_context():
+                    DB.session.add(data)
+            json_data = jmsg["DATA"]
+            if "CAPACITIVEMOISTURE" in json_data:
+                moisture = json_data["CAPACITIVEMOISTURE"]
+                logger.debug("[data-moisture] %s", moisture)
+                filtered = analytics.gui_noise_filter(node_id, timestamp, moisture)
+                data.capacitive_moisture(filtered)
         socketio.emit('ws-oasis-data', data=data.toJson())
-        if isMqttEnabled and "DATA" in jmsg:
-            with app.app_context():
-                DB.session.add(data)
 
 
 

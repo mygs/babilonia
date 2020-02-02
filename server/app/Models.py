@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+import json
 from flask_sqlalchemy import SQLAlchemy
 DB = SQLAlchemy()
 
@@ -18,7 +19,8 @@ class OasisData(DB.Model):
         return {"TIMESTAMP":self.TIMESTAMP,"NODE_ID":self.NODE_ID,"DATA":self.DATA}
     def data(self):
         return self.DATA['DATA']
-
+    def capacitive_moisture(self, moisture):
+        self.DATA["DATA"]["CAPACITIVEMOISTURE"]= moisture
 
 class OasisHeartbeat(DB.Model):
     __tablename__ = 'OASIS_HEARTBEAT'
