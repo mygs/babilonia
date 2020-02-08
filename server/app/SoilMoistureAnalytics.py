@@ -13,14 +13,18 @@ class SoilMoistureAnalytics:
         self.logger = logger
         #default values
         self.WINDOW_SIZE = 5
+        self.EXPIRE = 3600 # 1 hour
         self.OFFLINE = defaults["OFFLINE"]
         self.WET = defaults["WET"]
         self.NOSOIL = defaults["NOSOIL"]
 
     def gui_noise_filter(self, node_id, timestamp, moisture):
-        cache_entry = self.cache.get(node_id, { 'SAMPLE':0,
-                                                'TIMESTAMP':timestamp,
-                                                'AVERAGE':moisture})
+        cache_entry = self.cache.get(node_id)
+        if cache_entry == None or (timestamp - cache_entry['TIMESTAMP']) > self.EXPIRE:
+            cache_entry = { 'SAMPLE':0,
+                            'TIMESTAMP':timestamp,
+                            'AVERAGE':moisture}
+
         AVERAGE = cache_entry['AVERAGE']
         SAMPLE = cache_entry['SAMPLE'] + 1
         N = min(SAMPLE, self.WINDOW_SIZE)
