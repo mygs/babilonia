@@ -18,7 +18,7 @@ $(document).ready(function() {
     if (firware_version != null) {
       $('#sw_ver_' + node_id).html(firware_version);
     }
-    if (data != null) {
+    if (data['DATA'] != null) {
 
       var capacitivemoisture = data['DATA']['CAPACITIVEMOISTURE'];
       var water = data['DATA']['WATER'];
