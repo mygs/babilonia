@@ -1,3 +1,15 @@
+function btnStatusChange(btnId, status) {
+  if(status != null){
+    if(status == 0){
+      $(btnId).removeClass('btn-danger');
+      $(btnId).addClass('btn-primary');
+    }else{
+      $(btnId).removeClass('btn-primary');
+      $(btnId).addClass('btn-danger');
+    }
+  }
+};
+
 /* Websocket connection to update NODE Status */
 $(document).ready(function() {
 
@@ -21,7 +33,6 @@ $(document).ready(function() {
     if (data['DATA'] != null) {
 
       var capacitivemoisture = data['DATA']['CAPACITIVEMOISTURE'];
-      var water = data['DATA']['WATER'];
 
       if(capacitivemoisture != null){
         var sma = $("#modulegrid").data("soilmoistureanalytics");
@@ -44,19 +55,17 @@ $(document).ready(function() {
         }
       }
 
-      if(water != null){
-        if(water == "0"){
-          $('#btn-water_' + node_id).removeClass('btn-danger');
-          $('#btn-water_' + node_id).addClass('btn-primary');
-        }else{
-          $('#btn-water_' + node_id).removeClass('btn-primary');
-          $('#btn-water_' + node_id).addClass('btn-danger');
-        }
-      }
+      btnStatusChange('#btn-water_' + node_id, data['DATA']['WATER']);
 
+    }
+
+    if(data['COMMAND'] != null){
+      btnStatusChange('#btn-water_' + node_id, data['COMMAND']['WATER']);
     }
     console.log(data);
   });
+
+
 
   socket.on('ws-oasis-heartbeat', function(data) {
     var hb = $('#heartbeat_'+data['NODE_ID']);
