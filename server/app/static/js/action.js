@@ -93,7 +93,16 @@ $(".btn-water").on("click", function() {
     data: JSON.stringify(status),
     success: function(response) {
       console.log(response.status);
-      $('#irrigation_' + id).val(water == "1" ? "0" : "1");
+      var newValue = (water == "1" ? "0" : "1");
+      $('#irrigation_' + id).val(newValue);
+      if(newValue == "0"){
+        $('#btn-water_' + id).removeClass('btn-danger');
+        $('#btn-water_' + id).addClass('btn-primary');
+      }else{
+        $('#btn-water_' + id).removeClass('btn-primary');
+        $('#btn-water_' + id).addClass('btn-danger');
+      }
+
     },
     error: function(response) {
       swal(response.status, "XPTO!", "error");

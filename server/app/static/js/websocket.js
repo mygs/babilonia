@@ -8,7 +8,6 @@ $(document).ready(function() {
     var data = oasisData['DATA'];
     var node_ip = data['NODE_IP'];
     var firware_version = data['FIRMWARE_VERSION'];
-    var capacitivemoisture = data['DATA']['CAPACITIVEMOISTURE'];
 
     if (timestamp != null) {
       $('#time_' + node_id).html(moment.unix(timestamp).format('DD/MM/YYYY HH:mm:ss'));
@@ -19,25 +18,42 @@ $(document).ready(function() {
     if (firware_version != null) {
       $('#sw_ver_' + node_id).html(firware_version);
     }
-    if (capacitivemoisture != null) {
-      var sma = $("#modulegrid").data("soilmoistureanalytics");
-      for(var idx = 0 ; idx < 8 ; idx++){
-        var field = $('#mux_field_'+idx+'_'+node_id);
-        field.removeClass(function (index, css) {
-          return (css.match (/\bmoisture-\S+/g) || []).join(' ');
-        });
-        var level = capacitivemoisture['MUX'+idx];
-        if(level <= sma.MUX_PORT_THRESHOLD_OFFLINE){
-            field.addClass('moisture-offline');
-        } else if(level > sma.MUX_PORT_THRESHOLD_OFFLINE && level <= sma.MUX_PORT_THRESHOLD_WET){
-            field.addClass('moisture-wet');
-        } else if(level > sma.MUX_PORT_THRESHOLD_WET && level < sma.MUX_PORT_THRESHOLD_NOSOIL){
-            field.addClass('moisture-dry');
-        } else if(level >= sma.MUX_PORT_THRESHOLD_NOSOIL){
-            field.addClass('moisture-nosoil');
+    if (data != null) {
+
+      var capacitivemoisture = data['DATA']['CAPACITIVEMOISTURE'];
+      var water = data['DATA']['WATER'];
+
+      if(capacitivemoisture != null){
+        var sma = $("#modulegrid").data("soilmoistureanalytics");
+        for(var idx = 0 ; idx < 8 ; idx++){
+          var field = $('#mux_field_'+idx+'_'+node_id);
+          field.removeClass(function (index, css) {
+            return (css.match (/\bmoisture-\S+/g) || []).join(' ');
+          });
+          var level = capacitivemoisture['MUX'+idx];
+          if(level <= sma.MUX_PORT_THRESHOLD_OFFLINE){
+              field.addClass('moisture-offline');
+          } else if(level > sma.MUX_PORT_THRESHOLD_OFFLINE && level <= sma.MUX_PORT_THRESHOLD_WET){
+              field.addClass('moisture-wet');
+          } else if(level > sma.MUX_PORT_THRESHOLD_WET && level < sma.MUX_PORT_THRESHOLD_NOSOIL){
+              field.addClass('moisture-dry');
+          } else if(level >= sma.MUX_PORT_THRESHOLD_NOSOIL){
+              field.addClass('moisture-nosoil');
+          }
+          $('#mux_value_'+idx+'_'+node_id).html(level);
         }
-        $('#mux_value_'+idx+'_'+node_id).html(level);
       }
+
+      if(water != null){
+        if(water == "0"){
+          $('#btn-water_' + node_id).removeClass('btn-danger');
+          $('#btn-water_' + node_id).addClass('btn-primary');
+        }else{
+          $('#btn-water_' + node_id).removeClass('btn-primary');
+          $('#btn-water_' + node_id).addClass('btn-danger');
+        }
+      }
+
     }
     console.log(data);
   });

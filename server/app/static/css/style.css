@@ -250,33 +250,25 @@ table#cockpit {
   color: #931111;
   border-color: #c01717;
 }
-#sortable li .box.danger .fa {
-  color: #c01717;
-}
+
 #sortable li .box.good {
   background: #BCED91;
   color: #3d6d12;
   border-color: #6dc520;
 }
-#sortable li .box.good .fa {
-  color: #3d6d12;
-}
+
 #sortable li .box.excellent {
   color: #084a84;
   background: #62B1F6;
   border-color: #0a65b5;
 }
-#sortable li .box.excellent .fa {
-  color: #0a65b5;
-}
+
 #sortable li .box.nostatus {
   color: #333;
   background: white;
   border-color: gray;
 }
-#sortable li .box.nostatus .fa {
-  color: #b3b3b3;
-}
+
 #sortable li .box h4 {
   margin-top: 0;
   margin-bottom: 5px;
@@ -288,13 +280,14 @@ table#cockpit {
   margin-bottom: 5px;
 }
 
-#sortable li .box h4 .fa {
-  display: inline-block;
-  margin-right: 4px;
-}
+
 #sortable li .box p {
   color: #444;
   font-size: 11px;
+}
+
+#sortable li .box .fa {
+  color: #ffffff;
 }
 
 .footer {

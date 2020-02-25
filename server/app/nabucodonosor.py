@@ -310,6 +310,12 @@ def webhook():
 def utility_processor():
     def format_last_update(value):
         return time.strftime("%d/%m/%Y %H:%M:%S", time.localtime(int(value)))
+    def status_btn(argument):
+        switcher = {
+            0: "btn-primary",
+            1: "btn-danger"
+        }
+        return switcher.get(argument, "btn-secondary")
     def status_node(last_update, sensor_collect_data_period):
         last_update = int(last_update)
         sensor_collect_data_period = int(sensor_collect_data_period)
@@ -340,6 +346,7 @@ def utility_processor():
             'status_moisture':status_moisture,
             'weather_icon': weather_icon,
             'format_last_update':format_last_update,
+            'status_btn':status_btn,
             'soil': analytics.param()
             }
 ###############################################################################
