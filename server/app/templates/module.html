@@ -127,10 +127,6 @@
                 </tr>
                 <!--
                 <tr>
-                  <td class="param-label">Irrigation</td>
-                  <td class="param-value" id='irrigation_{{id}}'>{{water}}</td>
-                </tr>
-                <tr>
                   <td class="param-label">Light</td>
                   <td class="param-value" id='light_{{id}}'>{{light}}</td>
                 </tr>
@@ -142,14 +138,14 @@
               </table>
               <table id="cockpit">
               <tr>
-                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-water" data-id="{{id}}"><i class="wi wi-sprinkle"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-info btn-light" data-id="{{id}}"><i class="wi wi-day-sunny"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block {{ status_btn(water) }} btn-water" data-id="{{id}}"><i class="wi wi-sprinkle"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-default btn-light" data-id="{{id}}"><i class="wi wi-day-sunny"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-default btn-fan" data-id="{{id}}"><i class="wi wi-cloudy-gusts"></i></button></td>
               </tr>
               <tr>
-                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-default btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-default" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-danger btn-restart" data-id="{{id}}"><i class="fa fa-power-off"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-default btn-restart" data-id="{{id}}"><i class="fa fa-power-off"></i></button></td>
               </tr>
               </table>
             </div>
