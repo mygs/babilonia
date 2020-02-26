@@ -1,4 +1,3 @@
-
 function buildFirmwareProgress() {
   var source = new EventSource("/progress");
 	source.onmessage = function(event) {
@@ -10,10 +9,10 @@ function buildFirmwareProgress() {
 	}
 };
 
-$(".btn-backup").on("click", function() {
+function firmwareAction(node_id, action) {
   var message = {
-           "NODE_ID": $(this).data('id'),
-           "ACTION": "backup"
+           "NODE_ID": node_id,
+           "ACTION": action
         };
   $.ajax({
     url: '/firmware',
@@ -28,8 +27,15 @@ $(".btn-backup").on("click", function() {
       swal(response.status, "XPTO!", "error");
     }
   });
+};
+
+$(".btn-backup").on("click", function() {
+  firmwareAction($(this).data('id'), "backup")
 });
 
+$(".btn-upgrade").on("click", function() {
+  firmwareAction($(this).data('id'), "upgrade")
+});
 
 $(document).ready(function() {
 

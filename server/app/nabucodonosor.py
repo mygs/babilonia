@@ -246,9 +246,9 @@ def firmware_action():
         logger.debug("[firmware-action] BACKUP %s", message)
         return json.dumps({'status':'Success!'});
     elif message['ACTION'] ==  "upgrade":
-        logger.debug("[firmware-action] UPDATE %s", message)
+        logger.debug("[firmware-action] UPGRADE %s", message)
         return json.dumps({'status':'Success!'});
-    return json.dumps({'status':'ERROR'}), 400;
+    return json.dumps({'status':'ERROR'}), 403;
 
 @app.route("/firmware", methods=['GET'])
 @cache.cached()
