@@ -101,6 +101,7 @@ assets.register('3rdpartyjs',
                 'js/3rdparty/buttons.bootstrap.js',
                 'js/3rdparty/bootstrap-datepicker.js',
                 'js/3rdparty/dataTables.select.js',
+                'js/3rdparty/popper.min.js',
                 'js/3rdparty/bootstrap.js',
                 'js/3rdparty/socket.io.js',
                 'js/3rdparty/moment.js',
@@ -237,7 +238,19 @@ def command_alexa():
     mqtt.publish("/oasis-inbound", message)
     return json.dumps({'status':'Success!'});
 
-@app.route("/firmware")
+@app.route('/firmware', methods=['POST'])
+@login_required
+def firmware_action():
+    message = request.get_json()
+    if message['ACTION'] ==  "backup":
+        logger.debug("[firmware-action] BACKUP %s", message)
+        return json.dumps({'status':'Success!'});
+    elif message['ACTION'] ==  "upgrade":
+        logger.debug("[firmware-action] UPDATE %s", message)
+        return json.dumps({'status':'Success!'});
+    return json.dumps({'status':'ERROR'}), 400;
+
+@app.route("/firmware", methods=['GET'])
 @cache.cached()
 @login_required
 def firmware():

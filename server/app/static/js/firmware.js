@@ -10,6 +10,26 @@ function buildFirmwareProgress() {
 	}
 };
 
+$(".btn-backup").on("click", function() {
+  var message = {
+           "NODE_ID": $(this).data('id'),
+           "ACTION": "backup"
+        };
+  $.ajax({
+    url: '/firmware',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(message),
+    success: function(response) {
+      console.log(response.status);
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+});
+
 
 $(document).ready(function() {
 
@@ -30,10 +50,14 @@ $(document).ready(function() {
           className: 'firware-build-btn',
           titleAttr: 'Build Firmware',
           action: function(e, dt, node, config) {
-              console.log("build firware");
+              console.log("build firmware");
               buildFirmwareProgress();
           }
         }]
 
+  });
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
   });
 });
