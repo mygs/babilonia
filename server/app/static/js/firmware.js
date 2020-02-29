@@ -9,11 +9,14 @@ function buildFirmwareProgress() {
 	}
 };
 
-function firmwareAction(node_id, action) {
+function firmwareAction(action, node_id, node_ip) {
   var message = {
            "NODE_ID": node_id,
            "ACTION": action
         };
+  if(action == "upgrade" && node_ip != null){
+    message["NODE_IP"] = node_ip;
+  }
   $.ajax({
     url: '/firmware',
     type: 'POST',
@@ -22,23 +25,25 @@ function firmwareAction(node_id, action) {
     data: JSON.stringify(message),
     success: function(response) {
       console.log(response.status);
+      swal(response.status, response.message, response.status);
+
     },
     error: function(response) {
-      swal(response.status, "XPTO!", "error");
+      swal(response.status, "XPTO!", response.status);
     }
   });
 };
 
 $(".btn-backup").on("click", function() {
-  firmwareAction($(this).data('id'), "backup")
+  firmwareAction("backup",$(this).data('id'));
 });
 
 $(".btn-upgrade").on("click", function() {
-  firmwareAction($(this).data('id'), "upgrade")
+  firmwareAction("upgrade",$(this).data('id'),$(this).data('ip'));
 });
 
 $(".btn-restore").on("click", function() {
-  firmwareAction($(this).data('id'), "restore")
+  firmwareAction("restore",$(this).data('id'));
 });
 
 $(document).ready(function() {

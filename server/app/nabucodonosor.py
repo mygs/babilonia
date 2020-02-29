@@ -255,10 +255,22 @@ def firmware_action():
                     "STATUS": ["NODE"]
                    }
         mqtt.publish("/oasis-inbound", json.dumps(message))
-        return json.dumps({'status':'Success!', 'message': message});
+        return json.dumps({'status':'success', 'message': 'backup request for '+node_id});
+
     elif action ==  "upgrade":
-        logger.debug("[firmware-action] UPGRADE %s", message)
-        return json.dumps({'status':'Success!'});
+        ESP_ADDR = "ESP_ADDR="+message["NODE_IP"]
+        ota_output = subprocess.Popen(["make","-f", ESPMAKE_PARAM, "ota",ESP_ADDR],
+                                            cwd=NODE_HOME,
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE)
+        result = str(ota_output.communicate()[0])
+        if "failed" in result:
+                #/home/msaito/github/makeEspArduino/makeEspArduino.mk:306: recipe for target 'ota' failed
+                return json.dumps({'status':'error','message': 'upgrade firmware for '+node_id});
+        return json.dumps({'status':'success', 'message': 'upgrade firmware for '+node_id});
+
+
+
     elif action ==  "restore":
         config = OasisData.query.filter(OasisData.NODE_ID==node_id, OasisData.DATA['MESSAGE_ID']=='backup').order_by(OasisData.TIMESTAMP.desc()).first()
         message = { "NODE_ID": node_id,
@@ -267,8 +279,8 @@ def firmware_action():
                    }
         logger.debug("[firmware-restore] TIMESTAMP=%s, CONFIG=%s",config.TIMESTAMP, message)
         mqtt.publish("/oasis-inbound", json.dumps(message))
-        return json.dumps({'status':'Success!', 'timestamp': config.TIMESTAMP, 'message': message});
-    return json.dumps({'status':'ERROR'}), 403;
+        return json.dumps({'status':'success', 'message': 'restore request for '+node_id});
+    return json.dumps({'status':'error'}), 403;
 
 @app.route("/firmware", methods=['GET'])
 @cache.cached()
@@ -351,9 +363,10 @@ def utility_processor():
         return switcher.get(argument, "btn-secondary")
     def status_node(last_update, sensor_collect_data_period):
         last_update = int(last_update)
-        sensor_collect_data_period = int(sensor_collect_data_period)
+        sensor_collect_data_period = int(sensor_collect_data_period)/1000
         now = int(time.time())
         next_data_is_expected = last_update + sensor_collect_data_period
+
         if next_data_is_expected >= now: # NEXT is future
             return "good"
         else:
