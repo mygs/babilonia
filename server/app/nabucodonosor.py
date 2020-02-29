@@ -196,8 +196,10 @@ def index():
 @cache.cached()
 @login_required
 def module():
-    return render_template('module.html',modules=get_modules_data())
-
+    resp = make_response(render_template('module.html',modules=get_modules_data()))
+    for key,value in analytics.default_param().items():
+        resp.set_cookie(key, str(value))
+    return resp
 
 @app.route('/configuration', methods=['POST'])
 @login_required

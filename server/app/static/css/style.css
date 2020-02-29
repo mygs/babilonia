@@ -7,6 +7,9 @@
   width: 100%;
 }
 
+.btn-water-all {
+    margin-right: 3px;
+}
 
 #dashboard li .panel {
   text-align: center;
@@ -168,19 +171,19 @@ table#moisture {
   font-weight: bold;
   color: white;
 }
-.moisture-offline {
+.moisture-status-offline {
   color: grey !important;
 }
-.moisture-nosoil {
+.moisture-status-nosoil {
   color: brown !important;
 }
-.moisture-dry {
+.moisture-status-dry {
   color: red !important;
 }
-.moisture-regular {
+.moisture-status-regular {
   color: yellow !important;
 }
-.moisture-wet {
+.moisture-status-wet {
   color: blue !important;
 }
 

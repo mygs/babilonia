@@ -44,13 +44,13 @@ class SoilMoistureAnalytics:
         #self.logger.debug("[SoilMoistureAnalytics] %s", analytics.data())
         #TODO: put some brain in here
         if level <= self.OFFLINE:
-            return "moisture-offline"
+            return "moisture-status-offline"
         elif level > self.OFFLINE and level <= self.WET:
-            return "moisture-wet"
+            return "moisture-status-wet"
         elif level > self.WET and level < self.NOSOIL:
-            return "moisture-dry"
+            return "moisture-status-dry"
         elif level >= self.NOSOIL:
-            return "moisture-nosoil"
+            return "moisture-status-nosoil"
 
     def feedback_online_process(self, feedback):
 

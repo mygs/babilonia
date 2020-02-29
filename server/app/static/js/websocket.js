@@ -39,17 +39,18 @@ $(document).ready(function() {
         for(var idx = 0 ; idx < 8 ; idx++){
           var field = $('#mux_field_'+idx+'_'+node_id);
           field.removeClass(function (index, css) {
-            return (css.match (/\bmoisture-\S+/g) || []).join(' ');
+            return (css.match (/\bmoisture-status-\S+/g) || []).join(' ');
           });
           var level = capacitivemoisture['MUX'+idx];
+          level
           if(level <= sma.MUX_PORT_THRESHOLD_OFFLINE){
-              field.addClass('moisture-offline');
+              field.addClass('moisture-status-offline');
           } else if(level > sma.MUX_PORT_THRESHOLD_OFFLINE && level <= sma.MUX_PORT_THRESHOLD_WET){
-              field.addClass('moisture-wet');
+              field.addClass('moisture-status-wet');
           } else if(level > sma.MUX_PORT_THRESHOLD_WET && level < sma.MUX_PORT_THRESHOLD_NOSOIL){
-              field.addClass('moisture-dry');
+              field.addClass('moisture-status-dry');
           } else if(level >= sma.MUX_PORT_THRESHOLD_NOSOIL){
-              field.addClass('moisture-nosoil');
+              field.addClass('moisture-status-nosoil');
           }
           $('#mux_value_'+idx+'_'+node_id).html(level);
         }

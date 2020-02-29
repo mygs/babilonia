@@ -20,6 +20,31 @@ $(".btn-refresh-all").on("click", function() {
   });
 });
 
+$(".btn-water-all").on("click", function() {
+  if(Cookies.get('WATER_ALL') == null)
+    Cookies.set('WATER_ALL', '0')
+  var status = {
+            "NODE_ID": "ALL",
+         "MESSAGE_ID": "man00gui",
+            "COMMAND": {"WATER": (Cookies.get('WATER_ALL') == "1") ? false : true /* invert! */}
+        };
+
+  $.ajax({
+    url: '/status',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(status),
+    success: function(response) {
+      console.log(response.status);
+      Cookies.set('WATER_ALL', (Cookies.get('WATER_ALL') == "1") ? "0" : "1" )
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+});
+
 /* BUTTON STUFF */
 function callbackend(command, img, title, text) {
   swal({
