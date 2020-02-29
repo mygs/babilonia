@@ -362,7 +362,7 @@ def utility_processor():
             0: "btn-primary",
             1: "btn-danger"
         }
-        return switcher.get(argument, "btn-secondary disabled")
+        return switcher.get(argument, "btn-primary disabled")
     def status_btn(argument):
         result =""
         if argument == "DISABLED":
