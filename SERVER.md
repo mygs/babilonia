@@ -162,7 +162,7 @@ sudo service nabucodonosor stop
 
 Config
 ```
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39732c\",\"MESSAGE_ID\": \"prototype\",\"CONFIG\": {\"HEARTBEAT_PERIOD\": 15000, \"SENSOR_COLLECT_DATA_PERIOD\": 30000, \"PIN\":{\"A\": \"CAPACITIVEMOISTURE\", \"0\": \"IDLE\",\"1\": \"WATER\", \"2\": \"IDLE\", \"3\": \"IDLE\",\"4\": \"IDLE\",\"5\": \"SW.A\", \"6\": \"SW.B\",\"7\": \"SW.C\", \"8\": \"IDLE\"}}}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\",\"MESSAGE_ID\": \"test\",\"CONFIG\": {\"HEARTBEAT_PERIOD\": 15001, \"SENSOR_COLLECT_DATA_PERIOD\": 30001, \"PIN\":{\"A\": \"CAPACITIVEMOISTURE\", \"0\": \"IDLE\",\"1\": \"WATER\", \"2\": \"IDLE\", \"3\": \"IDLE\",\"4\": \"IDLE\",\"5\": \"SW.A\", \"6\": \"SW.B\",\"7\": \"SW.C\", \"8\": \"IDLE\"}}}"
 ```
 command WATER
 ```

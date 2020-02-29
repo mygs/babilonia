@@ -247,20 +247,27 @@ def command_alexa():
 def firmware_action():
     message = request.get_json()
     node_id = message["NODE_ID"]
-    if message['ACTION'] ==  "backup":
+    action = message['ACTION']
+    if action ==  "backup":
         logger.debug("[firmware-action] BACKUP %s", message)
         message = { "NODE_ID": node_id,
                     "MESSAGE_ID": "backup",
                     "STATUS": ["NODE"]
                    }
         mqtt.publish("/oasis-inbound", json.dumps(message))
-        return json.dumps({'status':'Success!'});
-    elif message['ACTION'] ==  "upgrade":
+        return json.dumps({'status':'Success!', 'message': message});
+    elif action ==  "upgrade":
         logger.debug("[firmware-action] UPGRADE %s", message)
         return json.dumps({'status':'Success!'});
-    elif message['ACTION'] ==  "restore":
-        logger.debug("[firmware-action] RESTORE %s", message)
-        return json.dumps({'status':'Success!'});
+    elif action ==  "restore":
+        config = OasisData.query.filter(OasisData.NODE_ID==node_id, OasisData.DATA['MESSAGE_ID']=='backup').order_by(OasisData.TIMESTAMP.desc()).first()
+        message = { "NODE_ID": node_id,
+                    "MESSAGE_ID": "restore",
+                    "CONFIG": config.DATA['DATA']['NODE']
+                   }
+        logger.debug("[firmware-restore] TIMESTAMP=%s, CONFIG=%s",config.TIMESTAMP, message)
+        mqtt.publish("/oasis-inbound", json.dumps(message))
+        return json.dumps({'status':'Success!', 'timestamp': config.TIMESTAMP, 'message': message});
     return json.dumps({'status':'ERROR'}), 403;
 
 @app.route("/firmware", methods=['GET'])

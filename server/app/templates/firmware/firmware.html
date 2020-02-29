@@ -13,7 +13,6 @@
           <thead>
             <tr>
               <th>OASIS</th>
-              <th>IP</th>
               <th>VERSION</th>
               <th>ACTION</th>
             </tr>
@@ -22,10 +21,9 @@
             {% for module in modules %}
             <tr>
               <td>{{module.NODE_ID}}</td>
-              <td>{{module.DATA['NODE_IP']}}</td>
               <td>{{module.DATA['FIRMWARE_VERSION']}}</td>
-              <td><button type="button" class="btn btn-sm btn-warning btn-backup" data-id="{{module.NODE_ID}}" data-toggle="tooltip" title="Backup configuration"><i class="fa fa-cloud-download" aria-hidden="true"></i></button> |
-                  <button type="button" class="btn btn-sm btn-danger btn-upgrade" data-id="{{module.NODE_ID}}" data-toggle="tooltip" title="Update firmware"><i class="fa fa-cloud-upload" aria-hidden="true"></i></button> |
+              <td><button type="button" class="btn btn-sm btn-warning btn-backup" data-id="{{module.NODE_ID}}" data-toggle="tooltip" title="Backup configuration"><i class="fa fa-cloud-download" aria-hidden="true"></i></button>|
+                  <button type="button" class="btn btn-sm btn-danger btn-upgrade" data-id="{{module.NODE_ID}}" data-toggle="tooltip" title="Update firmware"><i class="fa fa-cloud-upload" aria-hidden="true"></i></button>|
                   <button type="button" class="btn btn-sm btn-primary btn-restore" data-id="{{module.NODE_ID}}" data-toggle="tooltip" title="Restore configuration"><i class="fa fa-cloud-upload" aria-hidden="true"></i></button>
               </td>
             </tr>
