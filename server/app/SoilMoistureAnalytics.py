@@ -80,8 +80,9 @@ class SoilMoistureAnalytics:
             self.logger.debug("[STATUS]>>>>>>>>DRY<<<<<<<<<")
         '''
 
-    def param(self):
-        return json.dumps(
-            {'MUX_PORT_THRESHOLD_OFFLINE':self.OFFLINE,
+    def default_param(self):
+        return {
+            'MUX_PORT_THRESHOLD_OFFLINE':self.OFFLINE,
             'MUX_PORT_THRESHOLD_WET':self.WET,
-            'MUX_PORT_THRESHOLD_NOSOIL':self.NOSOIL})
+            'MUX_PORT_THRESHOLD_NOSOIL':self.NOSOIL
+            }

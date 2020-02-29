@@ -13,7 +13,7 @@ from Dashboard import *
 from SoilMoistureAnalytics import *
 import simplejson as json
 import requests
-from flask import Flask, Response, url_for, redirect, render_template, request, session, abort
+from flask import Flask, make_response, Response, url_for, redirect, render_template, request, session, abort
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_assets import Environment, Bundle
@@ -94,6 +94,7 @@ assets.register('3rdpartycss',
 
 assets.register('3rdpartyjs',
                 'js/3rdparty/jquery-2.2.4.js',
+                'js/3rdparty/js.cookie.js',
                 'js/3rdparty/jquery-ui.js',
                 'js/3rdparty/jquery.dataTables.js',
                 'js/3rdparty/dataTables.bootstrap.js',
@@ -183,10 +184,13 @@ def index():
     logger.debug("[raspberrypi] %s", raspberrypi)
     logger.debug("[nodes] %s", nodes)
     logger.debug("[farm] %s", farm)
-    return render_template('index.html', weather=weather,
+    resp = make_response(render_template('index.html', weather=weather,
                                          farm=farm,
                                          raspberrypi=raspberrypi,
-                                         nodes=nodes)
+                                         nodes=nodes))
+    for key,value in analytics.default_param().items():
+        resp.set_cookie(key, str(value))
+    return resp
 
 @app.route('/module')
 @cache.cached()
@@ -242,11 +246,20 @@ def command_alexa():
 @login_required
 def firmware_action():
     message = request.get_json()
+    node_id = message["NODE_ID"]
     if message['ACTION'] ==  "backup":
         logger.debug("[firmware-action] BACKUP %s", message)
+        message = { "NODE_ID": node_id,
+                    "MESSAGE_ID": "backup",
+                    "STATUS": ["NODE"]
+                   }
+        mqtt.publish("/oasis-inbound", json.dumps(message))
         return json.dumps({'status':'Success!'});
     elif message['ACTION'] ==  "upgrade":
         logger.debug("[firmware-action] UPGRADE %s", message)
+        return json.dumps({'status':'Success!'});
+    elif message['ACTION'] ==  "restore":
+        logger.debug("[firmware-action] RESTORE %s", message)
         return json.dumps({'status':'Success!'});
     return json.dumps({'status':'ERROR'}), 403;
 
@@ -359,8 +372,7 @@ def utility_processor():
             'status_moisture':status_moisture,
             'weather_icon': weather_icon,
             'format_last_update':format_last_update,
-            'status_btn':status_btn,
-            'soil': analytics.param()
+            'status_btn':status_btn
             }
 ###############################################################################
 ############################## HANDLE MQTT ####################################

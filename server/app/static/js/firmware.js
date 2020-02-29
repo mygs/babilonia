@@ -37,6 +37,10 @@ $(".btn-upgrade").on("click", function() {
   firmwareAction($(this).data('id'), "upgrade")
 });
 
+$(".btn-restore").on("click", function() {
+  firmwareAction($(this).data('id'), "restore")
+});
+
 $(document).ready(function() {
 
   $('#firmware').on('init.dt', function() {

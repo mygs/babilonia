@@ -5,23 +5,33 @@
 	"NODE_IP": "192.168.2.33",
 	"ERROR":"some error message here",
 	"DATA": {
-		"NODE": {
-			"HOSTNAME": "oasis-311de9",
-			"IP": "192.168.2.200",
-			"FREE-HEAP": 100,
-			"CHIP-SIZE": 100,
-			"CHIP-ID": "311de9",
-			"PIN":{
-				"A": "CAPACITIVEMOISTURE",
-				"0": "IDLE",
-				"1": "WATER",
-				"2": "LIGHT",
-				"3": "SOIL.X",
-				"4": "SW.A",
-				"5": "SW.B",
-				"6": "SW.B",
-				"7": "IDLE"
-			}
+		"NODE":{
+	         "FIRMWARE_VERSION":"eef666c",
+	         "FREE_HEAP":33216,
+	         "FLASH_ID":1458376,
+	         "FLASH_SIZE":4194304,
+	         "SSID":"babilonia",
+	         "MQTT_SERVER":"192.168.2.1",
+	         "MQTT_PORT":1883,
+	         "MQTT_TOPIC_INBOUND":"/oasis-inbound",
+	         "MQTT_TOPIC_OUTBOUND":"/oasis-outbound",
+	         "SENSOR_COLLECT_DATA_PERIOD":30000,
+	         "HEARTBEAT_PERIOD":15000,
+	         "RETRY_WIFI_CONN_DELAY":5000,
+	         "SERIAL_BAUDRATE":115200,
+	         "OTA_PORT":8266,
+	         "PIN":{
+	            "A":"IDLE",
+	            "0":"WATER",
+	            "1":"SOIL.X",
+	            "2":"LIGHT",
+	            "3":"DHT",
+	            "4":"IDLE",
+	            "5":"SOIL.1",
+	            "6":"SOIL.2",
+	            "7":"SOIL.3",
+	            "8":"SOIL.4"
+	         }
 		},
 		"CAPACITIVEMOISTURE": {
 			"MUX0": 200,

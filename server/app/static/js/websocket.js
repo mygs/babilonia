@@ -35,7 +35,7 @@ $(document).ready(function() {
       var capacitivemoisture = data['DATA']['CAPACITIVEMOISTURE'];
 
       if(capacitivemoisture != null){
-        var sma = $("#modulegrid").data("soilmoistureanalytics");
+        var sma = Cookies.get();
         for(var idx = 0 ; idx < 8 ; idx++){
           var field = $('#mux_field_'+idx+'_'+node_id);
           field.removeClass(function (index, css) {
