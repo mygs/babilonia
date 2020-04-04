@@ -52,7 +52,8 @@ sudo apt-get install mysql-server && sudo apt-get install mysql-client
 sudo apt-get install dos2unix
 sudo apt-get install python3-mysqldb
 ```
-
+### replicating server
+sudo dd bs=4M if=/dev/sdc of=/home/msaito/Downloads/babilonia.img
 
 
 ## TOOLS
