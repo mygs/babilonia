@@ -22,4 +22,5 @@ assets
 *.gz
 *.fdb_latexmk
 *.pdf
+# Jupyter stuff
 *.ipynb_checkpoints
