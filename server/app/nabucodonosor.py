@@ -113,7 +113,11 @@ assets.register('3rdpartyjs',
 
 def update_server_software():
     repo = git.Repo(os.environ["BABILONIA_HOME"])
+    logger.info("[update_server_software] ignoring local changes")
+    repo.git.reset('--hard')
+    logger.info("[update_server_software] geting updates")
     repo.remotes.origin.pull()
+    logger.info("[update_server_software] restarting the service")
     subprocess.check_output(["sudo", "service", "nabucodonosor", "restart"])
 ###############################################################################
 ############################# MANAGE WEB REQ/RESP #############################
