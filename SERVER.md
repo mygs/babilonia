@@ -53,8 +53,14 @@ sudo apt-get install dos2unix
 sudo apt-get install python3-mysqldb
 ```
 ### replicating server
-sudo dd bs=4M if=/dev/sdc of=/home/msaito/Downloads/babilonia.img
-
+1) sudo dd bs=4M if=/dev/sdc of=/home/msaito/Downloads/babilonia.img
+2) (ubuntu host) Make Startup Disk
+3) gzip babilonia.img
+4) connect via ssh
+4.1) sudo service nabucodonosor stop
+4.2) sudo service noip2 stop
+4.3) sudo rm /usr/local/etc/no-ip2.conf
+4.4) sudo noip2 -C
 
 ## TOOLS
 Install the following tools in $BABILONIA_LIBS
