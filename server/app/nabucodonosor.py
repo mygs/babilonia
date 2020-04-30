@@ -31,6 +31,10 @@ import RPi.GPIO as gpio
 #
 # o V G S o o o o o o o o o o o o o o o o
 # o o o o o o o o o o o o o o o o o o o o
+# equivalent ...
+#echo "14" > /sys/class/gpio/export
+#echo "out" > /sys/class/gpio/gpio14/direction
+#echo 0 > /sys/class/gpio/gpio14/value
 #
 gpio.setmode(gpio.BOARD)
 gpio.setwarnings(False)
