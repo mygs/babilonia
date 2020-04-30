@@ -36,10 +36,10 @@ import RPi.GPIO as gpio
 #echo "out" > /sys/class/gpio/gpio14/direction
 #echo 0 > /sys/class/gpio/gpio14/value
 #
-gpio.setmode(gpio.BOARD)
-gpio.setwarnings(False)
-PIN_PUMP_MANAGER=8
-gpio.setup(PIN_PUMP_MANAGER, gpio.OUT, initial=gpio.LOW)
+#gpio.setmode(gpio.BOARD)
+#gpio.setwarnings(False)
+#PIN_PUMP_MANAGER=8
+#gpio.setup(PIN_PUMP_MANAGER, gpio.OUT, initial=gpio.LOW)
 ###### create console handler and set level to debug
 SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR=os.path.join(SERVER_HOME, '../log')
