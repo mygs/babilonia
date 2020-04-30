@@ -45,6 +45,29 @@ OR
 sudo pip3 install paho-mqtt sqlalchemy flask-sqlalchemy flask-mysql flask-socketio simplejson pandas flask-mqtt Pillow Flask-QRcode Flask-Assets jsmin cssmin
 pathlib python-git gitpython
 ```
+### raspberry pi GPIO
+```
+sudo pip3 install RPi.GPIO
+sudo groupadd gpio
+sudo usermod -a -G gpio msaito
+sudo chown root.gpio /dev/gpiomem
+sudo chmod g+rw /dev/gpiomem
+$ cat /etc/udev/rules.d/71-gpio.rules
+KERNEL=="gpiomem", NAME="%k", GROUP="gpio", MODE="0660
+
+sudo add-apt-repository ppa:ubuntu-raspi2/ppa
+sudo apt-get update
+sudo apt-get install libraspberrypi-bin libraspberrypi-dev
+sudo apt-get install libraspberrypi-bin-nonfree
+
+
+echo "15" > /sys/class/gpio/export
+echo "out" > /sys/class/gpio/gpio8/direction
+echo 0 > /sys/class/gpio/gpio8/value
+```
+
+
+
 
 ### middlwares & tools
 ```

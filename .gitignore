@@ -24,3 +24,4 @@ assets
 *.pdf
 # Jupyter stuff
 *.ipynb_checkpoints
+*Teste.ipynb
