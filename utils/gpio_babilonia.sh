@@ -1,8 +1,8 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          gpio_babilonia
-# Required-Start:    $local_fs $network $named $time $syslog
-# Required-Stop:     $local_fs $network $named $time $syslog
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Description:       Initialize GPIO pins for the project
