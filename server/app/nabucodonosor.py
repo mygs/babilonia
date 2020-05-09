@@ -22,8 +22,6 @@ from flask_assets import Environment, Bundle
 from sqlalchemy import func, and_
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_caching import Cache
-import RPi.GPIO as gpio
-
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
@@ -32,10 +30,12 @@ import RPi.GPIO as gpio
 # o V G S o o o o o o o o o o o o o o o o
 # o o o o o o o o o o o o o o o o o o o o
 #
-gpio.setmode(gpio.BOARD)
-gpio.setwarnings(False)
-PIN_PUMP_MANAGER=8
-gpio.setup(PIN_PUMP_MANAGER, gpio.OUT, initial=gpio.LOW)
+if os.uname()[4].startswith("arm"):
+    import RPi.GPIO as gpio
+    gpio.setmode(gpio.BOARD)
+    gpio.setwarnings(False)
+    PIN_PUMP_MANAGER=8
+    gpio.setup(PIN_PUMP_MANAGER, gpio.OUT, initial=gpio.LOW)
 ###### create console handler and set level to debug
 SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR=os.path.join(SERVER_HOME, '../log')
@@ -149,7 +149,11 @@ def login():
             error = 'Invalid Credentials. Please try again.'
         else:
             login_user(registered_user)
-            return redirect('/')
+            browser = request.headers.get('User-Agent')
+            if "Lynx" in browser:
+                return redirect('/about')
+            else:
+                return redirect('/')
     return render_template('login.html', error=error)
 
 
