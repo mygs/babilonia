@@ -4,6 +4,8 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import certifi, re, json, requests
 import pandas as pd
+from Models import *
+from sqlalchemy import create_engine
 
 
 def ceagesp_dates(url):
@@ -17,15 +19,18 @@ def ceagesp_dates(url):
     return group['VERDURAS']
 
 def ceagesp():
+    source = "CEAGESP"
     url = "http://www.ceagesp.gov.br/entrepostos/servicos/cotacoes/#cotacao"
-    data = {"cot_grupo": "VERDURAS", "cot_data": ceagesp_dates(url)[0]}
+    datas =  ceagesp_dates(url)
+    print(datas)
+    data = {"cot_grupo": "VERDURAS", "cot_data":datas[0]}
     soup = BeautifulSoup(requests.post(url, data).text, 'html.parser')
 
     table_html = soup.find('table',{"class": "contacao_lista" })
     if table_html is not None:
         table_data = [[cell.text.strip() for cell in row("td")]
                                  for row in table_html("tr")]
-        df = pd.DataFrame(table_data[2:], columns=['Produto','Classificacao','Uni|Peso','Menor','Comun','Maior','Quilo'])
+        df = pd.DataFrame(table_data[2:], columns=['Produto','Classificacao','Unidade','Menor','Comun','Maior','Quilo'])
         print (df.to_json(orient='records'))
     else:
         print("None!!!!!")
