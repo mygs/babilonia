@@ -62,9 +62,10 @@ def stmarche():
     product_list = []
     for product in products:
         product_list.append(json.loads(product['data-json']))
-    price = Prices(SOURCE="STMARCHE", DATE=today, DATA= json.dumps(product_list) )
+
+    price = Prices(SOURCE="STMARCHE", DATE=today, DATA= json.dumps(product_list, ensure_ascii=False) )
     session.merge(price)
     session.commit()
     print (price.toJson())
 
-#stmarche()
+stmarche()
