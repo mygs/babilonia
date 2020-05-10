@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #sudo crontab -e
-#00 01 * * * /babilonia/explorer/archeologist.py
+#00 01 * * * /github/babilonia/explorer/Archeologist.py
 
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
