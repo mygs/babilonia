@@ -83,7 +83,7 @@ def stmarche():
 
 now = datetime.datetime.now()
 logger.info("[ARCHEOLOGIST] Starting at %s",now.strftime('%Y-%m-%d %H:%M:%S'))
-#ceagesp()
-#stmarche()
+ceagesp()
+stmarche()
 now = datetime.datetime.now()
 logger.info("[ARCHEOLOGIST] Ending at %s",now.strftime('%Y-%m-%d %H:%M:%S'))
