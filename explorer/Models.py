@@ -1,13 +1,18 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from flask_sqlalchemy import SQLAlchemy
-DB = SQLAlchemy()
+import sqlalchemy
+import json
+from sqlalchemy.ext.declarative import declarative_base
 
-class Prices(DB.Model):
+
+# Define and create the table
+Base = declarative_base()
+
+class Prices(Base):
     __tablename__ = 'PRICES'
-    SOURCE = DB.Column(DB.String(32), primary_key=True)
-    DATE = DB.Column(DB.DATE, primary_key=True)
-    DATA = DB.Column(DB.JSON, nullable=True)
+    SOURCE = sqlalchemy.Column(sqlalchemy.String(16), primary_key=True)
+    DATE = sqlalchemy.Column(sqlalchemy.DATE, primary_key=True)
+    DATA = sqlalchemy.Column(sqlalchemy.JSON, nullable=True)
     def __init__(self, SOURCE, DATE, DATA):
         self.SOURCE = SOURCE
         self.DATE = DATE
