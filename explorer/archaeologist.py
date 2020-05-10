@@ -53,11 +53,18 @@ def ceagesp():
 #ceagesp()
 
 def stmarche():
+    now = datetime.datetime.now()
+    today = now.strftime('%Y-%m-%d')
     html = urlopen(URL["STMARCHE"], cafile=certifi.where())
     pattern = re.compile('.*product-mini.*')
     soup = BeautifulSoup(html, 'html.parser')
     products = soup.findAll('div',pattern)
+    product_list = []
     for product in products:
-        pjson = json.loads(product['data-json'])
-        print(pjson)
+        product_list.append(json.loads(product['data-json']))
+    price = Prices(SOURCE="STMARCHE", DATE=today, DATA= json.dumps(product_list) )
+    session.merge(price)
+    session.commit()
+    print (price.toJson())
+
 #stmarche()
