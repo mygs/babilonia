@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #sudo crontab -e
-#00 01 * * * /github/babilonia/explorer/Archeologist.py
+#00 01 * * * /github/babilonia/explorer/Archaeologist.py
 
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -61,7 +61,7 @@ def ceagesp():
             price = Prices(SOURCE="CEAGESP", DATE=date, DATA= df.to_json(orient='records') )
             session.merge(price)
             session.commit()
-            logger.debug("[CEAGESP] %s",price.toJson())
+            logger.debug("[CEAGESP] %s",price)
 
 
 def stmarche():
@@ -77,7 +77,7 @@ def stmarche():
     price = Prices(SOURCE="STMARCHE", DATE=today, DATA= json.dumps(product_list, ensure_ascii=False) )
     session.merge(price)
     session.commit()
-    logger.debug("[STMARCHE] %s",price.toJson())
+    logger.debug("[STMARCHE] %s",price)
 
 
 
