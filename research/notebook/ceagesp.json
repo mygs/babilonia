@@ -1,0 +1,177 @@
+{
+  "ACELGA":{
+    "ESPECIAL":{"unit":"ENG","quilo":12},
+    "EXTRA":{"unit":"ENG","quilo":12},
+    "PRIMEIRA":{"unit":"ENG","quilo":12}
+  },
+  "AGRIAO":{
+    "ESPECIAL":{"unit":"ENG","quilo":12},
+    "EXTRA":{"unit":"ENG","quilo":12},
+    "HIDROPONICO":{"unit":"ENG","quilo":4},
+    "PRIMEIRA":{"unit":"ENG","quilo":12}
+  },
+  "ALFACE AMERICANA":{
+    "ESPECIAL":{"unit":"ENG","quilo":10},
+    "EXTRA":{"unit":"ENG","quilo":10},
+    "PRIMEIRA":{"unit":"ENG","quilo":10}
+  },
+  "ALFACE CRESPA":{
+    "ESPECIAL":{"unit":"ENG","quilo":7},
+    "EXTRA":{"unit":"ENG","quilo":7},
+    "HIDROPONICO":{"unit":"ENG","quilo":4},
+    "PRIMEIRA":{"unit":"ENG","quilo":7}
+  },
+  "ALFACE LISA":{
+    "ESPECIAL":{"unit":"ENG","quilo":8},
+    "EXTRA":{"unit":"ENG","quilo":8},
+    "HIDROPONICO":{"unit":"ENG","quilo":4},
+    "PRIMEIRA":{"unit":"ENG","quilo":8}
+  },
+  "ALFACE MIMOSA":{
+    "HIDROPONICO":{"unit":"ENG","quilo":4}
+  },
+  "ALFACE ROMANA":{
+    "-":{"unit":"ENG","quilo":8}
+  },
+  "ALHO PORRO":{
+    "ESPECIAL":{"unit":"DZMC","quilo":2},
+    "EXTRA":{"unit":"DZMC","quilo":2},
+    "PRIMEIRA":{"unit":"DZMC","quilo":2}
+  },
+  "ALMEIRAO":{
+    "ESPECIAL":{"unit":"DZMC","quilo":6},
+    "EXTRA":{"unit":"DZMC","quilo":6},
+    "PRIMEIRA":{"unit":"DZMC","quilo":6}
+  },
+  "ALMEIRAO PAO DE ACUCAR":{
+    "ESPECIAL":{"unit":"DZMC","quilo":12},
+    "EXTRA":{"unit":"DZMC","quilo":12},
+    "PRIMEIRA":{"unit":"DZMC","quilo":12}
+  },
+  "ASPARGO":{
+    "-":{"unit":"MC","quilo":0.5}
+  },
+  "BETERRABA C/FOL":{
+    "ESPECIAL":{"unit":"ENG","quilo":20},
+    "EXTRA":{"unit":"ENG","quilo":20},
+    "PRIMEIRA":{"unit":"ENG","quilo":20}
+  },
+  "BROCOLOS":{
+    "ESPECIAL":{"unit":"DZMC","quilo":15},
+    "EXTRA":{"unit":"DZMC","quilo":15}
+  },
+  "BROCOLOS NINJA":{
+    "-":{"unit":"ENG","quilo":8}
+  },
+  "CATALONHA":{
+    "-":{"unit":"DZMC","quilo":6}
+  },
+  "CEBOLINHA":{
+    "ESPECIAL":{"unit":"MC","quilo":1.2},
+    "EXTRA":{"unit":"MC","quilo":1.35}
+  },
+  "CENOURA C/FOLHA":{
+    "ESPECIAL":{"unit":"ENG","quilo":20},
+    "EXTRA":{"unit":"ENG","quilo":20},
+    "PRIMEIRA":{"unit":"ENG","quilo":20}
+  },
+  "CHICORIA":{
+    "-":{"unit":"DZMC","quilo":6}
+  },
+  "COENTRO":{
+    "ESPECIAL":{"unit":"DZMC","quilo":6},
+    "EXTRA":{"unit":"DZMC","quilo":6}
+  },
+  "COGUMELO PARIS":{
+    "-":{"unit":"PCT","quilo":0.25}
+  },
+  "COGUMELO SHIMEJI":{
+    "-":{"unit":"PCT","quilo":0.2}
+  },
+  "COGUMELO SHITAKE":{
+    "-":{"unit":"PCT","quilo":0.2}
+  },
+  "COUVE":{
+    "ESPECIAL":{"unit":"DZMC","quilo":6},
+    "EXTRA":{"unit":"DZMC","quilo":6},
+    "PRIMEIRA":{"unit":"DZMC","quilo":6}
+  },
+  "COUVE BRUXELAS":{
+    "EXTRA":{"unit":"PCT","quilo":0.25}
+  },
+  "COUVE FLOR":{
+    "ESPECIAL":{"unit":"ENG","quilo":8},
+    "EXTRA":{"unit":"ENG","quilo":8},
+    "PRIMEIRA":{"unit":"ENG","quilo":8}
+  },
+  "ERVA DOCE":{
+    "ESPECIAL":{"unit":"DZMC","quilo":8},
+    "EXTRA":{"unit":"DZMC","quilo":8},
+    "PRIMEIRA":{"unit":"DZMC","quilo":8}
+  },
+  "ESCAROLA":{
+    "ESPECIAL":{"unit":"ENG","quilo":8},
+    "EXTRA":{"unit":"ENG","quilo":8},
+    "PRIMEIRA":{"unit":"ENG","quilo":8}
+  },
+  "ESPINAFRE":{
+    "ESPECIAL":{"unit":"DZMC","quilo":6},
+    "EXTRA":{"unit":"DZMC","quilo":6},
+    "PRIMEIRA":{"unit":"DZMC","quilo":6}
+  },
+  "HORTELA":{
+    "-":{"unit":"MC","quilo":0.15}
+  },
+  "LOURO":{
+    "-":{"unit":"MC","quilo":0.2}
+  },
+  "MANJERICÇO":{
+    "-":{"unit":"MC","quilo":0.15}
+  },
+  "MILHO VERDE":{
+    "-":{"unit":"BD","quilo":0.7},
+    "ESPECIAL":{"unit":"KG","quilo":1},
+    "EXTRA":{"unit":"KG","quilo":1}
+  },
+  "MOIASHI":{
+    "-":{"unit":"PCT","quilo":0.5}
+  },
+  "MOSTARDA":{
+    "-":{"unit":"DZMC","quilo":6}
+  },
+  "NABO":{
+    "ESPECIAL":{"unit":"MC","quilo":3},
+    "EXTRA":{"unit":"MC","quilo":3},
+    "PRIMEIRA":{"unit":"MC","quilo":3}
+  },
+  "OREGANO":{
+    "-":{"unit":"MC","quilo":0.15}
+  },
+  "PALMITO PUPUNHA":{
+    "-":{"unit":"PC","quilo":2.5}
+  },
+  "RABANETE":{
+    "ESPECIAL":{"unit":"DZMC","quilo":10},
+    "EXTRA":{"unit":"DZMC","quilo":10},
+    "PRIMEIRA":{"unit":"DZMC","quilo":10}
+  },
+  "REPOLHO LISO":{
+    "EXTRA":{"unit":"ENG","quilo":25}
+  },
+  "REPOLHO ROXO":{
+    "EXTRA":{"unit":"ENG","quilo":25}
+  },
+  "RUCULA":{
+    "-":{"unit":"DZMC","quilo":6},
+    "HIDROPONICA":{"unit":"ENG","quilo":5}
+  },
+  "SALSA":{
+    "-":{"unit":"MC","quilo":2.5}
+
+  },
+  "SALSAO BRANCO/VERDE":{
+    "ESPECIAL":{"unit":"DZMC","quilo":10},
+    "EXTRA":{"unit":"DZMC","quilo":10},
+    "PRIMEIRA":{"unit":"DZMC","quilo":10}
+  }
+}
