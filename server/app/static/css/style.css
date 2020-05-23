@@ -171,21 +171,6 @@ table#moisture {
   font-weight: bold;
   color: white;
 }
-.moisture-status-offline {
-  color: grey !important;
-}
-.moisture-status-nosoil {
-  color: brown !important;
-}
-.moisture-status-dry {
-  color: red !important;
-}
-.moisture-status-regular {
-  color: yellow !important;
-}
-.moisture-status-wet {
-  color: blue !important;
-}
 
 /* END OF MOISTURE SECTION STUFF */
 

@@ -38,19 +38,15 @@ $(document).ready(function() {
         var sma = Cookies.get();
         for(var idx = 0 ; idx < 8 ; idx++){
           var field = $('#mux_field_'+idx+'_'+node_id);
-          field.removeClass(function (index, css) {
-            return (css.match (/\bmoisture-status-\S+/g) || []).join(' ');
-          });
           var level = capacitivemoisture['MUX'+idx];
-          level
           if(level <= sma.MUX_PORT_THRESHOLD_OFFLINE){
-              field.addClass('moisture-status-offline');
-          } else if(level > sma.MUX_PORT_THRESHOLD_OFFLINE && level <= sma.MUX_PORT_THRESHOLD_WET){
-              field.addClass('moisture-status-wet');
-          } else if(level > sma.MUX_PORT_THRESHOLD_WET && level < sma.MUX_PORT_THRESHOLD_NOSOIL){
-              field.addClass('moisture-status-dry');
+              field.css('color', 'rgb(128,128,128)');
+          } else if(level > sma.MUX_PORT_THRESHOLD_OFFLINE && level < sma.MUX_PORT_THRESHOLD_NOSOIL){
+              var dry_level = Math.round(255 * (level-sma.MUX_PORT_THRESHOLD_OFFLINE)/sma.MUX_PORT_THRESHOLD_SCALE);
+              var wet_level = 255 - dry_level;
+              field.css('color', 'rgb('+dry_level+',0,'+wet_level+')');
           } else if(level >= sma.MUX_PORT_THRESHOLD_NOSOIL){
-              field.addClass('moisture-status-nosoil');
+              field.css('color', 'rgb(0,0,0)');
           }
           $('#mux_value_'+idx+'_'+node_id).html(level);
         }

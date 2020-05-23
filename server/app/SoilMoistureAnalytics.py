@@ -17,6 +17,8 @@ class SoilMoistureAnalytics:
         self.OFFLINE = defaults["OFFLINE"]
         self.WET = defaults["WET"]
         self.NOSOIL = defaults["NOSOIL"]
+        self.SCALE = int(self.NOSOIL - self.OFFLINE)
+
 
     def gui_noise_filter(self, node_id, timestamp, moisture):
         cache_entry = self.cache.get(node_id)
@@ -44,13 +46,13 @@ class SoilMoistureAnalytics:
         #self.logger.debug("[SoilMoistureAnalytics] %s", analytics.data())
         #TODO: put some brain in here
         if level <= self.OFFLINE:
-            return "moisture-status-offline"
-        elif level > self.OFFLINE and level <= self.WET:
-            return "moisture-status-wet"
-        elif level > self.WET and level < self.NOSOIL:
-            return "moisture-status-dry"
+            return "rgb(128,128,128)" #grey
+        elif level > self.OFFLINE and level < self.NOSOIL:
+            dry_level = int(255 * (level-self.OFFLINE)/self.SCALE)
+            wet_level = 255 - dry_level
+            return "rgb({},0,{})".format(dry_level,wet_level)
         elif level >= self.NOSOIL:
-            return "moisture-status-nosoil"
+            return "rgb(0,0,0)" # black
 
     def feedback_online_process(self, feedback):
 
@@ -84,5 +86,6 @@ class SoilMoistureAnalytics:
         return {
             'MUX_PORT_THRESHOLD_OFFLINE':self.OFFLINE,
             'MUX_PORT_THRESHOLD_WET':self.WET,
+            'MUX_PORT_THRESHOLD_SCALE':self.SCALE,
             'MUX_PORT_THRESHOLD_NOSOIL':self.NOSOIL
             }
