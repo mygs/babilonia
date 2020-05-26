@@ -85,10 +85,14 @@ def iea():
     now = datetime.datetime.now()
     today = now.strftime('%Y-%m-%d')
     html = urlopen(URL["IEA_SP"])
+    soup = BeautifulSoup(html, 'html.parser')
+
+    #"__VIEWSTATE"
+    #"__EVENTVALIDATION"
     data = {          "chkTodos": "on",
             "cmbPeriodo_Inicial": "2020/ABR",
               "cmbPeriodo_Final": "2020/ABR"}
-    soup = BeautifulSoup(requests.post(URL["IEA_SP"], data).text, 'html.parser')
+    #soup = BeautifulSoup(requests.post(URL["IEA_SP"], data).text, 'html.parser')
     print(soup)
 
 
