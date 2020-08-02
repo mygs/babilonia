@@ -197,7 +197,7 @@ def get_modules_data(id):
 @login_required
 def index():
     latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LASTEST_BEAT')).all()
-    modules = get_modules_data().all()
+    modules = get_modules_data(None).all()
     weather = dashboard.weather_currently()
     raspberrypi = dashboard.raspberrypi()
     nodes = dashboard.nodes(latest_beat)
