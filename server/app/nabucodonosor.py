@@ -173,15 +173,20 @@ def page_not_found(e):
 def page_not_found(e):
     return redirect('/login')
 
-def get_modules_data():
+def get_modules_data(id):
     with app.app_context():
         time_start = dt.datetime.now()
-        latest = DB.session.query(OasisData.NODE_ID,
-            func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).filter(
-            OasisData.DATA['DATA']['NODE'].isnot(None)).group_by(
-            OasisData.NODE_ID).subquery('t2')
-        modules = DB.session.query(OasisData).join(
-            latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
+        if id is None:
+            latest = DB.session.query(OasisData.NODE_ID,
+                func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).filter(
+                OasisData.DATA['DATA']['NODE'].isnot(None)).group_by(
+                OasisData.NODE_ID).subquery('t2')
+            modules = DB.session.query(OasisData).join(
+                latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
+        else:
+            modules = DB.session.query(OasisData).filter(OasisData.NODE_ID == id).order_by(OasisData.TIMESTAMP.desc()).limit(1)
+
+
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
         logger.debug("[database] call database for index page took %s secs",elapsedTime.total_seconds())
@@ -209,14 +214,21 @@ def index():
         resp.set_cookie(key, str(value))
     return resp
 
-@app.route('/module')
-@cache.cached()
+@app.route('/module', methods=['GET'])
+@cache.cached(query_string=True)
 @login_required
 def module():
-    resp = make_response(render_template('module.html',modules=get_modules_data()))
+    if 'id' in request.args:
+        #example:  http://localhost:8181/module?id=oasis-39732c
+        id = request.args['id']
+    else:
+        id = None
+    resp = make_response(render_template('module.html',modules=get_modules_data(id)))
     for key,value in analytics.default_param().items():
         resp.set_cookie(key, str(value))
     return resp
+
+
 
 @app.route('/configuration', methods=['POST'])
 @login_required

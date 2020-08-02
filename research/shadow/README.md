@@ -15,7 +15,16 @@ https://stackoverflow.com/questions/35096133/converting-shapefile-to-raster
 ```
 library(raster)
 library(rgdal)
-p <- shapefile('/home/msaito/Downloads/BOX.shp')
+p <- shapefile('/home/msaito/github/babilonia/research/shadow/oasis.shp')
 p
 plot(p)
+```
+
+
+#### SHP to RASTER
+https://github.com/tylermorganwall/rayshader/
+```
+library(rayshader)
+
+
 ```
