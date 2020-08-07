@@ -218,12 +218,11 @@ def index():
 @cache.cached(query_string=True)
 @login_required
 def module():
+    id = None
     if 'id' in request.args:
         #example:  http://localhost:8181/module?id=oasis-39732c
         id = request.args['id']
-    else:
-        id = None
-    resp = make_response(render_template('module.html',modules=get_modules_data(id)))
+    resp = make_response(render_template('module.html',modules=get_modules_data(id), single=id))
     for key,value in analytics.default_param().items():
         resp.set_cookie(key, str(value))
     return resp

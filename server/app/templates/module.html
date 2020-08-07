@@ -3,9 +3,13 @@
 <div class="container" id="modulegrid">
   <div class="row">
     <div class="col-sm-12">
+      {% if single is none %}
       <h2 id="index">Farm</h2>
       <button class="btn btn-sm btn-danger btn-header btn-refresh-all"><i class="fa fa-refresh"></i></button>
       <button class="btn btn-sm btn-danger btn-header btn-water-all"><i class="wi wi-sprinkle"></i></button>
+      {% else %}
+      <h2 id="index">Oasis</h2>
+      {% endif %}
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           {%  set id = module.NODE_ID %}
