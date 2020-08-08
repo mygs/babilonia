@@ -22,6 +22,11 @@ from flask_assets import Environment, Bundle
 from sqlalchemy import func, and_
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_caching import Cache
+
+
+
+from about import about_system
+
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
@@ -189,7 +194,7 @@ def get_modules_data(id):
 
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
-        logger.debug("[database] call database for index page took %s secs",elapsedTime.total_seconds())
+        logger.debug("[database] call database for module page took %s secs",elapsedTime.total_seconds())
         return modules
 
 @app.route('/')
@@ -324,7 +329,7 @@ def firmware():
             latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
-        logger.debug("[database] call database for firware page took %s secs",elapsedTime.total_seconds())
+        logger.debug("[database] call database for firmware page took %s secs",elapsedTime.total_seconds())
 
         return render_template('firmware/firmware.html', modules=modules)
 
@@ -352,10 +357,7 @@ def progress():
     return Response(generate(), mimetype= 'text/event-stream')
 
 
-@app.route('/about')
-@login_required
-def about():
-    return render_template('about.html')
+app.register_blueprint(about_system)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
