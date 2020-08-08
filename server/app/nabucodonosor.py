@@ -172,7 +172,7 @@ def logout():
 # handle page not found
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('misc/404.html'), 404
 # handle login failed
 @app.errorhandler(401)
 def page_not_found(e):
