@@ -1,0 +1,55 @@
+<div class="modal fade" id="plantModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog  modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Adicionar Nova Planta</h4>
+      </div>
+      <div class="modal-body">
+        <div id="alertModal"></div>
+        <form id="plantModalForm" name="plantModalForm">
+          <!--<input type="hidden" name="id" id="id" value=""> -->
+
+          <div class="form-group row">
+            <label for="nome" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Nome</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="nome" id="nome">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="tipo" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Tipo</label>
+            <!-- http://www.esalq.usp.br/departamentos/lpv/lpv0480/25-02%20Classificacao%20Olericultura.pdf -->
+            <div class="col-sm-9">
+              <select class="form-control" name="tipo" id="tipo">
+                <option value="">Escolha...</option>
+                <option value="Raízes">Raízes</option>
+                <option value="Tubérculos">Tubérculos</option>
+                <option value="Rizomas">Rizomas</option>
+                <option value="Folhas">Folhas</option>
+                <option value="Frutos">Frutos</option>
+                <option value="Talos">Talos</option>
+                <option value="Flores">Flores</option>
+                <option value="Bulbos">Bulbos</option>
+                <option value="Sementes">Sementes</option>
+                <option value="Cogumelos">Cogumelos</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="supplier" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Fornecedor</label>
+            <div class="col-sm-9">
+              <select class="form-control" name="plant-supplier" id="plant-supplier">
+                {% for supplier in suppliers %}
+                  <option value="{{supplier[0]}}">{{supplier[1]}} ({{supplier[2]}})</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="saveplant" onclick="saveplant()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>

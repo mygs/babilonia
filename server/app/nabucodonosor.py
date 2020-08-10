@@ -26,6 +26,7 @@ from flask_caching import Cache
 
 
 from about import about_system
+from management import management
 
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
@@ -81,10 +82,10 @@ logger.info("NODE_HOME: %s",NODE_HOME)
 cache = Cache(config=cfg['CACHE'])
 cache.init_app(app)
 
-dashboard = Dashboard(cfg)
-analytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
 mqtt = Mqtt(app)
 DB.init_app(app)
+dashboard = Dashboard(cfg)
+analytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
 socketio = SocketIO(app)
 assets = Environment(app)
 login_manager = LoginManager()
@@ -358,6 +359,7 @@ def progress():
 
 
 app.register_blueprint(about_system)
+app.register_blueprint(management)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():

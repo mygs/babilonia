@@ -1,0 +1,57 @@
+<div class="modal fade" id="moduleModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog  modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Adicionar Novo Módulo</h4>
+      </div>
+      <div class="modal-body">
+        <div id="alertModal"></div>
+        <form id="moduleModalForm" name="moduleModalForm">
+          <!--<input type="hidden" name="id" id="id" value=""> -->
+
+          <div class="form-group row">
+            <label for="nome" class="supplier-cfg-lbl control-label col-form-label col-sm-5">Identificador</label>
+            <div class="col-sm-7">
+              <input type="text" class="form-control" name="nome" id="nome">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="tipo" class="supplier-cfg-lbl control-label col-form-label col-sm-5">Tipo</label>
+            <div class="col-sm-7">
+              <select class="form-control" name="tipo" id="tipo">
+                <option value="">Escolha...</option>
+                <option value="Perfil Móvel">Perfil Móvel</option>
+                <option value="Perfil Fixo">Perfil Fixo</option>
+                <option value="Vaso">Vaso</option>
+                <option value="Sementeira">Sementeira</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="oasis" class="supplier-cfg-lbl control-label col-form-label col-sm-5">Oasis</label>
+            <div class="col-sm-7">
+              <select class="form-control" name="oasis" id="oasis">
+                {% for o in oasis %}
+                  <option value="{{o[0]}}">{{o[1]}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="data" class="supplier-cfg-lbl control-label col-form-label col-sm-5">Data Fabricação</label>
+            <div class="col-sm-7">
+              <div class="input-group date" id="datapicker">
+                <input type="text" class="form-control" name="data" id="data">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="savemodule" onclick="savemodule()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
