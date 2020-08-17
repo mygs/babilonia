@@ -1,7 +1,13 @@
 from datetime import date
-from flask import Blueprint, render_template
+import simplejson as json
+from werkzeug.local import LocalProxy
+from flask import current_app, Blueprint, render_template,request, abort
+from sqlalchemy import exc
 from flask_login import login_required
-from Models import DB, Crop
+from Models import DB, Crop, Supplier
+
+logger = LocalProxy(lambda: current_app.logger)
+
 
 management = Blueprint('management', __name__,
                         template_folder='templates/management')
@@ -27,16 +33,21 @@ def supplier():
     suppliers = DB.session.query(Supplier)
     return render_template('supplier.html', suppliers=suppliers)
 
-@management.route('/management')
-@login_required
-def index():
-    crops = DB.session.query(Crop)
-    #modules = database.retrieve_modules()
-    #plants = database.retrieve_plants()
-    #return render_template('management.html', crops=crops, modules=modules, plants=plants)
-    return render_template('management.html', crops=crops)
+@management.route('/management/save-supplier', methods=['POST'])
+def saveSupplier():
+    supplier = Supplier(request.get_json())
+    logger.info("[SAVE SUPPLIER] %s",request.get_json())
 
-
+    try:
+        DB.session.add(supplier)
+        DB.session.commit()
+    except exc.SQLAlchemyError as e:
+        #logger.error("[SAVE SUPPLIER] >>>>>>>>>>>>>>>>>> %s",e)
+        #return json.dumps({ 'message':'XXXXXXXXXXXXXXXXXX'}), 400
+        return abort(400, json.dumps({ 'message':'XXXXXXXXXXXXXXXXXX'}))
+    else:
+        logger.info("[SAVE SUPPLIER] %s",supplier)
+        return  json.dumps({ 'message':'Supplier was save successfully'}), 200
 
 @management.route('/management/crop-module', methods=['GET'])
 @login_required

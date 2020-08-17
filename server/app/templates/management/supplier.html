@@ -14,15 +14,19 @@
               <th>Email</th>
               <th>City</th>
               <th>State</th>
+              <th>Notes</th>
             </tr>
           </thead>
           <tbody>
           {% for supplier in suppliers %}
           <tr>
-            <td>{{supplier[1]}}</td>
-            <td>{{supplier[2]}}</td>
-            <td>{{supplier[3]}}</td>
-            <td>{{supplier[4]}}</td>
+            <td>{{supplier.NAME}}</td>
+            <td>{{supplier.TYPE}}</td>
+            <td>{{supplier.PHONE}}</td>
+            <td>{{supplier.EMAIL}}</td>
+            <td>{{supplier.CITY}}</td>
+            <td>{{supplier.STATE}}</td>
+            <td>{{supplier.NOTES}}</td>
           </tr>
           {% endfor %}
           </tbody>

@@ -102,7 +102,18 @@ class Crop(Base):
 
 class Supplier(Base):
     __tablename__ = 'SUPPLIER'
-    CODE = DB.Column(DB.Integer, primary_key=True)
-    DATE = DB.Column(DB.DATE, nullable=False)
-    STATUS = DB.Column(DB.String(16), nullable=False)
+    NAME = DB.Column(DB.String(64), primary_key=True)
+    TYPE = DB.Column(DB.String(32), nullable=True)
+    PHONE = DB.Column(DB.String(16), nullable=True)
+    EMAIL = DB.Column(DB.String(32), nullable=True)
+    CITY = DB.Column(DB.String(32), nullable=True)
+    STATE = DB.Column(DB.String(64), nullable=True)
     NOTES = DB.Column(DB.String(256), nullable=True)
+    def __init__(self, json):
+        self.NAME = json['NAME']
+        self.TYPE = json['TYPE']
+        self.PHONE =json['PHONE']
+        self.EMAIL =json['EMAIL']
+        self.CITY = json['CITY']
+        self.STATE =json['STATE']
+        self.NOTES =json['NOTES']
