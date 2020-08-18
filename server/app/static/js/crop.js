@@ -1,5 +1,15 @@
 
-function cropModalReset() {
+function managementModalReset() {
+  // Supplier stuff
+  $('#NAME').val("");
+  $('#TYPE').val("");
+  $('#PHONE').val("");
+  $('#EMAIL').val("");
+  $('#CITY').val("");
+  $('#STATE').val("");
+  $('#NOTES').val("");
+
+  // Crop stuff
   $('#code').val("");
   $('#date').val("");
   $('#status').val("");
@@ -26,12 +36,12 @@ $("#cropModuleModal").on("hidden.bs.modal", function () {
 $("#cropModal").on("hidden.bs.modal", function () {
     $('#crop tr').removeClass("selected");
     $(".editButton").addClass("disabled")
-    cropModalReset();
+    managementModalReset();
 });
 
 
 function cropModal(data) {
-  cropModalReset();
+  managementModalReset();
   if (data == null){
     $("#crop-modal-title").html("Add New Production");
     $("#crop-modules-panel").hide();
@@ -224,102 +234,6 @@ function deletecropmodule(data) {
 };
 
 
-
-function regionCitySelector(state, selectedCity){
-  $.getJSON('/static/data/estados_cidades.json', function(data) {
-      var options_cidades = '';
-      $.each(data, function(key, val) {
-        if (val.sigla == state) {
-          $.each(val.cidades, function(key_city, val_city) {
-            options_cidades += '<option value="' + val_city + '">' + val_city + '</option>';
-          });
-        }
-      });
-      $("#CITY").html(options_cidades);
-      $("#CITY").val(selectedCity);
-  });
-};
-
-
-
-
-
-
-function regionSelector(){
-  $.getJSON('/static/data/estados_cidades.json', function(data) {
-    var items = [];
-    var options = '<option value="">Choose ...</option>';
-    $.each(data, function(key, val) {
-      options += '<option value="' + val.sigla + '">' + val.nome + '</option>';
-    });
-    $("#STATE").html(options);
-
-    $("#STATE").change(function() {
-
-      var options_cidades = '';
-      var state = "";
-
-      $("#STATE option:selected").each(function() {
-        state += $(this).val();
-      });
-
-        regionCitySelector(state);
-
-    }).change();
-
-  });
-};
-
-function supplierModal() {
-  $('#plantSupplierModal').modal('show')
-  regionSelector();
-}
-
-
-function saveSupplier() {
-  swal({
-    title: "Do you want to add a supplier?",
-    icon: "info",
-    showCancelButton: true,
-    confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirm",
-    cancelButtonText: "Cancel",
-    closeOnConfirm: false
-  }, function(isConfirm) {
-    if (isConfirm) {
-      var form = $('#supplierModalForm');
-      var request = {
-               "NAME": $('#NAME').val(),
-               "TYPE": $('#TYPE').val(),
-               "PHONE": $('#PHONE').val(),
-               "EMAIL": $('#EMAIL').val(),
-               "CITY": $('#CITY').val(),
-               "STATE": $('#STATE').val(),
-               "NOTES": $('#NOTES').val()
-            };
-      $.ajax({
-        url: '/management/save-supplier',
-        type: 'POST',
-        data: JSON.stringify(request),
-        contentType: 'application/json',
-        success: function(response) {
-          resp = JSON.parse(response);
-          swal("Sucess", resp.message, "success");
-          $("#saveSupplier").attr("disabled", "disabled");
-          location.reload();
-          //$('#supplier').DataTable().ajax.reload();
-        },
-        error: function(response) {
-          resp = JSON.parse(response);
-          swal("Error", resp.message, "error");
-        }
-      });
-    } else {
-      swal("You will not save new supplier!");
-    }
-  });
-};
-
 function plantModal() {
   $('#plantModal').modal('show');
 }
@@ -358,10 +272,80 @@ function saveplant() {
   });
 };
 
+
+//**********************************
+//*********  SUPPLIER  *************
+//**********************************
+function supplierModal(data) {
+  managementModalReset();
+  if (data == null){
+    $("#supplier-modal-title").html("Add New Supplier");
+    $('#saveSupplier').html("Save");
+    regionSelector();
+  }else{
+    var shortName = data[0].length > 10 ? jQuery.trim(data[0]).substring(0, 8).trim(this) + "...": data[0];
+    $("#supplier-modal-title").html("Edit Supplier <font color='red'><b>"+shortName+"</b></font>");
+    $('#NAME').val(data[0]);
+    $('#TYPE').val(data[1]);
+    $('#PHONE').val(data[2]);
+    $('#EMAIL').val(data[3]);
+    $('#STATE').val(data[5]);
+    regionCitySelector(data[5], data[4]);
+    $('#NOTES').val(data[6]);
+    $('#saveSupplier').html("Update");
+  }
+  $('#supplierModal').modal('show')
+}
+
+function saveSupplier() {
+  swal({
+    title: "Do you want to add a supplier?",
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
+    closeOnConfirm: false
+  }, function(isConfirm) {
+    if (isConfirm) {
+      var form = $('#supplierModalForm');
+      var request = {
+               "NAME": $('#NAME').val(),
+               "TYPE": $('#TYPE').val(),
+               "PHONE": $('#PHONE').val(),
+               "EMAIL": $('#EMAIL').val(),
+               "CITY": $('#CITY').val(),
+               "STATE": $('#STATE').val(),
+               "NOTES": $('#NOTES').val()
+            };
+      $.ajax({
+        url: '/management/save-supplier',
+        type: 'POST',
+        data: JSON.stringify(request),
+        contentType: 'application/json',
+        success: function(response) {
+          resp = JSON.parse(response);
+          swal("Sucess", resp.message, "success");
+          $("#saveSupplier").attr("disabled", "disabled");
+          location.reload();
+        },
+        error: function(response) {
+          resp = JSON.parse(response);
+          swal("Error", resp.message, "error");
+        }
+      });
+    } else {
+      swal("You will not save new supplier!");
+    }
+  });
+};
+
+//**********************************
+//******** HTML loaded *************
+//**********************************
 $(document).ready(function() {
-
-
-  var table = $('#crop').DataTable({
+  //***** CROP *****
+  $('#crop').DataTable({
     "bLengthChange": false,
     "info": false,
     "bPaginate": false, //hide pagination control
@@ -378,46 +362,47 @@ $(document).ready(function() {
       },{
         text: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
         className :"editButton",
+        titleAttr: 'Edit Production',
         extend: "selectedSingle",
         action: function (e, dt, bt, config) {
           cropModal( dt.row( { selected: true } ).data()); }
       }]
   });
-  //to align btns in mobile mode
-  $('#crop_wrapper > div.btn-group').removeClass('dt-buttons');
-
-  $('#crop tbody').on( 'click', 'tr', function () {
-    if ( $(this).hasClass('selected') ) {
-        $(this).removeClass('selected');
-    }
-    else {
-        table.$('tr.selected').removeClass('selected');
-        $(this).addClass('selected');
-    }
-  } );
+  //***** DATEPICKER *****
   $('#datapicker').datepicker({
     format: "yyyy-mm-dd",
     calendarWeeks: true,
     autoclose: true,
     todayHighlight: true
   });
-
+  //***** SUPPLIER *****
   $('#supplier').DataTable({
     "bLengthChange": false,
     "info": false,
     "bPaginate": false, //hide pagination control
+    "responsive": true,
     "dom": 'Bfrtip',
-    "buttons": [{
-      text: '<i class="fa fa-plus" aria-hidden="true"></i>',
-      titleAttr: 'Add Supplier',
-      action: function(e, dt, node, config) {
-          supplierModal()
-      }
-    }]
+    "select": {
+      style:    'os',
+      selector: 'td:first-child'
+    },
+    "buttons": [
+      {
+        text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+        titleAttr: 'Add Supplier',
+        action: function(e, dt, node, config) {supplierModal(null)}
+      },{
+        text: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+        className :"editButton",
+        titleAttr: 'Edit Supplier',
+        extend: "selectedSingle",
+        action: function (e, dt, bt, config) {
+          supplierModal( dt.row( { selected: true } ).data()); }
+      }]
   });
-
+  //***** GENERAL *****
   //to align btns in mobile mode
-  $('#supplier_wrapper > div.btn-group').removeClass('dt-buttons');
-
+  $('div.dataTables_wrapper > div.btn-group').removeClass('dt-buttons');
+  //Brazilian regions
   regionSelector();
 });

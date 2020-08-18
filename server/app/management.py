@@ -29,25 +29,18 @@ def module():
     return render_template('module.html')
 
 @management.route('/management/supplier')
+@login_required
 def supplier():
     suppliers = DB.session.query(Supplier)
     return render_template('supplier.html', suppliers=suppliers)
 
 @management.route('/management/save-supplier', methods=['POST'])
-def saveSupplier():
+@login_required
+def save_supplier():
     supplier = Supplier(request.get_json())
     logger.info("[SAVE SUPPLIER] %s",request.get_json())
-
-    try:
-        DB.session.add(supplier)
-        DB.session.commit()
-    except exc.SQLAlchemyError as e:
-        #logger.error("[SAVE SUPPLIER] >>>>>>>>>>>>>>>>>> %s",e)
-        #return json.dumps({ 'message':'XXXXXXXXXXXXXXXXXX'}), 400
-        return abort(400, json.dumps({ 'message':'XXXXXXXXXXXXXXXXXX'}))
-    else:
-        logger.info("[SAVE SUPPLIER] %s",supplier)
-        return  json.dumps({ 'message':'Supplier was save successfully'}), 200
+    DB.session.merge(supplier)
+    return  json.dumps({ 'message':'Supplier was save successfully'}), 200
 
 @management.route('/management/crop-module', methods=['GET'])
 @login_required
