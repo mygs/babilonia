@@ -28,9 +28,7 @@ function regionSelector(){
       $("#STATE option:selected").each(function() {
         state += $(this).val();
       });
-
       regionCitySelector(state);
-
     }).change();
 
   });

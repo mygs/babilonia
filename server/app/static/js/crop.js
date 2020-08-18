@@ -387,18 +387,26 @@ $(document).ready(function() {
       selector: 'td:first-child'
     },
     "buttons": [
-      {
-        text: '<i class="fa fa-plus" aria-hidden="true"></i>',
-        titleAttr: 'Add Supplier',
-        action: function(e, dt, node, config) {supplierModal(null)}
-      },{
-        text: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
-        className :"editButton",
-        titleAttr: 'Edit Supplier',
-        extend: "selectedSingle",
-        action: function (e, dt, bt, config) {
-          supplierModal( dt.row( { selected: true } ).data()); }
-      }]
+        {
+          text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+          titleAttr: 'Add Supplier',
+          action: function(e, dt, node, config) {supplierModal(null)}
+        },{
+          text: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+          className :"editButton",
+          titleAttr: 'Edit Supplier',
+          extend: "selectedSingle",
+          action: function (e, dt, bt, config) {
+            supplierModal( dt.row( { selected: true } ).data()); }
+        }],
+      "columnDefs": [
+        {
+          targets: [ 0,1,2,3,4,5,6 ],// ALL
+          render: function ( data, type, row ) {
+              var truncated = data.length > 16 ? data.substr(0, 16) + "...": data;
+              return truncated;
+            }
+        }]
   });
   //***** GENERAL *****
   //to align btns in mobile mode

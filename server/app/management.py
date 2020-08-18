@@ -7,8 +7,6 @@ from flask_login import login_required
 from Models import DB, Crop, Supplier
 
 logger = LocalProxy(lambda: current_app.logger)
-
-
 management = Blueprint('management', __name__,
                         template_folder='templates/management')
 
@@ -28,6 +26,16 @@ def module():
     #return render_template('module.html', modules=modules , oasis=oasis)
     return render_template('module.html')
 
+@management.route('/management/crop-module', methods=['GET'])
+@login_required
+def cropmodule():
+    code = request.args.get('code');
+    return database.retrive_crop_module(id)
+
+###############################################################################
+################################ SUPPLIER #####################################
+###############################################################################
+
 @management.route('/management/supplier')
 @login_required
 def supplier():
@@ -40,15 +48,11 @@ def save_supplier():
     supplier = Supplier(request.get_json())
     logger.info("[SAVE SUPPLIER] %s",request.get_json())
     DB.session.merge(supplier)
-    return  json.dumps({ 'message':'Supplier was save successfully'}), 200
+    return  json.dumps({ 'message':'Supplier was saved successfully'}), 200
 
-@management.route('/management/crop-module', methods=['GET'])
-@login_required
-def cropmodule():
-    code = request.args.get('code');
-    return database.retrive_crop_module(id)
-
-
+###############################################################################
+################################ GUI UTILS ####################################
+###############################################################################
 @management.context_processor
 def utility_processor():
     def crop_duration(value):
