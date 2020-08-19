@@ -84,7 +84,7 @@ cache.init_app(app)
 
 mqtt = Mqtt(app)
 DB.init_app(app)
-dashboard = Dashboard(cfg)
+dashboard = Dashboard(logger, cfg)
 analytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
 socketio = SocketIO(app)
 assets = Environment(app)
@@ -191,7 +191,6 @@ def get_modules_data(id):
                 latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
         else:
             modules = DB.session.query(OasisData).filter(OasisData.NODE_ID == id).order_by(OasisData.TIMESTAMP.desc()).limit(1)
-
 
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
