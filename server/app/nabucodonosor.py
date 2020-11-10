@@ -447,7 +447,7 @@ def handle_mqtt_connect(client, userdata, flags, rc):
     mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"])
 
 @mqtt.on_unsubscribe()
-def handle_unsubscribe(client, userdata, mid)
+def handle_unsubscribe(client, userdata, mid):
     logger.info("[MQTT] Unsubscribed from topic %s !!!", str(mid))
 
 @mqtt.on_disconnect()
