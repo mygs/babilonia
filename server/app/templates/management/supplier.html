@@ -1,0 +1,41 @@
+{% extends 'layout.html' %} {% block body %}
+<div class="container-fluid">
+  <div class="row">
+    {% include 'management/_management_sidebar.html' %}
+    <div class="col-sm-8 col-sm-offset-2 col-md-9 col-md-offset-1 main">
+      <h2 class="page-header">Supplier</h2>
+      <div class="table-responsive">
+        <table id="supplier" class="management table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>City</th>
+              <th>State</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for supplier in suppliers %}
+          <tr>
+            <td>{{supplier.NAME}}</td>
+            <td>{{supplier.TYPE}}</td>
+            <td>{{supplier.PHONE}}</td>
+            <td>{{supplier.EMAIL}}</td>
+            <td>{{supplier.CITY}}</td>
+            <td>{{supplier.STATE}}</td>
+            <td>{{supplier.NOTES}}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<!-- modals -->
+{% include 'management/modal-add-supplier.html' %}

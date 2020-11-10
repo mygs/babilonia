@@ -362,13 +362,7 @@ table.babi-tbl {
     border-collapse: collapse;
     color: #E6E6E6;
 }
-/*
-.dataTables_wrapper .dataTables_filter {
-  color: #E6E6E6;
-  float: right;
-  text-align: left;
-}
-*/
+
 table.babi-tbl td, table.babi-tbl th {
   border: 0px;
   padding: 3px 2px;
@@ -443,4 +437,39 @@ table.babi-tbl thead th {
     position: relative;
     display: inline-block;
     text-align: center;
+}
+
+
+
+table.management {
+    width: 100% !important;
+    text-align: center;
+    border-collapse: collapse;
+    color: #E6E6E6;
+}
+
+.dataTables_wrapper .dataTables_filter {
+  color: #E6E6E6;
+  float: right;
+  text-align: left;
+}
+
+table.management td, table.management th {
+  border: 0px;
+  padding: 3px 2px;
+}
+
+table.management td {
+  background: #222 ;
+}
+
+table.management thead th {
+  background: #000000;
+  font-weight: bold;
+  text-align: center;
+}
+
+table.dataTable tbody tr.selected {
+    color: yellow !important;
+    background-color: #35376a !important;
 }

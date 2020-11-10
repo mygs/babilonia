@@ -26,6 +26,7 @@ from flask_caching import Cache
 
 
 from about import about_system
+from management import management
 
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
@@ -81,10 +82,10 @@ logger.info("NODE_HOME: %s",NODE_HOME)
 cache = Cache(config=cfg['CACHE'])
 cache.init_app(app)
 
-dashboard = Dashboard(cfg)
-analytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
 mqtt = Mqtt(app)
 DB.init_app(app)
+dashboard = Dashboard(logger, cfg)
+analytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
 socketio = SocketIO(app)
 assets = Environment(app)
 login_manager = LoginManager()
@@ -191,7 +192,6 @@ def get_modules_data(id):
         else:
             modules = DB.session.query(OasisData).filter(OasisData.NODE_ID == id).order_by(OasisData.TIMESTAMP.desc()).limit(1)
 
-
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
         logger.debug("[database] call database for module page took %s secs",elapsedTime.total_seconds())
@@ -220,7 +220,7 @@ def index():
     return resp
 
 @app.route('/module', methods=['GET'])
-@cache.cached(query_string=True)
+#@cache.cached(query_string=True)
 @login_required
 def module():
     id = None
@@ -358,6 +358,7 @@ def progress():
 
 
 app.register_blueprint(about_system)
+app.register_blueprint(management)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -400,7 +401,7 @@ def utility_processor():
         return result
     def status_node(last_update, sensor_collect_data_period):
         last_update = int(last_update)
-        sensor_collect_data_period = int(sensor_collect_data_period)/1000
+        sensor_collect_data_period = 2 * int(sensor_collect_data_period)/1000
         now = int(time.time())
         next_data_is_expected = last_update + sensor_collect_data_period
 
@@ -479,7 +480,9 @@ def handle_mqtt_message(client, userdata, msg):
         socketio.emit('ws-oasis-data', data=jsonData)
         logger.debug("[data] %s", jsonData)
 
-
+@mqtt.on_log()
+def handle_logging(client, userdata, level, buf):
+    logger.debug("[MQTT] %i, %s", level, buf)
 
 ###############################################################################
 ##################################  START #####################################
@@ -496,5 +499,5 @@ if __name__ == '__main__':
     logger.info("*** STARTING NABUCODONOSOR SYSTEM ***")
     logger.info("version: %s", VERSION)
 
-    user_reload = False # Avoid Bug: TWICE mqtt instances
+    user_reload = True # Avoid Bug: TWICE mqtt instances
     socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)

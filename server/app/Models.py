@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import json
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.declarative import declarative_base
+
 DB = SQLAlchemy()
 
 class OasisData(DB.Model):
@@ -71,3 +73,47 @@ class OasisAnalytic(DB.Model):
                 "DATA":self.DATA}
     def data(self):
         return self.DATA
+
+# Define and create the table
+Base = declarative_base()
+
+class Crop(Base):
+    __tablename__ = 'CROP'
+    CODE = DB.Column(DB.Integer, primary_key=True)
+    DATE = DB.Column(DB.DATE, nullable=False)
+    STATUS = DB.Column(DB.String(16), nullable=False)
+    NOTES = DB.Column(DB.String(256), nullable=True)
+
+    def __init__(self, DATE, STATUS, NOTES):
+        self.DATE = DATE
+        self.STATUS = STATUS
+        self.NOTES = NOTES
+    def __repr__(self):
+        return '<Crop code:{} date:{}>'.format(self.CODE, self.DATE)
+    def toJson(self):
+        return {"CODE":self.CODE,"DATE":self.DATE,
+                "STATUS":self.STATUS,"NOTES":self.NOTES}
+    def code(self):
+        return self.CODE
+    def date(self):
+        return self.DATE
+    def status(self):
+        return self.STATUS
+
+class Supplier(Base):
+    __tablename__ = 'SUPPLIER'
+    NAME = DB.Column(DB.String(64), primary_key=True)
+    TYPE = DB.Column(DB.String(32), nullable=True)
+    PHONE = DB.Column(DB.String(16), nullable=True)
+    EMAIL = DB.Column(DB.String(32), nullable=True)
+    CITY = DB.Column(DB.String(32), nullable=True)
+    STATE = DB.Column(DB.String(64), nullable=True)
+    NOTES = DB.Column(DB.String(256), nullable=True)
+    def __init__(self, json):
+        self.NAME = json['NAME']
+        self.TYPE = json['TYPE']
+        self.PHONE =json['PHONE']
+        self.EMAIL =json['EMAIL']
+        self.CITY = json['CITY']
+        self.STATE =json['STATE']
+        self.NOTES =json['NOTES']

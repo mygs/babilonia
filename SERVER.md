@@ -1,3 +1,9 @@
+## server setup
+sudo adduser msaito
+sudo usermod -a -G adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd msaito
+sudo vi /etc/hostname
+
+
 ## GEOCODE
 
 #### FIND LAT and LNG
@@ -26,8 +32,7 @@ Set the following environment variables
 ```bash
 export BABILONIA_LIBS=/github
 export BABILONIA_HOME=/github/babilonia
-PATH=$PATH:$BABILONIA_LIBS/esptool:$BABILONIA_LIBS/esp-open-sdk/xtensa-lx106-elf/bin
-alias xgcc="xtensa-lx106-elf-gcc"
+PATH=$PATH:$BABILONIA_LIBS/esptool
 alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
 ```
 
@@ -53,16 +58,16 @@ sudo usermod -a -G gpio msaito
 sudo chown root.gpio /dev/gpiomem
 sudo chmod g+rw /dev/gpiomem
 $ cat /etc/udev/rules.d/71-gpio.rules
-KERNEL=="gpiomem", NAME="%k", GROUP="gpio", MODE="0660
+SUBSYSTEM=="bcm2835-gpiomem", KERNEL=="gpiomem", GROUP="gpio", MODE="0660"
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:gpio /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'"
+SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value
 
 ```
 
 
 ### middlwares & tools
 ```
-sudo apt-get install mysql-server && sudo apt-get install mysql-client
-sudo apt-get install dos2unix
-sudo apt-get install python3-mysqldb
+sudo apt install dos2unix mysql-server mysql-client mosquitto python3-mysqldb
 ```
 ### replicating server
 1) sudo dd bs=4M if=/dev/sdc of=/home/msaito/Downloads/babilonia.img
@@ -77,8 +82,6 @@ sudo apt-get install python3-mysqldb
 ## TOOLS
 Install the following tools in $BABILONIA_LIBS
 ```bash
-git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
-make
 git clone https://github.com/plerup/makeEspArduino.git
 git checkout tags/4.17.0
 git clone https://github.com/knolleary/pubsubclient.git

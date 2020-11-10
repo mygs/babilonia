@@ -1,0 +1,37 @@
+{% extends 'layout.html' %} {% block body %}
+<div class="container-fluid">
+  <div class="row">
+    {% include 'management/_management_sidebar.html' %}
+    <div class="col-sm-8 col-sm-offset-2 col-md-9 col-md-offset-1 main">
+      <h2 class="page-header">Production</h2>
+      <div class="table-responsive">
+        <table id="crop" class="management table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Start</th>
+              <th>Duration</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for crop in crops %}
+            <tr>
+              <td>{{crop.CODE}}</td>
+              <td>{{crop.DATE}}</td>
+              <td>{{crop_duration(crop.DATE)}}</td>
+              <td>{{crop.STATUS}}</td>
+              <td>{{crop.NOTES}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% with modules=modules, plants=plants %}
+{% include 'management/modal-crop.html' %}
+{% endwith %}
