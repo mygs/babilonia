@@ -499,5 +499,5 @@ if __name__ == '__main__':
     logger.info("*** STARTING NABUCODONOSOR SYSTEM ***")
     logger.info("version: %s", VERSION)
 
-    user_reload = True # Avoid Bug: TWICE mqtt instances
-    socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)
+    user_reload = False # Avoid Bug: TWICE mqtt instances
+    socketio.run(app, host='0.0.0.0', port=8181, debug=False, use_reloader=user_reload)
