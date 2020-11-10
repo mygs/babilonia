@@ -174,7 +174,7 @@ mosquitto_pub -h 192.168.1.70 -t "/oasis-inbound" -m "{\"sensor\":\"gps\",\"time
 
 ```
 
-### daemon
+### daemon dev
 http://blog.scphillips.com/posts/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/
 
 ```bash
@@ -182,7 +182,23 @@ dos2unix nabucodonosor.sh
 sudo chmod 755 nabucodonosor.py
 sudo chmod 755 nabucodonosor.sh
 sudo cp nabucodonosor.sh /etc/init.d
+sudo cp gpio_babilonia.sh /etc/init.d/
 sudo update-rc.d nabucodonosor.sh defaults
+sudo update-rc.d gpio_babilonia.sh defaults
 sudo /etc/init.d/nabucodonosor.sh start
 sudo /etc/init.d/nabucodonosor.sh status
+```
+
+
+### manually gunicorn daemon
+```bash
+sudo pip3 install gunicorn
+```
+https://bartsimons.me/gunicorn-as-a-systemd-service/
+
+```bash
+gunicorn -w 4 -b 0.0.0.0:8181 --chdir /github/babilonia/server/app nabucodonosor:app --daemon
+```
+```bash
+sudo pkill gunicorn
 ```

@@ -5,9 +5,6 @@ using namespace std;
 
 Status::Status(){
   init();
-  dht = new DHT(PIN[IDX_DEVICE_DHT], DHTTYPE);
-  dht->begin();
-  capacitiveMoisture = new CapacitiveMoisture();
 }
 
 void Status::init(){
@@ -26,6 +23,15 @@ void Status::init(){
 
 void Status::updatePorts(State& state){
    state.getPin(PIN, DEVICE, DEVICE_LENGTH);
+   initialiseSensors();
+}
+
+void Status::initialiseSensors(){
+  delete dht;
+  delete capacitiveMoisture;
+  dht = new DHT(PIN[IDX_DEVICE_DHT], DHTTYPE);
+  dht->begin();
+  capacitiveMoisture = new CapacitiveMoisture();
 }
 
 void Status::logAction(int idx, const char* action, int pin, bool value){

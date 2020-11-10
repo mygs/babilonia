@@ -1,0 +1,68 @@
+<div class="modal fade" id="supplierModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog  modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="supplier-modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <div id="alertModal"></div>
+        <form id="supplierModalForm" name="supplierModalForm">
+          <div class="form-group row">
+            <label for="NAME" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Name</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="NAME" id="NAME">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="TYPE" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Type</label>
+            <div class="col-sm-9">
+              <select class="form-control" name="TYPE" id="TYPE">
+                <option value="">Choose...</option>
+                <option value="Seed">Seed</option>
+                <option value="Seedling">Seedling</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="PHONE" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Phone</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="PHONE" id="PHONE">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="EMAIL" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Email</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="EMAIL" id="EMAIL">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="STATE" class="supplier-cfg-lbl control-label col-form-label col-sm-3">State</label>
+            <div class="col-sm-9">
+              <select class="form-control" name="STATE" id="STATE">
+                  <option value=""></option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="CITY" class="supplier-cfg-lbl control-label col-form-label col-sm-3">City</label>
+            <div class="col-sm-9">
+              <select class="form-control" name="CITY" id="CITY">
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="NOTES" class="supplier-cfg-lbl control-label col-form-label col-sm-3">Notes</label>
+            <div class="col-sm-9">
+              <textarea class="form-control" name="NOTES" id="NOTES" rows="4"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveSupplier" onclick="saveSupplier()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

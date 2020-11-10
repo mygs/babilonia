@@ -1,0 +1,80 @@
+<div class="modal fade" id="cropModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog  modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="crop-modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <div id="alertModal"></div>
+        <form id="cropModalForm" name="cropModalForm">
+          <input type="hidden" name="code" id="code">
+          <div class="form-group row">
+            <label for="status" class="supplier-cfg-lbl control-label col-form-label col-md-3">Status</label>
+            <div class="col-md-4">
+              <select class="form-control" name="status" id="status">
+                <option value="">Choose...</option>
+                <option value="Planning">Planning</option>
+                <option value="Growing">Growing</option>
+                <option value="Harvest">Harvest</option>
+                <option value="Finished">Finished</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="estado" class="supplier-cfg-lbl control-label col-form-label col-md-3">Estado</label>
+            <div class="col-md-4">
+              <select class="form-control" name="estado" id="estado">
+                  <option value=""></option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="cidade" class="supplier-cfg-lbl control-label col-form-label col-md-3">Cidade</label>
+            <div class="col-md-6">
+              <select class="form-control" name="cidade" id="cidade">
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="data" class="supplier-cfg-lbl control-label col-form-label col-md-3">Data Início</label>
+            <div class="col-md-4">
+              <div class="input-group date" id="datapicker">
+                <input type="text" class="form-control" name="data" id="data">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+              </div>
+            </div>
+          </div>
+          <!-- Modules -->
+          <div id="crop-modules-panel" class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">Módulos</h3>
+            </div>
+            <div class="panel-body">
+              <div class="table-responsive">
+                <table id="crop-modules" class="management table">
+                  <thead>
+                        <tr>
+                          <th>Id</th>
+                          <th>Módulo</th>
+                          <th>Planta</th>
+                          <th>Substrato</th>
+                        </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- End Modules -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="savecrop" onclick="savecrop()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modals -->
+{% with modules=modules, plants=plants %}
+{% include 'management/modal-add-crop-module.html' %}
+{% endwith %}

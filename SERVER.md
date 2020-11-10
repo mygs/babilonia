@@ -1,3 +1,9 @@
+## server setup
+sudo adduser msaito
+sudo usermod -a -G adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd msaito
+sudo vi /etc/hostname
+
+
 ## GEOCODE
 
 #### FIND LAT and LNG
@@ -26,8 +32,7 @@ Set the following environment variables
 ```bash
 export BABILONIA_LIBS=/github
 export BABILONIA_HOME=/github/babilonia
-PATH=$PATH:$BABILONIA_LIBS/esptool:$BABILONIA_LIBS/esp-open-sdk/xtensa-lx106-elf/bin
-alias xgcc="xtensa-lx106-elf-gcc"
+PATH=$PATH:$BABILONIA_LIBS/esptool
 alias espmake="make -f $BABILONIA_LIBS/makeEspArduino/makeEspArduino.mk"
 ```
 
@@ -45,21 +50,38 @@ OR
 sudo pip3 install paho-mqtt sqlalchemy flask-sqlalchemy flask-mysql flask-socketio simplejson pandas flask-mqtt Pillow Flask-QRcode Flask-Assets jsmin cssmin
 pathlib python-git gitpython
 ```
+### raspberry pi GPIO
+```
+sudo pip3 install RPi.GPIO
+sudo groupadd gpio
+sudo usermod -a -G gpio msaito
+sudo chown root.gpio /dev/gpiomem
+sudo chmod g+rw /dev/gpiomem
+$ cat /etc/udev/rules.d/71-gpio.rules
+SUBSYSTEM=="bcm2835-gpiomem", KERNEL=="gpiomem", GROUP="gpio", MODE="0660"
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:gpio /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'"
+SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:gpio /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value
+
+```
+
 
 ### middlwares & tools
 ```
-sudo apt-get install mysql-server && sudo apt-get install mysql-client
-sudo apt-get install dos2unix
-sudo apt-get install python3-mysqldb
+sudo apt install dos2unix mysql-server mysql-client mosquitto python3-mysqldb
 ```
-
-
+### replicating server
+1) sudo dd bs=4M if=/dev/sdc of=/home/msaito/Downloads/babilonia.img
+2) (ubuntu host) Make Startup Disk
+3) gzip babilonia.img
+4) connect via ssh
+4.1) sudo service nabucodonosor stop
+4.2) sudo service noip2 stop
+4.3) sudo rm /usr/local/etc/no-ip2.conf
+4.4) sudo noip2 -C
 
 ## TOOLS
 Install the following tools in $BABILONIA_LIBS
 ```bash
-git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
-make
 git clone https://github.com/plerup/makeEspArduino.git
 git checkout tags/4.17.0
 git clone https://github.com/knolleary/pubsubclient.git
@@ -88,7 +110,7 @@ espmake flash
 ```
 Then, OTA
 ```bash
-espmake ota ESP_ADDR=192.168.2.220
+espmake ota ESP_ADDR=192.168.2.102
 ```
 
 ### mqtt commands
@@ -121,7 +143,7 @@ mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"MESSAGE_ID\": \"a12dc89b
 
 command RESET
 ```
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-312193\",\"MESSAGE_ID\": \"a12dc89b\",\"COMMAND\": {\"RESET\": true}}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39732c\",\"MESSAGE_ID\": \"a12dc89b\",\"COMMAND\": {\"RESET\": true}}"
 ```
 
 command message
@@ -158,4 +180,21 @@ sudo /etc/init.d/nabucodonosor.sh start
 sudo /etc/init.d/nabucodonosor.sh status
 
 sudo service nabucodonosor stop
+```
+
+Config
+```
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\",\"MESSAGE_ID\": \"test\",\"CONFIG\": {\"HEARTBEAT_PERIOD\": 15001, \"SENSOR_COLLECT_DATA_PERIOD\": 30001, \"PIN\":{\"A\": \"CAPACITIVEMOISTURE\", \"0\": \"IDLE\",\"1\": \"WATER\", \"2\": \"IDLE\", \"3\": \"IDLE\",\"4\": \"IDLE\",\"5\": \"SW.A\", \"6\": \"SW.B\",\"7\": \"SW.C\", \"8\": \"IDLE\"}}}"
+```
+command WATER
+```
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39732c\",\"MESSAGE_ID\": \"a12dc89b\",\"COMMAND\": {\"WATER\": true}}"
+```
+
+
+
+
+### SSL
+```
+certbot certonly --manual -d amitis.ddns.net
 ```

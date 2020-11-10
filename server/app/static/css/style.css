@@ -7,6 +7,9 @@
   width: 100%;
 }
 
+.btn-water-all {
+    margin-right: 3px;
+}
 
 #dashboard li .panel {
   text-align: center;
@@ -154,7 +157,7 @@ td#box-header-telemetry-hb {
     width: 20%;
     text-align: right;
 }
-
+/* START OF MOISTURE SECTION STUFF */
 table#moisture {
     text-align: center;
     -webkit-border-horizontal-spacing: 5px;
@@ -163,22 +166,13 @@ table#moisture {
     margin-left: auto;
     margin-right: auto;
 }
-
-.moisture-disable {
-  color: grey !important;
-}
-.moisture-dry {
-  color: red !important;
-}
-.moisture-wet {
-  color: blue !important;
-}
-
 .moisture-number {
   font-size: 60%;
   font-weight: bold;
   color: white;
 }
+
+/* END OF MOISTURE SECTION STUFF */
 
 table#telemetry {
     width: 100%;
@@ -244,33 +238,25 @@ table#cockpit {
   color: #931111;
   border-color: #c01717;
 }
-#sortable li .box.danger .fa {
-  color: #c01717;
-}
+
 #sortable li .box.good {
   background: #BCED91;
   color: #3d6d12;
   border-color: #6dc520;
 }
-#sortable li .box.good .fa {
-  color: #3d6d12;
-}
+
 #sortable li .box.excellent {
   color: #084a84;
   background: #62B1F6;
   border-color: #0a65b5;
 }
-#sortable li .box.excellent .fa {
-  color: #0a65b5;
-}
+
 #sortable li .box.nostatus {
   color: #333;
   background: white;
   border-color: gray;
 }
-#sortable li .box.nostatus .fa {
-  color: #b3b3b3;
-}
+
 #sortable li .box h4 {
   margin-top: 0;
   margin-bottom: 5px;
@@ -282,13 +268,14 @@ table#cockpit {
   margin-bottom: 5px;
 }
 
-#sortable li .box h4 .fa {
-  display: inline-block;
-  margin-right: 4px;
-}
+
 #sortable li .box p {
   color: #444;
   font-size: 11px;
+}
+
+#sortable li .box .fa {
+  color: #ffffff;
 }
 
 .footer {
@@ -375,13 +362,7 @@ table.babi-tbl {
     border-collapse: collapse;
     color: #E6E6E6;
 }
-/*
-.dataTables_wrapper .dataTables_filter {
-  color: #E6E6E6;
-  float: right;
-  text-align: left;
-}
-*/
+
 table.babi-tbl td, table.babi-tbl th {
   border: 0px;
   padding: 3px 2px;
@@ -456,4 +437,39 @@ table.babi-tbl thead th {
     position: relative;
     display: inline-block;
     text-align: center;
+}
+
+
+
+table.management {
+    width: 100% !important;
+    text-align: center;
+    border-collapse: collapse;
+    color: #E6E6E6;
+}
+
+.dataTables_wrapper .dataTables_filter {
+  color: #E6E6E6;
+  float: right;
+  text-align: left;
+}
+
+table.management td, table.management th {
+  border: 0px;
+  padding: 3px 2px;
+}
+
+table.management td {
+  background: #222 ;
+}
+
+table.management thead th {
+  background: #000000;
+  font-weight: bold;
+  text-align: center;
+}
+
+table.dataTable tbody tr.selected {
+    color: yellow !important;
+    background-color: #35376a !important;
 }

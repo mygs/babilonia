@@ -69,6 +69,8 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
         if (cmd[NODE::RESET].isNull()){
           state.save(inboundData);
         }
+        //adding executed  command to response!
+        outboundData[NODE::COMMAND] = inboundData[NODE::COMMAND];
       }
 
       JsonArray stat = inboundData[NODE::STATUS];

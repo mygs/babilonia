@@ -14,6 +14,7 @@ private:
   DHT* dht;
   CapacitiveMoisture* capacitiveMoisture;
   void init();
+  void initialiseSensors();
   void logAction(int idx, const char* action, int pin, bool value);
   void collectNodeData(State& state, JsonObject& data);
   int readDigitalInputPort(int port);

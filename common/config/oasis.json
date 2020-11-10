@@ -10,14 +10,15 @@
   "SERIAL_BAUDRATE": 115200,
   "OTA_PORT": 8266,
   "PIN":{
-    "0": "IDLE",
+    "A": "CAPACITIVEMOISTURE",
+    "0": "SOIL.X",
     "1": "WATER",
     "2": "LIGHT",
-    "3": "SOIL.X",
+    "3": "IDLE",
     "4": "DHT",
-    "5": "SOIL.1",
-    "6": "SOIL.2",
-    "7": "SOIL.3",
-    "8": "SOIL.4"
+    "5": "SW.A",
+    "6": "SW.B",
+    "7": "SW.C",
+    "8": "WIND"
   }
 }

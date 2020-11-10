@@ -1,11 +1,15 @@
 {% extends 'layout.html' %}
-
 {% block body %}
-<div class="container">
+<div class="container" id="modulegrid">
   <div class="row">
     <div class="col-sm-12">
+      {% if single is none %}
       <h2 id="index">Farm</h2>
       <button class="btn btn-sm btn-danger btn-header btn-refresh-all"><i class="fa fa-refresh"></i></button>
+      <button class="btn btn-sm btn-danger btn-header btn-water-all"><i class="wi wi-sprinkle"></i></button>
+      {% else %}
+      <h2 id="index">Oasis</h2>
+      {% endif %}
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
           {%  set id = module.NODE_ID %}
@@ -59,52 +63,52 @@
                <tr>
                  <td>
                    <span class="fa-stack">
-                     <span class="fa fa-2x fa-circle {{ status_moisture(id, 0, mux0) }}"></span>
-                     <span id='mux0_{{id}}' class="fa-stack-1x moisture-number">{{mux0}}</span>
+                     <span id='mux_field_0_{{id}}' class="fa fa-2x fa-circle" style="color: {{ status_moisture(id, 0, mux0) }}"></span>
+                     <span id='mux_value_0_{{id}}' class="fa-stack-1x moisture-number">{{mux0}}</span>
                    </span>
                  </td>
                  <td>
                    <span class="fa-stack">
-                     <span class="fa fa-2x fa-circle {{ status_moisture(id, 1, mux1) }}"></span>
-                     <span id='mux1_{{id}}' class="fa-stack-1x moisture-number">{{mux1}}</span>
+                     <span id='mux_field_1_{{id}}' class="fa fa-2x fa-circle" style="color: {{ status_moisture(id, 1, mux1) }}"></span>
+                     <span id='mux_value_1_{{id}}' class="fa-stack-1x moisture-number">{{mux1}}</span>
                    </span>
                  </td>
                  <td>
                    <span class="fa-stack">
-                     <span class="fa fa-2x fa-circle {{ status_moisture(id, 2, mux2) }}"></span>
-                     <span id='mux2_{{id}}' class="fa-stack-1x moisture-number">{{mux2}}</span>
+                     <span id='mux_field_2_{{id}}' class="fa fa-2x fa-circle" style="color: {{ status_moisture(id, 2, mux2) }}"></span>
+                     <span id='mux_value_2_{{id}}' class="fa-stack-1x moisture-number">{{mux2}}</span>
                    </span>
                  </td>
                  <td>
                    <span class="fa-stack">
-                     <span class="fa fa-2x fa-circle {{ status_moisture(id, 3, mux3) }}"></span>
-                     <span id='mux3_{{id}}' class="fa-stack-1x moisture-number">{{mux3}}</span>
+                     <span id='mux_field_3_{{id}}' class="fa fa-2x fa-circle" style="color: {{ status_moisture(id, 3, mux3) }}"></span>
+                     <span id='mux_value_3_{{id}}' class="fa-stack-1x moisture-number">{{mux3}}</span>
                    </span>
                  </td>
                </tr>
                <tr>
                  <td>
                    <span class="fa-stack">
-                     <span class="fa fa-2x fa-circle {{ status_moisture(id, 4, mux4) }}"></span>
-                     <span id='mux4_{{id}}' class="fa-stack-1x moisture-number">{{mux4}}</span>
+                     <span id='mux_field_4_{{id}}' class="fa fa-2x fa-circle" style="color: {{ status_moisture(id, 4, mux4) }}"></span>
+                     <span id='mux_value_4_{{id}}' class="fa-stack-1x moisture-number">{{mux4}}</span>
                    </span>
                  </td>
                  <td>
                    <span class="fa-stack">
-                     <span class="fa fa-2x fa-circle {{ status_moisture(id, 5, mux5) }}"></span>
-                     <span id='mux5_{{id}}' class="fa-stack-1x moisture-number">{{mux5}}</span>
+                     <span id='mux_field_5_{{id}}' class="fa fa-2x fa-circle" style="color: {{ status_moisture(id, 5, mux5) }}"></span>
+                     <span id='mux_value_5_{{id}}' class="fa-stack-1x moisture-number">{{mux5}}</span>
                    </span>
                  </td>
                  <td>
                    <span class="fa-stack">
-                     <span class="fa fa-2x fa-circle {{ status_moisture(id, 6, mux6) }}"></span>
-                     <span id='mux6_{{id}}' class="fa-stack-1x moisture-number">{{mux6}}</span>
+                     <span id='mux_field_6_{{id}}' class="fa fa-2x fa-circle" style="color: {{ status_moisture(id, 6, mux6) }}"></span>
+                     <span id='mux_value_6_{{id}}' class="fa-stack-1x moisture-number">{{mux6}}</span>
                    </span>
                  </td>
                  <td>
                    <span class="fa-stack">
-                     <span class="fa fa-2x fa-circle {{ status_moisture(id, 7, mux7) }}"></span>
-                     <span id='mux7_{{id}}' class="fa-stack-1x moisture-number">{{mux7}}</span>
+                     <span id='mux_field_7_{{id}}' class="fa fa-2x fa-circle" style="color: {{ status_moisture(id, 7, mux7) }}"></span>
+                     <span id='mux_value_7_{{id}}' class="fa-stack-1x moisture-number">{{mux7}}</span>
                    </span>
                  </td>
               </tr>
@@ -128,10 +132,6 @@
                 </tr>
                 <!--
                 <tr>
-                  <td class="param-label">Irrigation</td>
-                  <td class="param-value" id='irrigation_{{id}}'>{{water}}</td>
-                </tr>
-                <tr>
                   <td class="param-label">Light</td>
                   <td class="param-value" id='light_{{id}}'>{{light}}</td>
                 </tr>
@@ -143,18 +143,19 @@
               </table>
               <table id="cockpit">
               <tr>
-                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-water" data-id="{{id}}"><i class="wi wi-sprinkle"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-info btn-light" data-id="{{id}}"><i class="wi wi-day-sunny"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-default btn-fan" data-id="{{id}}"><i class="wi wi-cloudy-gusts"></i></button></td>
+                <td><button id="btn-water_{{id}}" type="button" class="btn btn-sm btn-block {{ status_btn_css(water) }} btn-water" data-id="{{id}}" {{ status_btn(water) }}><i class="wi wi-sprinkle"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block {{ status_btn_css(light) }} btn-light" data-id="{{id}}" {{ status_btn(light) }}><i class="wi wi-day-sunny"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block {{ status_btn_css(fan) }} btn-fan" data-id="{{id}}" {{ status_btn(fan) }}><i class="wi wi-cloudy-gusts"></i></button></td>
               </tr>
               <tr>
-                <td><button type="button" class="btn btn-sm btn-block btn-warning btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-default" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-danger btn-restart" data-id="{{id}}"><i class="fa fa-power-off"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-primary btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-primary" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block btn-primary btn-restart" data-id="{{id}}"><i class="fa fa-power-off"></i></button></td>
               </tr>
               </table>
             </div>
           </li>
+          <input type="hidden" id='irrigation_{{id}}' value="{{water}}">
         {% endfor %}
       </ul>
     </div>

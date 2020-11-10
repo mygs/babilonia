@@ -1,7 +1,7 @@
 $(".btn-refresh-all").on("click", function() {
   var status = {
            "NODE_ID": "ALL",
-        "MESSAGE_ID": "a12dc89b",
+        "MESSAGE_ID": "man00gui",
             "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER", "CAPACITIVEMOISTURE"]
         };
 
@@ -13,6 +13,31 @@ $(".btn-refresh-all").on("click", function() {
     data: JSON.stringify(status),
     success: function(response) {
       console.log(response.status);
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+});
+
+$(".btn-water-all").on("click", function() {
+  if(Cookies.get('WATER_ALL') == null)
+    Cookies.set('WATER_ALL', '0')
+  var status = {
+            "NODE_ID": "ALL",
+         "MESSAGE_ID": "man00gui",
+            "COMMAND": {"WATER": (Cookies.get('WATER_ALL') == "1") ? false : true /* invert! */}
+        };
+
+  $.ajax({
+    url: '/status',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(status),
+    success: function(response) {
+      console.log(response.status);
+      Cookies.set('WATER_ALL', (Cookies.get('WATER_ALL') == "1") ? "0" : "1" )
     },
     error: function(response) {
       swal(response.status, "XPTO!", "error");
@@ -66,7 +91,7 @@ $(".btn-fan").on("click", function() {
   var param = ($('#fan_' + id).html() == "1") ? False : True; /* invert! */
   var command = {
            "NODE_ID": id,
-        "MESSAGE_ID": "a12dc89b",
+        "MESSAGE_ID": "man00gui",
             "COMMAND": {"FAN": param}
         };
   var img = '/static/img/fan.png';
@@ -75,26 +100,46 @@ $(".btn-fan").on("click", function() {
   //callbackend(id, mode, param, img, title, text)
 });
 
+
 $(".btn-water").on("click", function() {
   var id = $(this).data('id');
-  var param = ($('#irrigation_' + id).html() == "1") ? False : True; /* invert! */
-  var command = {
+  var water = $('#irrigation_' + id).val();
+  var status = {
            "NODE_ID": id,
-        "MESSAGE_ID": "a12dc89b",
-            "COMMAND": {"WATER": param}
+        "MESSAGE_ID": "man00gui",
+           "COMMAND": {"WATER": (water == "1") ? false : true /* invert! */}
         };
-  var img = '/static/img/tap.png';
-  var title = "Irrigate?";
-  var text = "Do not forget to turn it OFF";
-  callbackend(command, img, title, text);
-});
 
+  $.ajax({
+    url: '/command',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(status),
+    success: function(response) {
+      console.log(response.status);
+      var newValue = (water == "1" ? "0" : "1");
+      $('#irrigation_' + id).val(newValue);
+      if(newValue == "0"){
+        $('#btn-water_' + id).removeClass('btn-danger');
+        $('#btn-water_' + id).addClass('btn-primary');
+      }else{
+        $('#btn-water_' + id).removeClass('btn-primary');
+        $('#btn-water_' + id).addClass('btn-danger');
+      }
+
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+});
 
 $(".btn-restart").on("click", function() {
   var id = $(this).data('id')
   var command = {
            "NODE_ID": id,
-        "MESSAGE_ID": "a12dc89b",
+        "MESSAGE_ID": "man00gui",
             "COMMAND": {"REBOOT": true}
         };
   var img = '/static/img/restart.png';
@@ -107,7 +152,7 @@ $(".btn-restart").on("click", function() {
 $(".btn-refresh").on("click", function() {
   var status = {
            "NODE_ID": $(this).data('id'),
-        "MESSAGE_ID": "a12dc89b",
+        "MESSAGE_ID": "man00gui",
             "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER", "CAPACITIVEMOISTURE"]
         };
 

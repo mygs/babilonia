@@ -1,0 +1,108 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "horta urbana",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "ManagementIntent",
+                    "slots": [
+                        {
+                            "name": "command",
+                            "type": "command"
+                        },
+                        {
+                            "name": "module",
+                            "type": "module"
+                        }
+                    ],
+                    "samples": [
+                        "por favor {command} o {module}",
+                        "{command} do {module}",
+                        "{command} o {module}",
+                        "{command} {module}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AboutIntent",
+                    "slots": [],
+                    "samples": [
+                        "fale sobre a babilonia",
+                        "O que é babilonia"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "command",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "checar",
+                                "synonyms": [
+                                    "status",
+                                    "verificar"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "irrigar",
+                                "synonyms": [
+                                    "por agua",
+                                    "regar",
+                                    "aguar"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "module",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "modulo"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "varanda"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "escritorio"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "sala"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "oasis"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

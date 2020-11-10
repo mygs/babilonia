@@ -6,57 +6,120 @@
         <h4 class="modal-title" name="MODAL_TITLE" id="MODAL_TITLE"></h4>
       </div>
       <div class="modal-body">
-        <div id="alertModal"></div>
-        <form id="updateNodeModalForm" name="updateNodeModalForm">
-          <input type="hidden" name="ID" id="ID" value="">
-          <div class="form-group row">
-            <label for="SENSOR_COLLECT_DATA_PERIOD" class="node-cfg-lbl control-label col-form-label col-sm-6">SENSOR_COLLECT_DATA_PERIOD</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control" name="SENSOR_COLLECT_DATA_PERIOD" id="SENSOR_COLLECT_DATA_PERIOD">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <!-- COLLAPSE IRRIGATION FEEDBACK -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+              <h4 class="panel-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <a class="collapsed">
+                  Irrigation Training
+                </a>
+              </h4>
             </div>
-          </div>
-          <div class="form-group row">
-            <label for="RETRY_WIFI_CONN_DELAY" class="node-cfg-lbl control-label col-sm-6">RETRY_WIFI_CONN_DELAY</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control" name="RETRY_WIFI_CONN_DELAY" id="RETRY_WIFI_CONN_DELAY">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label for="SERIAL_BAUDRATE" class="node-cfg-lbl control-label col-sm-6">SERIAL_BAUDRATE</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control" name="SERIAL_BAUDRATE" id="SERIAL_BAUDRATE">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label for="OTA_PORT" class="node-cfg-lbl control-label col-sm-6">OTA_PORT</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control" name="OTA_PORT" id="OTA_PORT">
-            </div>
-          </div>
-          {% for idx in range(0,9) %}
-            <div class="form-group row">
-              <label for="PIN{{idx}}" class="node-cfg-lbl control-label col-sm-6 col-form-label-sm">PIN[{{idx}}]</label>
-              <div class="col-sm-4">
-                <select class="form-control form-control-sm" name="PIN{{idx}}" id="PIN{{idx}}">
-                  <option>IDLE</option>
-                  <option>WATER</option>
-                  <option>LIGHT</option>
-                  <option>DHT</option>
-                  <option>FAN</option>
-                  <option>SOIL.X</option>
-                  <option>SOIL.1</option>
-                  <option>SOIL.2</option>
-                  <option>SOIL.3</option>
-                  <option>SOIL.4</option>
-                </select>
+            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+              <div class="panel-body text-center">
+
+                <div class="btn-group-lg" role="group">
+                  <input type="hidden" name="ID_TRAINING_BTN" id="ID_TRAINING_BTN" value="">
+                  <button type="button" class="btn btn-primary" onclick="trainOasis('wet')">Wet</button>
+                  <button type="button" class="btn btn-danger" onclick="trainOasis('dry')">Dry</button>
+                </div>
+
               </div>
             </div>
-          {% endfor %}
-        </form>
+          </div>
+          <!-- COLLAPSE -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+              <h4 class="panel-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed">
+                  Edit connection parameters
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+              <div class="panel-body">
+                <!-- EDIT NODE PARAMS -->
+                <div id="alertModal"></div>
+                <form id="updateNodeModalForm" name="updateNodeModalForm">
+                  <input type="hidden" name="ID_PARAMS_FORM" id="ID_PARAMS_FORM" value="">
+                  <div class="form-group row">
+                    <label for="SENSOR_COLLECT_DATA_PERIOD" class="node-cfg-lbl control-label col-form-label col-sm-6">SENSOR_COLLECT_DATA_PERIOD</label>
+                    <div class="col-sm-4">
+                      <input type="number" class="form-control" name="SENSOR_COLLECT_DATA_PERIOD" id="SENSOR_COLLECT_DATA_PERIOD">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="RETRY_WIFI_CONN_DELAY" class="node-cfg-lbl control-label col-sm-6">RETRY_WIFI_CONN_DELAY</label>
+                    <div class="col-sm-4">
+                      <input type="number" class="form-control" name="RETRY_WIFI_CONN_DELAY" id="RETRY_WIFI_CONN_DELAY">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="SERIAL_BAUDRATE" class="node-cfg-lbl control-label col-sm-6">SERIAL_BAUDRATE</label>
+                    <div class="col-sm-4">
+                      <input type="number" class="form-control" name="SERIAL_BAUDRATE" id="SERIAL_BAUDRATE">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="OTA_PORT" class="node-cfg-lbl control-label col-sm-6">OTA_PORT</label>
+                    <div class="col-sm-4">
+                      <input type="number" class="form-control" name="OTA_PORT" id="OTA_PORT">
+                    </div>
+                  </div>
+                </form>
+                <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="defaultNodeConfiguration()">Defaults</button>
+                <button type="button" class="btn btn-primary" id="updateNodeConfiguration" onclick="updateNodeConfiguration()">Save</button>
+                <!-- EDIT NODE PARAMS -->
+              </div>
+            </div>
+          </div>
+          <!-- COLLAPSE EDIT PINAGE PARAMS -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThree">
+              <h4 class="panel-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <a class="collapsed">
+                  Edit pinage parameters
+                </a>
+              </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+              <div class="panel-body">
+                <!-- EDIT NODE PINAGE -->
+                <div id="alertModal"></div>
+                <form id="updateNodeModalForm" name="updateNodeModalForm">
+                  <input type="hidden" name="ID_PIN_FORM" id="ID_PIN_FORM" value="">
+                  {% for idx in ['A','0','1','2','3','4','5','6','7','8'] %}
+                  <div class="form-group row">
+                    <label for="PIN{{idx}}" class="node-cfg-lbl control-label col-sm-6 col-form-label-sm">PIN[{{idx}}]</label>
+                    <div class="col-sm-4">
+                      <select class="form-control form-control-sm" name="PIN{{idx}}" id="PIN{{idx}}">
+                        <option>CAPACITIVEMOISTURE</option>
+                        <option>WATER</option>
+                        <option>LIGHT</option>
+                        <option>DHT</option>
+                        <option>FAN</option>
+                        <option>WIND</option>
+                        <option>SOIL.X</option>
+                        <option>SW.A</option>
+                        <option>SW.B</option>
+                        <option>SW.C</option>
+                        <option>IDLE</option>
+                      </select>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </form>
+                <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="defaultNodeConfiguration()">Defaults</button>
+                <button type="button" class="btn btn-primary" id="updateNodeConfiguration" onclick="updateNodeConfiguration()">Save</button>
+                <!-- EDIT NODE PINAGE -->
+              </div>
+            </div>
+          </div>
+          <!-- COLLAPSE EDIT PINAGE PARAMS -->
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="defaultNodeConfiguration()">Defaults</button>
-        <button type="button" class="btn btn-primary" id="updateNodeConfiguration" onclick="updateNodeConfiguration()">Save</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
