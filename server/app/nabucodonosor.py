@@ -220,7 +220,7 @@ def index():
     return resp
 
 @app.route('/module', methods=['GET'])
-@cache.cached(query_string=True)
+#@cache.cached(query_string=True)
 @login_required
 def module():
     id = None
@@ -480,7 +480,9 @@ def handle_mqtt_message(client, userdata, msg):
         socketio.emit('ws-oasis-data', data=jsonData)
         logger.debug("[data] %s", jsonData)
 
-
+@mqtt.on_log()
+def handle_logging(client, userdata, level, buf):
+    logger.debug("[MQTT] %i, %s", level, buf)
 
 ###############################################################################
 ##################################  START #####################################
@@ -497,5 +499,5 @@ if __name__ == '__main__':
     logger.info("*** STARTING NABUCODONOSOR SYSTEM ***")
     logger.info("version: %s", VERSION)
 
-    user_reload = False # Avoid Bug: TWICE mqtt instances
+    user_reload = True # Avoid Bug: TWICE mqtt instances
     socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)
