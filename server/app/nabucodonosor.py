@@ -440,11 +440,15 @@ def utility_processor():
 # The callback for when the client receives a CONNACK response from the server.
 @mqtt.on_connect()
 def handle_mqtt_connect(client, userdata, flags, rc):
-    logger.debug("Connected with result code %s",str(rc))
+    logger.info("[MQTT] Connected with result code %s",str(rc))
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"])
     mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"])
+
+@mqtt.on_disconnect()
+def handle_disconnect():
+    logger.info("[MQTT]  Disconnected!!!!")
 
 # The callback for when a PUBLISH message is received from the server.
 @mqtt.on_message()
@@ -500,4 +504,4 @@ if __name__ == '__main__':
     logger.info("version: %s", VERSION)
 
     user_reload = False # Avoid Bug: TWICE mqtt instances
-    socketio.run(app, host='0.0.0.0', port=8181, debug=False, use_reloader=user_reload)
+    socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)
