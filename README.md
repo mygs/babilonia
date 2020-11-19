@@ -23,7 +23,7 @@ sudo /etc/init.d/nabucodonosor.sh status
 ```
 
 ### COPYING SERVER IMAGE
-1) sudo dd bs=4M if=/dev/sdc of=/tmp/babilonia.img
+1) sudo dd bs=4M if=/dev/sd{c,d} of=/tmp/babilonia.img
 2) (ubuntu host) Make Startup Disk
 3) gzip babilonia.img
 4) connect via ssh

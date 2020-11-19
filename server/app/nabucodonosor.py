@@ -413,6 +413,7 @@ def utility_processor():
         return analytics.status(node_id, port, level)
     def weather_icon(argument):
         switcher = {
+            "none": "wi wi-na",
             "clear-day": "wi wi-day-sunny",
             "clear-night": "wi wi-night-clear",
             "rain": "wi wi-rain",

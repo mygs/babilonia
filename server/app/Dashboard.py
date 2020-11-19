@@ -16,15 +16,27 @@ class Dashboard:
         weather_key = self.cfg["WEATHER_KEY"]
         lat = self.cfg["LATITUDE"]
         long = self.cfg["LONGITUDE"]
-        response = requests.get('https://api.forecast.io/forecast/%s/%s,%s?units=si&lang=pt&exclude=flags,hourly,daily'%(
-                                    weather_key, lat, long))
-        data = response.json()
+        try:
+            response = requests.get('https://api.forecast.io/forecast/%s/%s,%s?units=si&lang=pt&exclude=flags,hourly,daily'%(
+                                        weather_key, lat, long))
+            data = response.json()
+            weather = data['currently']
+        except requests.ConnectionError:
+            self.logger.debug("[Dashboard > Weather] ConnectionError!!!")
+            weather = {}
+            weather['icon']="none"
+            weather['summary']="Offline"
+            weather['apparentTemperature']=00.00
+            weather['humidity']=0.00
+            weather['precipProbability']=0.00
+            weather['precipIntensity']=0.0000
+            weather['windSpeed']=0.00
 
         time_end = dt.datetime.now()
         elapsedTime = time_end - time_start
         self.logger.debug("[Dashboard > Weather] took %s secs",elapsedTime.total_seconds())
 
-        return data['currently']
+        return weather
 
     def raspberrypi(self):
         time_start = dt.datetime.now()
