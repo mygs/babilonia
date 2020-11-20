@@ -104,7 +104,7 @@ void setupWifi() {
 
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
-  //state.remove(); //WORKAROUND
+
   state.load();
   status.updatePorts(state);
   command.updatePorts(state);
@@ -218,5 +218,29 @@ void loop() {
   if(currentMillis - previousMillis > state.getSensorCollectDataPeriod()) {
     previousMillis = currentMillis;
     collectSensorData();
+  }
+
+  // only when you receive data:
+  if (Serial.available() > 0) {
+    // read the incoming byte:
+    int incomingByte = Serial.read();
+    switch(incomingByte){
+      case 27: //ESC
+          Serial.println("[SERIAL] Reseting state to initial configuration!");
+          state.remove();
+          break;
+      case 63: //?
+          Serial.printf("[SERIAL] Hostname: %s\r\n", HOSTNAME);
+          Serial.printf("[SERIAL] Firmware: %s\r\n", FIRMWARE_VERSION);
+          break;
+      case 114: //r
+          Serial.println("[SERIAL] Rebooting ...");
+          ESP.restart();
+          break;
+      default:
+          Serial.print("[SERIAL] Unknown command: ");
+          Serial.println(incomingByte, DEC);
+    }
+
   }
 }
