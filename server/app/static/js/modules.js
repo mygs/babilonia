@@ -24,6 +24,7 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       $("#ID_TRAINING_BTN").val(id);
       $("#ID_PARAMS_FORM").val(id);
       $("#ID_PIN_FORM").val(id);
+      $("#REMOVE_NODE_ID").val(id);
       $("#SENSOR_COLLECT_DATA_PERIOD").val(resp.SENSOR_COLLECT_DATA_PERIOD);
       $("#RETRY_WIFI_CONN_DELAY").val(resp.RETRY_WIFI_CONN_DELAY);
       $("#SERIAL_BAUDRATE").val(resp.SERIAL_BAUDRATE);
@@ -50,8 +51,8 @@ function updateNodeConfiguration() {
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Confirmar",
-    cancelButtonText: "Cancelar",
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
     closeOnConfirm: false
   }, function(isConfirm) {
     if (isConfirm) {
@@ -94,6 +95,39 @@ function trainOasis(status) {
     },
     error: function(response) {
       swal(response.status, "XPTO!", "error");
+    }
+  });
+};
+
+function removeOasis() {
+  swal({
+    title: "Are you sure?",
+    text: "Node will be removed and all data will be erased",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
+    closeOnConfirm: true
+  }, function(isConfirm) {
+    if (isConfirm) {
+      $.ajax({
+        url: '/remove',
+        type: 'POST',
+        data:$('#removeNodeModalForm').serialize(),
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        success: function(response) {
+          console.log(response.status);
+          swal("Success", response.message, "success");
+          $("#updateNodeModal").modal('hide');
+          location.reload();
+        },
+        error: function(response) {
+          swal("Failed", response.message, "error");
+        }
+      });
+    } else {
+      swal("You not removed Oasis!");
     }
   });
 };

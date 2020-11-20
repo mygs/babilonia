@@ -232,6 +232,7 @@ void loop() {
       case 63: //?
           Serial.printf("[SERIAL] Hostname: %s\r\n", HOSTNAME);
           Serial.printf("[SERIAL] Firmware: %s\r\n", FIRMWARE_VERSION);
+          Serial.printf("[SERIAL] IP: %s\r\n", NODE_IP);
           break;
       case 114: //r
           Serial.println("[SERIAL] Rebooting ...");

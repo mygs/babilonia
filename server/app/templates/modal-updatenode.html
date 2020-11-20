@@ -117,6 +117,29 @@
             </div>
           </div>
           <!-- COLLAPSE EDIT PINAGE PARAMS -->
+          <!-- COLLAPSE MISC OPERATION -->
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFour">
+              <h4 class="panel-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                <a class="collapsed">
+                  Miscellaneous operations
+                </a>
+              </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+              <div class="panel-body text-center">
+
+                <div class="btn-group-lg" role="group">
+                  <form id="removeNodeModalForm" name="removeNodeModalForm">
+                    <input type="hidden" name="REMOVE_NODE_ID" id="REMOVE_NODE_ID" value="">
+                    <button type="button" class="btn btn-danger" onclick="removeOasis()">Remove</button>
+                  </form>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- COLLAPSE -->
         </div>
       </div>
       <div class="modal-footer">

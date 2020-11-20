@@ -234,6 +234,17 @@ def module():
 
 
 
+@app.route('/remove', methods=['POST'])
+@login_required
+def node_remove():
+    id = request.form['REMOVE_NODE_ID'];
+    logger.debug("[remove] %s", id)
+    with app.app_context():
+        DB.session.query(OasisData).filter(OasisData.NODE_ID==id).delete()
+        DB.session.query(OasisHeartbeat).filter(OasisHeartbeat.NODE_ID==id).delete()
+        DB.session.commit()
+    return json.dumps({'status':'Success!'});
+
 @app.route('/configuration', methods=['POST'])
 @login_required
 def node_config():
