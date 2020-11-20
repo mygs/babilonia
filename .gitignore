@@ -1,10 +1,8 @@
-luac.cross
 log/
 .Rproj.user/
 *.Rproj
 *.lc
-profile.lua
-InitialConfiguration.h
+InitialConfiguration*.h
 config*.json
 *.db
 *.pyc
