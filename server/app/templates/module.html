@@ -9,6 +9,7 @@
       <button class="btn btn-sm btn-danger btn-header btn-water-all"><i class="wi wi-sprinkle"></i></button>
       {% else %}
       <h2 id="index">Oasis</h2>
+      <a href="/module" class="btn btn-sm btn-warning btn-header"><i class="fa fa-list-ul"></i></a>
       {% endif %}
       <ul class="clearfix" id="sortable">
         {% for module in modules %}
@@ -45,7 +46,7 @@
           {%  set mux6 = 0 %}
           {%  set mux7 = 0 %}
           {% endif %}
-          <li>
+          <li id={{id}}>
             <div class="box {{ status_node(last_update, sensor_collect_data_period) }}">
               <table id="box-header-telemetry">
                 <tr>

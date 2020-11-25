@@ -2,9 +2,14 @@
 $(function() {
   $("#sortable").sortable();
   $("#sortable").disableSelection();
+
 });
 $('#sortable li').addClass('ui-state-default col-md-3 col-sm-4 col-xs-12');
 
+$("#sortable li").dblclick(function(){
+  var node_id = $(this).attr("id");
+  window.location = '/module?id=' + node_id;
+ });
 
 /* MODAL STUFF */
 $('#updateNodeModal').on('show.bs.modal', function(event) {
