@@ -17,7 +17,6 @@ private:
   const char* diffs(JsonVariant _base, JsonVariant _arrived);
   void mergeState(JsonDocument& arrived);
   void saveDefaultState(JsonDocument& state);
-  void loadDefaultState();
 
 public:
   State();
@@ -39,6 +38,7 @@ public:
   int getLightStatus();
   int getFanStatus();
   int getWaterStatus();
+  void loadDefaultState();
 
   //procedures
   void load();

@@ -21,18 +21,18 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
     contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
     success: function(response) {
       var resp = JSON.parse(response);
-      $("#ID_TRAINING_BTN").val(id);
-      $("#ID_PARAMS_FORM").val(id);
-      $("#ID_PIN_FORM").val(id);
-      $("#REMOVE_NODE_ID").val(id);
+      $("#NODE_ID").val(id);
       $("#SENSOR_COLLECT_DATA_PERIOD").val(resp.SENSOR_COLLECT_DATA_PERIOD);
       $("#RETRY_WIFI_CONN_DELAY").val(resp.RETRY_WIFI_CONN_DELAY);
       $("#SERIAL_BAUDRATE").val(resp.SERIAL_BAUDRATE);
       $("#OTA_PORT").val(resp.OTA_PORT);
       $("#MODAL_TITLE").text(id);
-      for( idx = 0 ; idx < 9 ; idx++){
+      for( idx = 0 ; idx <= 8 ; idx++){
         $("#PIN"+idx).val(resp.PIN[idx]);
       }
+      idx = "A";
+      $("#PIN"+idx).val(resp.PIN[idx]);
+
       console.log(resp);
 
     },
@@ -44,10 +44,29 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
   });
 });
 
-function updateNodeConfiguration() {
+function updatePinNodeConfiguration() {
+
+  var config = {
+            "NODE_ID": $("#NODE_ID").val(),
+         "MESSAGE_ID": "man00gui",
+             "CONFIG": {
+               "PIN":{
+                 "A": $("#PINA").val(),
+                 "0": $("#PIN0").val(),
+                 "1": $("#PIN1").val(),
+                 "2": $("#PIN2").val(),
+                 "3": $("#PIN3").val(),
+                 "4": $("#PIN4").val(),
+                 "5": $("#PIN5").val(),
+                 "6": $("#PIN6").val(),
+                 "7": $("#PIN7").val(),
+                 "8": $("#PIN8").val()
+               }
+             }
+        };
   swal({
     title: "Are you sure?",
-    text: "Node will be reboot in order to apply new configuration",
+    text: "Node should be rebooted in order to apply new configuration",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
@@ -59,8 +78,9 @@ function updateNodeConfiguration() {
       $.ajax({
         url: '/updatecfg',
         type: 'POST',
-        data: $('#updateNodeModalForm').serialize(),
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(config),
         success: function(response) {
           console.log(response.status);
           swal("Success", response.message, "success");
@@ -78,7 +98,7 @@ function updateNodeConfiguration() {
 
 function trainOasis(status) {
   var feedback = {
-                     "NODE_ID": $("#ID_TRAINING_BTN")[0].value,
+                     "NODE_ID": $("#NODE_ID").val(),
                   "MESSAGE_ID": "a12dc89b",
          "IRRIGATION_FEEDBACK": status
         };
@@ -114,7 +134,7 @@ function removeOasis() {
       $.ajax({
         url: '/remove',
         type: 'POST',
-        data:$('#removeNodeModalForm').serialize(),
+        data: $("#NODE_ID").serialize(),
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         success: function(response) {
           console.log(response.status);
@@ -128,6 +148,46 @@ function removeOasis() {
       });
     } else {
       swal("You not removed Oasis!");
+    }
+  });
+};
+
+
+function resetNodeConfiguration() {
+
+  var reset = {
+           "NODE_ID": $("#NODE_ID").val(),
+        "MESSAGE_ID": "man00gui",
+           "COMMAND": {"RESET": true}
+        };
+  swal({
+    title: "Are you sure?",
+    text: "All node configuration will be reseted",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
+    closeOnConfirm: true
+  }, function(isConfirm) {
+    if (isConfirm) {
+      $.ajax({
+        url: '/reset',
+        type: 'POST',
+        data: JSON.stringify(reset),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function(response) {
+          console.log(response.status);
+          swal("Success", response.message, "success");
+          $("#updateNodeModal").modal('hide');
+        },
+        error: function(response) {
+          swal("Failed", response.message, "error");
+        }
+      });
+    } else {
+      swal("You not reseted the Node!");
     }
   });
 };

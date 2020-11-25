@@ -209,10 +209,11 @@ void State::saveDefaultState(JsonDocument& state) {
     return;
   } else {
     Serial.println("[STATE] Saving");
-    if (serializeJson(state, file) == 0) {
+    if (serializeJson(currentState, file) == 0) {
       Serial.println("[STATE] Failed to write file");
     }
     file.close();
+    Serial.println("[STATE] Saved");
   }
 }
 

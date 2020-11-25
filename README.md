@@ -176,7 +176,7 @@ mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"MESSAGE_ID\": \"a12dc89b
 
 Node reset command
 ```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39732c\",\"MESSAGE_ID\": \"a12dc89b\",\"COMMAND\": {\"RESET\": true}}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-ed8653\",\"MESSAGE_ID\": \"a12dc89b\",\"COMMAND\": {\"RESET\": true}}"
 ```
 
 Node status message

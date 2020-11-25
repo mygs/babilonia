@@ -7,6 +7,7 @@
       </div>
       <div class="modal-body">
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <input type="hidden" name="NODE_ID" id="NODE_ID" value="">
           <!-- COLLAPSE IRRIGATION FEEDBACK -->
           <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
@@ -18,9 +19,7 @@
             </div>
             <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
               <div class="panel-body text-center">
-
                 <div class="btn-group-lg" role="group">
-                  <input type="hidden" name="ID_TRAINING_BTN" id="ID_TRAINING_BTN" value="">
                   <button type="button" class="btn btn-primary" onclick="trainOasis('wet')">Wet</button>
                   <button type="button" class="btn btn-danger" onclick="trainOasis('dry')">Dry</button>
                 </div>
@@ -68,7 +67,7 @@
                     </div>
                   </div>
                 </form>
-                <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="defaultNodeConfiguration()">Defaults</button>
+                <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="resetNodeConfiguration()">Reset</button>
                 <button type="button" class="btn btn-primary" id="updateNodeConfiguration" onclick="updateNodeConfiguration()">Save</button>
                 <!-- EDIT NODE PARAMS -->
               </div>
@@ -87,20 +86,18 @@
               <div class="panel-body">
                 <!-- EDIT NODE PINAGE -->
                 <div id="alertModal"></div>
-                <form id="updateNodeModalForm" name="updateNodeModalForm">
-                  <input type="hidden" name="ID_PIN_FORM" id="ID_PIN_FORM" value="">
-                  {% for idx in ['A','0','1','2','3','4','5','6','7','8'] %}
+                <form id="updatePinNodeModalForm" name="updatePinNodeModalForm">
+                  {% for idx in ['0','1','2','3','4','5','6','7','8', 'A'] %}
                   <div class="form-group row">
                     <label for="PIN{{idx}}" class="node-cfg-lbl control-label col-sm-6 col-form-label-sm">PIN[{{idx}}]</label>
                     <div class="col-sm-4">
-                      <select class="form-control form-control-sm" name="PIN{{idx}}" id="PIN{{idx}}">
+                      <select class="form-control form-control-sm" name="{{idx}}" id="PIN{{idx}}">
                         <option>CAPACITIVEMOISTURE</option>
                         <option>WATER</option>
                         <option>LIGHT</option>
                         <option>DHT</option>
                         <option>FAN</option>
                         <option>WIND</option>
-                        <option>SOIL.X</option>
                         <option>SW.A</option>
                         <option>SW.B</option>
                         <option>SW.C</option>
@@ -110,8 +107,8 @@
                   </div>
                   {% endfor %}
                 </form>
-                <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="defaultNodeConfiguration()">Defaults</button>
-                <button type="button" class="btn btn-primary" id="updateNodeConfiguration" onclick="updateNodeConfiguration()">Save</button>
+                <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="resetNodeConfiguration()">Reset</button>
+                <button type="button" class="btn btn-primary" id="updateNodeConfiguration" onclick="updatePinNodeConfiguration()">Save</button>
                 <!-- EDIT NODE PINAGE -->
               </div>
             </div>
@@ -131,7 +128,6 @@
 
                 <div class="btn-group-lg" role="group">
                   <form id="removeNodeModalForm" name="removeNodeModalForm">
-                    <input type="hidden" name="REMOVE_NODE_ID" id="REMOVE_NODE_ID" value="">
                     <button type="button" class="btn btn-danger" onclick="removeOasis()">Remove</button>
                   </form>
                 </div>

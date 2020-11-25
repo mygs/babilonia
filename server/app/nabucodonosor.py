@@ -237,7 +237,7 @@ def module():
 @app.route('/remove', methods=['POST'])
 @login_required
 def node_remove():
-    id = request.form['REMOVE_NODE_ID'];
+    id = request.form['NODE_ID'];
     logger.debug("[remove] %s", id)
     with app.app_context():
         DB.session.query(OasisData).filter(OasisData.NODE_ID==id).delete()
@@ -252,9 +252,16 @@ def node_config():
     logger.debug("[configuration] getting config for %s", id)
     #TODO: merge with current config
     #node = database.get_node_cfg(id);
-    DEFAULT_CONFIG_FILE = os.path.join(COMMON_DIR, 'config/oasis.json')
-    with open(DEFAULT_CONFIG_FILE, "r") as default_config:
-        config = json.load(default_config)
+    config = None
+    with app.app_context():
+        latest_db_config = DB.session.query(OasisData).filter(OasisData.NODE_ID==id).order_by(OasisData.TIMESTAMP.desc()).first()
+        config = latest_db_config.config()
+    if config is None:
+        logger.info("[configuration] no configuration was found in database. Getting defaults")
+
+        DEFAULT_CONFIG_FILE = os.path.join(COMMON_DIR, 'config/oasis.json')
+        with open(DEFAULT_CONFIG_FILE, "r") as default_config:
+            config = json.load(default_config)
     return json.dumps(config);
 
 @app.route('/training', methods=['POST'])
@@ -262,6 +269,22 @@ def node_config():
 def training():
     message = request.get_json()
     analytics.feedback_online_process(message)
+    return json.dumps({'status':'Success!'});
+
+@app.route('/updatecfg', methods=['POST'])
+@login_required
+def updatecfg():
+    message = json.dumps(request.get_json())
+    logger.debug("[updatecfg] %s", message)
+    mqtt.publish("/oasis-inbound", message)
+    return json.dumps({'status':'Success!'});
+
+@app.route('/reset', methods=['POST'])
+@login_required
+def reset():
+    message = json.dumps(request.get_json())
+    logger.debug("[reset] %s", message)
+    mqtt.publish("/oasis-inbound", message)
     return json.dumps({'status':'Success!'});
 
 

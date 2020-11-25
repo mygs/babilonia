@@ -66,7 +66,7 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
       JsonObject cmd = inboundData[NODE::COMMAND];
       if(!cmd.isNull()){
         command.execute(state, cmd);
-        if (cmd[NODE::RESET].isNull()){
+        if (cmd[NODE::RESET].isNull() && cmd[NODE::REBOOT].isNull() ){
           state.save(inboundData);
         }
         //adding executed  command to response!

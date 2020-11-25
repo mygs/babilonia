@@ -57,7 +57,8 @@ void Command::execute(State& state, JsonObject& cmd){
           break;
         case IDX_ACTION_RESET:
           if(value){
-            state.remove();
+          //state.remove();
+            state.loadDefaultState();
           }
           break;
       }
