@@ -21,4 +21,6 @@ void setup();
 void heartBeat();
 void collectSensorData();
 void loop();
+void serialCommands();
+void setupNewWifi();
 #endif

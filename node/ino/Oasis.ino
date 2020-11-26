@@ -84,7 +84,40 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
   }
 }
 
+void setupNewWifi() {
+  while (Serial.available()) Serial.read(); // flush
+
+  String ssid = "";
+  String passwd = "";
+  StaticJsonDocument<JSON_MEMORY_SIZE> wifi;
+
+  Serial.println("[SERIAL] Reconfiguring CONNECTION setup ...");
+  Serial.print("Enter WiFi SSID: ");
+  ssid = Serial.readStringUntil('\n');
+  Serial.print("\nEnter WiFi PASSWORD:");
+  passwd = Serial.readStringUntil('\n');
+
+  ssid.trim();
+  passwd.trim();
+
+  Serial.println("");
+  Serial.println("WiFi SSID:" + ssid);
+  Serial.println("WiFi PASSWORD:" + passwd);
+
+  JsonObject CONFIG = wifi.createNestedObject(NODE::CONFIG);
+  CONFIG[NODE::SSID]     = ssid;
+  CONFIG[NODE::PASSWORD] = passwd;
+
+  state.save(wifi);
+
+  Serial.println("[SERIAL] Ended CONNECTION setup ...");
+}
+
 void setupWifi() {
+
+  Serial.print("[WIFI] MAC: ");
+  Serial.println(WiFi.macAddress());
+
   Serial.print("[WIFI] Connecting to SSID: ");
   Serial.println(state.getSsid());
   WiFi.mode(WIFI_STA);
@@ -94,6 +127,8 @@ void setupWifi() {
     Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...",
                   state.getWifiRetryConnectionDelay() / 1000);
     delay(state.getWifiRetryConnectionDelay());
+
+    serialCommands();
     ESP.restart();
   }
 
@@ -113,7 +148,7 @@ void setup() {
   command.execute(state, cmd);
 
   Serial.begin(state.getSerialBaudRate());
-
+  Serial.setTimeout(3000);
   //while (!Serial) continue;
 
   state.print();
@@ -202,6 +237,40 @@ void collectSensorData(){
   postResponse(sensorsTickerData);
 }
 
+void serialCommands() {
+  // only when you receive data:
+  if (Serial.available() > 0) {
+    // read the incoming byte:
+    int incomingByte = Serial.read();
+    switch(incomingByte){
+      case 27: //ESC
+          Serial.println("[SERIAL] Reseting state to initial configuration!");
+          state.remove();
+          break;
+      case 63: //?
+          Serial.printf("[SERIAL] Hostname: %s\r\n", HOSTNAME);
+          Serial.printf("[SERIAL] Firmware: %s\r\n", FIRMWARE_VERSION);
+          Serial.print("[SERIAL] MAC: ");
+          Serial.println(WiFi.macAddress());
+          Serial.printf("[SERIAL] IP: %s\r\n", NODE_IP);
+          break;
+      case 99: //c
+          {
+            setupNewWifi();
+          }
+          break;
+      case 114: //r
+          Serial.println("[SERIAL] Rebooting ...");
+          ESP.restart();
+          break;
+      default:
+          Serial.print("[SERIAL] Unknown command: ");
+          Serial.println(incomingByte, DEC);
+    }
+
+  }
+}
+
 long previousMillis = millis();
 
 /* DO NOT CHANGE this function name - Arduino hook */
@@ -220,28 +289,5 @@ void loop() {
     collectSensorData();
   }
 
-  // only when you receive data:
-  if (Serial.available() > 0) {
-    // read the incoming byte:
-    int incomingByte = Serial.read();
-    switch(incomingByte){
-      case 27: //ESC
-          Serial.println("[SERIAL] Reseting state to initial configuration!");
-          state.remove();
-          break;
-      case 63: //?
-          Serial.printf("[SERIAL] Hostname: %s\r\n", HOSTNAME);
-          Serial.printf("[SERIAL] Firmware: %s\r\n", FIRMWARE_VERSION);
-          Serial.printf("[SERIAL] IP: %s\r\n", NODE_IP);
-          break;
-      case 114: //r
-          Serial.println("[SERIAL] Rebooting ...");
-          ESP.restart();
-          break;
-      default:
-          Serial.print("[SERIAL] Unknown command: ");
-          Serial.println(incomingByte, DEC);
-    }
-
-  }
+  serialCommands();
 }
