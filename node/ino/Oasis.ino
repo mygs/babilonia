@@ -97,11 +97,11 @@ void setupNewWifi() {
   Serial.print("\nEnter WiFi PASSWORD:");
   passwd = Serial.readStringUntil('\n');
 
+  //removing unecessary ending char
   ssid.trim();
   passwd.trim();
 
-  Serial.println("");
-  Serial.println("WiFi SSID:" + ssid);
+  Serial.println("\nWiFi SSID:" + ssid);
   Serial.println("WiFi PASSWORD:" + passwd);
 
   JsonObject CONFIG = wifi.createNestedObject(NODE::CONFIG);
@@ -110,7 +110,7 @@ void setupNewWifi() {
 
   state.save(wifi);
 
-  Serial.println("[SERIAL] Ended CONNECTION setup ...");
+  Serial.println("[SERIAL] Ended CONNECTION setup");
 }
 
 void setupWifi() {
@@ -128,7 +128,8 @@ void setupWifi() {
                   state.getWifiRetryConnectionDelay() / 1000);
     delay(state.getWifiRetryConnectionDelay());
 
-    serialCommands();
+    serialCommands(); // just in case wifi was badly configured
+
     ESP.restart();
   }
 
