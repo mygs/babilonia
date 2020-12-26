@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import json
 import time
-from Models import *
-from sqlalchemy import func, and_
+import json
 import logging
+from Models import DB, OasisAnalytic
+from sqlalchemy import func, and_
 
 class SoilMoistureAnalytics:
 
@@ -66,7 +66,7 @@ class SoilMoistureAnalytics:
                                 NODE_ID=node_id,
                                 TYPE=type,
                                 DATA=feedback)
-        DB.session.add(data)
+        DB.session.merge(data)
         '''
 
         latest = DB.session.query(func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).filter(
@@ -81,6 +81,12 @@ class SoilMoistureAnalytics:
         if status == "dry":
             self.logger.debug("[STATUS]>>>>>>>>DRY<<<<<<<<<")
         '''
+    def generate_moisture_req_msg(self, training_feedback_msg):
+        return json.dumps({
+            'NODE_ID':training_feedback_msg["NODE_ID"],
+            'MESSAGE_ID':training_feedback_msg["MESSAGE_ID"],
+            'STATUS': ["CAPACITIVEMOISTURE"]
+            })
 
     def default_param(self):
         return {

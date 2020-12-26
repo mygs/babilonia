@@ -201,7 +201,7 @@ def get_modules_data(id):
 @cache.cached()
 @login_required
 def index():
-    latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LASTEST_BEAT')).all()
+    latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LATEST_BEAT')).all()
     modules = get_modules_data(None).all()
     weather = dashboard.weather_currently()
     raspberrypi = dashboard.raspberrypi()
@@ -250,8 +250,7 @@ def node_remove():
 def node_config():
     id = request.form['id'];
     logger.debug("[configuration] getting config for %s", id)
-    #TODO: merge with current config
-    #node = database.get_node_cfg(id);
+
     config = None
     with app.app_context():
         latest_db_config = DB.session.query(OasisData).filter(OasisData.NODE_ID==id).order_by(OasisData.TIMESTAMP.desc()).first()
@@ -269,6 +268,7 @@ def node_config():
 def training():
     message = request.get_json()
     analytics.feedback_online_process(message)
+    mqtt.publish("/oasis-inbound", analytics.generate_moisture_req_msg(message))
     return json.dumps({'status':'Success!'});
 
 @app.route('/updatecfg', methods=['POST'])
@@ -302,14 +302,14 @@ def command():
     message = json.dumps(request.get_json())
     logger.debug("[command] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({'status':'Success!'});
+    return json.dumps({'status':'Success!'})
 
 @app.route('/command-alexa', methods=['POST'])
 def command_alexa():
     message = request.get_json()
     logger.debug("[command-alexa] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({'status':'Success!'});
+    return json.dumps({'status':'Success!'})
 
 @app.route('/firmware', methods=['POST'])
 @login_required
@@ -324,7 +324,7 @@ def firmware_action():
                     "STATUS": ["NODE"]
                    }
         mqtt.publish("/oasis-inbound", json.dumps(message))
-        return json.dumps({'status':'success', 'message': 'backup request for '+node_id});
+        return json.dumps({'status':'success', 'message': 'backup request for '+node_id})
 
     elif action ==  "upgrade":
         ESP_ADDR = "ESP_ADDR="+message["NODE_IP"]
@@ -335,8 +335,8 @@ def firmware_action():
         result = str(ota_output.communicate()[0])
         if "failed" in result:
                 #/home/msaito/github/makeEspArduino/makeEspArduino.mk:306: recipe for target 'ota' failed
-                return json.dumps({'status':'error','message': 'upgrade firmware for '+node_id});
-        return json.dumps({'status':'success', 'message': 'upgrade firmware for '+node_id});
+                return json.dumps({'status':'error','message': 'upgrade firmware for '+node_id})
+        return json.dumps({'status':'success', 'message': 'upgrade firmware for '+node_id})
 
 
 

@@ -56,7 +56,7 @@ function updatePinNodeConfiguration() {
 
   var config = {
             "NODE_ID": $("#NODE_ID").val(),
-         "MESSAGE_ID": "man00gui",
+         "MESSAGE_ID": UUID(),
              "CONFIG": {
                "PIN":{
                  "A": $("#PINA").val(),
@@ -107,7 +107,7 @@ function updatePinNodeConfiguration() {
 function trainOasis(status) {
   var feedback = {
                      "NODE_ID": $("#NODE_ID").val(),
-                  "MESSAGE_ID": "a12dc89b",
+                  "MESSAGE_ID": UUID(),
          "IRRIGATION_FEEDBACK": status
         };
 
@@ -165,7 +165,7 @@ function resetNodeConfiguration() {
 
   var reset = {
            "NODE_ID": $("#NODE_ID").val(),
-        "MESSAGE_ID": "man00gui",
+        "MESSAGE_ID": UUID(),
            "COMMAND": {"RESET": true}
         };
   swal({

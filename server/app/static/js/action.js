@@ -1,7 +1,7 @@
 $(".btn-refresh-all").on("click", function() {
   var status = {
            "NODE_ID": "ALL",
-        "MESSAGE_ID": "man00gui",
+        "MESSAGE_ID": UUID(),
             "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER", "CAPACITIVEMOISTURE"]
         };
 
@@ -25,7 +25,7 @@ $(".btn-water-all").on("click", function() {
     Cookies.set('WATER_ALL', '0')
   var status = {
             "NODE_ID": "ALL",
-         "MESSAGE_ID": "man00gui",
+         "MESSAGE_ID": UUID(),
             "COMMAND": {"WATER": (Cookies.get('WATER_ALL') == "1") ? false : true /* invert! */}
         };
 
@@ -91,7 +91,7 @@ $(".btn-fan").on("click", function() {
   var param = ($('#fan_' + id).html() == "1") ? False : True; /* invert! */
   var command = {
            "NODE_ID": id,
-        "MESSAGE_ID": "man00gui",
+        "MESSAGE_ID": UUID(),
             "COMMAND": {"FAN": param}
         };
   var img = '/static/img/fan.png';
@@ -106,7 +106,7 @@ $(".btn-water").on("click", function() {
   var water = $('#irrigation_' + id).val();
   var status = {
            "NODE_ID": id,
-        "MESSAGE_ID": "man00gui",
+        "MESSAGE_ID": UUID(),
            "COMMAND": {"WATER": (water == "1") ? false : true /* invert! */}
         };
 
@@ -139,7 +139,7 @@ $(".btn-restart").on("click", function() {
   var id = $(this).data('id')
   var command = {
            "NODE_ID": id,
-        "MESSAGE_ID": "man00gui",
+        "MESSAGE_ID": UUID(),
             "COMMAND": {"REBOOT": true}
         };
   var img = '/static/img/restart.png';
@@ -152,7 +152,7 @@ $(".btn-restart").on("click", function() {
 $(".btn-refresh").on("click", function() {
   var status = {
            "NODE_ID": $(this).data('id'),
-        "MESSAGE_ID": "man00gui",
+        "MESSAGE_ID": UUID(),
             "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER", "CAPACITIVEMOISTURE"]
         };
 
