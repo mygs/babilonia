@@ -37,3 +37,7 @@ function regionSelector(){
 function UUID(){
   return Math.random().toString(16).slice(2);
 };
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
