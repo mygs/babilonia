@@ -3,11 +3,11 @@
 import os
 import time
 import subprocess
-import git
 import json
 import datetime as dt
 import logging
 import logging.config
+import git
 from Models import *
 from Dashboard import *
 from SoilMoistureAnalytics import *
@@ -22,8 +22,7 @@ from flask_assets import Environment, Bundle
 from sqlalchemy import func, and_
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_caching import Cache
-
-
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from about import about_system
 from management import management
@@ -158,8 +157,7 @@ def login():
             browser = request.headers.get('User-Agent')
             if "Lynx" in browser:
                 return redirect('/about')
-            else:
-                return redirect('/')
+            return redirect('/')
     return render_template('login.html', error=error)
 
 
@@ -176,7 +174,7 @@ def page_not_found(e):
     return render_template('misc/404.html'), 404
 # handle login failed
 @app.errorhandler(401)
-def page_not_found(e):
+def redirect_to_login_page(e):
     return redirect('/login')
 
 def get_modules_data(id):
@@ -193,8 +191,8 @@ def get_modules_data(id):
             modules = DB.session.query(OasisData).filter(OasisData.NODE_ID == id).order_by(OasisData.TIMESTAMP.desc()).limit(1)
 
         time_end = dt.datetime.now()
-        elapsedTime = time_end - time_start
-        logger.debug("[database] call database for module page took %s secs",elapsedTime.total_seconds())
+        elapsed_time = time_end - time_start
+        logger.debug("[database] call database for module page took %s secs",elapsed_time.total_seconds())
         return modules
 
 @app.route('/')
@@ -237,18 +235,18 @@ def module():
 @app.route('/remove', methods=['POST'])
 @login_required
 def node_remove():
-    id = request.form['NODE_ID'];
+    id = request.form['NODE_ID']
     logger.debug("[remove] %s", id)
     with app.app_context():
         DB.session.query(OasisData).filter(OasisData.NODE_ID==id).delete()
         DB.session.query(OasisHeartbeat).filter(OasisHeartbeat.NODE_ID==id).delete()
         DB.session.commit()
-    return json.dumps({'status':'Success!'});
+    return json.dumps({'status':'Success!'})
 
 @app.route('/configuration', methods=['POST'])
 @login_required
 def node_config():
-    id = request.form['id'];
+    id = request.form['id']
     logger.debug("[configuration] getting config for %s", id)
 
     config = None
@@ -261,7 +259,7 @@ def node_config():
         DEFAULT_CONFIG_FILE = os.path.join(COMMON_DIR, 'config/oasis.json')
         with open(DEFAULT_CONFIG_FILE, "r") as default_config:
             config = json.load(default_config)
-    return json.dumps(config);
+    return json.dumps(config)
 
 @app.route('/training', methods=['POST'])
 @login_required
@@ -269,7 +267,7 @@ def training():
     message = request.get_json()
     analytics.feedback_online_process(message)
     mqtt.publish("/oasis-inbound", analytics.generate_moisture_req_msg(message))
-    return json.dumps({'status':'Success!'});
+    return json.dumps({'status':'Success!'})
 
 @app.route('/updatecfg', methods=['POST'])
 @login_required
@@ -277,7 +275,7 @@ def updatecfg():
     message = json.dumps(request.get_json())
     logger.debug("[updatecfg] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({'status':'Success!'});
+    return json.dumps({'status':'Success!'})
 
 @app.route('/reset', methods=['POST'])
 @login_required
@@ -285,7 +283,7 @@ def reset():
     message = json.dumps(request.get_json())
     logger.debug("[reset] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({'status':'Success!'});
+    return json.dumps({'status':'Success!'})
 
 
 @app.route('/status', methods=['POST'])
@@ -294,7 +292,7 @@ def refresh():
     message = json.dumps(request.get_json())
     logger.debug("[status] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({'status':'Success!'});
+    return json.dumps({'status':'Success!'})
 
 @app.route('/command', methods=['POST'])
 @login_required
@@ -348,7 +346,7 @@ def firmware_action():
                    }
         logger.debug("[firmware-restore] TIMESTAMP=%s, CONFIG=%s",config.TIMESTAMP, message)
         mqtt.publish("/oasis-inbound", json.dumps(message))
-        return json.dumps({'status':'success', 'message': 'restore request for '+node_id});
+        return json.dumps({'status':'success', 'message': 'restore request for '+node_id})
     return json.dumps({'status':'error'}), 403;
 
 @app.route("/firmware", methods=['GET'])
@@ -362,8 +360,8 @@ def firmware():
         modules = DB.session.query(OasisData).join(
             latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
         time_end = dt.datetime.now()
-        elapsedTime = time_end - time_start
-        logger.debug("[database] call database for firmware page took %s secs",elapsedTime.total_seconds())
+        elapsed_time = time_end - time_start
+        logger.debug("[database] call database for firmware page took %s secs",elapsed_time.total_seconds())
 
         return render_template('firmware/firmware.html', modules=modules)
 
@@ -410,9 +408,9 @@ def webhook():
         else:
             logger.warn("[webhook] auto updates not applied")
 
-        return json.dumps({'status':'request!'});
+        return json.dumps({'status':'request!'})
 
-    return json.dumps({'status':'request was ignored!'});
+    return json.dumps({'status':'request was ignored!'})
 
 ###############################################################################
 ################################# PROCESSORS ##################################
@@ -519,14 +517,30 @@ def handle_mqtt_message(client, userdata, msg):
                 data.capacitive_moisture(filtered)
                 logger.debug("[data-filtered] %s", filtered)
 
-        jsonData = data.toJson()
-        socketio.emit('ws-oasis-data', data=jsonData)
-        logger.debug("[data] %s", jsonData)
+        json_data = data.toJson()
+        socketio.emit('ws-oasis-data', data=json_data)
+        logger.debug("[data] %s", json_data)
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
     logger.debug("[MQTT] %i, %s", level, buf)
 
+###############################################################################
+###############################  SCHEDULE #####################################
+###############################################################################
+#https://medium.com/better-programming/introduction-to-apscheduler-86337f3bb4a6
+""" TODO SMART IRRIGATION
+sched = BackgroundScheduler(daemon=True)
+
+def irrigation():
+    global mqtt
+    global analytics
+    sched.print_jobs()
+    mqtt.publish("/schedule-test", "hellllooo")
+
+sched.add_job(irrigation,'cron', second='*/5', minute='*', hour="*")
+sched.start()
+"""
 ###############################################################################
 ##################################  START #####################################
 ###############################################################################
