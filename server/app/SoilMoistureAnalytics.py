@@ -145,3 +145,4 @@ class SoilMoistureAnalytics:
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[refresh_moisture_data_cache] took %s secs",elapsed_time.total_seconds())
+        #print(self.moisture_data_cache['oasis-39732c'])

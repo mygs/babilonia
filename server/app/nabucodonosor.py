@@ -538,7 +538,7 @@ def moisture_monitor():
     global analytics
     global socketio
 
-    sched.print_jobs()
+    #sched.print_jobs()
     analytics.refresh_moisture_data_cache()
     #socketio.emit('ws-monitor', data="XXXXXXX")
     #mqtt.publish("/schedule-test", "hellllooo")
