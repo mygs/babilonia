@@ -8,8 +8,14 @@ import pandas
 from Models import DB, OasisAnalytic
 from sqlalchemy import create_engine, func, and_
 
+MOISTURE_PROBES = ['MUX0','MUX1','MUX2','MUX3','MUX4','MUX5','MUX7']
+ROLLING_WINDOW = 30 # RUPTURE_LEVEL_THRESHOLD and PCT_CHANGE_PERIOD are affected by this value
+RUPTURE_LEVEL_THRESHOLD = 0.015
+PCT_CHANGE_PERIOD = 10 # RUPTURE_LEVEL_THRESHOLD is affected by this value
+HEARTBEAT_PERIOD=30 # (seconds) OMG 2 heartbeats
+MOISTURE_DATA_PERIOD = 3600 # (seconds)
+
 class SoilMoistureAnalytics:
-    HEARTBEAT_PERIOD=15000/1000 #seconds
 
     def __init__(self, logger, cfg):
         self.noise_filter_cache = {}
@@ -89,23 +95,60 @@ class SoilMoistureAnalytics:
             'MUX_PORT_THRESHOLD_NOSOIL':self.NOSOIL
             }
 
-    def detect_rupture(self):
-        return json.dumps({
-            'NODE_ID': "NODE",
-            'SEVERITY':"WARN",
-            'MESSAGE': "BLABLABLA"
-            })
+    def irrigation_advice(self):
+        # 1.0 Refresh cache
+        self.refresh_moisture_data_cache()
+
+        for oasis in self.moisture_data_cache:
+            # 2.0 Detect rupture
+            ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
+            print(ruptures)
+            # TODO: 2.1 Rupture alert
+            # TODO: 3.0 Linear regression
+            # TODO: 4.0 Weather forecast
+            # TODO: 5.0 Check latest moisture level
+            # TODO: 6.0 Irrigation advice
+            # TODO: 7.0 Clear cache
+
+
+    def detect_rupture_oasis(self, data):
+        time_start = dt.datetime.now()
+        # Filtering the noise ...
+        data_filtered = data.rolling(ROLLING_WINDOW).mean().dropna()
+        #Percentage change between the current and a prior element
+        # Finding negative or positive slopes ...
+        pct_change_series = data_filtered.pct_change(periods=PCT_CHANGE_PERIOD).dropna()
+        ruptures={}
+        min_probes={}
+        max_probes={}
+        for mux in MOISTURE_PROBES:
+            min_entry={}
+            min_entry['epoch'] = pct_change_series[mux].idxmin()
+            min_entry['value'] = pct_change_series[mux][min_entry['epoch']]
+            if min_entry['value'] < -RUPTURE_LEVEL_THRESHOLD:
+                min_probes[mux] = min_entry
+
+            max_entry={}
+            max_entry['epoch'] = pct_change_series[mux].idxmax()
+            max_entry['value'] = pct_change_series[mux][max_entry['epoch']]
+            if max_entry['value'] > RUPTURE_LEVEL_THRESHOLD:
+                max_probes[mux] = max_entry
+        ruptures['negative'] = pandas.DataFrame(data=min_probes).T
+        ruptures['positive'] =  pandas.DataFrame(data=max_probes).T
+
+        time_end = dt.datetime.now()
+        elapsed_time = time_end - time_start
+        self.logger.info("[detect_rupture_oasis] took %s secs",elapsed_time.total_seconds())
+
+        return ruptures
 
     def clean_moisture_data_cache(self):
         self.moisture_data_cache = {}
 
     def refresh_moisture_data_cache(self):
         time_start = dt.datetime.now()
-        HEARTBEAT_PERIOD=30 # (seconds) OMG 2 heartbeats
-        MOISTURE_DATA_PERIOD = 3600 # (seconds)
 
         self.clean_moisture_data_cache()
-
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
         ############# get alive nodes #############
         now = int(time.time())
