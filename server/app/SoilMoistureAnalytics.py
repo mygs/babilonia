@@ -2,27 +2,33 @@
 # -*- coding: utf-8 -*-
 import time
 import json
+import datetime as dt
 import logging
+import pandas
 from Models import DB, OasisAnalytic
-from sqlalchemy import func, and_
+from sqlalchemy import create_engine, func, and_
 
 class SoilMoistureAnalytics:
+    HEARTBEAT_PERIOD=15000/1000 #seconds
 
-    def __init__(self, logger, defaults):
-        self.cache = {}
+    def __init__(self, logger, cfg):
+        self.noise_filter_cache = {}
+        self.moisture_data_cache = {}
         self.logger = logger
         #default values
         self.WINDOW_SIZE = 5
         self.EXPIRE = 3600 # 1 hour
-        self.OFFLINE = defaults["OFFLINE"]
-        self.WET = defaults["WET"]
-        self.NOSOIL = defaults["NOSOIL"]
+        self.OFFLINE = cfg['MUX_PORT_THRESHOLD']["OFFLINE"]
+        self.WET = cfg['MUX_PORT_THRESHOLD']["WET"]
+        self.NOSOIL = cfg['MUX_PORT_THRESHOLD']["NOSOIL"]
         self.SCALE = int(self.NOSOIL - self.OFFLINE)
+        self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
 
 
     def gui_noise_filter(self, node_id, timestamp, moisture):
-        cache_entry = self.cache.get(node_id)
+        cache_entry = self.noise_filter_cache.get(node_id)
         if cache_entry == None or (timestamp - cache_entry['TIMESTAMP']) > self.EXPIRE:
+            self.logger.debug("[SoilMoistureAnalytics] new or expired cache")
             cache_entry = { 'SAMPLE':0,
                             'TIMESTAMP':timestamp,
                             'AVERAGE':moisture}
@@ -36,9 +42,9 @@ class SoilMoistureAnalytics:
             avg_mux = AVERAGE.get(idx,0)
             AVERAGE[idx] = int((avg_mux*(N-1) + moisture[idx])/N)
 
-        self.cache[node_id] = { 'SAMPLE':SAMPLE,
-                                'TIMESTAMP':timestamp,
-                                'AVERAGE':AVERAGE}
+        self.noise_filter_cache[node_id] = { 'SAMPLE':SAMPLE,
+                                          'TIMESTAMP':timestamp,
+                                            'AVERAGE':AVERAGE}
         return AVERAGE
 
     def status(self, node_id, port, level):
@@ -67,20 +73,7 @@ class SoilMoistureAnalytics:
                                 TYPE=type,
                                 DATA=feedback)
         DB.session.merge(data)
-        '''
 
-        latest = DB.session.query(func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).filter(
-                    OasisData.DATA['DATA']['NODE'].isnot(None)).filter(
-                        OasisData.NODE_ID==node_id).group_by(OasisData.NODE_ID).subquery('t2')
-        latest_node_data = DB.session.query(OasisData).join(
-            latest, and_(OasisData.TIMESTAMP == latest.c.TIMESTAMP))
-        self.logger.debug("[feedback-data] %s", latest_node_data)
-
-        if status == "wet":
-            self.logger.debug("[STATUS]>>>>>>>>WET<<<<<<<<<")
-        if status == "dry":
-            self.logger.debug("[STATUS]>>>>>>>>DRY<<<<<<<<<")
-        '''
     def generate_moisture_req_msg(self, training_feedback_msg):
         return json.dumps({
             'NODE_ID':training_feedback_msg["NODE_ID"],
@@ -95,3 +88,59 @@ class SoilMoistureAnalytics:
             'MUX_PORT_THRESHOLD_SCALE':self.SCALE,
             'MUX_PORT_THRESHOLD_NOSOIL':self.NOSOIL
             }
+
+    def detect_rupture(self):
+        return json.dumps({
+            'NODE_ID': "NODE",
+            'SEVERITY':"WARN",
+            'MESSAGE': "BLABLABLA"
+            })
+
+    def clean_moisture_data_cache(self):
+        self.moisture_data_cache = {}
+
+    def refresh_moisture_data_cache(self):
+        time_start = dt.datetime.now()
+        HEARTBEAT_PERIOD=30 # (seconds) OMG 2 heartbeats
+        MOISTURE_DATA_PERIOD = 3600 # (seconds)
+
+        self.clean_moisture_data_cache()
+
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        ############# get alive nodes #############
+        now = int(time.time())
+        period_for_last_heartbeat = int(now - HEARTBEAT_PERIOD)
+        period_for_last_moisture_data = int(now - MOISTURE_DATA_PERIOD)
+
+        nodes = pandas.read_sql_query(
+            """
+            SELECT NODE_ID
+            FROM OASIS_HEARTBEAT
+            WHERE LAST_UPDATE >= {}
+            """.format(period_for_last_heartbeat),
+            engine)
+        for index,node in nodes.iterrows():
+            #### get moisture data from alive nodes ####
+            node_id = node['NODE_ID']
+
+            self.moisture_data_cache[node_id] = pandas.read_sql_query(
+                """
+                SELECT  TIMESTAMP,
+                        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0' AS MUX0,
+                        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1' AS MUX1,
+                        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2' AS MUX2,
+                        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3' AS MUX3,
+                        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4' AS MUX4,
+                        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5' AS MUX5,
+                        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6' AS MUX6,
+                        DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
+                FROM OASIS_DATA
+                WHERE NODE_ID = '{}'
+                      AND  json_length(DATA->'$.DATA.CAPACITIVEMOISTURE') > 0
+                      AND TIMESTAMP >= {}
+                ORDER BY TIMESTAMP asc
+                """.format(node_id, period_for_last_moisture_data),
+                engine)
+        time_end = dt.datetime.now()
+        elapsed_time = time_end - time_start
+        self.logger.info("[refresh_moisture_data_cache] took %s secs",elapsed_time.total_seconds())

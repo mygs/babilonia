@@ -41,6 +41,7 @@ if os.uname()[4].startswith("arm"):
     gpio.setwarnings(False)
     PIN_PUMP_MANAGER=8
     gpio.setup(PIN_PUMP_MANAGER, gpio.OUT, initial=gpio.LOW)
+
 ###### create console handler and set level to debug
 SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR=os.path.join(SERVER_HOME, '../log')
@@ -52,6 +53,7 @@ with open(os.path.join(SERVER_HOME, 'logging.json'), "r") as logging_json_file:
         os.makedirs(LOG_DIR)
     logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
+
 ###### reading version
 VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
                                 cwd=SERVER_HOME).strip()
@@ -84,7 +86,7 @@ cache.init_app(app)
 mqtt = Mqtt(app)
 DB.init_app(app)
 dashboard = Dashboard(logger, cfg)
-analytics = SoilMoistureAnalytics(logger, cfg['MUX_PORT_THRESHOLD'])
+analytics = SoilMoistureAnalytics(logger, cfg)
 socketio = SocketIO(app)
 assets = Environment(app)
 login_manager = LoginManager()
@@ -529,18 +531,23 @@ def handle_logging(client, userdata, level, buf):
 ###############################  SCHEDULE #####################################
 ###############################################################################
 #https://medium.com/better-programming/introduction-to-apscheduler-86337f3bb4a6
-""" TODO SMART IRRIGATION
 sched = BackgroundScheduler(daemon=True)
 
-def irrigation():
+def moisture_monitor():
     global mqtt
     global analytics
-    sched.print_jobs()
-    mqtt.publish("/schedule-test", "hellllooo")
+    global socketio
 
-sched.add_job(irrigation,'cron', second='*/5', minute='*', hour="*")
+    sched.print_jobs()
+    analytics.refresh_moisture_data_cache()
+    #socketio.emit('ws-monitor', data="XXXXXXX")
+    #mqtt.publish("/schedule-test", "hellllooo")
+
+
+sched.add_job(moisture_monitor,'cron', second='*/10')
+#sched.add_job(moisture_monitor,'cron', hour="*/1")
+#sched.add_job(irrigation,'cron', second='*/5', minute='*', hour="*")
 sched.start()
-"""
 ###############################################################################
 ##################################  START #####################################
 ###############################################################################
