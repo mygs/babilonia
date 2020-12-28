@@ -141,6 +141,7 @@ class SoilMoistureAnalytics:
                 ORDER BY TIMESTAMP asc
                 """.format(node_id, period_for_last_moisture_data),
                 engine)
+            self.moisture_data_cache[node_id].set_index('TIMESTAMP', inplace=True)
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[refresh_moisture_data_cache] took %s secs",elapsed_time.total_seconds())
