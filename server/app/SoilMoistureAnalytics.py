@@ -111,6 +111,7 @@ class SoilMoistureAnalytics:
             lr = self.linear_regressor(self.moisture_data_cache[oasis])
             print(lr)
             # TODO: 4.0 Weather forecast
+            # TODO: 4.1 Weather alert
             # TODO: 5.0 Check latest moisture level
             # TODO: 6.0 Irrigation advice
             # TODO: 7.0 Clear cache
@@ -149,8 +150,8 @@ class SoilMoistureAnalytics:
             max_entry['value'] = pct_change_series[mux][max_entry['epoch']]
             if max_entry['value'] > RUPTURE_LEVEL_THRESHOLD:
                 max_probes[mux] = max_entry
-        ruptures['negative'] = pandas.DataFrame(data=min_probes).T
-        ruptures['positive'] =  pandas.DataFrame(data=max_probes).T
+        ruptures['downward'] = pandas.DataFrame(data=min_probes).T
+        ruptures['upward'] =  pandas.DataFrame(data=max_probes).T
 
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
