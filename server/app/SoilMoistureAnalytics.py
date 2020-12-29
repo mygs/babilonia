@@ -5,10 +5,11 @@ import json
 import datetime as dt
 import logging
 import pandas
+from sklearn.linear_model import LinearRegression
 from Models import DB, OasisAnalytic
 from sqlalchemy import create_engine, func, and_
 
-MOISTURE_PROBES = ['MUX0','MUX1','MUX2','MUX3','MUX4','MUX5','MUX7']
+MOISTURE_PROBES = ['MUX0','MUX1','MUX2','MUX3','MUX4','MUX5','MUX6','MUX7']
 ROLLING_WINDOW = 30 # RUPTURE_LEVEL_THRESHOLD and PCT_CHANGE_PERIOD are affected by this value
 RUPTURE_LEVEL_THRESHOLD = 0.015
 PCT_CHANGE_PERIOD = 10 # RUPTURE_LEVEL_THRESHOLD is affected by this value
@@ -98,26 +99,41 @@ class SoilMoistureAnalytics:
     def irrigation_advice(self):
         # 1.0 Refresh cache
         self.refresh_moisture_data_cache()
+        # 1.5 Apply moving average to reduce noise
+        self.filter_noise_in_moisture_data_cache()
 
         for oasis in self.moisture_data_cache:
             # 2.0 Detect rupture
             ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
-            print(ruptures)
+            #print(ruptures)
             # TODO: 2.1 Rupture alert
             # TODO: 3.0 Linear regression
+            lr = self.linear_regressor(self.moisture_data_cache[oasis])
+            print(lr)
             # TODO: 4.0 Weather forecast
             # TODO: 5.0 Check latest moisture level
             # TODO: 6.0 Irrigation advice
             # TODO: 7.0 Clear cache
 
+    def linear_regressor(self, data):
+        X = data.index.to_numpy().reshape(-1, 1)
+        entries={}
+        for mux in MOISTURE_PROBES:
+            Y = data[mux].values.reshape(-1, 1)
+            linear_regressor = LinearRegression()  # create object for the class
+            linear_regressor.fit(X, Y)  # perform linear regression
+            Y_pred = linear_regressor.predict(X)  # make predictions
+            entry={}
+            entry['score']=linear_regressor.score(X,Y)
+            entry['coef'] =linear_regressor.coef_[0][0]
+            entries[mux] = entry
+        return pandas.DataFrame(data=entries).T # transpose
 
     def detect_rupture_oasis(self, data):
         time_start = dt.datetime.now()
-        # Filtering the noise ...
-        data_filtered = data.rolling(ROLLING_WINDOW).mean().dropna()
         #Percentage change between the current and a prior element
         # Finding negative or positive slopes ...
-        pct_change_series = data_filtered.pct_change(periods=PCT_CHANGE_PERIOD).dropna()
+        pct_change_series = data.pct_change(periods=PCT_CHANGE_PERIOD).dropna()
         ruptures={}
         min_probes={}
         max_probes={}
@@ -139,11 +155,18 @@ class SoilMoistureAnalytics:
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[detect_rupture_oasis] took %s secs",elapsed_time.total_seconds())
-
         return ruptures
 
     def clean_moisture_data_cache(self):
         self.moisture_data_cache = {}
+
+    def filter_noise_in_moisture_data_cache(self):
+        time_start = dt.datetime.now()
+        for oasis in self.moisture_data_cache:
+            self.moisture_data_cache[oasis] = self.moisture_data_cache[oasis].rolling(ROLLING_WINDOW).mean().dropna()
+        time_end = dt.datetime.now()
+        elapsed_time = time_end - time_start
+        self.logger.info("[filter_noise_in_moisture_data_cache] took %s secs",elapsed_time.total_seconds())
 
     def refresh_moisture_data_cache(self):
         time_start = dt.datetime.now()
