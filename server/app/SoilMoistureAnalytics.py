@@ -5,6 +5,7 @@ import json
 import datetime as dt
 import logging
 import pandas
+import requests
 from sklearn.linear_model import LinearRegression
 from Models import DB, OasisAnalytic
 from sqlalchemy import create_engine, func, and_
@@ -15,6 +16,8 @@ RUPTURE_LEVEL_THRESHOLD = 0.015
 PCT_CHANGE_PERIOD = 10 # RUPTURE_LEVEL_THRESHOLD is affected by this value
 HEARTBEAT_PERIOD=30 # (seconds) OMG 2 heartbeats
 MOISTURE_DATA_PERIOD = 3600 # (seconds)
+PRECIPITATION_PROBABILITY_THRESHOLD=0.25
+PRECIPITATION_FORECAST_TIME_AHEAD=3*3600
 
 class SoilMoistureAnalytics:
 
@@ -22,6 +25,7 @@ class SoilMoistureAnalytics:
         self.noise_filter_cache = {}
         self.moisture_data_cache = {}
         self.logger = logger
+        self.cfg = cfg
         #default values
         self.WINDOW_SIZE = 5
         self.EXPIRE = 3600 # 1 hour
@@ -105,12 +109,14 @@ class SoilMoistureAnalytics:
         for oasis in self.moisture_data_cache:
             # 2.0 Detect rupture
             ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
-            #print(ruptures)
+            print(ruptures)
             # TODO: 2.1 Rupture alert
-            # TODO: 3.0 Linear regression
+            # 3.0 Linear regression
             lr = self.linear_regressor(self.moisture_data_cache[oasis])
             print(lr)
-            # TODO: 4.0 Weather forecast
+            # 4.0 Weather forecast
+            will_rain = self.will_rain()
+            print("will_rain: "+str(will_rain))
             # TODO: 4.1 Weather alert
             # TODO: 5.0 Check latest moisture level
             # TODO: 6.0 Irrigation advice
@@ -157,6 +163,39 @@ class SoilMoistureAnalytics:
         elapsed_time = time_end - time_start
         self.logger.info("[detect_rupture_oasis] took %s secs",elapsed_time.total_seconds())
         return ruptures
+
+    def will_rain(self):
+        time_start = dt.datetime.now()
+        will_rain = False
+        weather_key = self.cfg["WEATHER_KEY"]
+        lat = self.cfg["LATITUDE"]
+        long = self.cfg["LONGITUDE"]
+        try:
+            response = requests.get(
+            'https://api.forecast.io/forecast/%s/%s,%s?units=si&lang=pt&exclude=currently,flags,alerts,daily'
+            %(weather_key, lat, long))
+            data = response.json()
+            hourly_forecast = pandas.DataFrame(data=data["hourly"]["data"])
+            hourly_forecast.set_index('time', inplace=True)
+            now = int(time_start.timestamp())
+            will_rain = len(hourly_forecast[
+                (
+                  (hourly_forecast.index >= now ) &
+                  (hourly_forecast.index < now + PRECIPITATION_FORECAST_TIME_AHEAD)
+                ) & (
+                  (hourly_forecast['precipProbability'] >= PRECIPITATION_PROBABILITY_THRESHOLD) |
+                  (hourly_forecast['icon'] == 'rain')
+                  )
+                ]) > 0
+        except requests.ConnectionError:
+            self.logger.debug("[will_rain] ConnectionError!!!")
+
+        time_end = dt.datetime.now()
+        elapsed_time = time_end - time_start
+        self.logger.debug("[will_rain] took %s secs",elapsed_time.total_seconds())
+
+        return will_rain
+
 
     def clean_moisture_data_cache(self):
         self.moisture_data_cache = {}
