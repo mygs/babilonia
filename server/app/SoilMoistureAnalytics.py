@@ -203,15 +203,11 @@ class SoilMoistureAnalytics:
             hourly_forecast = pandas.DataFrame(data=data["hourly"]["data"])
             hourly_forecast.set_index('time', inplace=True)
             now = int(time_start.timestamp())
-            will_rain = len(hourly_forecast[
-                (
-                  (hourly_forecast.index >= now ) &
-                  (hourly_forecast.index < now + PRECIPITATION_FORECAST_TIME_AHEAD)
-                ) & (
-                  (hourly_forecast['precipProbability'] >= PRECIPITATION_PROBABILITY_THRESHOLD) |
-                  (hourly_forecast['icon'] == 'rain')
-                  )
-                ]) > 0
+            hourly_forecast_filtered = hourly_forecast[ (hourly_forecast.index >= now ) &
+                                                        (hourly_forecast.index <= now + PRECIPITATION_FORECAST_TIME_AHEAD)]
+            will_rain = len(hourly_forecast_filtered[
+                    (hourly_forecast_filtered['precipProbability'] >= PRECIPITATION_PROBABILITY_THRESHOLD) |
+                    (hourly_forecast_filtered['icon'] == 'rain')]) > 0
         except requests.ConnectionError:
             self.logger.debug("[will_rain] ConnectionError!!!")
 
