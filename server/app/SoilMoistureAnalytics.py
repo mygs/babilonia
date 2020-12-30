@@ -126,6 +126,7 @@ class SoilMoistureAnalytics:
             print("will_rain: "+str(will_rain))
             # TODO: 6.1 Weather alert
             # TODO: 7.0 Irrigation advice
+            # Considers data training (or defaults)
             # 8.0 Clear cache
             self.clean_moisture_data_cache()
 
