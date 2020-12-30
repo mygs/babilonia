@@ -17,7 +17,9 @@ PCT_CHANGE_PERIOD = 10 # RUPTURE_LEVEL_THRESHOLD is affected by this value
 HEARTBEAT_PERIOD=30 # (seconds) OMG 2 heartbeats
 MOISTURE_DATA_PERIOD = 3600 # (seconds)
 PRECIPITATION_PROBABILITY_THRESHOLD=0.25
-PRECIPITATION_FORECAST_TIME_AHEAD=3*3600
+PRECIPITATION_FORECAST_TIME_AHEAD=3600
+LATEST_LEVEL_CHECK_WINDOW=30
+LATEST_LEVEL_CHECK_QUANTILE=0.5
 
 class SoilMoistureAnalytics:
 
@@ -101,28 +103,46 @@ class SoilMoistureAnalytics:
             }
 
     def irrigation_advice(self):
+        time_start = dt.datetime.now()
+
         # 1.0 Refresh cache
         self.refresh_moisture_data_cache()
-        # 1.5 Apply moving average to reduce noise
-        self.filter_noise_in_moisture_data_cache()
 
         for oasis in self.moisture_data_cache:
-            # 2.0 Detect rupture
+            # 2.0 Check latest moisture level
+            latest_moisture_level = self.get_latest_moisture_level(self.moisture_data_cache[oasis])
+            print(latest_moisture_level)
+            # 3.0 Apply moving average to reduce noise (req 4.0 and 5.0)
+            self.filter_noise_in_moisture_data_cache(oasis)
+            # 4.0 Detect rupture
             ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
             print(ruptures)
-            # TODO: 2.1 Rupture alert
-            # 3.0 Linear regression
-            lr = self.linear_regressor(self.moisture_data_cache[oasis])
-            print(lr)
-            # 4.0 Weather forecast
+            # TODO: 4.1 Rupture alert
+            # 5.0 Linear regression
+            alpha = self.linear_regressor(self.moisture_data_cache[oasis])
+            print(alpha)
+            # 6.0 Weather forecast
             will_rain = self.will_rain()
             print("will_rain: "+str(will_rain))
-            # TODO: 4.1 Weather alert
-            # TODO: 5.0 Check latest moisture level
-            # TODO: 6.0 Irrigation advice
-            # TODO: 7.0 Clear cache
+            # TODO: 6.1 Weather alert
+            # TODO: 7.0 Irrigation advice
+            # 8.0 Clear cache
+            self.clean_moisture_data_cache()
+
+            time_end = dt.datetime.now()
+            elapsed_time = time_end - time_start
+            self.logger.info("[irrigation_advice] took %s secs",elapsed_time.total_seconds())
+
+    def get_latest_moisture_level(self, data):
+        time_start = dt.datetime.now()
+        result = data.tail(LATEST_LEVEL_CHECK_WINDOW).quantile(LATEST_LEVEL_CHECK_QUANTILE).round(0).astype(int)
+        time_end = dt.datetime.now()
+        elapsed_time = time_end - time_start
+        self.logger.info("[get_latest_moisture_level] took %s secs",elapsed_time.total_seconds())
+        return result
 
     def linear_regressor(self, data):
+        time_start = dt.datetime.now()
         X = data.index.to_numpy().reshape(-1, 1)
         entries={}
         for mux in MOISTURE_PROBES:
@@ -134,7 +154,11 @@ class SoilMoistureAnalytics:
             entry['score']=linear_regressor.score(X,Y)
             entry['coef'] =linear_regressor.coef_[0][0]
             entries[mux] = entry
-        return pandas.DataFrame(data=entries).T # transpose
+        result = pandas.DataFrame(data=entries).T # transpose
+        time_end = dt.datetime.now()
+        elapsed_time = time_end - time_start
+        self.logger.info("[linear_regressor] took %s secs",elapsed_time.total_seconds())
+        return result
 
     def detect_rupture_oasis(self, data):
         time_start = dt.datetime.now()
@@ -200,13 +224,12 @@ class SoilMoistureAnalytics:
     def clean_moisture_data_cache(self):
         self.moisture_data_cache = {}
 
-    def filter_noise_in_moisture_data_cache(self):
+    def filter_noise_in_moisture_data_cache(self, oasis):
         time_start = dt.datetime.now()
-        for oasis in self.moisture_data_cache:
-            self.moisture_data_cache[oasis] = self.moisture_data_cache[oasis].rolling(ROLLING_WINDOW).mean().dropna()
+        self.moisture_data_cache[oasis] = self.moisture_data_cache[oasis].rolling(ROLLING_WINDOW).mean().dropna()
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
-        self.logger.info("[filter_noise_in_moisture_data_cache] took %s secs",elapsed_time.total_seconds())
+        self.logger.info("[filter_noise_in_moisture_data_cache] %s took %s secs",oasis, elapsed_time.total_seconds())
 
     def refresh_moisture_data_cache(self):
         time_start = dt.datetime.now()
@@ -246,7 +269,7 @@ class SoilMoistureAnalytics:
                       AND TIMESTAMP >= {}
                 ORDER BY TIMESTAMP asc
                 """.format(node_id, period_for_last_moisture_data),
-                engine)
+                engine).astype(int)
             self.moisture_data_cache[node_id].set_index('TIMESTAMP', inplace=True)
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
