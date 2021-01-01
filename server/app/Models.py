@@ -55,6 +55,25 @@ class User(DB.Model):
     def toJson(self):
         return {"USERNAME":self.USERNAME,"PASSWORD":self.PASSWORD}
 
+class OasisTraining(DB.Model):
+    __tablename__ = 'OASIS_TRAINING'
+    NODE_ID = DB.Column(DB.String(32), primary_key=True)
+    VALUE = DB.Column(DB.String(32), primary_key=True)
+    MESSAGE_ID = DB.Column(DB.String(32), nullable=False)
+    TIMESTAMP = DB.Column(DB.String(64), nullable=False)
+    def __init__(self, NODE_ID, VALUE, MESSAGE_ID, TIMESTAMP):
+        self.NODE_ID = NODE_ID
+        self.VALUE = VALUE
+        self.MESSAGE_ID = MESSAGE_ID
+        self.TIMESTAMP = TIMESTAMP
+    def __repr__(self):
+        return '<OasisTraining id:{} value:{}>'.format(self.NODE_ID, self.VALUE)
+    def toJson(self):
+        return {"NODE_ID":self.NODE_ID,
+                "VALUE":self.VALUE,
+                "MESSAGE_ID":self.MESSAGE_ID,
+                "TIMESTAMP":self.TIMESTAMP}
+
 class OasisAnalytic(DB.Model):
     __tablename__ = 'OASIS_ANALYTIC'
     TIMESTAMP = DB.Column(DB.String(64), primary_key=True)

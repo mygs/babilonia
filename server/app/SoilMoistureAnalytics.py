@@ -7,7 +7,7 @@ import logging
 import pandas
 import requests
 from sklearn.linear_model import LinearRegression
-from Models import DB, OasisAnalytic
+from Models import DB, OasisTraining
 from sqlalchemy import create_engine, func, and_
 
 MOISTURE_PROBES = ['MUX0','MUX1','MUX2','MUX3','MUX4','MUX5','MUX6','MUX7']
@@ -76,15 +76,15 @@ class SoilMoistureAnalytics:
     def feedback_online_process(self, feedback):
 
         timestamp = int(time.time())
-        type='feedback'
         node_id = feedback["NODE_ID"]
-        status = feedback["IRRIGATION_FEEDBACK"]
-        self.logger.debug("[feedback] id:%s => status:%s", node_id, status)
+        message_id = feedback["MESSAGE_ID"]
+        value = feedback["IRRIGATION_FEEDBACK"]
+        self.logger.debug("[feedback] id:%s => value:%s", node_id, value)
 
-        data = OasisAnalytic(TIMESTAMP=timestamp,
-                                NODE_ID=node_id,
-                                TYPE=type,
-                                DATA=feedback)
+        data = OasisTraining(NODE_ID=node_id,
+                             VALUE=value,
+                             MESSAGE_ID=message_id,
+                             TIMESTAMP=timestamp)
         DB.session.merge(data)
 
     def generate_moisture_req_msg(self, training_feedback_msg):
@@ -111,22 +111,19 @@ class SoilMoistureAnalytics:
         for oasis in self.moisture_data_cache:
             # 2.0 Check latest moisture level
             latest_moisture_level = self.get_latest_moisture_level(self.moisture_data_cache[oasis])
-            print(latest_moisture_level)
             # 3.0 Apply moving average to reduce noise (req 4.0 and 5.0)
             self.filter_noise_in_moisture_data_cache(oasis)
             # 4.0 Detect rupture
             ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
-            print(ruptures)
             # TODO: 4.1 Rupture alert
             # 5.0 Linear regression
             alpha = self.linear_regressor(self.moisture_data_cache[oasis])
-            print(alpha)
             # 6.0 Weather forecast
             will_rain = self.will_rain()
-            print("will_rain: "+str(will_rain))
             # TODO: 6.1 Weather alert
             # TODO: 7.0 Irrigation advice
             # Considers data training (or defaults)
+            training_data = self.get_training_data()
             # 8.0 Clear cache
             self.clean_moisture_data_cache()
 
@@ -140,6 +137,7 @@ class SoilMoistureAnalytics:
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[get_latest_moisture_level] took %s secs",elapsed_time.total_seconds())
+        self.logger.debug(result)
         return result
 
     def linear_regressor(self, data):
@@ -159,6 +157,7 @@ class SoilMoistureAnalytics:
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[linear_regressor] took %s secs",elapsed_time.total_seconds())
+        self.logger.debug(result)
         return result
 
     def detect_rupture_oasis(self, data):
@@ -187,6 +186,7 @@ class SoilMoistureAnalytics:
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[detect_rupture_oasis] took %s secs",elapsed_time.total_seconds())
+        self.logger.debug(ruptures)
         return ruptures
 
     def will_rain(self):
@@ -213,8 +213,8 @@ class SoilMoistureAnalytics:
 
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
-        self.logger.debug("[will_rain] took %s secs",elapsed_time.total_seconds())
-
+        self.logger.info("[will_rain] took %s secs",elapsed_time.total_seconds())
+        self.logger.debug("will_rain: "+str(will_rain))
         return will_rain
 
 
@@ -271,4 +271,37 @@ class SoilMoistureAnalytics:
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[refresh_moisture_data_cache] took %s secs",elapsed_time.total_seconds())
-        #print(self.moisture_data_cache['oasis-39732c'])
+        self.logger.debug(self.moisture_data_cache[node['NODE_ID']])
+
+
+    def get_training_data(self):
+        time_start = dt.datetime.now()
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        training_data = pandas.read_sql_query(
+            """
+                SELECT
+                	OA.NODE_ID,
+                    OA.VALUE,
+                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0' AS MUX0,
+                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1' AS MUX1,
+                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2' AS MUX2,
+                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3' AS MUX3,
+                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4' AS MUX4,
+                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5' AS MUX5,
+                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6' AS MUX6,
+                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
+                FROM farmland.OASIS_TRAINING OA
+                    INNER JOIN farmland.OASIS_DATA OD
+                ON
+                	OA.NODE_ID = OD.NODE_ID
+                WHERE
+                	OA.MESSAGE_ID = OD.DATA->'$.MESSAGE_ID'
+            """,engine)
+        training_data.set_index('NODE_ID', inplace=True)
+        for col in MOISTURE_PROBES:
+            training_data[col] = training_data[col].astype(int)
+        time_end = dt.datetime.now()
+        elapsed_time = time_end - time_start
+        self.logger.info("[get_training_data] took %s secs",elapsed_time.total_seconds())
+        self.logger.debug(training_data)
+        return training_data
