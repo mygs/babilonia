@@ -7,19 +7,22 @@ import logging
 import pandas
 import requests
 from sklearn.linear_model import LinearRegression
-from Models import DB, OasisTraining
+from Models import DB, OasisTraining, OasisAnalytic
 from sqlalchemy import create_engine, func, and_
+from sqlalchemy.orm import sessionmaker
 
 MOISTURE_PROBES = ['MUX0','MUX1','MUX2','MUX3','MUX4','MUX5','MUX6','MUX7']
 ROLLING_WINDOW = 30 # RUPTURE_LEVEL_THRESHOLD and PCT_CHANGE_PERIOD are affected by this value
 RUPTURE_LEVEL_THRESHOLD = 0.015
 PCT_CHANGE_PERIOD = 10 # RUPTURE_LEVEL_THRESHOLD is affected by this value
 HEARTBEAT_PERIOD=30 # (seconds) OMG 2 heartbeats
-MOISTURE_DATA_PERIOD = 3600 # (seconds)
+MOISTURE_DATA_PERIOD = 3*3600 # (seconds)
+FORECAST_TIME_AHEAD = MOISTURE_DATA_PERIOD
 PRECIPITATION_PROBABILITY_THRESHOLD=0.25
 PRECIPITATION_FORECAST_TIME_AHEAD=3600
 LATEST_LEVEL_CHECK_WINDOW=30
 LATEST_LEVEL_CHECK_QUANTILE=0.5
+LN_SCORE_THRESHOLD=0.3
 
 class SoilMoistureAnalytics:
 
@@ -31,10 +34,10 @@ class SoilMoistureAnalytics:
         #default values
         self.WINDOW_SIZE = 5
         self.EXPIRE = 3600 # 1 hour
-        self.OFFLINE = cfg['MUX_PORT_THRESHOLD']["OFFLINE"]
-        self.WET = cfg['MUX_PORT_THRESHOLD']["WET"]
-        self.NOSOIL = cfg['MUX_PORT_THRESHOLD']["NOSOIL"]
-        self.SCALE = int(self.NOSOIL - self.OFFLINE)
+        self.DEFAULT_OFFLINE = int(cfg['MUX_PORT_THRESHOLD']["OFFLINE"])
+        self.DEFAULT_WET = int(cfg['MUX_PORT_THRESHOLD']["WET"])
+        self.DEFAULT_NOSOIL = int(cfg['MUX_PORT_THRESHOLD']["NOSOIL"])
+        self.SCALE = int(self.DEFAULT_NOSOIL - self.DEFAULT_OFFLINE)
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
 
 
@@ -64,13 +67,13 @@ class SoilMoistureAnalytics:
         #analytics = DB.session.query(OasisAnalytic).first()
         #self.logger.debug("[SoilMoistureAnalytics] %s", analytics.data())
         #TODO: put some brain in here
-        if level <= self.OFFLINE:
+        if level <= self.DEFAULT_OFFLINE:
             return "rgb(128,128,128)" #grey
-        elif level > self.OFFLINE and level < self.NOSOIL:
-            dry_level = int(255 * (level-self.OFFLINE)/self.SCALE)
+        elif level > self.DEFAULT_OFFLINE and level < self.DEFAULT_NOSOIL:
+            dry_level = int(255 * (level-self.DEFAULT_OFFLINE)/self.SCALE)
             wet_level = 255 - dry_level
             return "rgb({},0,{})".format(dry_level,wet_level)
-        elif level >= self.NOSOIL:
+        elif level >= self.DEFAULT_NOSOIL:
             return "rgb(0,0,0)" # black
 
     def feedback_online_process(self, feedback):
@@ -96,40 +99,101 @@ class SoilMoistureAnalytics:
 
     def default_param(self):
         return {
-            'MUX_PORT_THRESHOLD_OFFLINE':self.OFFLINE,
-            'MUX_PORT_THRESHOLD_WET':self.WET,
+            'MUX_PORT_THRESHOLD_OFFLINE':self.DEFAULT_OFFLINE,
+            'MUX_PORT_THRESHOLD_WET':self.DEFAULT_WET,
             'MUX_PORT_THRESHOLD_SCALE':self.SCALE,
-            'MUX_PORT_THRESHOLD_NOSOIL':self.NOSOIL
+            'MUX_PORT_THRESHOLD_NOSOIL':self.DEFAULT_NOSOIL
             }
 
     def irrigation_advice(self):
         time_start = dt.datetime.now()
-
-        # 1.0 Refresh cache
+        advice = {}
+        # Refresh cache
         self.refresh_moisture_data_cache()
+        # Considers data training
+        training_data = self.get_training_data()
+        # Weather forecast
+        will_rain = self.will_rain()
 
+        advice['will_rain'] = will_rain
         for oasis in self.moisture_data_cache:
-            # 2.0 Check latest moisture level
+            # Calculate moisture threshold based on training data
+            moisture_threshold_level = self.moisture_threshold_level(training_data)
+            # Check latest moisture level
             latest_moisture_level = self.get_latest_moisture_level(self.moisture_data_cache[oasis])
-            # 3.0 Apply moving average to reduce noise (req 4.0 and 5.0)
+            # Verifying valid probes
+            valid_probes = latest_moisture_level[
+                                    (latest_moisture_level > self.DEFAULT_OFFLINE) &
+                                    (latest_moisture_level < self.DEFAULT_NOSOIL)
+                                ].index.values
+            # Filter valid probes
+            latest_moisture_level = latest_moisture_level.loc[latest_moisture_level.index.intersection(valid_probes)]
+            # Apply moving average to reduce noise
             self.filter_noise_in_moisture_data_cache(oasis)
-            # 4.0 Detect rupture
-            ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
-            # TODO: 4.1 Rupture alert
-            # 5.0 Linear regression
+            # Detect rupture
+            #ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
+            # TODO: Rupture alert
+            # Linear regression
             alpha = self.linear_regressor(self.moisture_data_cache[oasis])
-            # 6.0 Weather forecast
-            will_rain = self.will_rain()
-            # TODO: 6.1 Weather alert
-            # TODO: 7.0 Irrigation advice
-            # Considers data training (or defaults)
-            training_data = self.get_training_data()
-            # 8.0 Clear cache
-            self.clean_moisture_data_cache()
+            # Irrigation advice
+            forecast = self.forecast_moisture_level(will_rain,
+                                                    alpha,
+                                                    latest_moisture_level,
+                                                    moisture_threshold_level)
+            advice[oasis] = forecast
+        # Clear cache
+        self.clean_moisture_data_cache()
+        # Save
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        session = sessionmaker(bind=engine)()
 
-            time_end = dt.datetime.now()
-            elapsed_time = time_end - time_start
-            self.logger.info("[irrigation_advice] took %s secs",elapsed_time.total_seconds())
+        data = OasisAnalytic(TIMESTAMP=int(time.time()),
+                             TYPE='forecast',
+                             DATA=advice
+                             )
+        session.merge(data)
+        session.commit()
+        time_end = dt.datetime.now()
+        elapsed_time = time_end - time_start
+        self.logger.info("[irrigation_advice] took %s secs",elapsed_time.total_seconds())
+        return advice
+
+    def forecast_moisture_level(self, will_rain, alpha, latest_moisture_level, moisture_threshold_level):
+        forecast = {}
+        need_water_probes = 0
+        entries={}
+
+        total_probes = len(latest_moisture_level)
+        for index, value in latest_moisture_level.items():
+            entry={}
+            threshold = moisture_threshold_level.get(index)
+            coef = alpha.coef.get(index)
+            score = alpha.score.get(index)
+            future_value = value
+            if score >= LN_SCORE_THRESHOLD:
+                future_value += (coef*FORECAST_TIME_AHEAD).round(0).astype(int)
+            if future_value >= threshold:
+                need_water_probes+=1
+
+            entry['actual_value'] = str(value)
+            entry['threshold'] = str(threshold)
+            entry['coef'] = str(float("{:.3f}".format(coef)))
+            entry['score'] = str(float("{:.3f}".format(score)))
+            entry['future_value'] = str(future_value)
+            entries[index] = entry
+
+        result =  float("{:.3f}".format(need_water_probes/total_probes))
+        forecast['result'] = str(result)
+        if result >= 0.5:
+            if will_rain:
+                forecast['advice'] = 'POSPONE'
+            else:
+                forecast['advice'] = 'IRRIGATE'
+        else:
+            forecast['advice'] = 'IGNORE'
+        forecast['details'] = entries
+        return forecast
+
 
     def get_latest_moisture_level(self, data):
         time_start = dt.datetime.now()
@@ -139,6 +203,67 @@ class SoilMoistureAnalytics:
         self.logger.info("[get_latest_moisture_level] took %s secs",elapsed_time.total_seconds())
         self.logger.debug(result)
         return result
+
+    def moisture_threshold_level_valid_value(self, value):
+        if len(value) == 0:
+            return False
+        else:
+            iv = int(value)
+            if (iv < self.DEFAULT_OFFLINE) | (iv > self.DEFAULT_NOSOIL):
+                return False
+        return True
+
+    def moisture_threshold_level(self, node_training):
+        probes_moisture_level={}
+        dry = node_training.loc[node_training['VALUE'] == 'soil_dry']
+        wet = node_training.loc[node_training['VALUE'] == 'soil_wet']
+        default = self.DEFAULT_WET
+
+        for probe in MOISTURE_PROBES:
+            if not self.moisture_threshold_level_valid_value(dry[probe]):
+                if not self.moisture_threshold_level_valid_value(wet[probe]):
+                    # SCENARIO A: No training feedback. Use defaults
+                    probes_moisture_level[probe] = default
+                else:
+                    wp = int(wet[probe])
+                    #  There is ONLY wet threshold feedback
+                    if wp > default:
+                        # SCENARIO F: Change wet threshold due the feedback
+                        probes_moisture_level[probe] = wp
+                    else:
+                        # SCENARIO E: Do not change wet threshold. Default level might be ok
+                        probes_moisture_level[probe] = default
+            else:
+                if not self.moisture_threshold_level_valid_value(wet[probe]):
+                    #  There is ONLY dry threshold feedback
+                    dp = int(dry[probe])
+                    if dp < default:
+                        # SCENARIO G: Change wet threshold due the feedback
+                        probes_moisture_level[probe] = dp
+                    else:
+                        # SCENARIO D: Do not change wet threshold. Default level might be ok
+                        probes_moisture_level[probe] = default
+                else:
+                    # There are dry and wet feedbacks
+                    wp = int(wet[probe])
+                    dp = int(dry[probe])
+                    if wp < default:
+                        if dp > default:
+                            # SCENARIO A: Lets keep current default threshold
+                            probes_moisture_level[probe] = default
+                        else:
+                            if wp > dp:
+                                # Strange scenario
+                                probes_moisture_level[probe] = default
+                            else:
+                            # SCENARIO C: Dry and Wet feedbacks are LOWER than current threshold
+                                probes_moisture_level[probe] = (dp + wp)/2
+                    else:
+                        # SCENARIO B: Dry and Wet feedbacks are HIGHER than current threshold
+                        probes_moisture_level[probe] = (dp + wp)/2
+
+        return pandas.Series(probes_moisture_level)
+
 
     def linear_regressor(self, data):
         time_start = dt.datetime.now()
@@ -297,7 +422,7 @@ class SoilMoistureAnalytics:
                 WHERE
                 	OA.MESSAGE_ID = OD.DATA->'$.MESSAGE_ID'
             """,engine)
-        training_data.set_index('NODE_ID', inplace=True)
+        #training_data.set_index('NODE_ID', inplace=True) # multiple node_id entries
         for col in MOISTURE_PROBES:
             training_data[col] = training_data[col].astype(int)
         time_end = dt.datetime.now()

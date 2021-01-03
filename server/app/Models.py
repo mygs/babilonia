@@ -77,19 +77,16 @@ class OasisTraining(DB.Model):
 class OasisAnalytic(DB.Model):
     __tablename__ = 'OASIS_ANALYTIC'
     TIMESTAMP = DB.Column(DB.String(64), primary_key=True)
-    NODE_ID = DB.Column(DB.String(32), primary_key=True)
-    TYPE = DB.Column(DB.String(16), nullable=False)
+    TYPE = DB.Column(DB.String(32), primary_key=True)
     DATA = DB.Column(DB.JSON, nullable=True)
-    def __init__(self, TIMESTAMP, NODE_ID, TYPE, DATA):
+    def __init__(self, TIMESTAMP, TYPE, DATA):
         self.TIMESTAMP = TIMESTAMP
-        self.NODE_ID = NODE_ID
         self.TYPE = TYPE
         self.DATA = DATA
     def __repr__(self):
-        return '<OasisTraining id:{} time:{}>'.format(self.NODE_ID, self.TIMESTAMP)
+        return '<OasisAnalytic time:{} type:{}>'.format(self.TIMESTAMP, self.TYPE)
     def toJson(self):
         return {"TIMESTAMP":self.TIMESTAMP,
-                "NODE_ID":self.NODE_ID,
                 "TYPE":self.TYPE,
                 "DATA":self.DATA}
     def data(self):
