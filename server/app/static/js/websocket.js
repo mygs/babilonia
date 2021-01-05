@@ -69,4 +69,7 @@ $(document).ready(function() {
     hb.replaceWith(hb.clone(true));
   });
 
+  socket.on('ws-monitor', function(data) {
+    console.log(data)
+  });
 });

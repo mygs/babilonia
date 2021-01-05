@@ -108,6 +108,7 @@ class SoilMoistureAnalytics:
     def irrigation_advice(self):
         time_start = dt.datetime.now()
         advice = {}
+        nodes = {}
         # Refresh cache
         self.refresh_moisture_data_cache()
         # Considers data training
@@ -140,15 +141,16 @@ class SoilMoistureAnalytics:
                                                     alpha,
                                                     latest_moisture_level,
                                                     moisture_threshold_level)
-            advice[oasis] = forecast
+            nodes[oasis] = forecast
+
+        advice['nodes'] = nodes
         # Clear cache
         self.clean_moisture_data_cache()
-        # Save
+        # Saving the Advice
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
         session = sessionmaker(bind=engine)()
-
         data = OasisAnalytic(TIMESTAMP=int(time.time()),
-                             TYPE='forecast',
+                             TYPE='nodes',
                              DATA=advice
                              )
         session.merge(data)
@@ -156,7 +158,7 @@ class SoilMoistureAnalytics:
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[irrigation_advice] took %s secs",elapsed_time.total_seconds())
-        return advice
+        return json.dumps(advice)
 
     def forecast_moisture_level(self, will_rain, alpha, latest_moisture_level, moisture_threshold_level):
         forecast = {}

@@ -541,12 +541,13 @@ def moisture_monitor():
     #sched.print_jobs()
     advice = analytics.irrigation_advice()
     socketio.emit('ws-monitor', data=advice)
+    logger.info("[moisture_monitor] %s", advice)
+
     #mqtt.publish("/schedule-test", "hellllooo")
 
 
 sched.add_job(moisture_monitor,'cron', second='*/50')
 #sched.add_job(moisture_monitor,'cron', hour="*/2")
-#sched.add_job(irrigation,'cron', second='*/5', minute='*', hour="*")
 sched.start()
 ###############################################################################
 ##################################  START #####################################
