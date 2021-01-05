@@ -23,9 +23,11 @@ from sqlalchemy import func, and_
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_caching import Cache
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 from about import about_system
 from management import management
+from monitor import monitor
 
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
@@ -393,6 +395,7 @@ def progress():
 
 app.register_blueprint(about_system)
 app.register_blueprint(management)
+app.register_blueprint(monitor)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -542,12 +545,11 @@ def moisture_monitor():
     advice = analytics.irrigation_advice()
     socketio.emit('ws-monitor', data=advice)
     logger.info("[moisture_monitor] %s", advice)
-
     #mqtt.publish("/schedule-test", "hellllooo")
 
 
-#sched.add_job(moisture_monitor,'cron', second='*/50')
-sched.add_job(moisture_monitor,'cron', hour="*/3")
+moisture_monitor_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["MOISTURE_MONITOR"])
+sched.add_job(moisture_monitor, moisture_monitor_trigger)
 sched.start()
 ###############################################################################
 ##################################  START #####################################

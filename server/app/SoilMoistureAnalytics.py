@@ -23,6 +23,8 @@ PRECIPITATION_FORECAST_TIME_AHEAD=3600
 LATEST_LEVEL_CHECK_WINDOW=30
 LATEST_LEVEL_CHECK_QUANTILE=0.5
 LN_SCORE_THRESHOLD=0.3
+PCT_PROBE_TO_IRRIGATE=0.5
+
 
 class SoilMoistureAnalytics:
 
@@ -141,24 +143,24 @@ class SoilMoistureAnalytics:
                                                     alpha,
                                                     latest_moisture_level,
                                                     moisture_threshold_level)
-            forecast['rupture'] = ruptures
+            #forecast['rupture'] = ruptures
             nodes[oasis] = forecast
 
-        advice['nodes'] = nodes
+        advice['node'] = nodes
         # Clear cache
         self.clean_moisture_data_cache()
         # Saving the Advice
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
         session = sessionmaker(bind=engine)()
         data = OasisAnalytic(TIMESTAMP=int(time.time()),
-                             TYPE='nodes',
+                             TYPE='advice',
                              DATA=advice
                              )
         session.merge(data)
         session.commit()
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
-        self.logger.info("[irrigation_advice] took %s secs",elapsed_time.total_seconds())
+        self.logger.info("[IRRIGATION_ADVICE] took %s secs",elapsed_time.total_seconds())
         return json.dumps(advice)
 
     def forecast_moisture_level(self, will_rain, alpha, latest_moisture_level, moisture_threshold_level):
@@ -178,23 +180,23 @@ class SoilMoistureAnalytics:
             if future_value >= threshold:
                 need_water_probes+=1
 
-            entry['actual_value'] = str(value)
+            entry['actual'] = str(value)
             entry['threshold'] = str(threshold)
             entry['coef'] = str(float("{:.3f}".format(coef)))
             entry['score'] = str(float("{:.3f}".format(score)))
-            entry['future_value'] = str(future_value)
+            entry['future'] = str(future_value)
             entries[index] = entry
 
         result =  float("{:.3f}".format(need_water_probes/total_probes))
         forecast['result'] = str(result)
-        if result >= 0.5:
+        if result > PCT_PROBE_TO_IRRIGATE:
             if will_rain:
                 forecast['advice'] = 'POSPONE'
             else:
                 forecast['advice'] = 'IRRIGATE'
         else:
             forecast['advice'] = 'IGNORE'
-        forecast['details'] = entries
+        forecast['detail'] = entries
         return forecast
 
 
@@ -298,15 +300,19 @@ class SoilMoistureAnalytics:
         max_probes={}
         for mux in MOISTURE_PROBES:
             min_entry={}
-            min_entry['epoch'] = pct_change_series[mux].idxmin()
-            min_entry['value'] = pct_change_series[mux][min_entry['epoch']]
-            if min_entry['value'] < -RUPTURE_LEVEL_THRESHOLD:
+            min_epoch = pct_change_series[mux].idxmin()
+            min_value = pct_change_series[mux][min_epoch]
+            min_entry['epoch'] = str(min_epoch)
+            min_entry['value'] = str(float("{:.3f}".format(min_value)))
+            if min_value < -RUPTURE_LEVEL_THRESHOLD:
                 min_probes[mux] = min_entry
 
             max_entry={}
-            max_entry['epoch'] = pct_change_series[mux].idxmax()
-            max_entry['value'] = pct_change_series[mux][max_entry['epoch']]
-            if max_entry['value'] > RUPTURE_LEVEL_THRESHOLD:
+            max_epoch = pct_change_series[mux].idxmax()
+            max_value = pct_change_series[mux][max_epoch]
+            max_entry['epoch'] = str(max_epoch)
+            max_entry['value'] = str(float("{:.3f}".format(max_value)))
+            if max_value > RUPTURE_LEVEL_THRESHOLD:
                 max_probes[mux] = max_entry
         ruptures['downward'] = pandas.DataFrame(data=min_probes).T
         ruptures['upward'] =  pandas.DataFrame(data=max_probes).T
