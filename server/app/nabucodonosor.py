@@ -546,8 +546,8 @@ def moisture_monitor():
     #mqtt.publish("/schedule-test", "hellllooo")
 
 
-sched.add_job(moisture_monitor,'cron', second='*/50')
-#sched.add_job(moisture_monitor,'cron', hour="*/2")
+#sched.add_job(moisture_monitor,'cron', second='*/50')
+sched.add_job(moisture_monitor,'cron', hour="*/3")
 sched.start()
 ###############################################################################
 ##################################  START #####################################
