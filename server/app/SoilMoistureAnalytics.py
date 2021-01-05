@@ -372,6 +372,7 @@ class SoilMoistureAnalytics:
             WHERE LAST_UPDATE >= {}
             """.format(period_for_last_heartbeat),
             engine)
+        node_id = None
         for index,node in nodes.iterrows():
             #### get moisture data from alive nodes ####
             node_id = node['NODE_ID']
@@ -395,10 +396,11 @@ class SoilMoistureAnalytics:
                 """.format(node_id, period_for_last_moisture_data),
                 engine).astype(int)
             self.moisture_data_cache[node_id].set_index('TIMESTAMP', inplace=True)
+            self.logger.debug(self.moisture_data_cache[node_id])
+
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[refresh_moisture_data_cache] took %s secs",elapsed_time.total_seconds())
-        self.logger.debug(self.moisture_data_cache[node['NODE_ID']])
 
 
     def get_training_data(self):
