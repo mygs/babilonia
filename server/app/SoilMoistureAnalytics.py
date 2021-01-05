@@ -132,7 +132,7 @@ class SoilMoistureAnalytics:
             # Apply moving average to reduce noise
             self.filter_noise_in_moisture_data_cache(oasis)
             # Detect rupture
-            #ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
+            ruptures = self.detect_rupture_oasis(self.moisture_data_cache[oasis])
             # TODO: Rupture alert
             # Linear regression
             alpha = self.linear_regressor(self.moisture_data_cache[oasis])
@@ -141,6 +141,7 @@ class SoilMoistureAnalytics:
                                                     alpha,
                                                     latest_moisture_level,
                                                     moisture_threshold_level)
+            forecast['rupture'] = ruptures
             nodes[oasis] = forecast
 
         advice['nodes'] = nodes
