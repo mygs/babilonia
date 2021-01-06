@@ -244,6 +244,10 @@ void serialCommands() {
     // read the incoming byte:
     int incomingByte = Serial.read();
     switch(incomingByte){
+      case 10: //ENTER
+      case 13: //ENTER
+          Serial.println();
+          break;
       case 27: //ESC
           Serial.println("[SERIAL] Reseting state to initial configuration!");
           state.remove();
