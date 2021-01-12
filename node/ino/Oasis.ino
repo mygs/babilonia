@@ -252,6 +252,10 @@ void serialCommands() {
           Serial.println("[SERIAL] Reseting state to initial configuration!");
           state.remove();
           break;
+      case 32: //Space bar
+          Serial.println("[SERIAL] Print state ...");
+          state.print();
+          break;
       case 63: //?
           Serial.printf("[SERIAL] Hostname: %s\r\n", HOSTNAME);
           Serial.printf("[SERIAL] Firmware: %s\r\n", FIRMWARE_VERSION);
