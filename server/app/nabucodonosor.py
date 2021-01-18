@@ -11,6 +11,7 @@ import git
 from Models import *
 from Dashboard import *
 from SoilMoistureAnalytics import *
+from WaterTankManager import *
 import simplejson as json
 import requests
 from flask import Flask, make_response, Response, url_for, redirect, render_template, request, session, abort
@@ -32,17 +33,6 @@ from monitor import monitor
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
-###### Server GPIO setup
-#
-# o V G S o o o o o o o o o o o o o o o o
-# o o o o o o o o o o o o o o o o o o o o
-#
-if os.uname()[4].startswith("arm"):
-    import RPi.GPIO as gpio
-    gpio.setmode(gpio.BOARD)
-    gpio.setwarnings(False)
-    PIN_PUMP_MANAGER=8
-    gpio.setup(PIN_PUMP_MANAGER, gpio.OUT, initial=gpio.LOW)
 
 ###### create console handler and set level to debug
 SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
@@ -63,6 +53,16 @@ VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
 with open(os.path.join(SERVER_HOME, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
 isMqttEnabled = cfg["MODE"]["MQTT"]
+
+###### Server GPIO setup
+#
+# o V G o X Y o o o o o o o o o o o o o o
+# o o o o o o o o o o o o o o o o o o o o
+#
+wtm = None
+if os.uname()[4].startswith("arm"):
+    wtm = WaterTankManager(logger)
+    wtm.monitorTankLevel()
 
 ###### Initialisation
 app = Flask(__name__, static_url_path='/static')

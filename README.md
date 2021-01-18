@@ -113,6 +113,32 @@ gunicorn -w 4 -b 0.0.0.0:8181 --chdir /github/babilonia/server/app nabucodonosor
 ```bash
 sudo pkill gunicorn
 ```
+### Backup/Clone Server Image
+```bash
+sudo dd bs=4M if=/dev/sdd of=/tmp/babilonia.img
+gzip babilonia.img
+```
+
+### Create new Server based on clone image
+1) Extracted babilonia.img.gz
+2) Using gnome-disk-utility > "Restore Disk Image ..." > Select babilonia.img > "Start Restoring"
+3) mount micro usb and change:
+3.1) SSID:
+3.1.1) <mount_point>/etc/netplan/28-babilonia-wifi.yaml
+3.1.2) <mount_point>/github/babilonia/node/ino/InitialConfiguration.h
+3.2) HOSTNAME:
+3.2.1) <mount_point>/etc/hosts
+3.2.2) <mount_point>/etc/hostname
+3.2.3) <mount_point>/etc/cloud/cloud.cfg
+3.3) WIRE NETWORK:
+3.3.1) Update <mount_point>/etc/netplan/18-babilonia-wire.yaml
+3.4) MOTD:
+3.3.1) Update <mount_point>/etc/update-motd.d/50-babilonia
+
+4) After boot using Raspberry Pi:
+4.1) Clear all database data;
+4.2) Update no-ip configuration
+4.3) Uninstall Wireguard
 
 
 # NODE CONFIGURATION
