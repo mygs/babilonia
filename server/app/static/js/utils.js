@@ -39,5 +39,8 @@ function UUID(){
 };
 
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="switch"]').bootstrapSwitch();
+  $("#switch-water-tank-in").bootstrapSwitch('state', $('#switch-water-tank-in-val').val()==1);
+  $("#switch-water-tank-out").bootstrapSwitch('state', $('#switch-water-tank-out-val').val()==1);
 })

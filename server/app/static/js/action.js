@@ -45,6 +45,54 @@ $(".btn-water-all").on("click", function() {
   });
 });
 
+
+$("#switch-water-tank-in").on("switchChange.bootstrapSwitch", function() {
+  action = $("#switch-water-tank-in").bootstrapSwitch('state');
+  $("#switch-water-tank-in-val").val(action? 1:0);
+  var message = {
+           "DIRECTION": "IN",
+              "ACTION": action
+    };
+
+  $.ajax({
+    url: '/water-tank',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(message),
+    success: function(response) {
+      console.log(response.status);
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+});
+
+$("#switch-water-tank-out").on("switchChange.bootstrapSwitch", function() {
+  action = $("#switch-water-tank-out").bootstrapSwitch('state');
+  $("#switch-water-tank-out-val").val(action? 1:0);
+  var message = {
+           "DIRECTION": "OUT",
+              "ACTION": action
+    };
+
+  $.ajax({
+    url: '/water-tank',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(message),
+    success: function(response) {
+      console.log(response.status);
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+});
+
+
 /* BUTTON STUFF */
 function callbackend(command, img, title, text) {
   swal({

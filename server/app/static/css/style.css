@@ -63,6 +63,13 @@
   width: 100%;
 }
 
+#dashboard li .panel-water-tank {
+  background-color: #08656E;
+  border-color: #58cced;
+  color: #fff;
+  width: 100%;
+}
+
 .wi-dashboard {
     font-size: 40px;
 }

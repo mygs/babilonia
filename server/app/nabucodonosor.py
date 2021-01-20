@@ -59,10 +59,8 @@ isMqttEnabled = cfg["MODE"]["MQTT"]
 # o V G o X Y o o o o o o o o o o o o o o
 # o o o o o o o o o o o o o o o o o o o o
 #
-wtm = None
-if os.uname()[4].startswith("arm"):
-    wtm = WaterTankManager(logger)
-    wtm.monitorTankLevel()
+wtm = WaterTankManager(logger)
+wtm.monitorTankLevel()
 
 ###### Initialisation
 app = Flask(__name__, static_url_path='/static')
@@ -107,6 +105,7 @@ assets.register('3rdpartycss',
                 'css/3rdparty/weather-icons.css',
                 'css/3rdparty/sweetalert.css',
                 'css/3rdparty/bootstrap-datepicker.css',
+                'css/3rdparty/bootstrap-switch.min.css',
                 output='assets/3rdparty.css',
                 filters='cssmin')
 
@@ -118,6 +117,7 @@ assets.register('3rdpartyjs',
                 'js/3rdparty/dataTables.bootstrap.js',
                 'js/3rdparty/dataTables.buttons.js',
                 'js/3rdparty/buttons.bootstrap.js',
+                'js/3rdparty/bootstrap-switch.min.js',
                 'js/3rdparty/bootstrap-datepicker.js',
                 'js/3rdparty/dataTables.select.js',
                 'js/3rdparty/popper.min.js',
@@ -209,11 +209,16 @@ def index():
     raspberrypi = dashboard.raspberrypi()
     nodes = dashboard.nodes(latest_beat)
     farm = dashboard.farm(modules)
+    water_tank = wtm.get_current_solenoid_status()
     logger.debug("[weather] %s", weather)
     logger.debug("[raspberrypi] %s", raspberrypi)
     logger.debug("[nodes] %s", nodes)
     logger.debug("[farm] %s", farm)
-    resp = make_response(render_template('index.html', weather=weather,
+    logger.debug("[water_tank] %s", water_tank)
+
+    resp = make_response(render_template('index.html',
+                                         weather=weather,
+                                         water_tank = water_tank,
                                          farm=farm,
                                          raspberrypi=raspberrypi,
                                          nodes=nodes))
@@ -233,7 +238,6 @@ def module():
     for key,value in analytics.default_param().items():
         resp.set_cookie(key, str(value))
     return resp
-
 
 
 @app.route('/remove', methods=['POST'])
@@ -416,6 +420,24 @@ def webhook():
         return json.dumps({'status':'request!'})
 
     return json.dumps({'status':'request was ignored!'})
+
+
+@app.route('/water-tank', methods=['POST'])
+@login_required
+def water_tank():
+    message = request.get_json()
+    direction = message["DIRECTION"] # IN or OUT
+    action = message['ACTION'] # OPEN or CLOSE
+    if wtm is None:
+        logger.info("[water-tank] Ignoring manually %s command to %s", action, direction)
+    else:
+        logger.info("[water-tank] %s will be %s", direction, action)
+        if direction == "OUT":
+            wtm.changeStateWaterTankOut(action)
+        else:
+            wtm.changeStateWaterTankIn(action)
+
+    return json.dumps({'status':'Success!'})
 
 ###############################################################################
 ################################# PROCESSORS ##################################

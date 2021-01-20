@@ -64,6 +64,59 @@
             </div>
           </div>
         </li>
+
+        <!-- WATER TANK STATUS -->
+        <li class="col-md-4 col-sm-8 col-xs-12">
+          <div class="panel panel-water-tank">
+            <div class="panel-body">
+              <div class="container">
+                <div class="row">
+                  <div class="panel-dashboard-icon-col col-md-1 col-sm-2 col-xs-4">
+                    <i class="fa fa-tint fa-4x fa-dashboard"></i>
+                  </div>
+                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
+                    <table>
+                      <tr>
+                        <td>
+                          <i class="fa fa-2x fa-sign-in"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <input type="hidden" id="switch-water-tank-in-val"value="{{water_tank['WATER_TANK_IN']}}">
+                          <input type="checkbox" data-toggle="switch" id="switch-water-tank-in"
+                           name="switch-water-tank-in"
+                          data-on-color="info" data-on-text="ON"
+                          data-off-color="danger" data-off-text="OFF">
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
+                    <table>
+                      <tr>
+                        <td>
+                          <i class="fa fa-2x fa-sign-out"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <input type="hidden" id="switch-water-tank-out-val" value="{{water_tank['WATER_TANK_OUT']}}">
+
+                          <input type="checkbox" data-toggle="switch"  id="switch-water-tank-out"
+                           name="switch-water-tank-out"
+                          data-on-color="info" data-on-text="ON"
+                          data-off-color="danger" data-off-text="OFF">
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+
         <!-- FARM STATUS -->
         <li class="col-md-4 col-sm-8 col-xs-12">
           <div class="panel panel-farm">
