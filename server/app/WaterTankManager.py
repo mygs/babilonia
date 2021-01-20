@@ -61,12 +61,12 @@ class WaterTankManager:
 
     def monitorTankLevel(self):
         if os.uname()[4].startswith("arm"):
-            bouncetime = 15*60*1000 # 15 min
+            bouncetime = 15*60*1000 # 15 min delay
             gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_A, gpio.BOTH, callback=self.shouldStartFillingWaterTank, bouncetime=bouncetime)
             gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_B, gpio.BOTH, callback=self.shouldStopFillingWaterTank, bouncetime=bouncetime)
 
     def shouldStartFillingWaterTank(self, channel):
-        if not gpio.input(PIN_WATER_LEVEL_SENSOR_A):
+        if not gpio.input(PIN_WATER_LEVEL_SENSOR_A) and not gpio.input(PIN_WATER_LEVEL_SENSOR_B):
             self.logger.info("[WaterTankManager] START filling water tank")
             gpio.output(PIN_WATER_TANK_IN, gpio.HIGH)
 
