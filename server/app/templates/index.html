@@ -102,11 +102,10 @@
                       <tr>
                         <td>
                           <input type="hidden" id="switch-water-tank-out-val" value="{{water_tank['WATER_TANK_OUT']}}">
-
                           <input type="checkbox" data-toggle="switch"  id="switch-water-tank-out"
                            name="switch-water-tank-out"
                           data-on-color="info" data-on-text="ON"
-                          data-off-color="danger" data-off-text="OFF">
+                          data-off-color="danger" data-off-text="OFF" {{ 'disabled' if water_tank['WATER_TANK_IN_DISABLE']  }} >
                         </td>
                       </tr>
                     </table>

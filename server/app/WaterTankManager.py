@@ -49,15 +49,21 @@ class WaterTankManager:
         if os.uname()[4].startswith("arm"):
             response['WATER_TANK_IN'] = gpio.input(PIN_WATER_TANK_IN)
             response['WATER_TANK_OUT'] = gpio.input(PIN_WATER_TANK_OUT)
+            if gpio.input(PIN_WATER_LEVEL_SENSOR_B) == 1:
+                response['WATER_TANK_IN_DISABLE'] = True
+            else:
+                response['WATER_TANK_IN_DISABLE'] = False
         else:
             response['WATER_TANK_IN'] = self.FAKE_WATER_TANK_IN
             response['WATER_TANK_OUT'] = self.FAKE_WATER_TANK_OUT
+            response['WATER_TANK_IN_DISABLE'] = False
         return response
 
     def monitorTankLevel(self):
         if os.uname()[4].startswith("arm"):
-            gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_A, gpio.BOTH, callback=self.shouldStartFillingWaterTank, bouncetime=100)
-            gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_B, gpio.BOTH, callback=self.shouldStopFillingWaterTank, bouncetime=100)
+            bouncetime = 15*60*1000 # 15 min
+            gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_A, gpio.BOTH, callback=self.shouldStartFillingWaterTank, bouncetime=bouncetime)
+            gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_B, gpio.BOTH, callback=self.shouldStopFillingWaterTank, bouncetime=bouncetime)
 
     def shouldStartFillingWaterTank(self, channel):
         if not gpio.input(PIN_WATER_LEVEL_SENSOR_A):
