@@ -42,11 +42,25 @@ class WaterTankManager:
         else:
             response['WATER_LEVEL_SENSOR_A'] = 0
             response['WATER_LEVEL_SENSOR_B'] = 0
+
         return response
+
+    def get_level_description(self):
+        description = "ERROR"
+        if gpio.input(PIN_WATER_LEVEL_SENSOR_A) == 0:
+             if gpio.input(PIN_WATER_LEVEL_SENSOR_B) == 0:
+                 description = "FILL"
+        else:
+             if gpio.input(PIN_WATER_LEVEL_SENSOR_B) == 0:
+                description = "HALF"
+             else:
+                description = "FULL"
+        return description
 
     def get_current_solenoid_status(self):
         response = {}
         if os.uname()[4].startswith("arm"):
+            response['GUI_DESCRIPTION'] = self.get_level_description()
             response['WATER_TANK_IN'] = gpio.input(PIN_WATER_TANK_IN)
             response['WATER_TANK_OUT'] = gpio.input(PIN_WATER_TANK_OUT)
             if gpio.input(PIN_WATER_LEVEL_SENSOR_B) == 1:
@@ -57,6 +71,7 @@ class WaterTankManager:
             response['WATER_TANK_IN'] = self.FAKE_WATER_TANK_IN
             response['WATER_TANK_OUT'] = self.FAKE_WATER_TANK_OUT
             response['WATER_TANK_IN_DISABLE'] = False
+            response['GUI_DESCRIPTION'] = "HALF"
         return response
 
     def monitorTankLevel(self):

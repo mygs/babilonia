@@ -72,7 +72,18 @@
               <div class="container">
                 <div class="row">
                   <div class="panel-dashboard-icon-col col-md-1 col-sm-2 col-xs-4">
-                    <i class="fa fa-tint fa-4x"></i>
+                    <table>
+                      <tr>
+                        <td>
+                          <i class="fa fa-tint fa-3x"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <span class="">{{water_tank['GUI_DESCRIPTION']}}</span>
+                        </td>
+                      </tr>
+                    </table>
                   </div>
                   <div class="panel-dashboard-col col-md-1 col-sm-2 col-xs-4">
                     <table>
@@ -87,7 +98,7 @@
                           <input type="checkbox" data-toggle="switch" id="switch-water-tank-in"
                            name="switch-water-tank-in"
                           data-on-color="info" data-on-text="ON"
-                          data-off-color="danger" data-off-text="OFF">
+                          data-off-color="danger" data-off-text="OFF" {{ 'disabled' if water_tank['WATER_TANK_IN_DISABLE']  }} >
                         </td>
                       </tr>
                     </table>
@@ -105,7 +116,7 @@
                           <input type="checkbox" data-toggle="switch"  id="switch-water-tank-out"
                            name="switch-water-tank-out"
                           data-on-color="info" data-on-text="ON"
-                          data-off-color="danger" data-off-text="OFF" {{ 'disabled' if water_tank['WATER_TANK_IN_DISABLE']  }} >
+                          data-off-color="danger" data-off-text="OFF">
                         </td>
                       </tr>
                     </table>
