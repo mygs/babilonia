@@ -50,8 +50,9 @@
             <div class="box {{ status_node(last_update, sensor_collect_data_period) }}">
               <table id="box-header-telemetry">
                 <tr>
+                    <td id="box-header-telemetry-init"></td>
                     <td id="box-header-telemetry-title">
-                        <h4 class="text-uppercase">{{id}}</h4>
+                        <h4 class="text-uppercase">{{translate(id)}}</h4>
                     </td>
                     <td id="box-header-telemetry-hb">
                       <div id="heartbeat_{{id}}" class="heart-beat-pulsate"></div>

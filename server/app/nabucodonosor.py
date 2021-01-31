@@ -54,6 +54,9 @@ with open(os.path.join(SERVER_HOME, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
 isMqttEnabled = cfg["MODE"]["MQTT"]
 
+NICKNAME_FILE = os.path.join(COMMON_DIR, 'nickname.json')
+with open(NICKNAME_FILE, "r") as nickname_file:
+    nicknames = json.load(nickname_file)
 ###### Server GPIO setup
 #
 # o V G o X Y o o o o o o o o o o o o o o
@@ -485,13 +488,16 @@ def utility_processor():
             "partly-cloudy-night": "wi wi-forecast-io-partly-cloudy-day"
         }
         return switcher.get(argument, "wi wi-day-sunny")
+    def translate(node_id):
+        return nicknames[node_id]
     return {
             'status_node':status_node,
             'status_moisture':status_moisture,
             'weather_icon': weather_icon,
             'format_last_update':format_last_update,
             'status_btn_css':status_btn_css,
-            'status_btn':status_btn
+            'status_btn':status_btn,
+            'translate':translate
             }
 ###############################################################################
 ############################## HANDLE MQTT ####################################

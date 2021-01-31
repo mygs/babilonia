@@ -155,9 +155,13 @@ table#box-header-telemetry {
     width: 100%;
 }
 
+td#box-header-telemetry-init {
+    width: 20%;
+}
+
 td#box-header-telemetry-title {
-    width: 80%;
-    text-align: right;
+    width: 60%;
+    text-align: center;
 }
 
 td#box-header-telemetry-hb {
