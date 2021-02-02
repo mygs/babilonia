@@ -178,7 +178,6 @@ def login():
             return redirect('/')
     return render_template('login.html', error=error)
 
-
 # somewhere to logout
 @app.route("/logout")
 @login_required
@@ -579,20 +578,27 @@ def handle_logging(client, userdata, level, buf):
 #https://medium.com/better-programming/introduction-to-apscheduler-86337f3bb4a6
 sched = BackgroundScheduler(daemon=True)
 
-def moisture_monitor():
-    global mqtt
-    global analytics
-    global socketio
+if cfg["SCHEDULE"]["MOISTURE_MONITOR"] != "never":
+    def moisture_monitor():
+        global mqtt
+        global analytics
+        global socketio
 
-    #sched.print_jobs()
-    advice = analytics.irrigation_advice()
-    socketio.emit('ws-monitor', data=advice)
-    logger.info("[moisture_monitor] %s", advice)
-    #mqtt.publish("/schedule-test", "hellllooo")
-
-
-moisture_monitor_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["MOISTURE_MONITOR"])
-sched.add_job(moisture_monitor, moisture_monitor_trigger)
+        #sched.print_jobs()
+        advice = analytics.irrigation_advice()
+        socketio.emit('ws-monitor', data=advice)
+        logger.info("[moisture_monitor] %s", advice)
+        #mqtt.publish("/schedule-test", "hellllooo")
+    moisture_monitor_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["MOISTURE_MONITOR"])
+    sched.add_job(moisture_monitor, moisture_monitor_trigger)
+if cfg["SCHEDULE"]["IRRIGATION"] != "never":
+    def irrigation():
+        global mqtt
+        global analytics
+        global socketio
+        logger.info("[irrigation] DO IT!")
+    irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION"])
+    sched.add_job(irrigation, irrigation_trigger)
 sched.start()
 ###############################################################################
 ##################################  START #####################################
