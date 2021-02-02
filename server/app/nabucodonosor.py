@@ -8,6 +8,7 @@ import datetime as dt
 import logging
 import logging.config
 import git
+from functools import wraps
 from Models import *
 from Dashboard import *
 from SoilMoistureAnalytics import *
@@ -53,6 +54,7 @@ VERSION = subprocess.check_output(["git", "describe", "--tags","--always"],
 with open(os.path.join(SERVER_HOME, 'config.json'), "r") as config_json_file:
     cfg = json.load(config_json_file)
 isMqttEnabled = cfg["MODE"]["MQTT"]
+isWebEnabled = cfg["MODE"]["WEB"]
 
 NICKNAME_FILE = os.path.join(COMMON_DIR, 'nickname.json')
 with open(NICKNAME_FILE, "r") as nickname_file:
@@ -143,12 +145,21 @@ def update_server_software():
 ###############################################################################
 ############################# MANAGE WEB REQ/RESP #############################
 ###############################################################################
+def check_if_gui_is_enable(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not isWebEnabled:
+            return render_template('misc/disabled.html')
+        return f(*args, **kwargs)
+    return decorated_function
+
 @login_manager.user_loader
 def load_user(username):
     return User.query.get(username)
 
 # somewhere to login
 @app.route("/login", methods=["GET", "POST"])
+@check_if_gui_is_enable
 def login():
     error = None
     if request.method == 'POST':
@@ -314,6 +325,7 @@ def command():
     return json.dumps({'status':'Success!'})
 
 @app.route('/command-alexa', methods=['POST'])
+@check_if_gui_is_enable
 def command_alexa():
     message = request.get_json()
     logger.debug("[command-alexa] %s", message)
@@ -488,8 +500,10 @@ def utility_processor():
             "partly-cloudy-night": "wi wi-forecast-io-partly-cloudy-day"
         }
         return switcher.get(argument, "wi wi-day-sunny")
-    def translate(node_id):
-        return nicknames[node_id]
+    def translate_name(node_id):
+        return nicknames[node_id]["name"]
+    def description(node_id):
+        return nicknames[node_id]["desc"]
     return {
             'status_node':status_node,
             'status_moisture':status_moisture,
@@ -497,7 +511,8 @@ def utility_processor():
             'format_last_update':format_last_update,
             'status_btn_css':status_btn_css,
             'status_btn':status_btn,
-            'translate':translate
+            'translate_name':translate_name,
+            'description':description
             }
 ###############################################################################
 ############################## HANDLE MQTT ####################################

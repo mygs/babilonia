@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  {% include 'includes/_header.html' %}
+  </head>
+  <body style="padding-top:60px;color:white;" class="text-center">
+    <div>
+        <img src="../../static/img/logo.png" class="disabled-brand">
+    </div>
+    <div>
+      <h1>GUI is disabled for this instance</h1>
+      <p style="font-style: italic;">Contact the administrator
+    </div>
+  </body>
+  {% assets "3rdpartyjs" %}
+    <script src="{{ ASSET_URL }}" ></script>
+  {% endassets %}
+</html>

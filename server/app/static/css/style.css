@@ -114,6 +114,10 @@
   float: right;
 }
 
+.disabled-brand {
+  width: 100px;
+}
+
 .navbar-brand {
   padding: 0px; /* firefox bug fix */
 }

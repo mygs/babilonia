@@ -1,9 +1,30 @@
 {
-  "oasis-312209" : "ZIBA",
-  "oasis-397988" : "AREZOO",
-  "oasis-397c0e" : "BANU",
-  "oasis-ed86da" : "NADIA",
-  "oasis-fece74" : "JASMINE",
-  "oasis-311de4" : "SAMIRA",
-  "oasis-39732c" : "PARISA"
+  "oasis-312209":{
+    "name": "ZIBA",
+    "desc": "Modular que foi fixado"
+  },
+  "oasis-397988":{
+    "name": "AREZOO",
+    "desc": "Modelo modular v2"
+  },
+  "oasis-397c0e":{
+    "name": "BANU",
+    "desc": "Modelo inicial"
+  },
+  "oasis-ed86da":{
+    "name": "NADIA",
+    "desc": "Modelo modular v2"
+  },
+  "oasis-fece74":{
+    "name": "JASMINE",
+    "desc": "Modelo modular v2"
+  },
+  "oasis-311de4":{
+    "name": "SAMIRA",
+    "desc": "Modelo inicial"
+  },
+  "oasis-39732c":{
+    "name": "PARISA",
+    "desc": "Modelo inicial feito no lab da USP"
+  }
 }
