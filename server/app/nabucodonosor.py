@@ -592,11 +592,21 @@ if cfg["SCHEDULE"]["MOISTURE_MONITOR"] != "never":
     moisture_monitor_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["MOISTURE_MONITOR"])
     sched.add_job(moisture_monitor, moisture_monitor_trigger)
 if cfg["SCHEDULE"]["IRRIGATION"] != "never":
+    def irrigation_timer(analytics, mqtt, socketio):
+        countdown = analytics.IRRIGATION_DURATION
+        while countdown > 0:
+            self.logger.info("[irrigation] %d min left to stop irrigation", countdown)
+            sleep(60)
+            countdown -= 1
     def irrigation():
         global mqtt
         global analytics
         global socketio
-        logger.info("[irrigation] DO IT!")
+        logger.info("[irrigation] START irrigation")
+        timer_thread = Thread(target=irrigation_timer(analytics, mqtt, socketio))
+        timer_thread.start()
+
+
     irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION"])
     sched.add_job(irrigation, irrigation_trigger)
 sched.start()

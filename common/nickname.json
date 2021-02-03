@@ -1,30 +1,254 @@
 {
   "oasis-312209":{
     "name": "ZIBA",
-    "desc": "Modular que foi fixado"
+    "desc": "Modular que foi fixado",
+    "MUX0":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "X-123",
+      "plant":""
+    }
   },
   "oasis-397988":{
     "name": "AREZOO",
-    "desc": "Modelo modular v2"
+    "desc": "Modelo modular v2",
+    "MUX0":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "X-123",
+      "plant":""
+    }
   },
   "oasis-397c0e":{
     "name": "BANU",
-    "desc": "Modelo inicial"
+    "desc": "Modelo inicial",
+    "MUX0":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "X-123",
+      "plant":""
+    }
   },
   "oasis-ed86da":{
     "name": "NADIA",
-    "desc": "Modelo modular v2"
+    "desc": "Modelo modular v2",
+    "MUX0":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "X-123",
+      "plant":""
+    }
   },
   "oasis-fece74":{
     "name": "JASMINE",
-    "desc": "Modelo modular v2"
+    "desc": "Modelo modular v2",
+    "MUX0":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "X-123",
+      "plant":""
+    }
   },
   "oasis-311de4":{
     "name": "SAMIRA",
-    "desc": "Modelo inicial"
+    "desc": "Modelo inicial",
+    "MUX0":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "X-123",
+      "plant":""
+    }
   },
   "oasis-39732c":{
     "name": "PARISA",
-    "desc": "Modelo inicial feito no lab da USP"
+    "desc": "Modelo inicial feito no lab da USP",
+    "MUX0":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "X-123",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "X-123",
+      "plant":""
+    }
   }
 }
