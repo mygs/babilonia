@@ -140,6 +140,13 @@ class WaterTankManager:
             self.logger.info("[WaterTankManager] %d min left to stop water tank %s", countdown, direction)
             sleep(60)
             countdown -= 1
+            if direction == "out" and not gpio.input(PIN_WATER_TANK_OUT):
+                self.logger.info("[WaterTankManager] timer for water tank %s was interrupted due manual change", direction)
+                break
+            if direction == "in" and not gpio.input(PIN_WATER_TANK_IN):
+                self.logger.info("[WaterTankManager] timer for water tank %s was interrupted due manual change", direction)
+                break
+        #timeout
         if direction == "out":
             self.changeStateWaterTankOut(False)
         else:
