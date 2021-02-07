@@ -213,7 +213,7 @@ def get_modules_data(id):
         return modules
 
 @app.route('/')
-@cache.cached()
+#@cache.cached()
 @login_required
 def index():
     latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LATEST_BEAT')).all()
