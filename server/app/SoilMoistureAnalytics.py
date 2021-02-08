@@ -348,7 +348,7 @@ class SoilMoistureAnalytics:
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[will_rain] took %s secs",elapsed_time.total_seconds())
-        self.logger.debug("will_rain: "+str(will_rain))
+        self.logger.debug("[will_rain]: "+str(will_rain))
         return will_rain
 
 
