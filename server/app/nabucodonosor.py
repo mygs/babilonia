@@ -56,9 +56,9 @@ with open(os.path.join(SERVER_HOME, 'config.json'), "r") as config_json_file:
 isMqttEnabled = cfg["MODE"]["MQTT"]
 isWebEnabled = cfg["MODE"]["WEB"]
 
-NICKNAME_FILE = os.path.join(COMMON_DIR, 'nickname.json')
-with open(NICKNAME_FILE, "r") as nickname_file:
-    nicknames = json.load(nickname_file)
+OASIS_PROP_FILE = os.path.join(COMMON_DIR, 'oasis_properties.json')
+with open(OASIS_PROP_FILE, "r") as oasis_prop_file:
+    oasis_properties = json.load(oasis_prop_file)
 ###### Server GPIO setup
 #
 # o V G o X Y o o o o o o o o o o o o o o
@@ -500,9 +500,11 @@ def utility_processor():
         }
         return switcher.get(argument, "wi wi-day-sunny")
     def translate_name(node_id):
-        return nicknames[node_id]["name"]
+        return oasis_properties[node_id]["name"]
     def description(node_id):
-        return nicknames[node_id]["desc"]
+        return oasis_properties[node_id]["desc"]
+    def mux_code(node_id, mux):
+        return oasis_properties[node_id][mux]['cod']
     return {
             'status_node':status_node,
             'status_moisture':status_moisture,
@@ -511,7 +513,8 @@ def utility_processor():
             'status_btn_css':status_btn_css,
             'status_btn':status_btn,
             'translate_name':translate_name,
-            'description':description
+            'description':description,
+            'mux_code':mux_code
             }
 ###############################################################################
 ############################## HANDLE MQTT ####################################
