@@ -3,71 +3,71 @@
     "name": "ZIBA",
     "desc": "Modular que foi fixado",
     "MUX0":{
-      "cod": "X-123",
+      "cod": "B-104",
       "plant":""
     },
     "MUX1":{
-      "cod": "X-123",
+      "cod": "B-101",
       "plant":""
     },
     "MUX2":{
-      "cod": "X-123",
+      "cod": "B-105",
       "plant":""
     },
     "MUX3":{
-      "cod": "X-123",
+      "cod": "B-101",
       "plant":""
     },
     "MUX4":{
-      "cod": "X-123",
+      "cod": "B-106",
       "plant":""
     },
     "MUX5":{
-      "cod": "X-123",
+      "cod": "B-103",
       "plant":""
     },
     "MUX6":{
-      "cod": "X-123",
-      "plant":""
+      "cod": "none",
+      "plant":"none"
     },
     "MUX7":{
-      "cod": "X-123",
-      "plant":""
+      "cod": "none",
+      "plant":"none"
     }
   },
   "oasis-397988":{
-    "name": "AREZOO",
+    "name": "AREZZO",
     "desc": "Modelo modular v2",
     "MUX0":{
-      "cod": "X-123",
+      "cod": "B-115",
       "plant":""
     },
     "MUX1":{
-      "cod": "X-123",
+      "cod": "B-116",
       "plant":""
     },
     "MUX2":{
-      "cod": "X-123",
+      "cod": "B-112",
       "plant":""
     },
     "MUX3":{
-      "cod": "X-123",
+      "cod": "B-111",
       "plant":""
     },
     "MUX4":{
-      "cod": "X-123",
+      "cod": "B-117",
       "plant":""
     },
     "MUX5":{
-      "cod": "X-123",
+      "cod": "B-118",
       "plant":""
     },
     "MUX6":{
-      "cod": "X-123",
+      "cod": "B-114",
       "plant":""
     },
     "MUX7":{
-      "cod": "X-123",
+      "cod": "B-113",
       "plant":""
     }
   },
@@ -75,35 +75,35 @@
     "name": "BANU",
     "desc": "Modelo inicial",
     "MUX0":{
-      "cod": "X-123",
+      "cod": "A-105",
       "plant":""
     },
     "MUX1":{
-      "cod": "X-123",
+      "cod": "A-106",
       "plant":""
     },
     "MUX2":{
-      "cod": "X-123",
+      "cod": "A-103",
       "plant":""
     },
     "MUX3":{
-      "cod": "X-123",
+      "cod": "A-101",
       "plant":""
     },
     "MUX4":{
-      "cod": "X-123",
+      "cod": "A-107",
       "plant":""
     },
     "MUX5":{
-      "cod": "X-123",
+      "cod": "A-108",
       "plant":""
     },
     "MUX6":{
-      "cod": "X-123",
+      "cod": "A-104",
       "plant":""
     },
     "MUX7":{
-      "cod": "X-123",
+      "cod": "A-102",
       "plant":""
     }
   },
@@ -111,35 +111,35 @@
     "name": "NADIA",
     "desc": "Modelo modular v2",
     "MUX0":{
-      "cod": "X-123",
+      "cod": "B-125",
       "plant":""
     },
     "MUX1":{
-      "cod": "X-123",
+      "cod": "B-126",
       "plant":""
     },
     "MUX2":{
-      "cod": "X-123",
+      "cod": "B-122",
       "plant":""
     },
     "MUX3":{
-      "cod": "X-123",
+      "cod": "B-121",
       "plant":""
     },
     "MUX4":{
-      "cod": "X-123",
+      "cod": "B-127",
       "plant":""
     },
     "MUX5":{
-      "cod": "X-123",
+      "cod": "B-128",
       "plant":""
     },
     "MUX6":{
-      "cod": "X-123",
+      "cod": "B-124",
       "plant":""
     },
     "MUX7":{
-      "cod": "X-123",
+      "cod": "B-123",
       "plant":""
     }
   },
@@ -147,35 +147,35 @@
     "name": "JASMINE",
     "desc": "Modelo modular v2",
     "MUX0":{
-      "cod": "X-123",
+      "cod": "B-135",
       "plant":""
     },
     "MUX1":{
-      "cod": "X-123",
+      "cod": "B-136",
       "plant":""
     },
     "MUX2":{
-      "cod": "X-123",
+      "cod": "B-132",
       "plant":""
     },
     "MUX3":{
-      "cod": "X-123",
+      "cod": "B-131",
       "plant":""
     },
     "MUX4":{
-      "cod": "X-123",
+      "cod": "B-137",
       "plant":""
     },
     "MUX5":{
-      "cod": "X-123",
+      "cod": "B-138",
       "plant":""
     },
     "MUX6":{
-      "cod": "X-123",
+      "cod": "B-134",
       "plant":""
     },
     "MUX7":{
-      "cod": "X-123",
+      "cod": "B-133",
       "plant":""
     }
   },
@@ -183,35 +183,35 @@
     "name": "SAMIRA",
     "desc": "Modelo inicial",
     "MUX0":{
-      "cod": "X-123",
+      "cod": "A-115",
       "plant":""
     },
     "MUX1":{
-      "cod": "X-123",
+      "cod": "A-116",
       "plant":""
     },
     "MUX2":{
-      "cod": "X-123",
+      "cod": "A-112",
       "plant":""
     },
     "MUX3":{
-      "cod": "X-123",
+      "cod": "A-111",
       "plant":""
     },
     "MUX4":{
-      "cod": "X-123",
+      "cod": "A-117",
       "plant":""
     },
     "MUX5":{
-      "cod": "X-123",
+      "cod": "A-118",
       "plant":""
     },
     "MUX6":{
-      "cod": "X-123",
+      "cod": "A-114",
       "plant":""
     },
     "MUX7":{
-      "cod": "X-123",
+      "cod": "A-113",
       "plant":""
     }
   },
@@ -219,35 +219,35 @@
     "name": "PARISA",
     "desc": "Modelo inicial feito no lab da USP",
     "MUX0":{
-      "cod": "X-123",
+      "cod": "A-125",
       "plant":""
     },
     "MUX1":{
-      "cod": "X-123",
+      "cod": "A-126",
       "plant":""
     },
     "MUX2":{
-      "cod": "X-123",
+      "cod": "A-122",
       "plant":""
     },
     "MUX3":{
-      "cod": "X-123",
+      "cod": "A-121",
       "plant":""
     },
     "MUX4":{
-      "cod": "X-123",
+      "cod": "A-127",
       "plant":""
     },
     "MUX5":{
-      "cod": "X-123",
+      "cod": "A-128",
       "plant":""
     },
     "MUX6":{
-      "cod": "X-123",
+      "cod": "A-124",
       "plant":""
     },
     "MUX7":{
-      "cod": "X-123",
+      "cod": "A-123",
       "plant":""
     }
   }
