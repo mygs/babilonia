@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import os
-from threading import Thread
+from threading import Timer
 from time import sleep
 if os.uname()[4].startswith("arm"): #This module can only be run on a Raspberry Pi!
     import RPi.GPIO as gpio
@@ -18,7 +18,7 @@ PIN_WATER_TANK_IN           =10 #X
 PIN_WATER_TANK_OUT          =12 #Y
 PIN_WATER_LEVEL_SENSOR_A    =11 #A (XKC-Y25-V) => orange cable
 PIN_WATER_LEVEL_SENSOR_B    =13 #B (XKC-Y25-V) => yellow cable
-TIME_TO_DISABLE_SOLENOID_ON =45 #minutes
+TIME_TO_DISABLE_SOLENOID_ON =45*60 #secs
 
 class WaterTankManager:
     def __init__(self, logger):
@@ -100,7 +100,7 @@ class WaterTankManager:
                 gpio.output(PIN_WATER_TANK_IN, gpio.HIGH)
             else:
                 self.FAKE_WATER_TANK_IN = 1
-            timer_thread = Thread(target=self.timer_disable_forgotten_solenoid("in"))
+            timer_thread = Timer(TIME_TO_DISABLE_SOLENOID_ON, self.changeStateWaterTankIn, [False])
             timer_thread.start()
         else:
             self.logger.info("[WaterTankManager] Manually STOPED filling water tank")
@@ -116,7 +116,7 @@ class WaterTankManager:
                 gpio.output(PIN_WATER_TANK_OUT, gpio.HIGH)
             else:
                 self.FAKE_WATER_TANK_OUT = 1
-            timer_thread = Thread(target=self.timer_disable_forgotten_solenoid("out"))
+            timer_thread = Timer(TIME_TO_DISABLE_SOLENOID_ON, self.changeStateWaterTankOut, [False])
             timer_thread.start()
         else:
             self.logger.info("[WaterTankManager] Manually STOPED using water tank")
@@ -133,24 +133,6 @@ class WaterTankManager:
         else:
             self.FAKE_WATER_TANK_IN = 0
             self.FAKE_WATER_TANK_OUT = 0
-
-    def timer_disable_forgotten_solenoid(self, direction):
-        countdown = TIME_TO_DISABLE_SOLENOID_ON
-        while countdown > 0:
-            self.logger.info("[WaterTankManager] %d min left to stop water tank %s", countdown, direction)
-            sleep(60)
-            countdown -= 1
-            if direction == "out" and not gpio.input(PIN_WATER_TANK_OUT):
-                self.logger.info("[WaterTankManager] timer for water tank %s was interrupted due manual change", direction)
-                break
-            if direction == "in" and not gpio.input(PIN_WATER_TANK_IN):
-                self.logger.info("[WaterTankManager] timer for water tank %s was interrupted due manual change", direction)
-                break
-        #timeout
-        if direction == "out":
-            self.changeStateWaterTankOut(False)
-        else:
-            self.changeStateWaterTankIn(False)
 
 if __name__ == '__main__':
     print("*** STARTING Water Tank Manager Test ***")
