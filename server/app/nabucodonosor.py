@@ -613,7 +613,7 @@ if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
 
         wtm.changeStateWaterTankOut(False)
 
-    irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION"])
+    irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION_BOT"])
     sched.add_job(irrigation, irrigation_trigger)
 sched.start()
 ###############################################################################
