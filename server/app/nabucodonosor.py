@@ -616,10 +616,10 @@ if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
             for node in nodes:
                 message = json.dumps({'NODE_ID': str(node.NODE_ID), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": True}})
                 logger.info("[irrigation] %s", message)
-                #mqtt.publish("/oasis-inbound", message)
+                mqtt.publish("/oasis-inbound", message)
                 sleep(IRRIGATION_DURATION)
                 message = json.dumps({'NODE_ID': str(node.NODE_ID), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
-                #mqtt.publish("/oasis-inbound", message)
+                mqtt.publish("/oasis-inbound", message)
                 logger.info("[irrigation] %s", message)
 
         requests.post(url,data=json.dumps({'DIRECTION':'OUT', 'ACTION':False }), headers=headers)
