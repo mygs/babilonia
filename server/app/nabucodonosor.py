@@ -593,44 +593,25 @@ if cfg["SCHEDULE"]["MOISTURE_MONITOR"] != "never":
         #mqtt.publish("/schedule-test", "hellllooo")
     moisture_monitor_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["MOISTURE_MONITOR"])
     sched.add_job(moisture_monitor, moisture_monitor_trigger)
-if cfg["SCHEDULE"]["IRRIGATION"] != "never":
-    def irrigation():
-        global mqtt
-        IRRIGATION_DURATION = 1 #seconds
 
-        try:
-            response = requests.post('http://%s/water-tank'%(cfg["WATER_TANK_SERVER"]),
-                                    json=json.dumps('{"DIRECTION":"OUT", "ACTION":true}'))
-        except requests.ConnectionError:
-            logger.info("[irrigation] Water Tank ConnectionError!!!")
-            return
-        if response.status_code != 200:
-            logger.info("[irrigation] Water Tank connection error code: %s!!!", str(response.status_code))
-            return
+if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
+    def irrigation():
+        IRRIGATION_DURATION = 10 #seconds
+        wtm.changeStateWaterTankOut(True)
 
         logger.info("[irrigation] START irrigation")
         with app.app_context():
             nodes = DB.session.query(OasisHeartbeat).all()
             for node in nodes:
-                message={}
-                message['NODE_ID'] = str(node.NODE_ID)
-                message['MESSAGE_ID'] = "irrigation_sched"
-                command={}
-                command['WATER'] = True
-                message['COMMAND'] = command
+                message = json.dumps({'NODE_ID': str(node.NODE_ID), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": True}})
                 logger.info("[irrigation] %s", message)
-                #mqtt.publish("/oasis-inbound", json.dumps(message))
+                mqtt.publish("/oasis-inbound", message)
                 sleep(IRRIGATION_DURATION)
-                command['WATER'] = False
-                message['COMMAND'] = command
-                #mqtt.publish("/oasis-inbound", json.dumps(message))
+                message = json.dumps({'NODE_ID': str(node.NODE_ID), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
+                mqtt.publish("/oasis-inbound", message)
                 logger.info("[irrigation] %s", message)
 
-        try:
-            response = requests.post('http://%s/water-tank'%(cfg["WATER_TANK_SERVER"]),
-                                    json=json.dumps('{"DIRECTION":"OUT", "ACTION":false}'))
-        except requests.ConnectionError:
-            logger.debug("[irrigation] Water Tank ConnectionError!!!")
+        wtm.changeStateWaterTankOut(False)
 
     irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION"])
     sched.add_job(irrigation, irrigation_trigger)
