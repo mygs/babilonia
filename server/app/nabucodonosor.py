@@ -435,13 +435,12 @@ def webhook():
 
     return json.dumps({'status':'request was ignored!'})
 
-
+#curl -i -H "Content-Type: application/json" -X POST -d '{"DIRECTION":"IN", "ACTION":false}' http://localhost:8181/water-tank
 @app.route('/water-tank', methods=['POST'])
-@login_required
 def water_tank():
     message = request.get_json()
     direction = message["DIRECTION"] # IN or OUT
-    action = message['ACTION'] # OPEN or CLOSE
+    action = message['ACTION'] # true or false
     if wtm is None:
         logger.info("[water-tank] Ignoring manually %s command to %s", action, direction)
     else:
@@ -597,13 +596,41 @@ if cfg["SCHEDULE"]["MOISTURE_MONITOR"] != "never":
 if cfg["SCHEDULE"]["IRRIGATION"] != "never":
     def irrigation():
         global mqtt
-        global analytics
-        global socketio
-        countdown = analytics.IRRIGATION_DURATION
+        IRRIGATION_DURATION = 1 #seconds
+
+        try:
+            response = requests.post('http://%s/water-tank'%(cfg["WATER_TANK_SERVER"]),
+                                    json=json.dumps('{"DIRECTION":"OUT", "ACTION":true}'))
+        except requests.ConnectionError:
+            logger.info("[irrigation] Water Tank ConnectionError!!!")
+            return
+        if response.status_code != 200:
+            logger.info("[irrigation] Water Tank connection error code: %s!!!", str(response.status_code))
+            return
+
         logger.info("[irrigation] START irrigation")
         with app.app_context():
-            oasis = OasisHeartbeat.query().values('NODE_ID')
-        logger.info("[irrigation] %s", oasis)
+            nodes = DB.session.query(OasisHeartbeat).all()
+            for node in nodes:
+                message={}
+                message['NODE_ID'] = str(node.NODE_ID)
+                message['MESSAGE_ID'] = "irrigation_sched"
+                command={}
+                command['WATER'] = True
+                message['COMMAND'] = command
+                logger.info("[irrigation] %s", message)
+                #mqtt.publish("/oasis-inbound", json.dumps(message))
+                sleep(IRRIGATION_DURATION)
+                command['WATER'] = False
+                message['COMMAND'] = command
+                #mqtt.publish("/oasis-inbound", json.dumps(message))
+                logger.info("[irrigation] %s", message)
+
+        try:
+            response = requests.post('http://%s/water-tank'%(cfg["WATER_TANK_SERVER"]),
+                                    json=json.dumps('{"DIRECTION":"OUT", "ACTION":false}'))
+        except requests.ConnectionError:
+            logger.debug("[irrigation] Water Tank ConnectionError!!!")
 
     irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION"])
     sched.add_job(irrigation, irrigation_trigger)

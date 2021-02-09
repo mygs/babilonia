@@ -141,6 +141,33 @@ gzip babilonia.img
 4.3) Uninstall Wireguard
 
 
+### MANAGE SERVICES
+####  MYSQL
+status/start/stop
+```bash
+service mysql status
+sudo service mysql stop
+sudo service mysql start
+```
+auto/manual startup
+```bash
+sudo update-rc.d mysql remove
+sudo update-rc.d mysql defaults
+```
+
+####  MOSQUITTO
+status/start/stop
+```bash
+service mosquitto status
+sudo service mosquitto stop
+sudo service mosquitto start
+```
+auto/manual startup
+```bash
+sudo update-rc.d mosquitto remove
+sudo update-rc.d mosquitto defaults
+```
+
 # NODE CONFIGURATION
 
 ### Update Over The Air
