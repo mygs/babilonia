@@ -25,6 +25,7 @@ from flask_assets import Environment, Bundle
 from sqlalchemy import func, and_
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_caching import Cache
+from flask_executor import Executor
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
@@ -88,6 +89,7 @@ logger.info("NODE_HOME: %s",NODE_HOME)
 
 cache = Cache(config=cfg['CACHE'])
 cache.init_app(app)
+executor = Executor(app)
 
 mqtt = Mqtt(app)
 DB.init_app(app)
@@ -453,6 +455,12 @@ def water_tank():
 
     return json.dumps({'status':'Success!'})
 
+@app.route('/irrigation')
+@login_required
+def standard_irrigation():
+    #TODO: Thread
+    irrigation = Irrigation(logger, cfg, mqtt)
+    irrigation.run_standard()
 ###############################################################################
 ################################# PROCESSORS ##################################
 ###############################################################################
@@ -472,14 +480,17 @@ def utility_processor():
         if argument == "DISABLED":
             result = "disabled"
         return result
-    def status_node(last_update, sensor_collect_data_period):
+    def status_node(last_update, sensor_collect_data_period, water):
         last_update = int(last_update)
         sensor_collect_data_period = 2 * int(sensor_collect_data_period)/1000
         now = int(time.time())
         next_data_is_expected = last_update + sensor_collect_data_period
 
         if next_data_is_expected >= now: # NEXT is future
-            return "good"
+            if water:
+                return "good irrigation"
+            else
+                return "good"
         else:
             return "danger"
     def status_moisture(node_id, port, level):
