@@ -18,12 +18,23 @@
           {%  set firmware_version = module.DATA['FIRMWARE_VERSION'] %}
           {%  set last_update = module.TIMESTAMP %}
           {%  set sensor_collect_data_period = module.DATA['DATA']['NODE']['SENSOR_COLLECT_DATA_PERIOD'] %}
-          {%  set temperature = module.DATA['DATA']['DHT']['TEMPERATURE'] if 'DHT' in module.DATA['DATA'] else 'N/A' %}
-          {%  set humidity = module.DATA['DATA']['DHT']['HUMIDITY'] if 'DHT' in module.DATA['DATA'] else 'N/A' %}
           {%  set water = module.DATA['DATA']['WATER'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
-          {%  set light = module.DATA['DATA']['LIGHT'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
-          {%  set fan = module.DATA['DATA']['FAN'] if 'WATER' in module.DATA['DATA'] else 'DISABLED' %}
 
+          {%  if 'DHT' in module.DATA['DATA'] %}
+          {%    if 'TEMPERATURE' in module.DATA['DATA']['DHT'] %}
+          {%      set temperature = module.DATA['DATA']['DHT']['TEMPERATURE'] %}
+          {%    else %}
+          {%      set temperature = 'Error ' %}
+          {%    endif %}
+          {%    if 'HUMIDITY' in module.DATA['DATA']['DHT'] %}
+          {%       set humidity = module.DATA['DATA']['DHT']['HUMIDITY']%}
+          {%    else %}
+          {%      set humidity = 'Error ' %}
+          {%    endif %}
+          {% else %}
+          {%    set temperature = 'N/A ' %}
+          {%    set humidity = 'N/A ' %}
+          {% endif %}
           {% if 'CAPACITIVEMOISTURE' in module.DATA['DATA'] %}
             {%  set hasMoisture = True %}
             {%  set moisture = module.DATA['DATA']['CAPACITIVEMOISTURE'] %}
@@ -127,23 +138,19 @@
                   <td class="param-value" id='sw_ver_{{id}}'>{{firmware_version}}</td>
                 </tr>
                 <tr>
-                  <td class="param-label">Temperature</td>
-                  <td class="param-value" id='temperature_{{id}}'>{{temperature}}</td>
+                  <td class="param-label">Temp.</td>
+                  <td class="param-value" id='temperature_{{id}}'>{{temperature}}°C</td>
                 </tr>
                 <tr>
                   <td class="param-label">Humidity</td>
-                  <td class="param-value" id='humidity_{{id}}'>{{humidity}}</td>
+                  <td class="param-value" id='humidity_{{id}}'>{{humidity}}%</td>
                 </tr>
               </table>
               <table id="cockpit">
               <tr>
-                <td><button id="btn-water_{{id}}" type="button" class="btn btn-sm btn-block {{ status_btn_css(water) }} btn-water" data-id="{{id}}" {{ status_btn(water) }}><i class="wi wi-sprinkle"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-primary btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-primary" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
-                <!--
-                <td><button type="button" class="btn btn-sm btn-block {{ status_btn_css(light) }} btn-light" data-id="{{id}}" {{ status_btn(light) }}><i class="wi wi-day-sunny"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block {{ status_btn_css(fan) }} btn-fan" data-id="{{id}}" {{ status_btn(fan) }}><i class="wi wi-cloudy-gusts"></i></button></td>
-              -->
+                <td><button id="btn-water_{{id}}" type="button" class="btn btn-md btn-block {{ status_btn_css(water) }} btn-water" data-id="{{id}}" {{ status_btn(water) }}><i class="wi wi-sprinkle"></i></button></td>
+                <td><button type="button" class="btn btn-md btn-block btn-primary btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
+                <td><button type="button" class="btn btn-md btn-block btn-primary" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
               </tr>
               </table>
             </div>

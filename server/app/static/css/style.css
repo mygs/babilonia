@@ -237,7 +237,7 @@ table#cockpit {
   cursor: pointer;
 }
 #sortable li .box {
-  height: 250px;
+  /*height: 250px;*/
   border: solid 2px #999;
   background: #eee;
   width: 100%;
