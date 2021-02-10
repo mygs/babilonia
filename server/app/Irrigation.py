@@ -11,7 +11,7 @@ from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
 
 IRRIGATION_DURATION = 5*60 #seconds
-HEARTBEAT_PERIOD=30 # (seconds) OMG 2 heartbeats
+HEARTBEAT_PERIOD=5*60 # (seconds) OMG 5 min
 
 class Irrigation:
 

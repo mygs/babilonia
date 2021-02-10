@@ -184,7 +184,7 @@ $(".btn-water").on("click", function() {
 });
 
 $(".btn-restart").on("click", function() {
-  var id = $(this).data('id')
+  var id = $("#NODE_ID").val()
   var command = {
            "NODE_ID": id,
         "MESSAGE_ID": UUID(),

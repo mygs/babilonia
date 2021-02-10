@@ -134,27 +134,16 @@
                   <td class="param-label">Humidity</td>
                   <td class="param-value" id='humidity_{{id}}'>{{humidity}}</td>
                 </tr>
-                <!--
-                <tr>
-                  <td class="param-label">Light</td>
-                  <td class="param-value" id='light_{{id}}'>{{light}}</td>
-                </tr>
-                <tr>
-                  <td class="param-label">Wind</td>
-                  <td class="param-value" id='fan_{{id}}'>{{fan}}</td>
-                </tr>
-                -->
               </table>
               <table id="cockpit">
               <tr>
                 <td><button id="btn-water_{{id}}" type="button" class="btn btn-sm btn-block {{ status_btn_css(water) }} btn-water" data-id="{{id}}" {{ status_btn(water) }}><i class="wi wi-sprinkle"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block {{ status_btn_css(light) }} btn-light" data-id="{{id}}" {{ status_btn(light) }}><i class="wi wi-day-sunny"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block {{ status_btn_css(fan) }} btn-fan" data-id="{{id}}" {{ status_btn(fan) }}><i class="wi wi-cloudy-gusts"></i></button></td>
-              </tr>
-              <tr>
                 <td><button type="button" class="btn btn-sm btn-block btn-primary btn-refresh" data-id="{{id}}"><i class="fa fa-refresh" aria-hidden="true"></i></button></td>
                 <td><button type="button" class="btn btn-sm btn-block btn-primary" data-toggle="modal" data-target="#updateNodeModal" data-id="{{id}}"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
-                <td><button type="button" class="btn btn-sm btn-block btn-primary btn-restart" data-id="{{id}}"><i class="fa fa-power-off"></i></button></td>
+                <!--
+                <td><button type="button" class="btn btn-sm btn-block {{ status_btn_css(light) }} btn-light" data-id="{{id}}" {{ status_btn(light) }}><i class="wi wi-day-sunny"></i></button></td>
+                <td><button type="button" class="btn btn-sm btn-block {{ status_btn_css(fan) }} btn-fan" data-id="{{id}}" {{ status_btn(fan) }}><i class="wi wi-cloudy-gusts"></i></button></td>
+              -->
               </tr>
               </table>
             </div>

@@ -102,7 +102,10 @@
                         <option>SW.B</option>
                         <option>SW.C</option>
                         <option>IDLE</option>
-                      </select>
+                      </select>                <div class="btn-group-lg" role="group">
+                  <button type="button" class="btn btn-primary" onclick="trainOasis('soil_wet')">Wet</button>
+                  <button type="button" class="btn btn-danger" onclick="trainOasis('soil_dry')">Dry</button>
+                </div>
                     </div>
                   </div>
                   {% endfor %}
@@ -128,8 +131,13 @@
                 <div class="btn-group-lg" role="group">
                   <button type="button" class="btn btn-danger" onclick="removeOasis()"
                     data-toggle="tooltip" data-placement="top" title="Delete all node data">
-                    Remove Me
+                    <i class="fa fa-trash"></i>
                   </button>
+                  <button type="button" class="btn btn-primary btn-restart" data-id="{{id}}"
+                        data-toggle="tooltip" data-placement="top" title="Restart node">
+                    <i class="fa fa-power-off"></i>
+                  </button>
+
                 </div>
               </div>
             </div>
