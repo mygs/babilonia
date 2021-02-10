@@ -1,11 +1,14 @@
-function btnStatusChange(btnId, status) {
+function btnStatusChange(node_id, status) {
   if(status != null){
     if(status == 0){
-      $(btnId).removeClass('btn-danger');
-      $(btnId).addClass('btn-primary');
+      $('#btn-water_' + node_id).removeClass('btn-danger');
+      $('#btn-water_' + node_id).addClass('btn-primary');
+      $('#box_' + node_id).removeClass('irrigation');
+
     }else{
-      $(btnId).removeClass('btn-primary');
-      $(btnId).addClass('btn-danger');
+      $('#btn-water_' + node_id).removeClass('btn-primary');
+      $('#btn-water_' + node_id).addClass('btn-danger');
+      $('#box_' + node_id).addClass('irrigation');
     }
   }
 };
@@ -52,12 +55,12 @@ $(document).ready(function() {
         }
       }
 
-      btnStatusChange('#btn-water_' + node_id, data['DATA']['WATER']);
+      btnStatusChange(node_id, data['DATA']['WATER']);
 
     }
 
     if(data['COMMAND'] != null){
-      btnStatusChange('#btn-water_' + node_id, data['COMMAND']['WATER']);
+      btnStatusChange(node_id, data['COMMAND']['WATER']);
     }
     console.log(data);
   });

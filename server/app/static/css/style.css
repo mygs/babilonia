@@ -488,3 +488,18 @@ table.dataTable tbody tr.selected {
     color: yellow !important;
     background-color: #35376a !important;
 }
+
+/* Irrigation effect */
+
+.irrigation {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #BCED91;
+  }
+  100% {
+    background-color: #62B1F6;
+  }
+}
