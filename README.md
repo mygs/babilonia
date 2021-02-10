@@ -153,6 +153,7 @@ auto/manual startup
 ```bash
 sudo update-rc.d mysql remove
 sudo update-rc.d mysql defaults
+sudo systemctl disable mysql
 ```
 
 ####  MOSQUITTO
@@ -166,6 +167,8 @@ auto/manual startup
 ```bash
 sudo update-rc.d mosquitto remove
 sudo update-rc.d mosquitto defaults
+sudo systemctl disable mosquitto
+
 ```
 
 # NODE CONFIGURATION
