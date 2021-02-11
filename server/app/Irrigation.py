@@ -75,28 +75,32 @@ class Irrigation:
 
 
     def run(self, nodes):
+        nodes_to_irrigate = len(nodes.index)
+        self.logger.info("[irrigation] %d nodes will receive water.",nodes_to_irrigate)
 
-        url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
-        headers = {'Content-type': 'application/json'}
-        response = requests.post(url,data=json.dumps({'DIRECTION':'OUT', 'ACTION':True }), headers=headers)
-        self.logger.info("[irrigation]  Water tank server response: %s", response)
+        if nodes_to_irrigate > 0:
+            url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
+            headers = {'Content-type': 'application/json'}
+            response = requests.post(url,data=json.dumps({'DIRECTION':'OUT', 'ACTION':True }), headers=headers)
+            self.logger.info("[irrigation]  Water tank server response: %s", response)
 
-        if response.status_code != 200:
-            self.logger.info("[irrigation] Water Tank connection http status code: %s!!!", str(response.status_code))
+            if response.status_code != 200:
+                self.logger.info("[irrigation] Water Tank connection http status code: %s!!!", str(response.status_code))
 
-        node_id = None
-        self.logger.info("[irrigation] %d nodes will receive water.",len(nodes.index))
-        for index,node in nodes.iterrows():
-            node_id = node['NODE_ID']
-            message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": True}})
-            self.logger.info("[irrigation] %s", message)
-            self.mqtt.publish("/oasis-inbound", message)
-            time.sleep(IRRIGATION_DURATION)
-            message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
-            self.mqtt.publish("/oasis-inbound", message)
-            self.logger.info("[irrigation] %s", message)
+            node_id = None
+            for index,node in nodes.iterrows():
+                node_id = node['NODE_ID']
+                message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": True}})
+                self.logger.info("[irrigation] %s", message)
+                self.mqtt.publish("/oasis-inbound", message)
+                time.sleep(IRRIGATION_DURATION)
+                message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
+                self.mqtt.publish("/oasis-inbound", message)
+                self.logger.info("[irrigation] %s", message)
 
-        requests.post(url,data=json.dumps({'DIRECTION':'OUT', 'ACTION':False }), headers=headers)
+            requests.post(url,data=json.dumps({'DIRECTION':'OUT', 'ACTION':False }), headers=headers)
+        else:
+            self.logger.info("[irrigation] skip irrigation procedures")
 
 
 if __name__ == '__main__':
