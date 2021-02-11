@@ -611,8 +611,8 @@ if cfg["SCHEDULE"]["MOISTURE_MONITOR"] != "never":
 if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
     irrigation = Irrigation(logger, cfg, mqtt)
     irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION_BOT"])
-    #sched.add_job(irrigation.run_smart, irrigation_trigger)
-    sched.add_job(irrigation.run_standard, irrigation_trigger)
+    sched.add_job(irrigation.run_smart, irrigation_trigger)
+    #sched.add_job(irrigation.run_standard, irrigation_trigger)
 sched.start()
 
 #irrigation = Irrigation(logger, cfg, mqtt)

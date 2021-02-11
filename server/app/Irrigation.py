@@ -26,17 +26,17 @@ class Irrigation:
     def run_smart(self):
         ############# get latest moisture analytics result #############
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
-        nodes = pandas.read_sql_query(
+        analytics = pandas.read_sql_query(
             """
             SELECT TIMESTAMP, DATA
             FROM OASIS_ANALYTIC
             WHERE TYPE='advice'
             ORDER BY TIMESTAMP DESC LIMIT 1
             """, engine)
-        if not nodes.empty:
+        if not analytics.empty:
             self.logger.info("[irrigation] ***** STARTING SMART IRRIGATION *****")
-            timestamp = nodes['TIMESTAMP'].iloc[0]
-            data = json.loads(nodes['DATA'].iloc[0])
+            timestamp = analytics['TIMESTAMP'].iloc[0]
+            data = json.loads(analytics['DATA'].iloc[0])
             self.logger.info("[irrigation] Found moisture analytics calculated in: %s",timestamp)
             if  data['will_rain']:
                 self.logger.info("[irrigation] Weather forecast says it WILL rain")
