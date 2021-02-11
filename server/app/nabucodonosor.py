@@ -25,7 +25,7 @@ from flask_assets import Environment, Bundle
 from sqlalchemy import func, and_
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_caching import Cache
-from flask_executor import Executor
+#from flask_executor import Executor
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
@@ -89,7 +89,7 @@ logger.info("NODE_HOME: %s",NODE_HOME)
 
 cache = Cache(config=cfg['CACHE'])
 cache.init_app(app)
-executor = Executor(app)
+#executor = Executor(app)
 
 mqtt = Mqtt(app)
 DB.init_app(app)
@@ -489,7 +489,7 @@ def utility_processor():
         if next_data_is_expected >= now: # NEXT is future
             if water:
                 return "good irrigation"
-            else
+            else:
                 return "good"
         else:
             return "danger"

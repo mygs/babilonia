@@ -22,6 +22,25 @@ class Irrigation:
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
 
     def run_standard(self):
+        self.logger.info("[irrigation] ***** STARTING STANDARD IRRIGATION *****")
+        ############# get all alive nodes #############
+        now = int(time.time())
+        period_for_last_heartbeat = int(now - HEARTBEAT_PERIOD)
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        nodes = pandas.read_sql_query(
+            """
+            SELECT NODE_ID
+            FROM OASIS_HEARTBEAT
+            WHERE LAST_UPDATE >= {}
+            """.format(period_for_last_heartbeat),
+            engine)
+
+        self.run(nodes)
+        self.logger.info("[irrigation] ***** ENDING STANDARD IRRIGATION *****")
+
+
+
+    def run(self, nodes):
 
         url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
         headers = {'Content-type': 'application/json'}
@@ -31,21 +50,8 @@ class Irrigation:
         if response.status_code != 200:
             self.logger.info("[irrigation] Water Tank connection http status code: %s!!!", str(response.status_code))
 
-        self.logger.info("[irrigation] START irrigation")
-
-        ############# get alive nodes #############
-        now = int(time.time())
-        period_for_last_heartbeat = int(now - HEARTBEAT_PERIOD)
-        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
-
-        nodes = pandas.read_sql_query(
-            """
-            SELECT NODE_ID
-            FROM OASIS_HEARTBEAT
-            WHERE LAST_UPDATE >= {}
-            """.format(period_for_last_heartbeat),
-            engine)
         node_id = None
+        self.logger.info("[irrigation] %d nodes will receive water.",len(nodes.index))
         for index,node in nodes.iterrows():
             node_id = node['NODE_ID']
             message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": True}})
@@ -57,3 +63,12 @@ class Irrigation:
             self.logger.info("[irrigation] %s", message)
 
         requests.post(url,data=json.dumps({'DIRECTION':'OUT', 'ACTION':False }), headers=headers)
+
+
+if __name__ == '__main__':
+    print("*** STARTING Irrigation Test ***")
+    app = Irrigation()
+    app.monitorTankLevel()
+    while True:
+        time.sleep(3)
+        print("*")
