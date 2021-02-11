@@ -10,7 +10,7 @@ from Models import DB, OasisTraining, OasisAnalytic
 from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
 
-IRRIGATION_DURATION = 5*60 #seconds
+IRRIGATION_DURATION = 4*60 #seconds
 HEARTBEAT_PERIOD=5*60 # (seconds) OMG 5 min
 
 class Irrigation:
@@ -20,6 +20,41 @@ class Irrigation:
         self.cfg = cfg
         self.mqtt = mqtt
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
+
+
+
+    def run_smart(self):
+        ############# get latest moisture analytics result #############
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        nodes = pandas.read_sql_query(
+            """
+            SELECT TIMESTAMP, DATA
+            FROM OASIS_ANALYTIC
+            WHERE TYPE='advice'
+            ORDER BY TIMESTAMP DESC LIMIT 1
+            """, engine)
+        if not nodes.empty:
+            self.logger.info("[irrigation] ***** STARTING SMART IRRIGATION *****")
+            timestamp = nodes['TIMESTAMP'].iloc[0]
+            data = json.loads(nodes['DATA'].iloc[0])
+            self.logger.info("[irrigation] Found moisture analytics calculated in: %s",timestamp)
+            if  data['will_rain']:
+                self.logger.info("[irrigation] Weather forecast says it WILL rain")
+            else:
+                self.logger.info("[irrigation] Weather forecast says it WONT rain")
+
+            nodes_lst = []
+            for node in data['node']:
+                advice = data['node'][node]['advice']
+                self.logger.info("[irrigation] %s => %s", node, advice)
+                if advice == "IRRIGATE":
+                    nodes_lst.append(node)
+            nodes_df = pandas.DataFrame(nodes_lst, columns =['NODE_ID'])
+            self.run(nodes_df)
+
+            self.logger.info("[irrigation] ***** ENDING SMART IRRIGATION *****")
+        else:
+            self.logger.info("[irrigation] Skipping SMART IRRIGATION due Moisture analytics not found")
 
     def run_standard(self):
         self.logger.info("[irrigation] ***** STARTING STANDARD IRRIGATION *****")
@@ -37,7 +72,6 @@ class Irrigation:
 
         self.run(nodes)
         self.logger.info("[irrigation] ***** ENDING STANDARD IRRIGATION *****")
-
 
 
     def run(self, nodes):
