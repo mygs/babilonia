@@ -35,9 +35,9 @@ class Irrigation:
             """, engine)
         if not analytics.empty:
             self.logger.info("[irrigation] ***** STARTING SMART IRRIGATION *****")
-            timestamp = analytics['TIMESTAMP'].iloc[0]
+            moisture_analytics_last_calculation = dt.datetime.fromtimestamp(timestamp = analytics['TIMESTAMP'].iloc[0]).strftime('%Y-%m-%d %H:%M:%S')
             data = json.loads(analytics['DATA'].iloc[0])
-            self.logger.info("[irrigation] Found moisture analytics calculated in: %s",timestamp)
+            self.logger.info("[irrigation] Found moisture analytics calculated in: %s",moisture_analytics_last_calculation)
             if  data['will_rain']:
                 self.logger.info("[irrigation] Weather forecast says it WILL rain")
             else:
