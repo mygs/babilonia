@@ -15,10 +15,11 @@ HEARTBEAT_PERIOD=5*60 # (seconds) OMG 5 min
 
 class Irrigation:
 
-    def __init__(self, logger, cfg, mqtt):
+    def __init__(self, logger, cfg, mqtt, socketio):
         self.logger = logger
         self.cfg = cfg
         self.mqtt = mqtt
+        self.socketio = socketio
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
 
 
@@ -70,7 +71,20 @@ class Irrigation:
             """.format(period_for_last_heartbeat),
             engine)
 
+        monitor_msg = {
+                      'irrigation':{
+                            'mode': 'standard',
+                            'duration': IRRIGATION_DURATION,
+                            'nodes':nodes['NODE_ID'].values.tolist(),
+                            'status': 'started'
+                            }
+                        }
+        self.socketio.emit('ws-server-monitor', data=monitor_msg)
         self.run(nodes)
+        monitor_msg['irrigation']['status'] = 'finished'
+
+        self.socketio.emit('ws-server-monitor', data=monitor_msg)
+
         self.logger.info("[irrigation] ***** ENDING STANDARD IRRIGATION *****")
 
 

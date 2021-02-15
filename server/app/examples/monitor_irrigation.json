@@ -1,0 +1,8 @@
+{
+  "irrigation":{
+    "mode": "standard",
+    "duration": 5,
+    "nodes":[]
+    "status": "finished"
+  }
+}

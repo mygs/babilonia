@@ -20,6 +20,25 @@ $(".btn-refresh-all").on("click", function() {
   });
 });
 
+$(".btn-irrigation-standard").on("click", function() {
+  $.ajax({
+    url: '/irrigation',
+    type: 'GET',
+    success: function(response) {
+      console.log(response.status);
+      //Cookies.set('WATER_ALL', (Cookies.get('WATER_ALL') == "1") ? "0" : "1" )
+      Cookies.set('WATER_ALL', '1')
+      $(".btn-irrigation-standard").attr("disabled", "disabled");
+    },
+    error: function(response) {
+      swal(response.status, "irrigation", "error");
+    }
+  });
+});
+
+/**
+ * @deprecated  btn-irrigation-standard
+ */
 $(".btn-water-all").on("click", function() {
   if(Cookies.get('WATER_ALL') == null)
     Cookies.set('WATER_ALL', '0')

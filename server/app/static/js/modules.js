@@ -12,6 +12,14 @@ $(document).ready(function() {
     var node_id = $(this).attr("id");
     window.location = '/module?id=' + node_id;
    });
+
+   if(Cookies.get('WATER_ALL') == null || Cookies.get('WATER_ALL') == 0 ){
+     Cookies.set('WATER_ALL', '0');
+     $(".btn-irrigation-standard").removeAttr('disabled');
+   }else{
+     $(".btn-irrigation-standard").attr("disabled", "disabled");
+   }
+
 });
 
 /* MODAL STUFF */

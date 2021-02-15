@@ -25,6 +25,7 @@ from flask_assets import Environment, Bundle
 from sqlalchemy import func, and_
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_caching import Cache
+from threading import Thread
 #from flask_executor import Executor
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -459,8 +460,11 @@ def water_tank():
 @login_required
 def standard_irrigation():
     #TODO: Thread
-    irrigation = Irrigation(logger, cfg, mqtt)
-    irrigation.run_standard()
+    irrigation = Irrigation(logger, cfg, mqtt, socketio)
+    thread = Thread(target=irrigation.run_standard)
+    thread.daemon = True
+    thread.start()
+    return json.dumps({'irrigation':'Started'})
 ###############################################################################
 ################################# PROCESSORS ##################################
 ###############################################################################
@@ -602,20 +606,19 @@ if cfg["SCHEDULE"]["MOISTURE_MONITOR"] != "never":
 
         #sched.print_jobs()
         advice = analytics.irrigation_advice()
-        socketio.emit('ws-monitor', data=advice)
+        socketio.emit('ws-server-monitor', data=advice)
         logger.info("[moisture_monitor] %s", advice)
         #mqtt.publish("/schedule-test", "hellllooo")
     moisture_monitor_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["MOISTURE_MONITOR"])
     sched.add_job(moisture_monitor, moisture_monitor_trigger)
 
 if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
-    irrigation = Irrigation(logger, cfg, mqtt)
+    irrigation = Irrigation(logger, cfg, mqtt, socketio)
     irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION_BOT"])
     sched.add_job(irrigation.run_smart, irrigation_trigger)
-    #sched.add_job(irrigation.run_standard, irrigation_trigger)
 sched.start()
 
-#irrigation = Irrigation(logger, cfg, mqtt)
+#irrigation = Irrigation(logger, cfg, mqtt,socketio)
 #irrigation.run_smart()
 ###############################################################################
 ##################################  START #####################################

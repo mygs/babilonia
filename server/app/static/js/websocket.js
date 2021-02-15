@@ -72,7 +72,12 @@ $(document).ready(function() {
     hb.replaceWith(hb.clone(true));
   });
 
-  socket.on('ws-monitor', function(data) {
-    console.log(data)
+  socket.on('ws-server-monitor', function(data) {
+    if (data['irrigation'] != null && data['irrigation']["status"] != null && data["irrigation"]["status"] == "finished"){
+      $(".btn-irrigation-standard").removeAttr('disabled');
+      Cookies.set('WATER_ALL', '0');
+    }
+    console.log(data);
   });
+
 });
