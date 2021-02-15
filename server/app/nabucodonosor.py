@@ -486,7 +486,7 @@ def utility_processor():
         return result
     def status_node(last_update, sensor_collect_data_period, water):
         last_update = int(last_update)
-        sensor_collect_data_period = 2 * int(sensor_collect_data_period)/1000
+        sensor_collect_data_period = 3 * int(sensor_collect_data_period)/1000
         now = int(time.time())
         next_data_is_expected = last_update + sensor_collect_data_period
 
