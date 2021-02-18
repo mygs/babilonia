@@ -3,6 +3,9 @@ Description = nabucodonosor
 After = network.target
 
 [Service]
+Environment="BABILONIA_LIBS=/github"
+Environment="BABILONIA_HOME=/github/babilonia"
+
 PermissionsStartOnly = true
 PIDFile = /run/nabucodonosor/nabucodonosor.pid
 User = root

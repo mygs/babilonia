@@ -116,17 +116,17 @@ sudo pkill gunicorn
 copy nabucodonosor.service to /etc/systemd/system/
 
 ```bash
-chmod 755 /etc/systemd/system/nabucodonosor.service
-systemctl daemon-reload
+sudo chmod 755 /etc/systemd/system/nabucodonosor.service
+sudo systemctl daemon-reload
 # Start your service
-systemctl start nabucodonosor.service
+sudo systemctl start nabucodonosor.service
 # Obtain your services' status
-systemctl status nabucodonosor.service
+sudo systemctl status nabucodonosor.service
 # Stop your service
-systemctl stop nabucodonosor.service
+sudo systemctl stop nabucodonosor.service
 
 # Restart your service
-systemctl restart nabucodonosor.service
+sudo systemctl restart nabucodonosor.service
 ```
 
 
