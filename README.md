@@ -108,11 +108,28 @@ sudo pip3 install gunicorn
 https://bartsimons.me/gunicorn-as-a-systemd-service/
 
 ```bash
-gunicorn -w 4 -b 0.0.0.0:8181 --chdir /github/babilonia/server/app nabucodonosor:app --daemon
+gunicorn -b 0.0.0.0:8181 --chdir /github/babilonia/server/app nabucodonosor:app --daemon
 ```
 ```bash
 sudo pkill gunicorn
 ```
+copy nabucodonosor.service to /etc/systemd/system/
+
+```bash
+chmod 755 /etc/systemd/system/nabucodonosor.service
+systemctl daemon-reload
+# Start your service
+systemctl start nabucodonosor.service
+# Obtain your services' status
+systemctl status nabucodonosor.service
+# Stop your service
+systemctl stop nabucodonosor.service
+
+# Restart your service
+systemctl restart nabucodonosor.service
+```
+
+
 ### Backup/Clone Server Image
 ```bash
 sudo dd bs=4M if=/dev/sdd of=/tmp/babilonia.img
