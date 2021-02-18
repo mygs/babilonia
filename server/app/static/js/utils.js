@@ -1,5 +1,5 @@
 function regionCitySelector(state, selected_city){
-  $.getJSON('/static/data/estados_cidades.json', function(data) {
+  $.getJSON('/static/data/estados_cidades_min.json', function(data) {
       var options_cities = '';
       $.each(data, function(key, val) {
         if (val.sigla == state) {
@@ -15,7 +15,7 @@ function regionCitySelector(state, selected_city){
 };
 
 function regionSelector(){
-  $.getJSON('/static/data/estados_cidades.json', function(data) {
+  $.getJSON('/static/data/estados_cidades_min.json', function(data) {
     var items = [];
     var options = '<option value="">Choose ...</option>';
     $.each(data, function(key, val) {

@@ -134,7 +134,7 @@ assets.register('3rdpartyjs',
                 'js/3rdparty/socket.io.js',
                 'js/3rdparty/moment.js',
                 'js/3rdparty/sweetalert.min.js',
-                'js/3rdparty/Chart.js',
+#                'js/3rdparty/Chart.js',
                 output='assets/3rdparty.js',
                 filters='jsmin')
 
@@ -636,4 +636,4 @@ if __name__ == '__main__':
     #from werkzeug.middleware.profiler import ProfilerMiddleware
     #app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[5], profile_dir='./profile')
     user_reload = False # Avoid Bug: TWICE mqtt instances
-    socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)
+    socketio.run(app, host='0.0.0.0', port=8181, debug=cfg["MODE"]["DEBUG"], use_reloader=user_reload)
