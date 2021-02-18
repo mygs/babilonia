@@ -634,6 +634,7 @@ if __name__ == '__main__':
     print("")
     logger.info("*** STARTING NABUCODONOSOR SYSTEM ***")
     logger.info("version: %s", VERSION)
-
+    #from werkzeug.middleware.profiler import ProfilerMiddleware
+    #app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[5], profile_dir='./profile')
     user_reload = False # Avoid Bug: TWICE mqtt instances
     socketio.run(app, host='0.0.0.0', port=8181, debug=True, use_reloader=user_reload)
