@@ -203,8 +203,7 @@ def get_modules_data(id):
         time_start = dt.datetime.now()
         if id is None:
             latest = DB.session.query(OasisData.NODE_ID,
-                func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).filter(
-                OasisData.DATA['DATA']['NODE'].isnot(None)).group_by(
+                func.max(OasisData.TIMESTAMP).label('TIMESTAMP')).group_by(
                 OasisData.NODE_ID).subquery('t2')
             modules = DB.session.query(OasisData).join(
                 latest, and_(OasisData.NODE_ID == latest.c.NODE_ID,OasisData.TIMESTAMP == latest.c.TIMESTAMP))
