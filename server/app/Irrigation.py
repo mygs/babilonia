@@ -10,7 +10,6 @@ from Models import DB, OasisTraining, OasisAnalytic
 from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
 
-IRRIGATION_DURATION = 4*60 #seconds
 HEARTBEAT_PERIOD=5*60 # (seconds) OMG 5 min
 
 class Irrigation:
@@ -21,6 +20,7 @@ class Irrigation:
         self.mqtt = mqtt
         self.socketio = socketio
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
+        self.IRRIGATION_DURATION =  cfg["IRRIGATION"]["DURATION"] # seconds
 
 
 
@@ -74,7 +74,7 @@ class Irrigation:
         monitor_msg = {
                       'irrigation':{
                             'mode': 'standard',
-                            'duration': IRRIGATION_DURATION,
+                            'duration': self.IRRIGATION_DURATION,
                             'nodes':nodes['NODE_ID'].values.tolist(),
                             'status': 'started'
                             }
@@ -107,7 +107,7 @@ class Irrigation:
                 message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": True}})
                 self.logger.info("[irrigation] %s", message)
                 self.mqtt.publish("/oasis-inbound", message)
-                time.sleep(IRRIGATION_DURATION)
+                time.sleep(self.IRRIGATION_DURATION)
                 message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
                 self.mqtt.publish("/oasis-inbound", message)
                 self.logger.info("[irrigation] %s", message)
