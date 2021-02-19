@@ -120,7 +120,7 @@ class SoilMoistureAnalytics:
         advice['will_rain'] = will_rain
         for oasis in self.moisture_data_cache:
             # Calculate moisture threshold based on training data
-            moisture_threshold_level = self.moisture_threshold_level(training_data)
+            moisture_threshold_level = self.moisture_threshold_level(training_data, oasis)
             # Check latest moisture level
             latest_moisture_level = self.get_latest_moisture_level(self.moisture_data_cache[oasis])
             # Verifying valid probes
@@ -217,10 +217,10 @@ class SoilMoistureAnalytics:
                 return False
         return True
 
-    def moisture_threshold_level(self, node_training):
+    def moisture_threshold_level(self, node_training, node_id):
         probes_moisture_level={}
-        dry = node_training.loc[node_training['VALUE'] == 'soil_dry']
-        wet = node_training.loc[node_training['VALUE'] == 'soil_wet']
+        dry = node_training.loc[(node_training['VALUE'] == 'soil_dry') & (node_training['NODE_ID'] == node_id)]
+        wet = node_training.loc[(node_training['VALUE'] == 'soil_wet') & (node_training['NODE_ID'] == node_id)]
         default = self.DEFAULT_WET
 
         for probe in MOISTURE_PROBES:
