@@ -23,6 +23,7 @@ TIME_TO_DISABLE_SOLENOID_ON =45*60 #secs
 class WaterTankManager:
     def __init__(self, logger, cfg):
         self.logger = logger
+        self.cfg = cfg
         if os.uname()[4].startswith("arm"):
             gpio.setmode(gpio.BOARD)
             gpio.setwarnings(False)
@@ -78,7 +79,7 @@ class WaterTankManager:
         return response
 
     def monitorTankLevel(self):
-        if cfg["WATER_TANK_MONITOR"]:
+        if self.cfg["WATER_TANK_MONITOR"]:
             if os.uname()[4].startswith("arm"):
                 bouncetime = 15*60*1000 # 15 min delay
                 gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_A, gpio.BOTH, callback=self.shouldStartFillingWaterTank, bouncetime=bouncetime)
