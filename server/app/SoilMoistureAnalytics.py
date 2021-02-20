@@ -30,6 +30,7 @@ class SoilMoistureAnalytics:
     def __init__(self, logger, cfg):
         self.noise_filter_cache = {}
         self.moisture_data_cache = {}
+        self.training_data_cache = {}
         self.logger = logger
         self.cfg = cfg
         #default values
@@ -188,7 +189,7 @@ class SoilMoistureAnalytics:
 
         result =  float("{:.3f}".format(need_water_probes/total_probes))
         forecast['result'] = str(result)
-        if result > PCT_PROBE_TO_IRRIGATE:
+        if result >= PCT_PROBE_TO_IRRIGATE:
             if will_rain:
                 forecast['advice'] = 'POSPONE'
             else:
@@ -412,31 +413,53 @@ class SoilMoistureAnalytics:
     def get_training_data(self):
         time_start = dt.datetime.now()
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
-        training_data = pandas.read_sql_query(
-            """
-                SELECT
-                	OA.NODE_ID,
-                    OA.VALUE,
-                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0' AS MUX0,
-                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1' AS MUX1,
-                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2' AS MUX2,
-                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3' AS MUX3,
-                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4' AS MUX4,
-                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5' AS MUX5,
-                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6' AS MUX6,
-                	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
-                FROM farmland.OASIS_TRAINING OA
-                    INNER JOIN farmland.OASIS_DATA OD
-                ON
-                	OA.NODE_ID = OD.NODE_ID
-                WHERE
-                	OA.MESSAGE_ID = OD.DATA->'$.MESSAGE_ID'
-            """,engine)
-        #training_data.set_index('NODE_ID', inplace=True) # multiple node_id entries
-        for col in MOISTURE_PROBES:
-            training_data[col] = training_data[col].astype(int)
+
+
+        skip_get_db_training_data = False
+
+        if len(self.training_data_cache) > 0:
+            max_cached_timestamp = self.training_data_cache['TIMESTAMP'].max()
+            max_db_timestamp_df = pandas.read_sql_query(
+                """
+                    SELECT MAX(TIMESTAMP) as latest_training FROM farmland.OASIS_TRAINING
+                """,engine)
+            max_db_timestamp = int(max_db_timestamp_df.latest_training.iat[0])
+            if max_db_timestamp == max_cached_timestamp:
+                skip_get_db_training_data = True
+                self.logger.info("[get_training_data] Skip database query. Using cache!")
+            else:
+                self.logger.info("[get_training_data] max_cached_timestamp: %s, max_db_timestamp: %s", max_cached_timestamp, max_db_timestamp)
+
+
+        if not skip_get_db_training_data:
+            self.logger.info("[get_training_data] Query database to update cache")
+            self.training_data_cache  = pandas.read_sql_query(
+                """
+                    SELECT
+                        OA.TIMESTAMP,
+                    	OA.NODE_ID,
+                        OA.VALUE,
+                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0' AS MUX0,
+                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1' AS MUX1,
+                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2' AS MUX2,
+                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3' AS MUX3,
+                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4' AS MUX4,
+                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5' AS MUX5,
+                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6' AS MUX6,
+                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
+                    FROM farmland.OASIS_TRAINING OA
+                        INNER JOIN farmland.OASIS_DATA OD
+                    ON
+                    	OA.NODE_ID = OD.NODE_ID
+                    WHERE
+                    	OA.MESSAGE_ID = OD.DATA->'$.MESSAGE_ID'
+                """,engine)
+            self.training_data_cache["TIMESTAMP"] = self.training_data_cache["TIMESTAMP"].astype(int)
+            for col in MOISTURE_PROBES:
+                self.training_data_cache[col] = self.training_data_cache[col].astype(int)
+
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[get_training_data] took %s secs",elapsed_time.total_seconds())
-        self.logger.debug(training_data)
-        return training_data
+        self.logger.debug(self.training_data_cache)
+        return self.training_data_cache
