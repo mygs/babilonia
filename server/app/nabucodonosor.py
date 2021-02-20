@@ -67,7 +67,7 @@ with open(OASIS_PROP_FILE, "r") as oasis_prop_file:
 # o V G o X Y o o o o o o o o o o o o o o
 # o o o o o o o o o o o o o o o o o o o o
 #
-wtm = WaterTankManager(logger)
+wtm = WaterTankManager(logger, cfg)
 wtm.monitorTankLevel()
 
 ###### Initialisation

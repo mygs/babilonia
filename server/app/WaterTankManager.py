@@ -21,7 +21,7 @@ PIN_WATER_LEVEL_SENSOR_B    =13 #B (XKC-Y25-V) => yellow cable
 TIME_TO_DISABLE_SOLENOID_ON =45*60 #secs
 
 class WaterTankManager:
-    def __init__(self, logger):
+    def __init__(self, logger, cfg):
         self.logger = logger
         if os.uname()[4].startswith("arm"):
             gpio.setmode(gpio.BOARD)
@@ -78,10 +78,15 @@ class WaterTankManager:
         return response
 
     def monitorTankLevel(self):
-        if os.uname()[4].startswith("arm"):
-            bouncetime = 15*60*1000 # 15 min delay
-            gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_A, gpio.BOTH, callback=self.shouldStartFillingWaterTank, bouncetime=bouncetime)
-            gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_B, gpio.BOTH, callback=self.shouldStopFillingWaterTank, bouncetime=bouncetime)
+        if cfg["WATER_TANK_MONITOR"]:
+            if os.uname()[4].startswith("arm"):
+                bouncetime = 15*60*1000 # 15 min delay
+                gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_A, gpio.BOTH, callback=self.shouldStartFillingWaterTank, bouncetime=bouncetime)
+                gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_B, gpio.BOTH, callback=self.shouldStopFillingWaterTank, bouncetime=bouncetime)
+                self.logger.info("[WaterTankManager] Water tank level monitor is ENABLED")
+            else:
+                self.logger.info("[WaterTankManager] Water tank level monitor is DISABLED")
+
 
     def shouldStartFillingWaterTank(self, channel):
         if not gpio.input(PIN_WATER_LEVEL_SENSOR_A) and not gpio.input(PIN_WATER_LEVEL_SENSOR_B):
