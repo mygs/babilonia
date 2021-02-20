@@ -85,8 +85,8 @@ class WaterTankManager:
                 gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_A, gpio.BOTH, callback=self.shouldStartFillingWaterTank, bouncetime=bouncetime)
                 gpio.add_event_detect(PIN_WATER_LEVEL_SENSOR_B, gpio.BOTH, callback=self.shouldStopFillingWaterTank, bouncetime=bouncetime)
                 self.logger.info("[WaterTankManager] Water tank level monitor is ENABLED")
-            else:
-                self.logger.info("[WaterTankManager] Water tank level monitor is DISABLED")
+        else:
+            self.logger.info("[WaterTankManager] Water tank level monitor is DISABLED")
 
 
     def shouldStartFillingWaterTank(self, channel):
