@@ -459,7 +459,7 @@ def water_tank():
 @login_required
 def standard_irrigation():
     #TODO: Thread
-    irrigation = Irrigation(logger, cfg, mqtt, socketio)
+    irrigation = Irrigation(logger, cfg, mqtt, socketio, oasis_properties)
     thread = Thread(target=irrigation.run_standard)
     thread.daemon = True
     thread.start()
@@ -612,16 +612,19 @@ if cfg["SCHEDULE"]["MOISTURE_MONITOR"] != "never":
     sched.add_job(moisture_monitor, moisture_monitor_trigger)
 
 if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
-    irrigation = Irrigation(logger, cfg, mqtt, socketio)
+    irrigation = Irrigation(logger, cfg, mqtt, socketio, oasis_properties)
     irrigation_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION_BOT"])
+    logger.info("[irrigation] type: %s", cfg["IRRIGATION"]["TYPE"])
     if cfg["IRRIGATION"]["TYPE"] == "smart":
         sched.add_job(irrigation.run_smart, irrigation_trigger)
+    elif cfg["IRRIGATION"]["TYPE"] == "dummy":
+        sched.add_job(irrigation.run_dummy, irrigation_trigger)
     else:
         sched.add_job(irrigation.run_standard, irrigation_trigger)
 
 sched.start()
 
-#irrigation = Irrigation(logger, cfg, mqtt,socketio)
+#irrigation = Irrigation(logger, cfg, mqtt,socketio, oasis_properties)
 #irrigation.run_smart()
 ###############################################################################
 ##################################  START #####################################

@@ -14,15 +14,45 @@ HEARTBEAT_PERIOD=5*60 # (seconds) OMG 5 min
 
 class Irrigation:
 
-    def __init__(self, logger, cfg, mqtt, socketio):
+    def __init__(self, logger, cfg, mqtt, socketio, oasis_properties):
         self.logger = logger
         self.cfg = cfg
         self.mqtt = mqtt
         self.socketio = socketio
+        self.oasis_properties = oasis_properties
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
         self.IRRIGATION_DURATION =  cfg["IRRIGATION"]["DURATION"] # seconds
 
+    def run_dummy(self):
+        ############# get latest moisture analytics result #############
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        analytics = pandas.read_sql_query(
+            """
+            SELECT TIMESTAMP, DATA
+            FROM OASIS_ANALYTIC
+            WHERE TYPE='advice'
+            ORDER BY TIMESTAMP DESC LIMIT 1
+            """, engine)
+        if not analytics.empty:
+            self.logger.info("[irrigation] ***** STARTING DUMMY IRRIGATION *****")
+            moisture_analytics_last_calculation = dt.datetime.fromtimestamp(int(analytics['TIMESTAMP'].iloc[0])).strftime('%Y-%m-%d %H:%M:%S')
+            data = json.loads(analytics['DATA'].iloc[0])
+            self.logger.info("[irrigation] Found moisture analytics calculated in: %s",moisture_analytics_last_calculation)
+            if  data['will_rain']:
+                self.logger.info("[irrigation] Weather forecast says it WILL rain")
+            else:
+                self.logger.info("[irrigation] Weather forecast says it WONT rain")
 
+            nodes_lst = []
+            for node in data['node']:
+                advice = data['node'][node]['advice']
+                self.logger.info("[irrigation] %s => %s", self.oasis_properties[node]["name"], advice)
+                if advice == "IRRIGATE":
+                    nodes_lst.append(node)
+
+            self.logger.info("[irrigation] ***** ENDING DUMMY IRRIGATION *****")
+        else:
+            self.logger.info("[irrigation] Skipping DUMMY IRRIGATION due Moisture analytics not found")
 
     def run_smart(self):
         ############# get latest moisture analytics result #############
@@ -47,7 +77,7 @@ class Irrigation:
             nodes_lst = []
             for node in data['node']:
                 advice = data['node'][node]['advice']
-                self.logger.info("[irrigation] %s => %s", node, advice)
+                self.logger.info("[irrigation] %s => %s", self.oasis_properties[node]["name"], advice)
                 if advice == "IRRIGATE":
                     nodes_lst.append(node)
             nodes_df = pandas.DataFrame(nodes_lst, columns =['NODE_ID'])
