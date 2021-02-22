@@ -39,35 +39,35 @@
     "name": "AREZZO",
     "desc": "Modelo modular v2",
     "MUX0":{
-      "cod": "B-115",
-      "plant":""
-    },
-    "MUX1":{
-      "cod": "B-116",
-      "plant":""
-    },
-    "MUX2":{
-      "cod": "B-112",
-      "plant":""
-    },
-    "MUX3":{
-      "cod": "B-111",
-      "plant":""
-    },
-    "MUX4":{
-      "cod": "B-117",
-      "plant":""
-    },
-    "MUX5":{
       "cod": "B-118",
       "plant":""
     },
-    "MUX6":{
+    "MUX1":{
+      "cod": "B-117",
+      "plant":""
+    },
+    "MUX2":{
       "cod": "B-114",
       "plant":""
     },
-    "MUX7":{
+    "MUX3":{
       "cod": "B-113",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-116",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-115",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-112",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-111",
       "plant":""
     }
   },
@@ -248,6 +248,150 @@
     },
     "MUX7":{
       "cod": "A-123",
+      "plant":""
+    }
+  },
+  "oasis-xxxxx":{
+    "name": "ESTHER",
+    "desc": "Modelo terceirizado",
+    "MUX0":{
+      "cod": "B-207",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "B-205",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "B-203",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "B-201",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-208",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-206",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-204",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-202",
+      "plant":""
+    }
+  },
+  "oasis-xxxxx":{
+    "name": "ROKSANA",
+    "desc": "Modelo terceirizado",
+    "MUX0":{
+      "cod": "B-215",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "B-217",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "B-213",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "B-211",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-216",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-218",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-214",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-212",
+      "plant":""
+    }
+  },
+  "oasis-xxxxx":{
+    "name": "ROXIE",
+    "desc": "Modelo terceirizado",
+    "MUX0":{
+      "cod": "B-225",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "B-227",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "B-223",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "B-221",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-226",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-228",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-224",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-222",
+      "plant":""
+    }
+  },
+  "oasis-xxxxx":{
+    "name": "YASMIN",
+    "desc": "Modelo terceirizado",
+    "MUX0":{
+      "cod": "B-235",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "B-237",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "B-231",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "B-233",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-236",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-238",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-234",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-232",
       "plant":""
     }
   }
