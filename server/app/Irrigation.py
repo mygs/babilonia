@@ -138,7 +138,8 @@ class Irrigation:
                 self.logger.info("[irrigation] %s", message)
                 self.mqtt.publish("/oasis-inbound", message)
                 time.sleep(self.IRRIGATION_DURATION)
-                message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
+                #message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
+                message = json.dumps({'NODE_ID': 'ALL', 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
                 self.mqtt.publish("/oasis-inbound", message)
                 self.logger.info("[irrigation] %s", message)
 
