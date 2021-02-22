@@ -142,6 +142,11 @@ class Irrigation:
                 self.mqtt.publish("/oasis-inbound", message)
                 self.logger.info("[irrigation] %s", message)
 
+
+            message = json.dumps({'NODE_ID': 'ALL', 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
+            self.logger.info("[irrigation] %s", message)
+            self.mqtt.publish("/oasis-inbound", message)
+
             requests.post(url,data=json.dumps({'DIRECTION':'OUT', 'ACTION':False }), headers=headers)
         else:
             self.logger.info("[irrigation] skip irrigation procedures")
