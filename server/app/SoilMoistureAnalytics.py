@@ -191,7 +191,7 @@ class SoilMoistureAnalytics:
         forecast['result'] = str(result)
         if result >= PCT_PROBE_TO_IRRIGATE:
             if will_rain:
-                forecast['advice'] = 'POSPONE'
+                forecast['advice'] = 'POSTPONE'
             else:
                 forecast['advice'] = 'IRRIGATE'
         else:
@@ -435,7 +435,7 @@ class SoilMoistureAnalytics:
             self.logger.info("[get_training_data] Query database to update cache")
             self.training_data_cache  = pandas.read_sql_query(
                 """
-                    SELECT
+                    SELECT DISTINCT
                         OA.TIMESTAMP,
                     	OA.NODE_ID,
                         OA.VALUE,

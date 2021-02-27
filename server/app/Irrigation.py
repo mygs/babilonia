@@ -22,6 +22,7 @@ class Irrigation:
         self.oasis_properties = oasis_properties
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
         self.IRRIGATION_DURATION =  cfg["IRRIGATION"]["DURATION"] # seconds
+        self.nodes_postponed = []
 
     def run_dummy(self):
         ############# get latest moisture analytics result #############
@@ -74,13 +75,23 @@ class Irrigation:
             else:
                 self.logger.info("[irrigation] Weather forecast says it WONT rain")
 
-            nodes_lst = []
+            nodes_to_irrigate = []
+
+            for node in self.nodes_postponed:
+                self.logger.info("[irrigation] postponed before => %s", self.oasis_properties[node]["name"])
+            nodes_to_irrigate.extend(self.nodes_postponed)
+            self.nodes_postponed = []
             for node in data['node']:
                 advice = data['node'][node]['advice']
-                self.logger.info("[irrigation] %s => %s", self.oasis_properties[node]["name"], advice)
+                self.logger.info("[irrigation] advice %s => %s", self.oasis_properties[node]["name"], advice)
                 if advice == "IRRIGATE":
-                    nodes_lst.append(node)
-            nodes_df = pandas.DataFrame(nodes_lst, columns =['NODE_ID'])
+                    if node not in nodes_to_irrigate:
+                        nodes_to_irrigate.append(node)
+                if advice == "POSTPONE":
+                    self.nodes_postponed.append(node)
+
+
+            nodes_df = pandas.DataFrame(nodes_to_irrigate, columns =['NODE_ID'])
             self.run(nodes_df)
 
             self.logger.info("[irrigation] ***** ENDING SMART IRRIGATION *****")
