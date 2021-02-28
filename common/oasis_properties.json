@@ -1,4 +1,40 @@
 {
+  "oasis-undefined":{
+    "name": "UNDEFINED",
+    "desc": "Need to define description",
+    "MUX0":{
+      "cod": "B-MUX0",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "B-MUX1",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "B-MUX2",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "B-MUX3",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-MUX4",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-MUX5",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-MUX6",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-MUX7",
+      "plant":""
+    }
+  },
   "oasis-312209":{
     "name": "ZIBA",
     "desc": "Modular que foi fixado",
@@ -251,7 +287,7 @@
       "plant":""
     }
   },
-  "oasis-xxxxx":{
+  "oasis-d763b8":{
     "name": "ESTHER",
     "desc": "Modelo terceirizado",
     "MUX0":{

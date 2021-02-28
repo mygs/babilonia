@@ -514,9 +514,15 @@ def utility_processor():
         }
         return switcher.get(argument, "wi wi-day-sunny")
     def translate_name(node_id):
-        return oasis_properties[node_id]["name"]
+         if node_id in oasis_properties:
+             return oasis_properties[node_id]["name"]
+         else:
+             return oasis_properties["oasis-undefined"]["name"]
     def description(node_id):
-        return oasis_properties[node_id]["desc"]
+         if node_id in oasis_properties:
+             return oasis_properties[node_id]["desc"]
+         else:
+             return oasis_properties["oasis-undefined"]["desc"]
     def mux_code(node_id, mux):
         return oasis_properties[node_id][mux]['cod']
     return {
