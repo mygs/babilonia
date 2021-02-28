@@ -524,7 +524,10 @@ def utility_processor():
          else:
              return oasis_properties["oasis-undefined"]["desc"]
     def mux_code(node_id, mux):
-        return oasis_properties[node_id][mux]['cod']
+         if node_id in oasis_properties:
+             return oasis_properties[node_id][mux]['cod']
+         else:
+             return oasis_properties["oasis-undefined"][mux]['cod']
     return {
             'status_node':status_node,
             'status_moisture':status_moisture,
