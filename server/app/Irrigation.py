@@ -48,8 +48,7 @@ class Irrigation:
             for node in data['node']:
                 advice = data['node'][node]['advice']
                 self.logger.info("[irrigation] %s => %s", self.oasis_properties[node]["name"], advice)
-                if advice == "IRRIGATE":
-                    nodes_lst.append(node)
+
 
             self.logger.info("[irrigation] ***** ENDING DUMMY IRRIGATION *****")
         else:

@@ -27,12 +27,14 @@ PCT_PROBE_TO_IRRIGATE=0.5
 
 class SoilMoistureAnalytics:
 
-    def __init__(self, logger, cfg):
+    def __init__(self, logger, cfg, oasis_properties):
         self.noise_filter_cache = {}
         self.moisture_data_cache = {}
         self.training_data_cache = {}
         self.logger = logger
         self.cfg = cfg
+        self.oasis_properties = oasis_properties
+
         #default values
         self.WINDOW_SIZE = 5
         self.EXPIRE = 3600 # 1 hour
@@ -180,15 +182,19 @@ class SoilMoistureAnalytics:
             if future_value >= threshold:
                 need_water_probes+=1
 
-            entry['actual'] = str(value)
-            entry['threshold'] = str(threshold)
-            entry['coef'] = str(float("{:.3f}".format(coef)))
-            entry['score'] = str(float("{:.3f}".format(score)))
-            entry['future'] = str(future_value)
+            entry['actual'] = value
+            entry['threshold'] = threshold
+            entry['coef'] = float("{:.3f}".format(coef))
+            entry['score'] = float("{:.3f}".format(score))
+            entry['future'] = future_value
+            entry['irrigation_duration_pct'] = value
+
             entries[index] = entry
 
         result =  float("{:.3f}".format(need_water_probes/total_probes))
-        forecast['result'] = str(result)
+        forecast['result'] = result
+        forecast['nickname'] = "bla"
+
         if result >= PCT_PROBE_TO_IRRIGATE:
             if will_rain:
                 forecast['advice'] = 'POSTPONE'

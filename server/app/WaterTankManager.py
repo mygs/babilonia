@@ -91,17 +91,17 @@ class WaterTankManager:
 
     def shouldStartFillingWaterTank(self, channel):
         if not gpio.input(PIN_WATER_LEVEL_SENSOR_A) and not gpio.input(PIN_WATER_LEVEL_SENSOR_B):
-            self.logger.info("[WaterTankManager] START filling water tank")
+            self.logger.info("[WaterTankManager] auto START filling water tank")
             gpio.output(PIN_WATER_TANK_IN, gpio.HIGH)
 
     def shouldStopFillingWaterTank(self, channel):
         if gpio.input(PIN_WATER_LEVEL_SENSOR_B):
-            self.logger.info("[WaterTankManager] STOP filling water tank")
+            self.logger.info("[WaterTankManager] auto STOP filling water tank")
             gpio.output(PIN_WATER_TANK_IN, gpio.LOW)
 
     def changeStateWaterTankIn(self, state):
         if state:
-            self.logger.info("[WaterTankManager] Manually STARTED filling water tank")
+            self.logger.info("[WaterTankManager] STARTED filling water tank")
             if os.uname()[4].startswith("arm"):
                 gpio.output(PIN_WATER_TANK_IN, gpio.HIGH)
             else:
@@ -109,7 +109,7 @@ class WaterTankManager:
             timer_thread = Timer(TIME_TO_DISABLE_SOLENOID_ON, self.changeStateWaterTankIn, [False])
             timer_thread.start()
         else:
-            self.logger.info("[WaterTankManager] Manually STOPED filling water tank")
+            self.logger.info("[WaterTankManager] STOPED filling water tank")
             if os.uname()[4].startswith("arm"):
                 gpio.output(PIN_WATER_TANK_IN, gpio.LOW)
             else:
@@ -117,7 +117,7 @@ class WaterTankManager:
 
     def changeStateWaterTankOut(self, state):
         if state:
-            self.logger.info("[WaterTankManager] Manually STARTED using water tank")
+            self.logger.info("[WaterTankManager] STARTED using water tank")
             if os.uname()[4].startswith("arm"):
                 gpio.output(PIN_WATER_TANK_OUT, gpio.HIGH)
             else:
@@ -125,7 +125,7 @@ class WaterTankManager:
             timer_thread = Timer(TIME_TO_DISABLE_SOLENOID_ON, self.changeStateWaterTankOut, [False])
             timer_thread.start()
         else:
-            self.logger.info("[WaterTankManager] Manually STOPED using water tank")
+            self.logger.info("[WaterTankManager] STOPED using water tank")
             if os.uname()[4].startswith("arm"):
                 gpio.output(PIN_WATER_TANK_OUT, gpio.LOW)
             else:
