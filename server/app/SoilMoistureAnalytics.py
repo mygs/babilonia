@@ -162,7 +162,7 @@ class SoilMoistureAnalytics:
         session = sessionmaker(bind=engine)()
         data = OasisAnalytic(TIMESTAMP=int(time.time()),
                              TYPE='advice',
-                             DATA=advice
+                             DATA= advice
                              )
         session.merge(data)
         session.commit()
@@ -188,17 +188,17 @@ class SoilMoistureAnalytics:
             if future_value >= threshold:
                 need_water_probes+=1
 
-            entry['actual'] = value
-            entry['threshold'] = threshold
+            entry['actual'] =int(value)
+            entry['threshold'] = int(threshold)
             entry['coef'] = float("{:.3f}".format(coef))
             entry['score'] = float("{:.3f}".format(score))
-            entry['future'] = future_value
-            entry['irrigation_duration_pct'] = value
+            entry['future'] = int(future_value)
+            entry['irrigation_duration_pct'] = int(value)
 
             entries[index] = entry
 
         result =  float("{:.3f}".format(need_water_probes/total_probes))
-        forecast['result'] = result
+        forecast['result'] = int(result)
         forecast['nickname'] = "bla"
 
         if result >= PCT_PROBE_TO_IRRIGATE:
