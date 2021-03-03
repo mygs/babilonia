@@ -147,7 +147,8 @@ class SoilMoistureAnalytics:
             # Linear regression
             alpha = self.linear_regressor(self.moisture_data_cache[oasis])
             # Irrigation advice
-            forecast = self.forecast_moisture_level(will_rain,
+            forecast = self.forecast_moisture_level(oasis,
+                                                    will_rain,
                                                     alpha,
                                                     latest_moisture_level,
                                                     moisture_threshold_level)
@@ -171,7 +172,7 @@ class SoilMoistureAnalytics:
         self.logger.info("[IRRIGATION_ADVICE] took %s secs",elapsed_time.total_seconds())
         return json.dumps(advice)
 
-    def forecast_moisture_level(self, will_rain, alpha, latest_moisture_level, moisture_threshold_level):
+    def forecast_moisture_level(self, node_id, will_rain, alpha, latest_moisture_level, moisture_threshold_level):
         forecast = {}
         need_water_probes = 0
         entries={}
@@ -199,7 +200,7 @@ class SoilMoistureAnalytics:
 
         result =  float("{:.3f}".format(need_water_probes/total_probes))
         forecast['result'] = int(result)
-        forecast['nickname'] = "bla"
+        forecast['nickname'] = self.oasis_properties[node_id]["name"]
 
         if result >= PCT_PROBE_TO_IRRIGATE:
             if will_rain:
@@ -240,15 +241,18 @@ class SoilMoistureAnalytics:
             if not self.moisture_threshold_level_valid_value(dry[probe]):
                 if not self.moisture_threshold_level_valid_value(wet[probe]):
                     # SCENARIO A: No training feedback. Use defaults
+                    self.logger.debug("[moisture_threshold_level] %s[%s] = SCENARIO A",self.oasis_properties[node_id]["name"], probe)
                     probes_moisture_level[probe] = default
                 else:
                     wp = int(wet[probe])
                     #  There is ONLY wet threshold feedback
                     if wp > default:
                         # SCENARIO F: Change wet threshold due the feedback
+                        self.logger.debug("[moisture_threshold_level] %s[%s] = SCENARIO F",self.oasis_properties[node_id]["name"], probe)
                         probes_moisture_level[probe] = wp
                     else:
                         # SCENARIO E: Do not change wet threshold. Default level might be ok
+                        self.logger.debug("[moisture_threshold_level] %s[%s] = SCENARIO E",self.oasis_properties[node_id]["name"], probe)
                         probes_moisture_level[probe] = default
             else:
                 if not self.moisture_threshold_level_valid_value(wet[probe]):
@@ -256,9 +260,11 @@ class SoilMoistureAnalytics:
                     dp = int(dry[probe])
                     if dp < default:
                         # SCENARIO G: Change wet threshold due the feedback
+                        self.logger.debug("[moisture_threshold_level] %s[%s] = SCENARIO G",self.oasis_properties[node_id]["name"], probe)
                         probes_moisture_level[probe] = dp
                     else:
                         # SCENARIO D: Do not change wet threshold. Default level might be ok
+                        self.logger.debug("[moisture_threshold_level] %s[%s] = SCENARIO D",self.oasis_properties[node_id]["name"], probe)
                         probes_moisture_level[probe] = default
                 else:
                     # There are dry and wet feedbacks
@@ -267,16 +273,20 @@ class SoilMoistureAnalytics:
                     if wp < default:
                         if dp > default:
                             # SCENARIO A: Lets keep current default threshold
+                            self.logger.debug("[moisture_threshold_level] %s[%s] = SCENARIO A",self.oasis_properties[node_id]["name"], probe)
                             probes_moisture_level[probe] = default
                         else:
                             if wp > dp:
                                 # Strange scenario
+                                self.logger.debug("[moisture_threshold_level] %s[%s] = CRAZY SCENARIO. Wet > Dry",self.oasis_properties[node_id]["name"], probe)
                                 probes_moisture_level[probe] = default
                             else:
                             # SCENARIO C: Dry and Wet feedbacks are LOWER than current threshold
+                                self.logger.debug("[moisture_threshold_level] %s[%s] = SCENARIO C",self.oasis_properties[node_id]["name"], probe)
                                 probes_moisture_level[probe] = (dp + wp)/2
                     else:
                         # SCENARIO B: Dry and Wet feedbacks are HIGHER than current threshold
+                        self.logger.debug("[moisture_threshold_level] %s[%s] = SCENARIO B",self.oasis_properties[node_id]["name"], probe)
                         probes_moisture_level[probe] = (dp + wp)/2
 
         return pandas.Series(probes_moisture_level)
