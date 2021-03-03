@@ -348,7 +348,7 @@ def firmware_action():
     node_id = message["NODE_ID"]
     action = message['ACTION']
     if action ==  "backup":
-        logger.debug("[firmware-action] BACKUP %s", message)
+        logger.info("[firmware-action] BACKUP %s", message)
         message = { "NODE_ID": node_id,
                     "MESSAGE_ID": "backup",
                     "STATUS": ["NODE"]
@@ -357,6 +357,7 @@ def firmware_action():
         return json.dumps({'status':'success', 'message': 'backup request for '+node_id})
 
     elif action ==  "upgrade":
+        logger.info("[firmware-upgrade] message=%s", message)
         ESP_ADDR = "ESP_ADDR="+message["NODE_IP"]
         ota_output = subprocess.Popen(["make","-f", ESPMAKE_PARAM, "ota",ESP_ADDR],
                                             cwd=NODE_HOME,
@@ -376,7 +377,7 @@ def firmware_action():
                     "MESSAGE_ID": "restore",
                     "CONFIG": config.DATA['DATA']['NODE']
                    }
-        logger.debug("[firmware-restore] TIMESTAMP=%s, CONFIG=%s",config.TIMESTAMP, message)
+        logger.info("[firmware-restore] TIMESTAMP=%s, CONFIG=%s",config.TIMESTAMP, message)
         mqtt.publish("/oasis-inbound", json.dumps(message))
         return json.dumps({'status':'success', 'message': 'restore request for '+node_id})
     return json.dumps({'status':'error'}), 403;

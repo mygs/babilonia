@@ -69,7 +69,6 @@
                     </div>
                   </div>
                 </form>
-                <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="resetNodeConfiguration()">Reset</button>
                 <button type="button" class="btn btn-primary" id="updateNodeConfiguration" onclick="updateNodeConfiguration()">Save</button>
                 <!-- EDIT NODE PARAMS -->
               </div>
@@ -109,7 +108,6 @@
                   </div>
                   {% endfor %}
                 </form>
-                <button type="button" class="btn btn-danger" id="defaultNodeConfiguration" onclick="resetNodeConfiguration()">Reset</button>
                 <button type="button" class="btn btn-primary" id="updateNodeConfiguration" onclick="updatePinNodeConfiguration()">Save</button>
                 <!-- EDIT NODE PINAGE -->
               </div>
@@ -136,7 +134,10 @@
                         data-toggle="tooltip" data-placement="top" title="Restart node">
                     <i class="fa fa-power-off"></i>
                   </button>
-
+                  <button type="button" class="btn btn-warning" onclick="resetNodeConfiguration()"
+                    data-toggle="tooltip" data-placement="top" title="Reset node config">
+                    <i class="fa fa-recycle"></i>
+                  </button>
                 </div>
               </div>
             </div>

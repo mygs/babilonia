@@ -240,6 +240,9 @@ Node frequencies configuration message
 mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-312193\",\"MESSAGE_ID\": \"a12dc89b\",\"CONFIG\": {\"HEARTBEAT_PERIOD\": 31}}"
 
 mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"ALL\",\"MESSAGE_ID\": \"a12dc89b\",\"CONFIG\": {\"HEARTBEAT_PERIOD\": 3000, \"SENSOR_COLLECT_DATA_PERIOD\": 30000}}"
+
+#ZIBA
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-312209\",\"MESSAGE_ID\": \"fix_conn_issue\",\"CONFIG\": {\"MQTT_SERVER\": \"192.168.0.90\", \"SSID\": \"babilonia-ext\"}}"
 ```
 
 Node command and status message
@@ -249,7 +252,7 @@ mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"MESSAGE_ID\": \"a12dc89b
 
 Node reset command
 ```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-ed8653\",\"MESSAGE_ID\": \"a12dc89b\",\"COMMAND\": {\"RESET\": true}}"
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39732c\",\"MESSAGE_ID\": \"fix_conn_issue\",\"COMMAND\": {\"RESET\": true}}"
 ```
 
 Node status message
