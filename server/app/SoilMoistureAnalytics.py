@@ -94,6 +94,12 @@ class SoilMoistureAnalytics:
                              TIMESTAMP=timestamp)
         DB.session.merge(data)
 
+    def reset_online_process(self, feedback):
+        node_id = feedback["NODE_ID"]
+        self.logger.info("[reset feedback] id:%s", node_id)
+        DB.session.query(OasisTraining).filter(OasisTraining.NODE_ID==node_id).delete()
+        DB.session.commit()
+
     def generate_moisture_req_msg(self, training_feedback_msg):
         return json.dumps({
             'NODE_ID':training_feedback_msg["NODE_ID"],

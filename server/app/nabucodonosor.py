@@ -293,6 +293,13 @@ def training():
     mqtt.publish("/oasis-inbound", analytics.generate_moisture_req_msg(message))
     return json.dumps({'status':'Success!'})
 
+@app.route('/reset-training', methods=['POST'])
+@login_required
+def reset_training():
+    message = request.get_json()
+    analytics.reset_online_process(message)
+    return json.dumps({'status':'Success!'})
+
 @app.route('/updatecfg', methods=['POST'])
 @login_required
 def updatecfg():

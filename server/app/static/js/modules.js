@@ -135,6 +135,25 @@ function trainOasis(status) {
   });
 };
 
+function resetTrainOasis() {
+  var feedback = {"NODE_ID": $("#NODE_ID").val()};
+
+  $.ajax({
+    url: '/reset-training',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(feedback),
+    success: function(response) {
+      console.log(response.status);
+      $("#updateNodeModal").modal('hide');
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+};
+
 function removeOasis() {
   swal({
     title: "Are you sure?",
