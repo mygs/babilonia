@@ -147,7 +147,8 @@ class SoilMoistureAnalytics:
             # Linear regression
             alpha = self.linear_regressor(self.moisture_data_cache[oasis])
             # Irrigation advice
-            forecast = self.forecast_moisture_level(will_rain,
+            forecast = self.forecast_moisture_level(oasis,
+                                                    will_rain,
                                                     alpha,
                                                     latest_moisture_level,
                                                     moisture_threshold_level)
@@ -171,7 +172,7 @@ class SoilMoistureAnalytics:
         self.logger.info("[IRRIGATION_ADVICE] took %s secs",elapsed_time.total_seconds())
         return json.dumps(advice)
 
-    def forecast_moisture_level(self, will_rain, alpha, latest_moisture_level, moisture_threshold_level):
+    def forecast_moisture_level(self, oasis, will_rain, alpha, latest_moisture_level, moisture_threshold_level):
         forecast = {}
         need_water_probes = 0
         entries={}
@@ -199,7 +200,7 @@ class SoilMoistureAnalytics:
 
         result =  float("{:.3f}".format(need_water_probes/total_probes))
         forecast['result'] = int(result)
-        forecast['nickname'] = "bla"
+        forecast['nickname'] = self.oasis_properties[oasis]["name"]
 
         if result >= PCT_PROBE_TO_IRRIGATE:
             if will_rain:

@@ -1,418 +1,746 @@
 {
+   "will_rain":false,
    "node":{
       "oasis-311de4":{
-         "advice":"POSPONE",
+         "result":1,
+         "nickname":"SAMIRA",
+         "advice":"IRRIGATE",
          "detail":{
             "MUX0":{
-               "coef":"-0.0",
-               "score":"0.15",
-               "actual":"394",
-               "future":"394",
-               "threshold":"350"
+               "actual":532,
+               "threshold":350,
+               "coef":0.004,
+               "score":0.944,
+               "future":571,
+               "irrigation_duration_pct":532
             },
             "MUX1":{
-               "coef":"-0.002",
-               "score":"0.907",
-               "actual":"584",
-               "future":"567",
-               "threshold":"402"
+               "actual":439,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.958,
+               "future":446,
+               "irrigation_duration_pct":439
             },
             "MUX2":{
-               "coef":"-0.002",
-               "score":"0.877",
-               "actual":"468",
-               "future":"446",
-               "threshold":"379"
-            },
-            "MUX3":{
-               "coef":"0.0",
-               "score":"0.004",
-               "actual":"417",
-               "future":"417",
-               "threshold":"408"
+               "actual":430,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.982,
+               "future":444,
+               "irrigation_duration_pct":430
             },
             "MUX4":{
-               "coef":"-0.0",
-               "score":"0.336",
-               "actual":"392",
-               "future":"391",
-               "threshold":"409"
+               "actual":385,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.9,
+               "future":390,
+               "irrigation_duration_pct":385
             },
             "MUX5":{
-               "coef":"0.0",
-               "score":"0.347",
-               "actual":"427",
-               "future":"431",
-               "threshold":"426"
+               "actual":396,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.786,
+               "future":399,
+               "irrigation_duration_pct":396
             },
             "MUX6":{
-               "coef":"-0.001",
-               "score":"0.92",
-               "actual":"432",
-               "future":"424",
-               "threshold":"350"
+               "actual":375,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.551,
+               "future":378,
+               "irrigation_duration_pct":375
             }
-         },
-         "result":"0.857"
+         }
+      },
+      "oasis-311ee5":{
+         "result":1,
+         "nickname":"ROXIE",
+         "advice":"IRRIGATE",
+         "detail":{
+            "MUX0":{
+               "actual":457,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.96,
+               "future":465,
+               "irrigation_duration_pct":457
+            },
+            "MUX1":{
+               "actual":494,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.832,
+               "future":501,
+               "irrigation_duration_pct":494
+            },
+            "MUX2":{
+               "actual":436,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.669,
+               "future":440,
+               "irrigation_duration_pct":436
+            },
+            "MUX3":{
+               "actual":285,
+               "threshold":282,
+               "coef":0.0,
+               "score":0.569,
+               "future":289,
+               "irrigation_duration_pct":285
+            },
+            "MUX4":{
+               "actual":432,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.72,
+               "future":436,
+               "irrigation_duration_pct":432
+            },
+            "MUX5":{
+               "actual":434,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.468,
+               "future":436,
+               "irrigation_duration_pct":434
+            },
+            "MUX6":{
+               "actual":520,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.746,
+               "future":525,
+               "irrigation_duration_pct":520
+            },
+            "MUX7":{
+               "actual":484,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.843,
+               "future":490,
+               "irrigation_duration_pct":484
+            }
+         }
       },
       "oasis-312209":{
+         "result":0,
+         "nickname":"ZIBA",
          "advice":"IGNORE",
          "detail":{
             "MUX0":{
-               "coef":"0.001",
-               "score":"0.807",
-               "actual":"449",
-               "future":"463",
-               "threshold":"350"
+               "actual":470,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.808,
+               "future":476,
+               "irrigation_duration_pct":470
             },
             "MUX1":{
-               "coef":"0.0",
-               "score":"0.178",
-               "actual":"305",
-               "future":"305",
-               "threshold":"402"
+               "actual":325,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.832,
+               "future":335,
+               "irrigation_duration_pct":325
             },
             "MUX2":{
-               "coef":"0.001",
-               "score":"0.66",
-               "actual":"295",
-               "future":"301",
-               "threshold":"379"
+               "actual":256,
+               "threshold":350,
+               "coef":-0.0,
+               "score":0.154,
+               "future":256,
+               "irrigation_duration_pct":256
             },
             "MUX4":{
-               "coef":"0.001",
-               "score":"0.62",
-               "actual":"462",
-               "future":"470",
-               "threshold":"409"
+               "actual":471,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.869,
+               "future":477,
+               "irrigation_duration_pct":471
             },
             "MUX5":{
-               "coef":"0.001",
-               "score":"0.9",
-               "actual":"372",
-               "future":"383",
-               "threshold":"426"
+               "actual":276,
+               "threshold":350,
+               "coef":-0.0,
+               "score":0.366,
+               "future":274,
+               "irrigation_duration_pct":276
             },
             "MUX6":{
-               "coef":"0.001",
-               "score":"0.626",
-               "actual":"367",
-               "future":"376",
-               "threshold":"350"
+               "actual":338,
+               "threshold":350,
+               "coef":-0.001,
+               "score":0.031,
+               "future":338,
+               "irrigation_duration_pct":338
             }
-         },
-         "result":"0.5"
+         }
+      },
+      "oasis-31e317":{
+         "result":1,
+         "nickname":"ROKSANA",
+         "advice":"IRRIGATE",
+         "detail":{
+            "MUX0":{
+               "actual":440,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.682,
+               "future":444,
+               "irrigation_duration_pct":440
+            },
+            "MUX1":{
+               "actual":477,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.885,
+               "future":482,
+               "irrigation_duration_pct":477
+            },
+            "MUX2":{
+               "actual":429,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.749,
+               "future":432,
+               "irrigation_duration_pct":429
+            },
+            "MUX3":{
+               "actual":430,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.834,
+               "future":435,
+               "irrigation_duration_pct":430
+            },
+            "MUX4":{
+               "actual":446,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.942,
+               "future":452,
+               "irrigation_duration_pct":446
+            },
+            "MUX5":{
+               "actual":492,
+               "threshold":350,
+               "coef":-0.0,
+               "score":0.044,
+               "future":492,
+               "irrigation_duration_pct":492
+            },
+            "MUX6":{
+               "actual":446,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.805,
+               "future":451,
+               "irrigation_duration_pct":446
+            },
+            "MUX7":{
+               "actual":434,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.792,
+               "future":437,
+               "irrigation_duration_pct":434
+            }
+         }
       },
       "oasis-39732c":{
-         "advice":"IGNORE",
+         "result":1,
+         "nickname":"PARISA",
+         "advice":"IRRIGATE",
          "detail":{
             "MUX0":{
-               "coef":"0.0",
-               "score":"0.086",
-               "actual":"384",
-               "future":"384",
-               "threshold":"350"
+               "actual":494,
+               "threshold":350,
+               "coef":0.004,
+               "score":0.943,
+               "future":534,
+               "irrigation_duration_pct":494
             },
             "MUX1":{
-               "coef":"-0.003",
-               "score":"0.913",
-               "actual":"495",
-               "future":"460",
-               "threshold":"402"
+               "actual":568,
+               "threshold":350,
+               "coef":0.002,
+               "score":0.943,
+               "future":592,
+               "irrigation_duration_pct":568
             },
             "MUX2":{
-               "coef":"-0.002",
-               "score":"0.852",
-               "actual":"323",
-               "future":"302",
-               "threshold":"379"
+               "actual":327,
+               "threshold":316,
+               "coef":0.001,
+               "score":0.833,
+               "future":339,
+               "irrigation_duration_pct":327
             },
             "MUX3":{
-               "coef":"-0.001",
-               "score":"0.672",
-               "actual":"206",
-               "future":"197",
-               "threshold":"408"
+               "actual":559,
+               "threshold":350,
+               "coef":0.002,
+               "score":0.834,
+               "future":577,
+               "irrigation_duration_pct":559
             },
             "MUX4":{
-               "coef":"-0.001",
-               "score":"0.587",
-               "actual":"349",
-               "future":"339",
-               "threshold":"409"
+               "actual":321,
+               "threshold":321,
+               "coef":0.008,
+               "score":0.727,
+               "future":409,
+               "irrigation_duration_pct":321
             },
             "MUX5":{
-               "coef":"-0.0",
-               "score":"0.157",
-               "actual":"288",
-               "future":"288",
-               "threshold":"426"
+               "actual":412,
+               "threshold":350,
+               "coef":0.003,
+               "score":0.934,
+               "future":444,
+               "irrigation_duration_pct":412
             },
             "MUX6":{
-               "coef":"0.0",
-               "score":"0.306",
-               "actual":"337",
-               "future":"340",
-               "threshold":"350"
+               "actual":449,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.782,
+               "future":462,
+               "irrigation_duration_pct":449
             },
             "MUX7":{
-               "coef":"0.001",
-               "score":"0.649",
-               "actual":"372",
-               "future":"381",
-               "threshold":"394"
+               "actual":488,
+               "threshold":350,
+               "coef":0.002,
+               "score":0.802,
+               "future":506,
+               "irrigation_duration_pct":488
             }
-         },
-         "result":"0.25"
+         }
       },
       "oasis-397988":{
-         "advice":"IGNORE",
+         "result":0,
+         "nickname":"AREZZO",
+         "advice":"IRRIGATE",
          "detail":{
             "MUX0":{
-               "coef":"-0.0",
-               "score":"0.165",
-               "actual":"282",
-               "future":"282",
-               "threshold":"350"
+               "actual":316,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.783,
+               "future":321,
+               "irrigation_duration_pct":316
             },
             "MUX1":{
-               "coef":"-0.001",
-               "score":"0.841",
-               "actual":"406",
-               "future":"400",
-               "threshold":"402"
+               "actual":411,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.776,
+               "future":417,
+               "irrigation_duration_pct":411
             },
             "MUX2":{
-               "coef":"-0.001",
-               "score":"0.366",
-               "actual":"386",
-               "future":"374",
-               "threshold":"379"
+               "actual":456,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.678,
+               "future":460,
+               "irrigation_duration_pct":456
             },
             "MUX3":{
-               "coef":"0.0",
-               "score":"0.099",
-               "actual":"414",
-               "future":"414",
-               "threshold":"408"
+               "actual":488,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.866,
+               "future":500,
+               "irrigation_duration_pct":488
             },
             "MUX4":{
-               "coef":"0.0",
-               "score":"0.027",
-               "actual":"415",
-               "future":"415",
-               "threshold":"409"
+               "actual":512,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.978,
+               "future":526,
+               "irrigation_duration_pct":512
             },
             "MUX5":{
-               "coef":"0.001",
-               "score":"0.427",
-               "actual":"425",
-               "future":"440",
-               "threshold":"426"
+               "actual":494,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.9,
+               "future":502,
+               "irrigation_duration_pct":494
             },
             "MUX6":{
-               "coef":"-0.0",
-               "score":"0.457",
-               "actual":"296",
-               "future":"293",
-               "threshold":"350"
+               "actual":379,
+               "threshold":350,
+               "coef":-0.0,
+               "score":0.697,
+               "future":376,
+               "irrigation_duration_pct":379
             },
             "MUX7":{
-               "coef":"0.0",
-               "score":"0.095",
-               "actual":"393",
-               "future":"393",
-               "threshold":"394"
+               "actual":462,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.762,
+               "future":465,
+               "irrigation_duration_pct":462
             }
-         },
-         "result":"0.375"
+         }
       },
       "oasis-397c0e":{
+         "result":0,
+         "nickname":"BANU",
          "advice":"IGNORE",
          "detail":{
             "MUX0":{
-               "coef":"-0.0",
-               "score":"0.605",
-               "actual":"328",
-               "future":"325",
-               "threshold":"350"
+               "actual":429,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.959,
+               "future":442,
+               "irrigation_duration_pct":429
             },
             "MUX1":{
-               "coef":"-0.0",
-               "score":"0.647",
-               "actual":"334",
-               "future":"330",
-               "threshold":"402"
+               "actual":340,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.779,
+               "future":345,
+               "irrigation_duration_pct":340
             },
             "MUX2":{
-               "coef":"-0.001",
-               "score":"0.538",
-               "actual":"364",
-               "future":"356",
-               "threshold":"379"
+               "actual":371,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.802,
+               "future":379,
+               "irrigation_duration_pct":371
             },
             "MUX3":{
-               "coef":"-0.001",
-               "score":"0.344",
-               "actual":"355",
-               "future":"347",
-               "threshold":"408"
+               "actual":337,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.16,
+               "future":337,
+               "irrigation_duration_pct":337
             },
             "MUX4":{
-               "coef":"-0.0",
-               "score":"0.154",
-               "actual":"322",
-               "future":"322",
-               "threshold":"409"
+               "actual":343,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.682,
+               "future":348,
+               "irrigation_duration_pct":343
             },
             "MUX5":{
-               "coef":"-0.0",
-               "score":"0.001",
-               "actual":"308",
-               "future":"308",
-               "threshold":"426"
+               "actual":310,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.241,
+               "future":310,
+               "irrigation_duration_pct":310
             },
             "MUX6":{
-               "coef":"-0.0",
-               "score":"0.579",
-               "actual":"325",
-               "future":"323",
-               "threshold":"350"
+               "actual":326,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.147,
+               "future":326,
+               "irrigation_duration_pct":326
             },
             "MUX7":{
-               "coef":"-0.0",
-               "score":"0.589",
-               "actual":"337",
-               "future":"334",
-               "threshold":"394"
+               "actual":342,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.715,
+               "future":345,
+               "irrigation_duration_pct":342
             }
-         },
-         "result":"0.0"
+         }
+      },
+      "oasis-75e0ba":{
+         "result":0,
+         "nickname":"YASMIN",
+         "advice":"IRRIGATE",
+         "detail":{
+            "MUX0":{
+               "actual":392,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.913,
+               "future":401,
+               "irrigation_duration_pct":392
+            },
+            "MUX1":{
+               "actual":417,
+               "threshold":350,
+               "coef":-0.068,
+               "score":0.774,
+               "future":-320,
+               "irrigation_duration_pct":417
+            },
+            "MUX3":{
+               "actual":394,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.066,
+               "future":394,
+               "irrigation_duration_pct":394
+            },
+            "MUX4":{
+               "actual":545,
+               "threshold":350,
+               "coef":-0.053,
+               "score":0.77,
+               "future":-24,
+               "irrigation_duration_pct":545
+            },
+            "MUX5":{
+               "actual":423,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.801,
+               "future":427,
+               "irrigation_duration_pct":423
+            },
+            "MUX6":{
+               "actual":400,
+               "threshold":350,
+               "coef":-0.0,
+               "score":0.609,
+               "future":397,
+               "irrigation_duration_pct":400
+            },
+            "MUX7":{
+               "actual":407,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.558,
+               "future":411,
+               "irrigation_duration_pct":407
+            }
+         }
+      },
+      "oasis-d763b8":{
+         "result":1,
+         "nickname":"ESTHER",
+         "advice":"IRRIGATE",
+         "detail":{
+            "MUX0":{
+               "actual":626,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.878,
+               "future":638,
+               "irrigation_duration_pct":626
+            },
+            "MUX1":{
+               "actual":498,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.887,
+               "future":506,
+               "irrigation_duration_pct":498
+            },
+            "MUX2":{
+               "actual":472,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.794,
+               "future":479,
+               "irrigation_duration_pct":472
+            },
+            "MUX3":{
+               "actual":499,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.634,
+               "future":503,
+               "irrigation_duration_pct":499
+            },
+            "MUX4":{
+               "actual":500,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.753,
+               "future":506,
+               "irrigation_duration_pct":500
+            },
+            "MUX5":{
+               "actual":590,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.757,
+               "future":596,
+               "irrigation_duration_pct":590
+            },
+            "MUX6":{
+               "actual":456,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.141,
+               "future":456,
+               "irrigation_duration_pct":456
+            },
+            "MUX7":{
+               "actual":499,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.958,
+               "future":507,
+               "irrigation_duration_pct":499
+            }
+         }
       },
       "oasis-ed86da":{
-         "advice":"POSPONE",
+         "result":0,
+         "nickname":"NADIA",
+         "advice":"IRRIGATE",
          "detail":{
             "MUX0":{
-               "coef":"-0.005",
-               "score":"0.777",
-               "actual":"480",
-               "future":"429",
-               "threshold":"350"
+               "actual":574,
+               "threshold":568,
+               "coef":0.001,
+               "score":0.695,
+               "future":588,
+               "irrigation_duration_pct":574
             },
             "MUX1":{
-               "coef":"-0.001",
-               "score":"0.224",
-               "actual":"541",
-               "future":"541",
-               "threshold":"402"
+               "actual":633,
+               "threshold":618,
+               "coef":0.003,
+               "score":0.994,
+               "future":667,
+               "irrigation_duration_pct":633
             },
             "MUX2":{
-               "coef":"-0.0",
-               "score":"0.099",
-               "actual":"340",
-               "future":"340",
-               "threshold":"379"
+               "actual":374,
+               "threshold":366,
+               "coef":0.001,
+               "score":0.727,
+               "future":381,
+               "irrigation_duration_pct":374
             },
             "MUX3":{
-               "coef":"-0.002",
-               "score":"0.354",
-               "actual":"478",
-               "future":"455",
-               "threshold":"408"
+               "actual":553,
+               "threshold":542,
+               "coef":0.001,
+               "score":0.92,
+               "future":568,
+               "irrigation_duration_pct":553
             },
             "MUX4":{
-               "coef":"-0.0",
-               "score":"0.479",
-               "actual":"320",
-               "future":"318",
-               "threshold":"409"
+               "actual":291,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.082,
+               "future":291,
+               "irrigation_duration_pct":291
             },
             "MUX5":{
-               "coef":"-0.0",
-               "score":"0.739",
-               "actual":"394",
-               "future":"389",
-               "threshold":"426"
+               "actual":428,
+               "threshold":415,
+               "coef":0.001,
+               "score":0.962,
+               "future":443,
+               "irrigation_duration_pct":428
             },
             "MUX6":{
-               "coef":"-0.0",
-               "score":"0.012",
-               "actual":"428",
-               "future":"428",
-               "threshold":"350"
+               "actual":512,
+               "threshold":505,
+               "coef":0.001,
+               "score":0.957,
+               "future":524,
+               "irrigation_duration_pct":512
             },
             "MUX7":{
-               "coef":"0.0",
-               "score":"0.0",
-               "actual":"447",
-               "future":"447",
-               "threshold":"394"
+               "actual":484,
+               "threshold":476,
+               "coef":-0.054,
+               "score":0.704,
+               "future":-98,
+               "irrigation_duration_pct":484
             }
-         },
-         "result":"0.625"
+         }
       },
       "oasis-fece74":{
-         "advice":"POSPONE",
+         "result":0,
+         "nickname":"JASMINE",
+         "advice":"IRRIGATE",
          "detail":{
             "MUX0":{
-               "coef":"-0.0",
-               "score":"0.518",
-               "actual":"294",
-               "future":"289",
-               "threshold":"350"
+               "actual":297,
+               "threshold":350,
+               "coef":0.0,
+               "score":0.758,
+               "future":302,
+               "irrigation_duration_pct":297
             },
             "MUX1":{
-               "coef":"-0.001",
-               "score":"0.741",
-               "actual":"609",
-               "future":"598",
-               "threshold":"402"
+               "actual":509,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.81,
+               "future":522,
+               "irrigation_duration_pct":509
             },
             "MUX2":{
-               "coef":"-0.001",
-               "score":"0.528",
-               "actual":"374",
-               "future":"367",
-               "threshold":"379"
+               "actual":432,
+               "threshold":350,
+               "coef":0.002,
+               "score":0.846,
+               "future":449,
+               "irrigation_duration_pct":432
             },
             "MUX3":{
-               "coef":"-0.002",
-               "score":"0.851",
-               "actual":"644",
-               "future":"622",
-               "threshold":"408"
+               "actual":514,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.774,
+               "future":529,
+               "irrigation_duration_pct":514
             },
             "MUX4":{
-               "coef":"-0.001",
-               "score":"0.288",
-               "actual":"451",
-               "future":"451",
-               "threshold":"409"
+               "actual":426,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.8,
+               "future":439,
+               "irrigation_duration_pct":426
             },
             "MUX5":{
-               "coef":"-0.001",
-               "score":"0.777",
-               "actual":"396",
-               "future":"383",
-               "threshold":"426"
+               "actual":451,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.934,
+               "future":464,
+               "irrigation_duration_pct":451
             },
             "MUX6":{
-               "coef":"-0.003",
-               "score":"0.547",
-               "actual":"446",
-               "future":"412",
-               "threshold":"350"
+               "actual":512,
+               "threshold":350,
+               "coef":0.001,
+               "score":0.842,
+               "future":519,
+               "irrigation_duration_pct":512
             },
             "MUX7":{
-               "coef":"-0.0",
-               "score":"0.045",
-               "actual":"464",
-               "future":"464",
-               "threshold":"394"
+               "actual":620,
+               "threshold":350,
+               "coef":0.003,
+               "score":0.972,
+               "future":647,
+               "irrigation_duration_pct":620
             }
-         },
-         "result":"0.625"
+         }
       }
-   },
-   "will_rain":true
+   }
 }
