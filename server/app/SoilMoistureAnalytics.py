@@ -23,6 +23,7 @@ PRECIPITATION_FORECAST_TIME_AHEAD=3*3600
 LATEST_LEVEL_CHECK_WINDOW=30
 LATEST_LEVEL_CHECK_QUANTILE=0.5
 LN_SCORE_THRESHOLD=0.3
+THRESHOLD_UPPER_BAND=0.05
 PCT_PROBE_TO_IRRIGATE=0.5
 
 class SoilMoistureAnalytics:
@@ -176,6 +177,7 @@ class SoilMoistureAnalytics:
         forecast = {}
         need_water_probes = 0
         entries={}
+        irrigation_duration_pct = 0
 
         total_probes = len(latest_moisture_level)
         for index, value in latest_moisture_level.items():
@@ -184,23 +186,33 @@ class SoilMoistureAnalytics:
             coef = alpha.coef.get(index)
             score = alpha.score.get(index)
             future_value = value
+            mux_irrigation_pct = 0
             if score >= LN_SCORE_THRESHOLD:
                 future_value += (coef*FORECAST_TIME_AHEAD).round(0).astype(int)
-            if future_value >= threshold:
+            if future_value >= (threshold*(1+THRESHOLD_UPPER_BAND)):
                 need_water_probes+=1
+                mux_irrigation_pct = (future_value - value)/(self.DEFAULT_NOSOIL - threshold)
+                irrigation_duration_pct = irrigation_duration_pct + mux_irrigation_pct
+
 
             entry['actual'] =int(value)
             entry['threshold'] = int(threshold)
             entry['coef'] = float("{:.3f}".format(coef))
             entry['score'] = float("{:.3f}".format(score))
             entry['future'] = int(future_value)
-            entry['irrigation_duration_pct'] = int(value)
+            entry['mux_irrigation_pct'] = float("{:.3f}".format(mux_irrigation_pct))
 
             entries[index] = entry
 
         result =  float("{:.3f}".format(need_water_probes/total_probes))
         forecast['result'] = int(result)
+        if need_water_probes > 0:
+            forecast['avg_irrigation_duration_pct'] = float("{:.3f}".format(irrigation_duration_pct/need_water_probes))
+        else:
+            forecast['avg_irrigation_duration_pct'] = 0
+
         forecast['nickname'] = self.oasis_properties[oasis]["name"]
+
 
         if result >= PCT_PROBE_TO_IRRIGATE:
             if will_rain:
@@ -209,6 +221,7 @@ class SoilMoistureAnalytics:
                 forecast['advice'] = 'IRRIGATE'
         else:
             forecast['advice'] = 'IGNORE'
+
         forecast['detail'] = entries
         return forecast
 
