@@ -12,19 +12,6 @@ from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
 
 MOISTURE_PROBES = ['MUX0','MUX1','MUX2','MUX3','MUX4','MUX5','MUX6','MUX7']
-ROLLING_WINDOW = 30 # RUPTURE_LEVEL_THRESHOLD and PCT_CHANGE_PERIOD are affected by this value
-RUPTURE_LEVEL_THRESHOLD = 0.015
-PCT_CHANGE_PERIOD = 10 # RUPTURE_LEVEL_THRESHOLD is affected by this value
-HEARTBEAT_PERIOD=5*60 # (seconds) OMG !
-MOISTURE_DATA_PERIOD = 3*3600 # (seconds)
-FORECAST_TIME_AHEAD = MOISTURE_DATA_PERIOD
-PRECIPITATION_PROBABILITY_THRESHOLD=0.25
-PRECIPITATION_FORECAST_TIME_AHEAD=3*3600
-LATEST_LEVEL_CHECK_WINDOW=30
-LATEST_LEVEL_CHECK_QUANTILE=0.5
-LN_SCORE_THRESHOLD=0.3
-THRESHOLD_UPPER_BAND=0.05
-PCT_PROBE_TO_IRRIGATE=0.5
 
 class SoilMoistureAnalytics:
 
@@ -44,6 +31,21 @@ class SoilMoistureAnalytics:
         self.DEFAULT_NOSOIL = int(cfg['MUX_PORT_THRESHOLD']["NOSOIL"])
         self.SCALE = int(self.DEFAULT_NOSOIL - self.DEFAULT_OFFLINE)
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
+        #PARA
+        self.ROLLING_WINDOW = cfg["MOISTURE_ANALYTICS"]["ROLLING_WINDOW"]
+        self.RUPTURE_LEVEL_THRESHOLD = cfg["MOISTURE_ANALYTICS"]["RUPTURE_LEVEL_THRESHOLD"]
+        self.PCT_CHANGE_PERIOD = cfg["MOISTURE_ANALYTICS"]["PCT_CHANGE_PERIOD"]
+        self.HEARTBEAT_PERIOD = cfg["MOISTURE_ANALYTICS"]["HEARTBEAT_PERIOD"]
+        self.MOISTURE_DATA_PERIOD = cfg["MOISTURE_ANALYTICS"]["MOISTURE_DATA_PERIOD"]
+        self.FORECAST_TIME_AHEAD = cfg["MOISTURE_ANALYTICS"]["FORECAST_TIME_AHEAD"]
+        self.PRECIPITATION_PROBABILITY_THRESHOLD = cfg["MOISTURE_ANALYTICS"]["PRECIPITATION_PROBABILITY_THRESHOLD"]
+        self.PRECIPITATION_FORECAST_TIME_AHEAD = cfg["MOISTURE_ANALYTICS"]["PRECIPITATION_FORECAST_TIME_AHEAD"]
+        self.LATEST_LEVEL_CHECK_WINDOW = cfg["MOISTURE_ANALYTICS"]["LATEST_LEVEL_CHECK_WINDOW"]
+        self.LATEST_LEVEL_CHECK_QUANTILE = cfg["MOISTURE_ANALYTICS"]["LATEST_LEVEL_CHECK_QUANTILE"]
+        self.LN_SCORE_THRESHOLD = cfg["MOISTURE_ANALYTICS"]["LN_SCORE_THRESHOLD"]
+        self.THRESHOLD_UPPER_BAND = cfg["MOISTURE_ANALYTICS"]["THRESHOLD_UPPER_BAND"]
+        self.PCT_PROBE_TO_IRRIGATE = cfg["MOISTURE_ANALYTICS"]["PCT_PROBE_TO_IRRIGATE"]
+
 
 
     def gui_noise_filter(self, node_id, timestamp, moisture):
@@ -187,9 +189,9 @@ class SoilMoistureAnalytics:
             score = alpha.score.get(index)
             future_value = value
             mux_irrigation_pct = 0
-            if score >= LN_SCORE_THRESHOLD:
-                future_value += (coef*FORECAST_TIME_AHEAD).round(0).astype(int)
-            if future_value >= (threshold*(1+THRESHOLD_UPPER_BAND)):
+            if score >= self.LN_SCORE_THRESHOLD:
+                future_value += (coef*self.FORECAST_TIME_AHEAD).round(0).astype(int)
+            if future_value >= (threshold*(1+self.THRESHOLD_UPPER_BAND)):
                 need_water_probes+=1
                 mux_irrigation_pct = (future_value - value)/(self.DEFAULT_NOSOIL - threshold)
                 irrigation_duration_pct = irrigation_duration_pct + mux_irrigation_pct
@@ -214,7 +216,7 @@ class SoilMoistureAnalytics:
         forecast['nickname'] = self.oasis_properties[oasis]["name"]
 
 
-        if result >= PCT_PROBE_TO_IRRIGATE:
+        if result >= self.PCT_PROBE_TO_IRRIGATE:
             if will_rain:
                 forecast['advice'] = 'POSTPONE'
             else:
@@ -228,7 +230,7 @@ class SoilMoistureAnalytics:
 
     def get_latest_moisture_level(self, data):
         time_start = dt.datetime.now()
-        result = data.tail(LATEST_LEVEL_CHECK_WINDOW).quantile(LATEST_LEVEL_CHECK_QUANTILE).round(0).astype(int)
+        result = data.tail(self.LATEST_LEVEL_CHECK_WINDOW).quantile(self.LATEST_LEVEL_CHECK_QUANTILE).round(0).astype(int)
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[get_latest_moisture_level] took %s secs",elapsed_time.total_seconds())
@@ -329,7 +331,7 @@ class SoilMoistureAnalytics:
         time_start = dt.datetime.now()
         #Percentage change between the current and a prior element
         # Finding negative or positive slopes ...
-        pct_change_series = data.pct_change(periods=PCT_CHANGE_PERIOD).dropna()
+        pct_change_series = data.pct_change(periods=self.PCT_CHANGE_PERIOD).dropna()
         ruptures={}
         min_probes={}
         max_probes={}
@@ -339,7 +341,7 @@ class SoilMoistureAnalytics:
             min_value = pct_change_series[mux][min_epoch]
             min_entry['epoch'] = str(min_epoch)
             min_entry['value'] = str(float("{:.3f}".format(min_value)))
-            if min_value < -RUPTURE_LEVEL_THRESHOLD:
+            if min_value < -self.RUPTURE_LEVEL_THRESHOLD:
                 min_probes[mux] = min_entry
 
             max_entry={}
@@ -347,7 +349,7 @@ class SoilMoistureAnalytics:
             max_value = pct_change_series[mux][max_epoch]
             max_entry['epoch'] = str(max_epoch)
             max_entry['value'] = str(float("{:.3f}".format(max_value)))
-            if max_value > RUPTURE_LEVEL_THRESHOLD:
+            if max_value > self.RUPTURE_LEVEL_THRESHOLD:
                 max_probes[mux] = max_entry
         ruptures['downward'] = pandas.DataFrame(data=min_probes).T
         ruptures['upward'] =  pandas.DataFrame(data=max_probes).T
@@ -373,9 +375,9 @@ class SoilMoistureAnalytics:
             hourly_forecast.set_index('time', inplace=True)
             now = int(time_start.timestamp())
             hourly_forecast_filtered = hourly_forecast[ (hourly_forecast.index >= now ) &
-                                                        (hourly_forecast.index <= now + PRECIPITATION_FORECAST_TIME_AHEAD)]
+                                                        (hourly_forecast.index <= now + self.PRECIPITATION_FORECAST_TIME_AHEAD)]
             will_rain = len(hourly_forecast_filtered[
-                    (hourly_forecast_filtered['precipProbability'] >= PRECIPITATION_PROBABILITY_THRESHOLD) |
+                    (hourly_forecast_filtered['precipProbability'] >= self.PRECIPITATION_PROBABILITY_THRESHOLD) |
                     (hourly_forecast_filtered['icon'] == 'rain')]) > 0
         except requests.ConnectionError:
             self.logger.debug("[will_rain] ConnectionError!!!")
@@ -392,7 +394,7 @@ class SoilMoistureAnalytics:
 
     def filter_noise_in_moisture_data_cache(self, oasis):
         time_start = dt.datetime.now()
-        self.moisture_data_cache[oasis] = self.moisture_data_cache[oasis].rolling(ROLLING_WINDOW).mean().dropna()
+        self.moisture_data_cache[oasis] = self.moisture_data_cache[oasis].rolling(self.ROLLING_WINDOW).mean().dropna()
         time_end = dt.datetime.now()
         elapsed_time = time_end - time_start
         self.logger.info("[filter_noise_in_moisture_data_cache] %s took %s secs",oasis, elapsed_time.total_seconds())
@@ -404,8 +406,8 @@ class SoilMoistureAnalytics:
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
         ############# get alive nodes #############
         now = int(time.time())
-        period_for_last_heartbeat = int(now - HEARTBEAT_PERIOD)
-        period_for_last_moisture_data = int(now - MOISTURE_DATA_PERIOD)
+        period_for_last_heartbeat = int(now - self.HEARTBEAT_PERIOD)
+        period_for_last_moisture_data = int(now - self.MOISTURE_DATA_PERIOD)
 
         nodes = pandas.read_sql_query(
             """
