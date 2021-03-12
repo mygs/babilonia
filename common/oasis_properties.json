@@ -430,5 +430,41 @@
       "cod": "B-232",
       "plant":""
     }
+  },
+  "oasis-66cecb":{
+    "name": "ARMANI",
+    "desc": "Modular",
+    "MUX0":{
+      "cod": "B-245",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "B-246",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "B-242",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "B-241",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-247",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-248",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-244",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-243",
+      "plant":""
+    }
   }
 }
