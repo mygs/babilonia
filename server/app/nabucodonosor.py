@@ -588,7 +588,7 @@ def handle_mqtt_message(client, userdata, msg):
         if "DATA" in jmsg:
             if isMqttEnabled:
                 with app.app_context():
-                    #TODO: fixme
+                    #TODO: fixme: somehow this line of code make more stable saving trainning data
                     dbdata = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
                     DB.session.merge(dbdata) #avoid data colision due manual status request
             json_data = jmsg["DATA"]
