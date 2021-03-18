@@ -89,12 +89,27 @@ class SoilMoistureAnalytics:
         node_id = feedback["NODE_ID"]
         message_id = feedback["MESSAGE_ID"]
         value = feedback["IRRIGATION_FEEDBACK"]
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+
+        moisture_values = pandas.read_sql_query(
+                """
+                  SELECT
+                  	OD.DATA->'$.DATA.CAPACITIVEMOISTURE' AS CAPACITIVEMOISTURE
+                  FROM farmland.OASIS_DATA OD
+                  WHERE
+                  	OD.NODE_ID = '{}'
+                    AND  json_length(OD.DATA->'$.DATA.CAPACITIVEMOISTURE') > 0
+                  ORDER BY TIMESTAMP DESC
+                  LIMIT 1
+                """.format(node_id), engine)
+
         self.logger.debug("[feedback] id:%s => value:%s", node_id, value)
 
         data = OasisTraining(NODE_ID=node_id,
                              VALUE=value,
                              MESSAGE_ID=message_id,
-                             TIMESTAMP=timestamp)
+                             TIMESTAMP=timestamp,
+                             DATA = moisture_values)
         DB.session.merge(data)
 
     def reset_online_process(self, feedback):

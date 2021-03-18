@@ -61,18 +61,21 @@ class OasisTraining(DB.Model):
     VALUE = DB.Column(DB.String(32), primary_key=True)
     MESSAGE_ID = DB.Column(DB.String(32), nullable=False)
     TIMESTAMP = DB.Column(DB.Integer, nullable=False)
-    def __init__(self, NODE_ID, VALUE, MESSAGE_ID, TIMESTAMP):
+    DATA = DB.Column(DB.JSON, nullable=True)
+    def __init__(self, NODE_ID, VALUE, MESSAGE_ID, TIMESTAMP, DATA):
         self.NODE_ID = NODE_ID
         self.VALUE = VALUE
         self.MESSAGE_ID = MESSAGE_ID
         self.TIMESTAMP = TIMESTAMP
+        self.DATA = DATA
     def __repr__(self):
-        return '<OasisTraining id:{} value:{}>'.format(self.NODE_ID, self.VALUE)
+        return '<OasisTraining id:{} value:{} data: {}>'.format(self.NODE_ID, self.VALUE, self.DATA)
     def toJson(self):
         return {"NODE_ID":self.NODE_ID,
                 "VALUE":self.VALUE,
                 "MESSAGE_ID":self.MESSAGE_ID,
-                "TIMESTAMP":self.TIMESTAMP}
+                "TIMESTAMP":self.TIMESTAMP,
+                "DATA":self.DATA}
 
 class OasisAnalytic(DB.Model):
     __tablename__ = 'OASIS_ANALYTIC'
