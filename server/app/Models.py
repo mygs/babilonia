@@ -8,7 +8,7 @@ DB = SQLAlchemy()
 
 class OasisData(DB.Model):
     __tablename__ = 'OASIS_DATA'
-    TIMESTAMP = DB.Column(DB.String(64), primary_key=True)
+    TIMESTAMP = DB.Column(DB.Integer, primary_key=True)
     NODE_ID = DB.Column(DB.String(32), primary_key=True)
     DATA = DB.Column(DB.JSON, nullable=True)
     def __init__(self, TIMESTAMP, NODE_ID, DATA):
@@ -29,7 +29,7 @@ class OasisData(DB.Model):
 class OasisHeartbeat(DB.Model):
     __tablename__ = 'OASIS_HEARTBEAT'
     NODE_ID = DB.Column(DB.String(32), primary_key=True)
-    LAST_UPDATE = DB.Column(DB.String(64), nullable=False)
+    LAST_UPDATE = DB.Column(DB.Integer, nullable=False)
     def __repr__(self):
         return '<OasisHeartbeat id:{} time:{}>'.format(self.NODE_ID, self.LAST_UPDATE)
     def toJson(self):
@@ -60,7 +60,7 @@ class OasisTraining(DB.Model):
     NODE_ID = DB.Column(DB.String(32), primary_key=True)
     VALUE = DB.Column(DB.String(32), primary_key=True)
     MESSAGE_ID = DB.Column(DB.String(32), nullable=False)
-    TIMESTAMP = DB.Column(DB.String(64), nullable=False)
+    TIMESTAMP = DB.Column(DB.Integer, nullable=False)
     def __init__(self, NODE_ID, VALUE, MESSAGE_ID, TIMESTAMP):
         self.NODE_ID = NODE_ID
         self.VALUE = VALUE
@@ -76,7 +76,7 @@ class OasisTraining(DB.Model):
 
 class OasisAnalytic(DB.Model):
     __tablename__ = 'OASIS_ANALYTIC'
-    TIMESTAMP = DB.Column(DB.String(64), primary_key=True)
+    TIMESTAMP = DB.Column(DB.Integer, primary_key=True)
     TYPE = DB.Column(DB.String(32), primary_key=True)
     DATA = DB.Column(DB.JSON, nullable=True)
     def __init__(self, TIMESTAMP, TYPE, DATA):
