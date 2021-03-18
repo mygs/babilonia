@@ -94,22 +94,22 @@ class SoilMoistureAnalytics:
         moisture_values = pandas.read_sql_query(
                 """
                   SELECT
-                  	OD.DATA->'$.DATA.CAPACITIVEMOISTURE' AS CAPACITIVEMOISTURE
-                  FROM farmland.OASIS_DATA OD
+                  	DATA->'$.DATA.CAPACITIVEMOISTURE' AS CAPACITIVEMOISTURE
+                  FROM farmland.OASIS_DATA
                   WHERE
-                  	OD.NODE_ID = '{}'
-                    AND  json_length(OD.DATA->'$.DATA.CAPACITIVEMOISTURE') > 0
+                  	NODE_ID = '{}'
+                    AND  json_length(DATA->'$.DATA.CAPACITIVEMOISTURE') > 0
                   ORDER BY TIMESTAMP DESC
                   LIMIT 1
                 """.format(node_id), engine)
-
-        self.logger.debug("[feedback] id:%s => value:%s", node_id, value)
+        data = moisture_values.CAPACITIVEMOISTURE.iat[0]
+        self.logger.debug("[feedback] id:%s => value:%s data: %s", node_id, value, data)
 
         data = OasisTraining(NODE_ID=node_id,
                              VALUE=value,
                              MESSAGE_ID=message_id,
                              TIMESTAMP=timestamp,
-                             DATA = moisture_values)
+                             DATA = json.loads(data))
         DB.session.merge(data)
 
     def reset_online_process(self, feedback):
@@ -487,24 +487,19 @@ class SoilMoistureAnalytics:
             self.logger.info("[get_training_data] Query database to update cache")
             self.training_data_cache  = pandas.read_sql_query(
                 """
-                    SELECT DISTINCT
-                        OA.TIMESTAMP,
-                    	OA.NODE_ID,
-                        OA.VALUE,
-                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0' AS MUX0,
-                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1' AS MUX1,
-                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2' AS MUX2,
-                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3' AS MUX3,
-                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4' AS MUX4,
-                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5' AS MUX5,
-                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6' AS MUX6,
-                    	OD.DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7' AS MUX7
-                    FROM farmland.OASIS_TRAINING OA
-                        INNER JOIN farmland.OASIS_DATA OD
-                    ON
-                    	OA.NODE_ID = OD.NODE_ID
-                    WHERE
-                    	OA.MESSAGE_ID = OD.DATA->'$.MESSAGE_ID'
+                    SELECT
+                    	TIMESTAMP,
+                    	NODE_ID,
+                    	VALUE,
+                    	DATA->'$.MUX0' AS MUX0,
+                    	DATA->'$.MUX1' AS MUX1,
+                    	DATA->'$.MUX2' AS MUX2,
+                    	DATA->'$.MUX3' AS MUX3,
+                    	DATA->'$.MUX4' AS MUX4,
+                    	DATA->'$.MUX5' AS MUX5,
+                    	DATA->'$.MUX6' AS MUX6,
+                    	DATA->'$.MUX7' AS MUX7
+                    FROM farmland.OASIS_TRAINING
                 """,engine)
             self.training_data_cache["TIMESTAMP"] = self.training_data_cache["TIMESTAMP"].astype(int)
             for col in MOISTURE_PROBES:
