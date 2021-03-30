@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import os
+import sys
 import time
 import subprocess
 import json
@@ -10,8 +11,9 @@ import logging.config
 import git
 from functools import wraps
 from Models import *
-from Dashboard import *
+sys.path.insert(1,os.path.join(os.environ["BABILONIA_LIBS"], 'matricis/SmartIrrigation'))
 from SoilMoistureAnalytics import *
+from Dashboard import *
 from WaterTankManager import *
 from Irrigation import *
 import simplejson as json
