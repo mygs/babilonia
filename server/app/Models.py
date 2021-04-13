@@ -26,6 +26,15 @@ class OasisData(DB.Model):
     def capacitive_moisture(self, moisture):
         self.DATA["DATA"]["CAPACITIVEMOISTURE"]= moisture
 
+class OasisQuarantine(DB.Model):
+    __tablename__ = 'OASIS_HEARTBEAT'
+    NODE_ID = DB.Column(DB.String(32), primary_key=True)
+    QUARANTINE = DB.Column(DB.Integer, nullable=False)
+    def __repr__(self):
+        return '<OasisQuarantine id:{} quarantine:{}>'.format(self.NODE_ID, self.QUARANTINE)
+    def toJson(self):
+        return {"NODE_ID":self.NODE_ID,"QUARANTINE":self.QUARANTINE}
+
 class OasisHeartbeat(DB.Model):
     __tablename__ = 'OASIS_HEARTBEAT'
     NODE_ID = DB.Column(DB.String(32), primary_key=True)
