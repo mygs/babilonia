@@ -48,6 +48,7 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       }
       idx = "A";
       $("#PIN"+idx).val(resp.PIN[idx]);
+      $("#QUARANTINE").prop('checked', resp.QUARANTINE);
 
       console.log(resp);
 
