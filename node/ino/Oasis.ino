@@ -146,7 +146,11 @@ void setup() {
   command.updatePorts(state);
 
   JsonObject cmd = state.getCommand();
-  //command.execute(state, cmd);
+  if(cmd[NODE::WATER]){
+    Serial.println("[OASIS] Turn off water for security purpose");
+    cmd[NODE::WATER] = false;
+  }
+  command.execute(state, cmd);
 
   Serial.begin(state.getSerialBaudRate());
   Serial.setTimeout(3000);
