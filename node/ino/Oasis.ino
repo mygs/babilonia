@@ -146,7 +146,7 @@ void setup() {
   command.updatePorts(state);
 
   JsonObject cmd = state.getCommand();
-  command.execute(state, cmd);
+  //command.execute(state, cmd);
 
   Serial.begin(state.getSerialBaudRate());
   Serial.setTimeout(3000);

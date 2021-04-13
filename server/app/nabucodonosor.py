@@ -279,9 +279,10 @@ def node_config():
     with app.app_context():
         latest_db_config = DB.session.query(OasisData).filter(OasisData.NODE_ID==id).order_by(OasisData.TIMESTAMP.desc()).first()
         config = latest_db_config.config()
+        oasis_heartbeat = DB.session.query(OasisHeartbeat).filter(OasisHeartbeat.NODE_ID==id).first()
+        config["QUARANTINE"] = oasis_heartbeat.quarantine()
     if config is None:
         logger.info("[configuration] no configuration was found in database. Getting defaults")
-
         DEFAULT_CONFIG_FILE = os.path.join(COMMON_DIR, 'config/oasis.json')
         with open(DEFAULT_CONFIG_FILE, "r") as default_config:
             config = json.load(default_config)

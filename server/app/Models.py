@@ -26,23 +26,17 @@ class OasisData(DB.Model):
     def capacitive_moisture(self, moisture):
         self.DATA["DATA"]["CAPACITIVEMOISTURE"]= moisture
 
-class OasisQuarantine(DB.Model):
-    __tablename__ = 'OASIS_HEARTBEAT'
-    NODE_ID = DB.Column(DB.String(32), primary_key=True)
-    QUARANTINE = DB.Column(DB.Integer, nullable=False)
-    def __repr__(self):
-        return '<OasisQuarantine id:{} quarantine:{}>'.format(self.NODE_ID, self.QUARANTINE)
-    def toJson(self):
-        return {"NODE_ID":self.NODE_ID,"QUARANTINE":self.QUARANTINE}
-
 class OasisHeartbeat(DB.Model):
     __tablename__ = 'OASIS_HEARTBEAT'
     NODE_ID = DB.Column(DB.String(32), primary_key=True)
     LAST_UPDATE = DB.Column(DB.Integer, nullable=False)
+    QUARANTINE = DB.Column(DB.Boolean, nullable=False)
     def __repr__(self):
-        return '<OasisHeartbeat id:{} time:{}>'.format(self.NODE_ID, self.LAST_UPDATE)
+        return '<OasisHeartbeat id:{} time:{} quarantine:{}>'.format(self.NODE_ID, self.LAST_UPDATE,self.QUARANTINE)
     def toJson(self):
-        return {"NODE_ID":self.NODE_ID,"LAST_UPDATE":self.LAST_UPDATE}
+        return {"NODE_ID":self.NODE_ID,"LAST_UPDATE":self.LAST_UPDATE,"QUARANTINE":self.QUARANTINE}
+    def quarantine(self):
+        return self.QUARANTINE #Python3: False == 0 and True == 1.  Python2.x this is not guaranteed
 
 class User(DB.Model):
     __tablename__ = 'USER'
