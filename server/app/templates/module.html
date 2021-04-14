@@ -61,7 +61,11 @@
             <div id='box_{{id}}' class="box {{ status_node(last_update, sensor_collect_data_period, water) }}">
               <table id="box-header-telemetry">
                 <tr>
-                    <td id="box-header-telemetry-init"></td>
+                    <td id="box-header-telemetry-init">
+                      {% if quarantine_icon(id) %}
+                        <i class='wi wi-alien'></i>
+                      {% endif %}
+                    </td>
                     <td id="box-header-telemetry-title">
                         <h4 class="text-uppercase"
                           data-toggle="tooltip" data-placement="top" title="{{description(id)}}">

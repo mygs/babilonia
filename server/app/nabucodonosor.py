@@ -39,6 +39,7 @@ from monitor import monitor
 ###############################################################################
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
+QUARANTINE_CACHE = {}
 
 ###### create console handler and set level to debug
 SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
@@ -200,6 +201,17 @@ def page_not_found(e):
 def redirect_to_login_page(e):
     return redirect('/login')
 
+
+def update_quarantine_cache():
+    with app.app_context():
+        QUARANTINE_CACHE.clear()
+        heartbeats = DB.session.query(OasisHeartbeat.NODE_ID, OasisHeartbeat.QUARANTINE).all()
+
+    for hb in heartbeats:
+        QUARANTINE_CACHE[hb.NODE_ID] = hb.QUARANTINE
+        logger.info("[update_quarantine_cache]  %s is %i", hb.NODE_ID, QUARANTINE_CACHE[hb.NODE_ID])
+
+
 def get_modules_data(id):
     with app.app_context():
         time_start = dt.datetime.now()
@@ -221,6 +233,7 @@ def get_modules_data(id):
 #@cache.cached()
 @login_required
 def index():
+    update_quarantine_cache()
     latest_beat = DB.session.query(OasisHeartbeat).with_entities(OasisHeartbeat.LAST_UPDATE.label('LATEST_BEAT')).all()
     modules = get_modules_data(None).all()
     weather = dashboard.weather_currently()
@@ -248,6 +261,7 @@ def index():
 #@cache.cached(query_string=True)
 @login_required
 def module():
+    update_quarantine_cache()
     id = None
     if 'id' in request.args:
         #example:  http://localhost:8181/module?id=oasis-39732c
@@ -371,8 +385,6 @@ def firmware_action():
                 #/home/msaito/github/makeEspArduino/makeEspArduino.mk:306: recipe for target 'ota' failed
                 return json.dumps({'status':'error','message': 'upgrade firmware for '+node_id})
         return json.dumps({'status':'success', 'message': 'upgrade firmware for '+node_id})
-
-
 
     elif action ==  "restore":
         config = OasisData.query.filter(OasisData.NODE_ID==node_id, OasisData.DATA['MESSAGE_ID']=='backup').order_by(OasisData.TIMESTAMP.desc()).first()
@@ -552,6 +564,8 @@ def utility_processor():
              return oasis_properties[node_id][mux]['cod']
          else:
              return oasis_properties["oasis-undefined"][mux]['cod']
+    def quarantine_icon(argument):
+        return QUARANTINE_CACHE.get(argument, "")
     return {
             'status_node':status_node,
             'status_moisture':status_moisture,
@@ -561,7 +575,8 @@ def utility_processor():
             'status_btn':status_btn,
             'translate_name':translate_name,
             'description':description,
-            'mux_code':mux_code
+            'mux_code':mux_code,
+            'quarantine_icon':quarantine_icon
             }
 ###############################################################################
 ############################## HANDLE MQTT ####################################
