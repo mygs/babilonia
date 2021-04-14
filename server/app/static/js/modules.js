@@ -227,3 +227,26 @@ function resetNodeConfiguration() {
     }
   });
 };
+
+function quarantineChange() {
+  var message = {
+                     "NODE_ID": $("#NODE_ID").val(),
+                  "QUARANTINE": $("#QUARANTINE").prop('checked')
+        };
+
+  console.log(message);
+  $.ajax({
+    url: '/quarantine',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(message),
+    success: function(response) {
+      console.log(response.status);
+      $("#updateNodeModal").modal('hide');
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+};

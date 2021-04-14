@@ -146,8 +146,13 @@
         </div>
       </div>
       <div class="modal-footer">
-        <input class="form-check-input" type="checkbox" value="" id="QUARANTINE">
-        <label class="form-check-label" for="QUARANTINE">Quarantine</label>
+        <span class="pull-left">
+          <input class="form-check-input"
+                  type="checkbox" value=""
+                  id="QUARANTINE"
+                  onchange="quarantineChange()">
+          <label class="form-check-label" for="QUARANTINE">Quarantine</label>
+        </span>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>

@@ -475,6 +475,19 @@ def standard_irrigation():
     thread.daemon = True
     thread.start()
     return json.dumps({'irrigation':'Started'})
+
+@app.route('/quarantine', methods=['POST'])
+@login_required
+def quarantine():
+    message = request.get_json()
+    id = message['NODE_ID']
+    change = message['QUARANTINE']
+
+    logger.info("[quarantine] changing %s to %i", id, change)
+    with app.app_context():
+        DB.session.query(OasisHeartbeat).filter(OasisHeartbeat.NODE_ID==id).update({'QUARANTINE': change})
+        DB.session.commit()
+    return json.dumps({'status':'Success!'})
 ###############################################################################
 ################################# PROCESSORS ##################################
 ###############################################################################
