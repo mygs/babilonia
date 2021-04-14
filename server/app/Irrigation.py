@@ -34,12 +34,6 @@ class Irrigation:
             WHERE TYPE='advice'
             ORDER BY TIMESTAMP DESC LIMIT 1
             """, engine)
-        quarantine = pandas.read_sql_query(
-            """
-            SELECT NODE_ID
-            FROM OASIS_HEARTBEAT
-            WHERE QUARANTINE = 1
-            """, engine)
         if not analytics.empty:
             self.logger.info("[irrigation] ***** STARTING DUMMY IRRIGATION *****")
             moisture_analytics_last_calculation = dt.datetime.fromtimestamp(int(analytics['TIMESTAMP'].iloc[0])).strftime('%Y-%m-%d %H:%M:%S')
@@ -107,7 +101,7 @@ class Irrigation:
 
     def run_standard(self):
         self.logger.info("[irrigation] ***** STARTING STANDARD IRRIGATION *****")
-        ############# get all alive nodes #############
+        ############# get all alive nodes but not in quarantine #############
         now = int(time.time())
         period_for_last_heartbeat = int(now - HEARTBEAT_PERIOD)
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
@@ -116,6 +110,7 @@ class Irrigation:
             SELECT NODE_ID
             FROM OASIS_HEARTBEAT
             WHERE LAST_UPDATE >= {}
+            AND QUARANTINE = 0
             """.format(period_for_last_heartbeat),
             engine)
 
