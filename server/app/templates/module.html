@@ -58,13 +58,15 @@
           {%  set mux7 = 0 %}
           {% endif %}
           <li id={{id}}>
-            <div id='box_{{id}}' class="box {{ status_node(last_update, sensor_collect_data_period, water) }}">
+            <div id='box_{{id}}' class="box {{ status_node(id, last_update, sensor_collect_data_period, water) }}">
               <table id="box-header-telemetry">
                 <tr>
                     <td id="box-header-telemetry-init">
+                      <div id="quarantine_{{id}}">
                       {% if quarantine_icon(id) %}
                         <i class='wi wi-alien'></i>
                       {% endif %}
+                      </div>
                     </td>
                     <td id="box-header-telemetry-title">
                         <h4 class="text-uppercase"

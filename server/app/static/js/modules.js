@@ -244,6 +244,16 @@ function quarantineChange() {
     success: function(response) {
       console.log(response.status);
       $("#updateNodeModal").modal('hide');
+
+      if($("#QUARANTINE").prop('checked')){
+        $('#box_' + node_id).addClass('quarantine');
+        $('#quarantine_' + node_id).html("<i class='wi wi-alien'></i>");
+
+      }else{
+        $('#box_' + node_id).removeClass('quarantine');
+        $('#quarantine_' + node_id).empty();
+      }
+
     },
     error: function(response) {
       swal(response.status, "XPTO!", "error");

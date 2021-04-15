@@ -254,6 +254,12 @@ table#cockpit {
   border-color: #c01717;
 }
 
+#sortable li .box.quarantine {
+  background: #AAA5A5;
+  color: #931111;
+  border-color: #c01717;
+}
+
 #sortable li .box.good {
   background: #BCED91;
   color: #3d6d12;

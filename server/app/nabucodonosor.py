@@ -519,7 +519,7 @@ def utility_processor():
         if argument == "DISABLED":
             result = "disabled"
         return result
-    def status_node(last_update, sensor_collect_data_period, water):
+    def status_node(node_id, last_update, sensor_collect_data_period, water):
         last_update = int(last_update)
         sensor_collect_data_period = 3 * int(sensor_collect_data_period)/1000
         now = int(time.time())
@@ -530,6 +530,8 @@ def utility_processor():
                 return "good irrigation"
             else:
                 return "good"
+        elif QUARANTINE_CACHE[node_id]:
+            return "quarantine"
         else:
             return "danger"
     def status_moisture(node_id, port, level):
@@ -614,7 +616,7 @@ def handle_mqtt_message(client, userdata, msg):
         if isMqttEnabled:
             with app.app_context():
                 merged = DB.session.merge(heartbeat)
-                logger.info("[heartbeat-db] %s", merged)
+                QUARANTINE_CACHE[merged.NODE_ID] = merged.QUARANTINE
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
         data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
         if "DATA" in jmsg:
