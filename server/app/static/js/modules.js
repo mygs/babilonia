@@ -229,8 +229,9 @@ function resetNodeConfiguration() {
 };
 
 function quarantineChange() {
+  var node_id = $("#NODE_ID").val();
   var message = {
-                     "NODE_ID": $("#NODE_ID").val(),
+                     "NODE_ID": node_id,
                   "QUARANTINE": $("#QUARANTINE").prop('checked')
         };
 
