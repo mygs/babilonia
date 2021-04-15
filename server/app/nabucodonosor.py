@@ -209,7 +209,7 @@ def update_quarantine_cache():
 
     for hb in heartbeats:
         QUARANTINE_CACHE[hb.NODE_ID] = hb.QUARANTINE
-        logger.info("[update_quarantine_cache]  %s is %i", hb.NODE_ID, QUARANTINE_CACHE[hb.NODE_ID])
+        logger.debug("[update_quarantine_cache] %s is %i", hb.NODE_ID, hb.QUARANTINE)
 
 
 def get_modules_data(id):
