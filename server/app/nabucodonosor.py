@@ -613,11 +613,12 @@ def handle_mqtt_message(client, userdata, msg):
         socketio.emit('ws-oasis-heartbeat', data=heartbeat.toJson())
         if isMqttEnabled:
             with app.app_context():
-                DB.session.merge(heartbeat)
+                merged = DB.session.merge(heartbeat)
+                logger.info("[heartbeat-db] %s", merged)
     if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
         data = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
         if "DATA" in jmsg:
-            if isMqttEnabled:
+            if isMqttEnabled and not QUARANTINE_CACHE[node_id]:
                 with app.app_context():
                     #TODO: fixme: somehow this line of code make more stable saving trainning data
                     dbdata = OasisData(TIMESTAMP=timestamp,NODE_ID=node_id,DATA=jmsg)
