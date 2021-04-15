@@ -144,6 +144,15 @@ class Irrigation:
             if response.status_code != 200:
                 self.logger.info("[irrigation] Water Tank connection http status code: %s!!!", str(response.status_code))
 
+            ### WARM-UP
+            self.logger.info("[irrigation] starting warm-up")
+            message = json.dumps({'NODE_ID': 'ALL', 'MESSAGE_ID':"water_sched_warmup", 'COMMAND':{"WATER": True}})
+            self.mqtt.publish("/oasis-inbound", message)
+            time.sleep(self.IRRIGATION_DURATION/2)
+            message = json.dumps({'NODE_ID': 'ALL', 'MESSAGE_ID':"water_sched_warmup", 'COMMAND':{"WATER": False}})
+            self.mqtt.publish("/oasis-inbound", message)
+            self.logger.info("[irrigation] ending warm-up")
+
             node_id = None
             for index,node in nodes.iterrows():
                 node_id = node['NODE_ID']
