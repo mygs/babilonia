@@ -39,7 +39,7 @@
     "name": "ZIBA",
     "desc": "Modular que foi fixado",
     "MUX0":{
-      "cod": "B-104",
+      "cod": "B-102",
       "plant":""
     },
     "MUX1":{
@@ -47,11 +47,11 @@
       "plant":""
     },
     "MUX2":{
-      "cod": "B-105",
+      "cod": "B-103",
       "plant":""
     },
     "MUX3":{
-      "cod": "B-101",
+      "cod": "B-104",
       "plant":""
     },
     "MUX4":{
@@ -59,7 +59,7 @@
       "plant":""
     },
     "MUX5":{
-      "cod": "B-103",
+      "cod": "B-105",
       "plant":""
     },
     "MUX6":{
@@ -75,35 +75,35 @@
     "name": "AREZZO",
     "desc": "Modelo modular v2",
     "MUX0":{
-      "cod": "B-118",
-      "plant":""
-    },
-    "MUX1":{
-      "cod": "B-117",
-      "plant":""
-    },
-    "MUX2":{
       "cod": "B-114",
       "plant":""
     },
-    "MUX3":{
+    "MUX1":{
       "cod": "B-113",
       "plant":""
     },
-    "MUX4":{
-      "cod": "B-116",
-      "plant":""
-    },
-    "MUX5":{
-      "cod": "B-115",
-      "plant":""
-    },
-    "MUX6":{
+    "MUX2":{
       "cod": "B-112",
       "plant":""
     },
-    "MUX7":{
+    "MUX3":{
       "cod": "B-111",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-115",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-116",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-117",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-118",
       "plant":""
     }
   },
@@ -111,15 +111,15 @@
     "name": "BANU",
     "desc": "Modelo inicial",
     "MUX0":{
-      "cod": "A-105",
+      "cod": "A-104",
       "plant":""
     },
     "MUX1":{
-      "cod": "A-106",
+      "cod": "A-103",
       "plant":""
     },
     "MUX2":{
-      "cod": "A-103",
+      "cod": "A-102",
       "plant":""
     },
     "MUX3":{
@@ -127,19 +127,19 @@
       "plant":""
     },
     "MUX4":{
-      "cod": "A-107",
+      "cod": "A-105",
       "plant":""
     },
     "MUX5":{
-      "cod": "A-108",
+      "cod": "A-106",
       "plant":""
     },
     "MUX6":{
-      "cod": "A-104",
+      "cod": "A-107",
       "plant":""
     },
     "MUX7":{
-      "cod": "A-102",
+      "cod": "A-108",
       "plant":""
     }
   },
@@ -147,11 +147,11 @@
     "name": "NADIA",
     "desc": "Modelo modular v2",
     "MUX0":{
-      "cod": "B-125",
+      "cod": "B-124",
       "plant":""
     },
     "MUX1":{
-      "cod": "B-126",
+      "cod": "B-123",
       "plant":""
     },
     "MUX2":{
@@ -163,19 +163,19 @@
       "plant":""
     },
     "MUX4":{
-      "cod": "B-127",
+      "cod": "B-125",
       "plant":""
     },
     "MUX5":{
-      "cod": "B-128",
+      "cod": "B-126",
       "plant":""
     },
     "MUX6":{
-      "cod": "B-124",
+      "cod": "B-127",
       "plant":""
     },
     "MUX7":{
-      "cod": "B-123",
+      "cod": "B-128",
       "plant":""
     }
   },
@@ -183,11 +183,11 @@
     "name": "JASMINE",
     "desc": "Modelo modular v2",
     "MUX0":{
-      "cod": "B-135",
+      "cod": "B-134",
       "plant":""
     },
     "MUX1":{
-      "cod": "B-136",
+      "cod": "B-133",
       "plant":""
     },
     "MUX2":{
@@ -199,19 +199,19 @@
       "plant":""
     },
     "MUX4":{
-      "cod": "B-137",
+      "cod": "B-135",
       "plant":""
     },
     "MUX5":{
-      "cod": "B-138",
+      "cod": "B-136",
       "plant":""
     },
     "MUX6":{
-      "cod": "B-134",
+      "cod": "B-137",
       "plant":""
     },
     "MUX7":{
-      "cod": "B-133",
+      "cod": "B-138",
       "plant":""
     }
   },
@@ -219,11 +219,11 @@
     "name": "SAMIRA",
     "desc": "Modelo inicial",
     "MUX0":{
-      "cod": "A-115",
+      "cod": "A-114",
       "plant":""
     },
     "MUX1":{
-      "cod": "A-116",
+      "cod": "A-113",
       "plant":""
     },
     "MUX2":{
@@ -235,19 +235,19 @@
       "plant":""
     },
     "MUX4":{
-      "cod": "A-117",
+      "cod": "A-115",
       "plant":""
     },
     "MUX5":{
-      "cod": "A-118",
+      "cod": "A-116",
       "plant":""
     },
     "MUX6":{
-      "cod": "A-114",
+      "cod": "A-117",
       "plant":""
     },
     "MUX7":{
-      "cod": "A-113",
+      "cod": "A-118",
       "plant":""
     }
   },
@@ -255,11 +255,11 @@
     "name": "PARISA",
     "desc": "Modelo inicial feito no lab da USP",
     "MUX0":{
-      "cod": "A-125",
+      "cod": "A-124",
       "plant":""
     },
     "MUX1":{
-      "cod": "A-126",
+      "cod": "A-123",
       "plant":""
     },
     "MUX2":{
@@ -271,19 +271,19 @@
       "plant":""
     },
     "MUX4":{
-      "cod": "A-127",
+      "cod": "A-125",
       "plant":""
     },
     "MUX5":{
-      "cod": "A-128",
+      "cod": "A-126",
       "plant":""
     },
     "MUX6":{
-      "cod": "A-124",
+      "cod": "A-127",
       "plant":""
     },
     "MUX7":{
-      "cod": "A-123",
+      "cod": "A-128",
       "plant":""
     }
   },
@@ -291,15 +291,15 @@
     "name": "ESTHER",
     "desc": "Modelo terceirizado",
     "MUX0":{
-      "cod": "B-207",
+      "cod": "B-204",
       "plant":""
     },
     "MUX1":{
-      "cod": "B-205",
+      "cod": "B-203",
       "plant":""
     },
     "MUX2":{
-      "cod": "B-203",
+      "cod": "B-202",
       "plant":""
     },
     "MUX3":{
@@ -307,7 +307,7 @@
       "plant":""
     },
     "MUX4":{
-      "cod": "B-208",
+      "cod": "B-205",
       "plant":""
     },
     "MUX5":{
@@ -315,11 +315,11 @@
       "plant":""
     },
     "MUX6":{
-      "cod": "B-204",
+      "cod": "B-207",
       "plant":""
     },
     "MUX7":{
-      "cod": "B-202",
+      "cod": "B-208",
       "plant":""
     }
   },
@@ -327,15 +327,15 @@
     "name": "ROKSANA",
     "desc": "Modelo terceirizado",
     "MUX0":{
-      "cod": "B-215",
+      "cod": "B-214",
       "plant":""
     },
     "MUX1":{
-      "cod": "B-217",
+      "cod": "B-213",
       "plant":""
     },
     "MUX2":{
-      "cod": "B-213",
+      "cod": "B-212",
       "plant":""
     },
     "MUX3":{
@@ -343,19 +343,19 @@
       "plant":""
     },
     "MUX4":{
-      "cod": "B-216",
+      "cod": "B-215",
       "plant":""
     },
     "MUX5":{
-      "cod": "B-218",
+      "cod": "B-216",
       "plant":""
     },
     "MUX6":{
-      "cod": "B-214",
+      "cod": "B-217",
       "plant":""
     },
     "MUX7":{
-      "cod": "B-212",
+      "cod": "B-218",
       "plant":""
     }
   },
@@ -363,15 +363,15 @@
     "name": "ROXIE",
     "desc": "Modelo terceirizado",
     "MUX0":{
-      "cod": "B-225",
+      "cod": "B-224",
       "plant":""
     },
     "MUX1":{
-      "cod": "B-227",
+      "cod": "B-223",
       "plant":""
     },
     "MUX2":{
-      "cod": "B-223",
+      "cod": "B-222",
       "plant":""
     },
     "MUX3":{
@@ -379,19 +379,19 @@
       "plant":""
     },
     "MUX4":{
-      "cod": "B-226",
+      "cod": "B-225",
       "plant":""
     },
     "MUX5":{
-      "cod": "B-228",
+      "cod": "B-226",
       "plant":""
     },
     "MUX6":{
-      "cod": "B-224",
+      "cod": "B-227",
       "plant":""
     },
     "MUX7":{
-      "cod": "B-222",
+      "cod": "B-228",
       "plant":""
     }
   },
@@ -399,35 +399,35 @@
     "name": "YASMIN",
     "desc": "Modelo terceirizado",
     "MUX0":{
-      "cod": "B-235",
-      "plant":""
-    },
-    "MUX1":{
-      "cod": "B-237",
-      "plant":""
-    },
-    "MUX2":{
-      "cod": "B-231",
-      "plant":""
-    },
-    "MUX3":{
-      "cod": "B-233",
-      "plant":""
-    },
-    "MUX4":{
-      "cod": "B-236",
-      "plant":""
-    },
-    "MUX5":{
-      "cod": "B-238",
-      "plant":""
-    },
-    "MUX6":{
       "cod": "B-234",
       "plant":""
     },
-    "MUX7":{
+    "MUX1":{
+      "cod": "B-233",
+      "plant":""
+    },
+    "MUX2":{
       "cod": "B-232",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "B-231",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-235",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-236",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-237",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-238",
       "plant":""
     }
   },
