@@ -148,6 +148,7 @@ class Irrigation:
             self.logger.info("[irrigation] starting warm-up")
             for index,node in nodes.iterrows():
                 message = json.dumps({'NODE_ID': node['NODE_ID'], 'MESSAGE_ID':"water_sched_warmup", 'COMMAND':{"WATER": True}})
+                self.logger.info("[irrigation] warm-up >=> %s", message)
                 self.mqtt.publish("/oasis-inbound", message)
                 time.sleep(5)
 
