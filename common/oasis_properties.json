@@ -35,6 +35,42 @@
       "plant":""
     }
   },
+  "oasis-3198fc":{
+    "name": "MARTIAN",
+    "desc": "Local node for Dev",
+    "MUX0":{
+      "cod": "B-MUX0",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "B-MUX1",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "B-MUX2",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "B-MUX3",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "B-MUX4",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "B-MUX5",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "B-MUX6",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "B-MUX7",
+      "plant":""
+    }
+  },
   "oasis-ed8653":{
     "name": "PATHFINDER",
     "desc": "Remote node for Dev",
