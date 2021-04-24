@@ -23,4 +23,5 @@ void collectSensorData();
 void loop();
 void serialCommands();
 void setupNewWifi();
+void listLocalFiles();
 #endif

@@ -4,6 +4,7 @@
 #include <ArduinoOTA.h>
 #include <Ticker.h>
 #include <PubSubClient.h>
+#include <FS.h>
 #include "Oasis.h"
 #include "State.h"
 #include "Status.h"
@@ -207,6 +208,7 @@ void setup() {
   }
 
   Serial.println("[OASIS] Setup Completed");
+  listLocalFiles();
 }
 
 void mqttReconnect() {
@@ -232,6 +234,20 @@ void heartBeat() {
   sprintf(message, "{\"%s\":\"oasis-%06x\"}",NODE::NODE_ID,ESP.getChipId());
   mqtt.publish(state.getMqttHeartBeatTopic(), message);
 }
+
+void listLocalFiles(){
+  String str = "[FILE] Listing local files: \r\n";
+  Dir dir = SPIFFS.openDir("/");
+  while (dir.next()) {
+      str += "[FILE] ";
+      str += dir.fileName();
+      str += "\t";
+      str += dir.fileSize();
+      str += "Bytes \r\n";
+  }
+  Serial.print(str);
+}
+
 
 void collectSensorData(){
   sensorsTickerData.clear();
