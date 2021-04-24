@@ -4,11 +4,14 @@
 // internal strings stored in flash for efficiency
 const char _logFilenameFormat[] PROGMEM = "%s/%d%02d%02d";
 
-Logger::Logger(){
-  if (!SPIFFS.begin()) {
-      Serial.println("Failed to mount file system");
-  }
+Logger::Logger(const char *directory, uint16_t daysToKeep, uint16_t processInterval)
+    : _daysToKeep(daysToKeep), _processInterval(processInterval){
+    strncpy(this->_directory, directory, sizeof(this->_directory) - 1);
+    if (!SPIFFS.begin()) {
+        Serial.println("Failed to mount file system");
+    }
 }
+
 
 void Logger::init()
 {
@@ -57,7 +60,7 @@ void Logger::_runRotation(){
     while (tempDir.next())
     {
         const char *dateStart = tempDir.fileName().c_str() + dirLen + 1;
-        const time_t midnight = SPIFFSLoggerBase::_filenameToDate(dateStart);
+        const time_t midnight = Logger::_filenameToDate(dateStart);
 
         // check if file is too old and, if so, delete it
         if (midnight < (this->_today - this->_daysToKeep * 86400))
@@ -81,7 +84,7 @@ time_t Logger::_filenameToDate(const char *filename){
     strncpy(datePart, filename + 6, 2);
     tm.tm_mday = atoi(datePart);
 
-    return SPIFFSLoggerBase::_timegm(&tm) / 86400 * 86400;
+    return Logger::_timegm(&tm) / 86400 * 86400;
 }
 
 time_t Logger::_timegm(struct tm *tm){
