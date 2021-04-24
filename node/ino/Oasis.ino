@@ -10,6 +10,7 @@
 #include "Status.h"
 #include "Command.h"
 #include "OasisConstants.h"
+#include "Logger.h"
 
 WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
@@ -26,6 +27,9 @@ Ticker heartBeatTicker;
 State state;
 Status status;
 Command command;
+
+// /log/YYYYMMDD, keeping 1 day of history
+Logger logger("/log", 1);
 
 void postResponse(const JsonDocument& message) {
   // Produce a minified JSON document
@@ -143,6 +147,13 @@ void setupWifi() {
 void setup() {
 
   state.load();
+
+  Serial.begin(state.getSerialBaudRate());
+  Serial.setTimeout(3000);
+  //while (!Serial) continue;
+
+  logger.init();
+
   status.updatePorts(state);
   command.updatePorts(state);
 
@@ -152,10 +163,6 @@ void setup() {
     cmd[NODE::WATER] = false;
   }
   command.execute(state, cmd);
-
-  Serial.begin(state.getSerialBaudRate());
-  Serial.setTimeout(3000);
-  //while (!Serial) continue;
 
   state.print();
 
@@ -316,7 +323,11 @@ void loop() {
   if(currentMillis - previousMillis > state.getSensorCollectDataPeriod()) {
     previousMillis = currentMillis;
     collectSensorData();
+    logger.write("test");
   }
 
   serialCommands();
+
+  // at initialization. Should always be called in the loop.
+  logger.process();
 }

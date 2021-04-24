@@ -102,3 +102,13 @@ time_t Logger::_timegm(struct tm *tm){
 
     return mktime(tm) - (mktime(&start2000) - 946684800);
 }
+
+size_t Logger::write(const char* value){
+    struct LogData data;
+    data.timestampUTC = time(nullptr);
+    data.data = value;
+
+    File f = SPIFFS.open(this->_curPath, "a");
+    f.write((uint8_t *)&data, sizeof(data));
+    f.close();
+}

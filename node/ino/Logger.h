@@ -8,6 +8,12 @@ using namespace std;
 
 #define LOG_DIR "/log"
 
+
+struct LogData{
+    time_t timestampUTC; /**< creation time in UTC */
+    const char* data;
+};
+
 class Logger{
 protected:
   time_t _today = 0;               /**< current date, set in the last processing run */
@@ -41,6 +47,7 @@ public:
   Logger(const char *directory, uint16_t daysToKeep = 7, uint16_t processInterval = 1000);
   void init();
   void process();
+  size_t write(const char* value);
 
 };
 #endif
