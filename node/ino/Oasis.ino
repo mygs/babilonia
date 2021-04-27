@@ -198,7 +198,11 @@ void setup() {
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
 
-  heartBeat(); // Oasis is up and running, notify it
+  // Oasis is up and running, notify first heartbeat
+  char message[HEARTBEAT_MESSAGE_SIZE];
+  sprintf(message, "{\"%s\":\"oasis-%06x\", \"startup\": true}",NODE::NODE_ID,ESP.getChipId());
+  mqtt.publish(state.getMqttHeartBeatTopic(), message);
+
 
   // For sure, we do not need short heartbeat
   if(state.getHeartBeatPeriod() > THRESHOLD_DISABLE_HEARTBEAT){
