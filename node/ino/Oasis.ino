@@ -247,7 +247,7 @@ void listLocalFiles(){
       str += dir.fileName();
       str += "\t";
       str += dir.fileSize();
-      str += "Bytes \r\n";
+      str += " bytes\r\n";
   }
   Serial.print(str);
 }
@@ -291,6 +291,20 @@ void serialCommands() {
           {
             setupNewWifi();
           }
+          break;
+      case 100: //d
+          Serial.println("[SERIAL] Listing local files");
+          listLocalFiles();
+          break;
+      case 104: //h (HELP!)
+          Serial.println("[SERIAL] COMMAND HELP:");
+          Serial.println("'ESC': reset to default config");
+          Serial.println("'Space bar': print state");
+          Serial.println("'?': print node info");
+          Serial.println("'c': setup new WiFi");
+          Serial.println("'d': list local files");
+          Serial.println("'h': command help");
+          Serial.println("'r': reboot command");
           break;
       case 114: //r
           Serial.println("[SERIAL] Rebooting ...");
