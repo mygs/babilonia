@@ -7,6 +7,11 @@ State::State(){
   if (!SPIFFS.begin()) {
       Serial.println("Failed to mount file system");
   }
+  updateBootCount();
+}
+
+unsigned long State::getBootCount(){
+  return bootCount;
 }
 
 const char * State::getMqttServer(){
@@ -261,6 +266,33 @@ void State::load() {
   }
 }
 
+// Load state from a file
+void State::updateBootCount() {
+
+  if (SPIFFS.exists(BOOT_COUNT_FILE)) {
+    Serial.println("[STATE] Loading boot count file");
+    File file = SPIFFS.open(BOOT_COUNT_FILE, "r");
+    while(file.available()) {
+      String line = file.readStringUntil('\n');
+      this->bootCount = line.toInt();
+      break; //if left in, we'll just read the first line then break out of the while.
+    }
+    file.close();
+  }else{
+    Serial.println("[STATE] Boot count file not found");
+  }
+
+  this->bootCount++;
+
+  File file = SPIFFS.open(BOOT_COUNT_FILE, "w");
+  if (!file) {
+    Serial.println("[STATE] Failed to update boot count file");
+  } else {
+    file.println(this->bootCount);
+    file.close();
+  }
+}
+
 void State::print(){
      FSInfo info;
      SPIFFS.info(info);
@@ -280,9 +312,19 @@ void State::remove(){
     Serial.println("[STATE] Removing file");
     SPIFFS.remove(STATE_FILE);
   }else{
-    Serial.println("[STATE] file do not exists");
+    Serial.println("[STATE] file does not exist");
   }
 }
+
+void State::resetBootCount(){
+  if (SPIFFS.exists(BOOT_COUNT_FILE)) {
+    Serial.println("[STATE] Removing boot count file");
+    SPIFFS.remove(BOOT_COUNT_FILE);
+  }else{
+    Serial.println("[STATE] boot count file does not exist");
+  }
+}
+
 /*
  * updates pin[] values based on currentState
  * Ex:

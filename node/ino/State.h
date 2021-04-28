@@ -6,22 +6,26 @@
 using namespace std;
 
 #define STATE_FILE "/state.json"
+#define BOOT_COUNT_FILE "/bootCount.dat"
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
 
 class State{
 private:
+  unsigned long bootCount = 0;
   StaticJsonDocument<JSON_MEMORY_SIZE> currentState;
   int diffi(JsonVariant _base, JsonVariant _arrived);
   bool diffb(JsonVariant _base, JsonVariant _arrived);
   const char* diffs(JsonVariant _base, JsonVariant _arrived);
   void mergeState(JsonDocument& arrived);
   void saveDefaultState(JsonDocument& state);
+  void updateBootCount();
 
 public:
   State();
   //get configuration
   const char * getMqttServer();
+  unsigned long getBootCount();
   int getMqttPort();
   int getHeartBeatPeriod();
   int getSensorCollectDataPeriod();
@@ -45,6 +49,7 @@ public:
   void save(JsonDocument& newState);
 
   void remove();
+  void resetBootCount();
   void print();
   void getPin(int pin[], const char* DEVICE[], int length);
 };

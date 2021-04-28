@@ -161,6 +161,7 @@ void setup() {
 
   sprintf(HOSTNAME, "oasis-%06x", ESP.getChipId());
   Serial.printf("\r\n\r\n[OASIS] Hostname: %s", HOSTNAME);
+  Serial.printf("\r\n[OASIS] Boot Count: %i", state.getBootCount());
   Serial.printf("\r\n[OASIS] Firmware version: %s\r\n", FIRMWARE_VERSION);
   Serial.println("[OASIS] Starting Setup");
 
@@ -275,6 +276,7 @@ void serialCommands() {
       case 27: //ESC
           Serial.println("[SERIAL] Reseting state to initial configuration!");
           state.remove();
+          state.resetBootCount();
           break;
       case 32: //Space bar
           Serial.println("[SERIAL] Print state ...");
@@ -282,6 +284,7 @@ void serialCommands() {
           break;
       case 63: //?
           Serial.printf("[SERIAL] Hostname: %s\r\n", HOSTNAME);
+          Serial.printf("[SERIAL] Boot Count: %i\r\n", state.getBootCount());
           Serial.printf("[SERIAL] Firmware: %s\r\n", FIRMWARE_VERSION);
           Serial.print("[SERIAL] MAC: ");
           Serial.println(WiFi.macAddress());
