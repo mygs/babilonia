@@ -104,6 +104,7 @@ void Status::collectNodeData(State& state, JsonObject& data){
   node[NODE::SERIAL_BAUDRATE] = state.getSerialBaudRate();
   node[NODE::OTA_PORT] = state.getOtaPort();
   node[NODE::PIN] = state.getPinSetup();
+  node[NODE::BOOT] = state.getBootCount();
 }
 
 

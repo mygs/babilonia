@@ -31,6 +31,7 @@ namespace NODE {
   extern const char* PIN6 = "6";
   extern const char* PIN7 = "7";
   extern const char* PIN8 = "8";
+  extern const char* BOOT = "BOOT";
   extern const char* COMMAND = "COMMAND";
   extern const char* FAN     = "FAN";
   extern const char* WATER   = "WATER";

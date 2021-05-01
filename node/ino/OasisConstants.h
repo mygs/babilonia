@@ -62,6 +62,7 @@ namespace NODE {
   extern const char* PIN6;
   extern const char* PIN7;
   extern const char* PIN8;
+  extern const char* BOOT;
   extern const char* COMMAND;
   extern const char* FAN;
   extern const char* WATER;
