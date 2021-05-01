@@ -146,7 +146,13 @@ void setupWifi() {
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
   state.load();
+  
+  Serial.begin(state.getSerialBaudRate());
+  Serial.setTimeout(3000);
+  //while (!Serial) continue;
+
   logger.init(state.getBootCount());
+  logger.write("TESTE123");
 
   status.updatePorts(state);
   command.updatePorts(state);
@@ -157,10 +163,6 @@ void setup() {
     cmd[NODE::WATER] = false;
   }
   command.execute(state, cmd);
-
-  Serial.begin(state.getSerialBaudRate());
-  Serial.setTimeout(3000);
-  //while (!Serial) continue;
 
   state.print();
 
@@ -282,18 +284,16 @@ void serialCommands() {
           Serial.println("[SERIAL] Reseting state to initial configuration!");
           state.remove();
           state.resetBootCount();
+          logger.removeAllLogFiles();
           break;
       case 32: //Space bar
-          Serial.println("[SERIAL] Print state ...");
-          state.print();
-          break;
-      case 63: //?
           Serial.printf("[SERIAL] Hostname: %s\r\n", HOSTNAME);
           Serial.printf("[SERIAL] Boot Count: %i\r\n", state.getBootCount());
           Serial.printf("[SERIAL] Firmware: %s\r\n", FIRMWARE_VERSION);
           Serial.print("[SERIAL] MAC: ");
           Serial.println(WiFi.macAddress());
           Serial.printf("[SERIAL] IP: %s\r\n", NODE_IP);
+          state.print();
           break;
       case 99: //c
           {
@@ -304,16 +304,15 @@ void serialCommands() {
           Serial.println("[SERIAL] Listing local files");
           listLocalFiles();
           break;
+      case 63: //?
       case 104: //h (HELP!)
           Serial.println("[SERIAL] COMMAND HELP:");
           Serial.println("'ESC': reset to default config");
           Serial.println("'Space bar': print state");
-          Serial.println("'?': print node info");
+          Serial.println("'?' or 'h': help");
           Serial.println("'c': setup new WiFi");
           Serial.println("'d': list local files");
-          Serial.println("'h': command help");
           Serial.println("'l': print log configuration");
-
           Serial.println("'r': reboot command");
           break;
       case 108: //l

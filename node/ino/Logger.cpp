@@ -1,7 +1,7 @@
 #include "Logger.h"
 
 // internal strings stored in flash for efficiency
-const char _logFilenameFormat[] PROGMEM = "%s/%d";
+const char _logFilenameFormat[] PROGMEM = LOG_DIR"/%d";
 
 
 Logger::Logger(uint16_t logFilesToKeep,uint16_t maxLogFileSize)
@@ -21,7 +21,6 @@ void Logger::init(unsigned long bootCount){
 void Logger::_updateCurPath(){
   sprintf_P(this->_curPath,
             _logFilenameFormat,
-            LOG_DIR,
             this->_curBootCount);
 }
 /*
@@ -34,11 +33,20 @@ void Logger::_checkSize(){
 */
 void Logger::_runRotation(){
     Dir directory = SPIFFS.openDir(LOG_DIR);
-
+    unsigned long logToRemove = this->_curBootCount - this->_logFilesToKeep;
     while (directory.next()){
-        // check if file is too old and, if so, delete it
-        if (false)
-            SPIFFS.remove(directory.fileName());
+      int logId;
+      if (sscanf(directory.fileName().c_str(), _logFilenameFormat, &logId) == 1) {
+        if(logId <= logToRemove){
+          // check if file is too old and, if so, delete it
+          Serial.printf("[ROTATION] removing file: %s\r\n",directory.fileName().c_str());
+          SPIFFS.remove(directory.fileName());
+        }else{
+          Serial.printf("[ROTATION] keeping file: %s\r\n",directory.fileName().c_str());
+        }
+      } else {
+        Serial.printf("[ROTATION] Could not extract log id from %s\r\n",directory.fileName().c_str());
+      }
     }
 }
 
@@ -48,7 +56,6 @@ void Logger::print(){
      Serial.printf("[LOGGER] bootCount: %i\r\n",this->_curBootCount);
      Serial.printf("[LOGGER] logFilesToKeep: %i\r\n",this->_logFilesToKeep);
      Serial.printf("[LOGGER] maxLogFileSize: %i\r\n",this->_maxLogFileSize);
-
 }
 void Logger::removeAllLogFiles(){
     Dir logDir = SPIFFS.openDir(LOG_DIR);
@@ -62,4 +69,5 @@ size_t Logger::write(char* value){
     File f = SPIFFS.open(this->_curPath, "a");
     f.write((uint8_t *)&value, len);
     f.close();
+    return len;
 }
