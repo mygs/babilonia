@@ -12,7 +12,7 @@ Logger::Logger(uint16_t logFilesToKeep,uint16_t maxLogFileSize)
     }
 }
 
-void Logger::init(unsigned long bootCount)){
+void Logger::init(unsigned long bootCount){
   this->_curBootCount = bootCount;
   this->_updateCurPath();
   this->_runRotation();
@@ -40,4 +40,26 @@ void Logger::_runRotation(){
         if (false)
             SPIFFS.remove(directory.fileName());
     }
+}
+
+void Logger::print(){
+     Serial.printf("[LOGGER] directory: %s\r\n",LOG_DIR);
+     Serial.printf("[LOGGER] curPath: %s\r\n",this->_curPath);
+     Serial.printf("[LOGGER] bootCount: %i\r\n",this->_curBootCount);
+     Serial.printf("[LOGGER] logFilesToKeep: %i\r\n",this->_logFilesToKeep);
+     Serial.printf("[LOGGER] maxLogFileSize: %i\r\n",this->_maxLogFileSize);
+
+}
+void Logger::removeAllLogFiles(){
+    Dir logDir = SPIFFS.openDir(LOG_DIR);
+    while (logDir.next()){
+      SPIFFS.remove(logDir.fileName());
+    }
+}
+
+size_t Logger::write(char* value){
+    int len = sizeof(value);
+    File f = SPIFFS.open(this->_curPath, "a");
+    f.write((uint8_t *)&value, len);
+    f.close();
 }

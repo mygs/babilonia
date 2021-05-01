@@ -10,12 +10,16 @@
 #include "Status.h"
 #include "Command.h"
 #include "OasisConstants.h"
+#include "Logger.h"
 
 WiFiClient   wifiClient;
 PubSubClient mqtt(wifiClient);
 char payload[JSON_MEMORY_SIZE];
 char HOSTNAME[HOSTNAME_SIZE];
 char NODE_IP[IP_SIZE];
+
+Logger logger;
+char msgLogger[32] ={0};
 
 StaticJsonDocument<JSON_MEMORY_SIZE> inboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> outboundData;
@@ -141,8 +145,9 @@ void setupWifi() {
 
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
-
   state.load();
+  logger.init(state.getBootCount());
+
   status.updatePorts(state);
   command.updatePorts(state);
 
@@ -307,7 +312,13 @@ void serialCommands() {
           Serial.println("'c': setup new WiFi");
           Serial.println("'d': list local files");
           Serial.println("'h': command help");
+          Serial.println("'l': print log configuration");
+
           Serial.println("'r': reboot command");
+          break;
+      case 108: //l
+          Serial.println("[SERIAL] Print log config:");
+          logger.print();
           break;
       case 114: //r
           Serial.println("[SERIAL] Rebooting ...");

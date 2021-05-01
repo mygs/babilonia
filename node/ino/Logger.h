@@ -20,5 +20,8 @@ protected:
 public:
   Logger(uint16_t logFilesToKeep = 2,uint16_t maxLogFileSize = 1000);
   void init(unsigned long bootCount);
+  void print();
+  size_t write(char* value);
+  void removeAllLogFiles();
 };
 #endif
