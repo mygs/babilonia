@@ -9,19 +9,16 @@ using namespace std;
 
 class Logger{
 protected:
-  unsigned long _lastProcess = 0;  /**< last processing millis() */
-  const uint16_t _processInterval; /**< ms between processing runs */
+  unsigned long _curBootCount;
   uint16_t _logFilesToKeep;
   uint16_t _maxLogFileSize;
-  bool _processNow = true;         /**< force processing now, even if the processing interval hasn't passed */
-  char _curPath[32];               /**< path for today's file */
+  char _curPath[32];
 
   void _runRotation();
   void _updateCurPath();
 
 public:
-  Logger(uint16_t logFilesToKeep = 2,uint16_t maxLogFileSize = 1000, uint16_t processInterval = 3600000);
+  Logger(unsigned long curBootCount, uint16_t logFilesToKeep = 2,uint16_t maxLogFileSize = 1000);
   void init();
-  void process();
 };
 #endif

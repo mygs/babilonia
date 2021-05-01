@@ -1,32 +1,22 @@
 #include "Logger.h"
 
 
-Logger::Logger(uint16_t logFilesToKeep,uint16_t maxLogFileSize, uint16_t processInterval)
-    : _logFilesToKeep(logFilesToKeep),
-      _maxLogFileSize(maxLogFileSize),
-      _processInterval(processInterval){
+Logger::Logger(unsigned long curBootCount, uint16_t logFilesToKeep,uint16_t maxLogFileSize)
+    : _curBootCount(curBootCount),
+      _logFilesToKeep(logFilesToKeep),
+      _maxLogFileSize(maxLogFileSize){
     if (!SPIFFS.begin()) {
         Serial.println("Failed to mount file system");
     }
 }
 
 void Logger::init(){
-    this->process();
-}
+  unsigned long bootCount = 0;
 
-void Logger::process(){
-    const unsigned long currentMillis = millis();
-    if (currentMillis - this->_lastProcess > this->_processInterval ||
-          this->_processNow){
-        if (false){
-          // let's run the required updates
-            this->_updateCurPath();
-            this->_runRotation();
-        }
-
-        this->_lastProcess = currentMillis;
-        this->_processNow = false;
-    }
+  if (bootCount != this->_curBootCount){
+      this->_updateCurPath();
+      this->_runRotation();
+  }
 }
 
 void Logger::_updateCurPath(){
