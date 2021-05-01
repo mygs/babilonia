@@ -18,7 +18,7 @@ protected:
   void _updateCurPath();
 
 public:
-  Logger(unsigned long curBootCount, uint16_t logFilesToKeep = 2,uint16_t maxLogFileSize = 1000);
-  void init();
+  Logger(uint16_t logFilesToKeep = 2,uint16_t maxLogFileSize = 1000);
+  void init(unsigned long bootCount);
 };
 #endif

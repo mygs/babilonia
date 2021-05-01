@@ -1,25 +1,28 @@
 #include "Logger.h"
 
+// internal strings stored in flash for efficiency
+const char _logFilenameFormat[] PROGMEM = "%s/%d";
 
-Logger::Logger(unsigned long curBootCount, uint16_t logFilesToKeep,uint16_t maxLogFileSize)
-    : _curBootCount(curBootCount),
-      _logFilesToKeep(logFilesToKeep),
+
+Logger::Logger(uint16_t logFilesToKeep,uint16_t maxLogFileSize)
+    : _logFilesToKeep(logFilesToKeep),
       _maxLogFileSize(maxLogFileSize){
     if (!SPIFFS.begin()) {
         Serial.println("Failed to mount file system");
     }
 }
 
-void Logger::init(){
-  unsigned long bootCount = 0;
-
-  if (bootCount != this->_curBootCount){
-      this->_updateCurPath();
-      this->_runRotation();
-  }
+void Logger::init(unsigned long bootCount)){
+  this->_curBootCount = bootCount;
+  this->_updateCurPath();
+  this->_runRotation();
 }
 
 void Logger::_updateCurPath(){
+  sprintf_P(this->_curPath,
+            _logFilenameFormat,
+            LOG_DIR,
+            this->_curBootCount);
 }
 /*
 void Logger::_checkSize(){
