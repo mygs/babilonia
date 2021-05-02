@@ -296,6 +296,7 @@ void State::updateBootCount() {
 void State::print(){
      FSInfo info;
      SPIFFS.info(info);
+
      Serial.printf("[STATE] Total Bytes: %u\r\n",     info.totalBytes);
      Serial.printf("[STATE] Used Bytes: %u\r\n",      info.usedBytes);
      Serial.printf("[STATE] Block Size: %u\r\n",      info.blockSize);

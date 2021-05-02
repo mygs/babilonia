@@ -64,7 +64,8 @@ void Logger::removeAllLogFiles(){
     }
 }
 
-size_t Logger::write(char* value){
+size_t Logger::write(const char* value){
+    Serial.println(value);
     int len = sizeof(value);
     File f = SPIFFS.open(this->_curPath, "a");
     f.write((uint8_t *)&value, len);

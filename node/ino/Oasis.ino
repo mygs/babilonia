@@ -19,7 +19,7 @@ char HOSTNAME[HOSTNAME_SIZE];
 char NODE_IP[IP_SIZE];
 
 Logger logger;
-char msgLogger[32] ={0};
+char  logMsg[1024];
 
 StaticJsonDocument<JSON_MEMORY_SIZE> inboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> outboundData;
@@ -96,7 +96,7 @@ void setupNewWifi() {
   String passwd = "";
   StaticJsonDocument<JSON_MEMORY_SIZE> wifi;
 
-  Serial.println("[SERIAL] Reconfiguring CONNECTION setup ...");
+  logger.write("[SERIAL] Reconfiguring CONNECTION setup ...");
   Serial.print("Enter WiFi SSID: ");
   ssid = Serial.readStringUntil('\n');
   Serial.print("\nEnter WiFi PASSWORD:");
@@ -106,8 +106,11 @@ void setupNewWifi() {
   ssid.trim();
   passwd.trim();
 
-  Serial.println("\nWiFi SSID:" + ssid);
-  Serial.println("WiFi PASSWORD:" + passwd);
+  sprintf(logMsg, "[WIFI] New WiFi SSID: %s", ssid.c_str());
+  logger.write(logMsg);
+
+  sprintf(logMsg, "[WIFI] New WiFi PASSWORD: %s", passwd.c_str());
+  logger.write(logMsg);
 
   JsonObject CONFIG = wifi.createNestedObject(NODE::CONFIG);
   CONFIG[NODE::SSID]     = ssid;
@@ -115,22 +118,25 @@ void setupNewWifi() {
 
   state.save(wifi);
 
-  Serial.println("[SERIAL] Ended CONNECTION setup");
+  logger.write("[SERIAL] Ended CONNECTION setup");
 }
 
 void setupWifi() {
 
-  Serial.print("[WIFI] MAC: ");
-  Serial.println(WiFi.macAddress());
+  sprintf(logMsg, "[WIFI] MAC: %s", WiFi.macAddress().c_str());
+  logger.write(logMsg);
 
-  Serial.print("[WIFI] Connecting to SSID: ");
-  Serial.println(state.getSsid());
+  sprintf(logMsg, "[WIFI] Connecting to SSID: %s", state.getSsid());
+  logger.write(logMsg);
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(state.getSsid(), state.getPassword());
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.printf("[WIFI] Connection Failed! Rebooting in %i seconds...",
+    sprintf(logMsg, "[WIFI] Connection Failed! Rebooting in %i seconds...",
                   state.getWifiRetryConnectionDelay() / 1000);
+    logger.write(logMsg);
+
     delay(state.getWifiRetryConnectionDelay());
 
     serialCommands(); // just in case wifi was badly configured
@@ -140,26 +146,30 @@ void setupWifi() {
 
   IPAddress ip = WiFi.localIP();
   sprintf(NODE_IP, "%d.%d.%d.%d", ip[0],ip[1],ip[2],ip[3]);
-  Serial.printf("[WIFI] IP address: %s\n", NODE_IP);
+
+  sprintf(logMsg, "[WIFI] IP address: %s", NODE_IP);
+  logger.write(logMsg);
+
+  sprintf(logMsg, "[WIFI] Connecting to SSID: %s", state.getSsid());
+  logger.write(logMsg);
 }
 
 /* DO NOT CHANGE this function name - Arduino hook */
 void setup() {
   state.load();
-  
+
   Serial.begin(state.getSerialBaudRate());
   Serial.setTimeout(3000);
   //while (!Serial) continue;
 
   logger.init(state.getBootCount());
-  logger.write("TESTE123");
 
   status.updatePorts(state);
   command.updatePorts(state);
 
   JsonObject cmd = state.getCommand();
   if(cmd[NODE::WATER]){
-    Serial.println("[OASIS] Turn off water for security purpose");
+    logger.write("[OASIS] Turn off water for security purpose");
     cmd[NODE::WATER] = false;
   }
   command.execute(state, cmd);
@@ -167,37 +177,41 @@ void setup() {
   state.print();
 
   sprintf(HOSTNAME, "oasis-%06x", ESP.getChipId());
-  Serial.printf("\r\n\r\n[OASIS] Hostname: %s", HOSTNAME);
-  Serial.printf("\r\n[OASIS] Boot Count: %i", state.getBootCount());
-  Serial.printf("\r\n[OASIS] Firmware version: %s\r\n", FIRMWARE_VERSION);
-  Serial.println("[OASIS] Starting Setup");
+  sprintf(logMsg, "[OASIS] Hostname: %s", HOSTNAME);
+  logger.write(logMsg);
+  sprintf(logMsg, "[OASIS] Boot Count: %i", state.getBootCount());
+  logger.write(logMsg);
+  sprintf(logMsg, "[OASIS] Firmware version: %s", FIRMWARE_VERSION);
+  logger.write(logMsg);
+  logger.write("[OASIS] Starting Setup");
 
   setupWifi();
 
   ArduinoOTA.setHostname(HOSTNAME);
   ArduinoOTA.setPort(state.getOtaPort());
   ArduinoOTA.onStart([]() {
-    Serial.println("[OTA] Starting ");
+    logger.write("[OTA] Starting");
   });
   ArduinoOTA.onEnd([]() {
-    Serial.println("\n[OTA] Update finished! Rebooting");
+    logger.write("[OTA] Update finished! Rebooting");
   });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
     Serial.printf("[OTA] Progress: %u%%\r", (progress / (total / 100)));
   });
   ArduinoOTA.onError([](ota_error_t error) {
-    Serial.printf("[OTA] Error[%u]: ", error);
+    sprintf(logMsg, "[OTA] Error[%u]: ", error);
+    logger.write(logMsg);
 
     if (error == OTA_AUTH_ERROR) {
-      Serial.println("[OTA] Auth Failed");
+      logger.write("[OTA] Auth Failed");
     } else if (error == OTA_BEGIN_ERROR) {
-      Serial.println("[OTA] Begin Failed");
+      logger.write("[OTA] Begin Failed");
     } else if (error == OTA_CONNECT_ERROR) {
-      Serial.println("[OTA] Connect Failed");
+      logger.write("[OTA] Connect Failed");
     } else if (error == OTA_RECEIVE_ERROR) {
-      Serial.println("[OTA] Receive Failed");
+      logger.write("[OTA] Receive Failed");
     } else if (error == OTA_END_ERROR) {
-      Serial.println("[OTA] End Failed");
+      logger.write("[OTA] End Failed");
     }
   });
   ArduinoOTA.begin();
@@ -211,15 +225,13 @@ void setup() {
   sprintf(message, "{\"%s\":\"oasis-%06x\", \"startup\": true}",NODE::NODE_ID,ESP.getChipId());
   mqtt.publish(state.getMqttHeartBeatTopic(), message);
 
-
   // For sure, we do not need short heartbeat
   if(state.getHeartBeatPeriod() > THRESHOLD_DISABLE_HEARTBEAT){
     heartBeatTicker.attach_ms(state.getHeartBeatPeriod(), heartBeat);
   }else{
-    Serial.println("[OASIS] HeartBeat not enabled");
+    logger.write("[OASIS] HeartBeat not enabled");
   }
-
-  Serial.println("[OASIS] Setup Completed");
+  logger.write("[OASIS] Setup Completed");
   listLocalFiles();
 }
 
@@ -228,14 +240,13 @@ void mqttReconnect() {
 
   // Loop until we're reconnected
   while (!mqtt.connected()) {
-    Serial.print("[MQTT] Attempting connection...");
+    logger.write("[MQTT] Attempting connection");
     if (mqtt.connect(HOSTNAME,MQTT_WILL_TOPIC,MQTT_WILL_QOS,MQTT_WILL_RETAIN,MQTT_WILL_MESSAGE)) {
-      Serial.println("connected");
+      logger.write("[MQTT] connected");
       mqtt.subscribe(state.getMqttInboundTopic());
     } else {
-      Serial.print("failed, rc=");
-      Serial.print(mqtt.state());
-      Serial.printf(" try again in %i seconds", state.getWifiRetryConnectionDelay() / 1000);
+      sprintf(logMsg, "[MQTT] failed, rc=%i. Try again in %i seconds", mqtt.state(),state.getWifiRetryConnectionDelay() / 1000);
+      logger.write(logMsg);
       delay(state.getWifiRetryConnectionDelay());
     }
   }
@@ -251,13 +262,9 @@ void listLocalFiles(){
   String str = "[FILE] Listing local files: \r\n";
   Dir dir = SPIFFS.openDir("/");
   while (dir.next()) {
-      str += "[FILE] ";
-      str += dir.fileName();
-      str += "\t";
-      str += dir.fileSize();
-      str += " bytes\r\n";
+      str += "[FILE] "+ dir.fileName()+ "\t"+ dir.fileSize()+ " bytes\r\n";
   }
-  Serial.print(str);
+  logger.write(str.c_str());
 }
 
 
@@ -281,18 +288,23 @@ void serialCommands() {
           Serial.println();
           break;
       case 27: //ESC
-          Serial.println("[SERIAL] Reseting state to initial configuration!");
+          logger.write("[SERIAL] Reseting state to initial configuration!");
           state.remove();
           state.resetBootCount();
           logger.removeAllLogFiles();
           break;
       case 32: //Space bar
-          Serial.printf("[SERIAL] Hostname: %s\r\n", HOSTNAME);
-          Serial.printf("[SERIAL] Boot Count: %i\r\n", state.getBootCount());
-          Serial.printf("[SERIAL] Firmware: %s\r\n", FIRMWARE_VERSION);
-          Serial.print("[SERIAL] MAC: ");
-          Serial.println(WiFi.macAddress());
-          Serial.printf("[SERIAL] IP: %s\r\n", NODE_IP);
+          sprintf(logMsg, "[SERIAL] Hostname: %s", HOSTNAME);
+          logger.write(logMsg);
+          sprintf(logMsg, "[SERIAL] Boot Count: %i", state.getBootCount());
+          logger.write(logMsg);
+          sprintf(logMsg, "[SERIAL] Firmware: %s", FIRMWARE_VERSION);
+          logger.write(logMsg);
+          sprintf(logMsg, "[SERIAL] MAC:  %s", WiFi.macAddress().c_str());
+          logger.write(logMsg);
+          sprintf(logMsg, "[SERIAL] IP: %s",NODE_IP);
+          logger.write(logMsg);
+
           state.print();
           break;
       case 99: //c
@@ -301,7 +313,7 @@ void serialCommands() {
           }
           break;
       case 100: //d
-          Serial.println("[SERIAL] Listing local files");
+          logger.write("[SERIAL] Listing local files");
           listLocalFiles();
           break;
       case 63: //?
@@ -316,16 +328,16 @@ void serialCommands() {
           Serial.println("'r': reboot command");
           break;
       case 108: //l
-          Serial.println("[SERIAL] Print log config:");
+          logger.write("[SERIAL] Print log config:");
           logger.print();
           break;
       case 114: //r
-          Serial.println("[SERIAL] Rebooting ...");
+          logger.write("[SERIAL] Rebooting ...");
           ESP.restart();
           break;
       default:
-          Serial.print("[SERIAL] Unknown command: ");
-          Serial.println(incomingByte, DEC);
+          sprintf(logMsg, "[SERIAL] Unknown command: %d", incomingByte);
+          logger.write(logMsg);
     }
 
   }

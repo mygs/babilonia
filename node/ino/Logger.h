@@ -21,7 +21,7 @@ public:
   Logger(uint16_t logFilesToKeep = 3,uint16_t maxLogFileSize = 1000);
   void init(unsigned long bootCount);
   void print();
-  size_t write(char* value);
+  size_t write(const char* value);
   void removeAllLogFiles();
 };
 #endif
