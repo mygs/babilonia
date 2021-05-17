@@ -1,0 +1,8 @@
+{
+  "COMMAND":{
+    "START_IRRIGATION_CMD":["irrigar","aguar","agua"],
+    "STOP_IRRIGATION_CMD":["parar","cancelar","suspender","paralizar","desligar"],
+    "STATUS_CMD":["status", "atualização", "situação"]
+  },
+  "ALL_OASIS":["todos","tudo","todas","total"]
+}

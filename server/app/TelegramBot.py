@@ -31,13 +31,14 @@ from telegram.ext import (
 BUCKET_NAME = 'bazinga'
 
 class TelegramBot(Thread):
-    def __init__(self, cfg, oasis_props, logger = None, mqtt = None, socketio = None):
+    def __init__(self, cfg, oasis_props, voice_words, logger = None, mqtt = None, socketio = None):
         Thread.__init__(self)
         self.speech_client = speech.SpeechClient()
         self.storage_client = storage.Client()
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
         self.logger = logger
         self.oasis = self.filter_oasis(oasis_props)
+        self.voice_words = voice_words
         self.mqtt = mqtt
         self.socketio = socketio
 
@@ -103,23 +104,48 @@ class TelegramBot(Thread):
 
         update.effective_message.reply_text(message_text)
 
-    def process(self, message_text) -> None:
+    def process(self, message_text):
         print('[MENSAGEM]', message_text)
         words = message_text.split()
-        best_ratio = 0
+        oasis_best_ratio = 0
+        command_best_ratio = 0
         oasis = ''
+        command = ''
         oasis_listen_name = ''
-        for word in words:
-            word = word.upper()
-            for oasis_name in self.oasis:
-                ratio =  SequenceMatcher(None, word, oasis_name).ratio()
-                if ratio > best_ratio:
-                    best_ratio = ratio
-                    oasis_listen_name = word
-                    oasis = oasis_name
+        command_listen_name = ''
+        phrase_len = len(words)
+        if phrase_len != 2 :
+            return "Comando não reconhecido. Tente <COMAND> <OASIS>"
+        listened_cmd = words[0].upper()
+        print('[LISTENED CMD]',listened_cmd)
+        for meta_data_cmd in self.voice_words['COMMAND']:
+            for cmd in self.voice_words['COMMAND'][meta_data_cmd]:
+                cmd = cmd.upper()
+                ratio =  SequenceMatcher(None, listened_cmd, cmd).ratio()
+                if ratio > command_best_ratio:
+                    command_best_ratio = ratio
+                    command_listen_name = listened_cmd
+                    command = meta_data_cmd
+        listened_oasis = words[1].upper()
+        print('[LISTENED OASIS]',listened_oasis)
+        for oasis_name in self.oasis:
+            oasis_name = oasis_name.upper()
+            ratio =  SequenceMatcher(None, listened_oasis, oasis_name).ratio()
+            if ratio > oasis_best_ratio:
+                oasis_best_ratio = ratio
+                oasis_listen_name = listened_oasis
+                oasis = oasis_name
+        for all_oasis in self.voice_words['ALL_OASIS']:
+            all_oasis = all_oasis.upper()
+            ratio =  SequenceMatcher(None, listened_oasis, all_oasis).ratio()
+            if ratio > oasis_best_ratio:
+                oasis_best_ratio = ratio
+                oasis_listen_name = listened_oasis
+                oasis = all_oasis
+        if oasis_best_ratio > 0 and command_best_ratio >0:
+            response = '[OASIS] '+ oasis_listen_name+' '+ oasis+' '+str(oasis_best_ratio) + '\n'
+            response = response+'[CMD] '+ command_listen_name+' '+ command+' '+str(command_best_ratio)
 
-        if best_ratio > 0:
-            response = '[BEST MATCH] '+ oasis_listen_name+' '+ oasis+' '+str(best_ratio)
             print(response)
             return response
 
@@ -147,7 +173,16 @@ if __name__ == '__main__':
     with open('../../common/oasis_properties.json', "r") as oasis_prop_file:
         oasis_properties = json.load(oasis_prop_file)
 
-    bot = TelegramBot(cfg, oasis_properties)
+    with open('../../common/voice_words.json', "r") as voice_words_file:
+        voice_words = json.load(voice_words_file)
+
+    #for meta_vc in voice_words['COMMAND']:
+    #    for cmd in voice_words['COMMAND'][meta_vc]:
+    #        print('[',meta_vc,'] ', cmd)
+    #for meta_all in voice_words['ALL_OASIS']:
+    #        print('[ALL_OASIS] ', meta_all)
+
+    bot = TelegramBot(cfg, oasis_properties, voice_words)
     #bot.filter_oasis(oasis_properties)
     bot.start()
     print("TelegramBot STARTED")
