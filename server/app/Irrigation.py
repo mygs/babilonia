@@ -110,7 +110,7 @@ class Irrigation:
             SELECT NODE_ID
             FROM OASIS_HEARTBEAT
             WHERE LAST_UPDATE >= {}
-            AND QUARANTINE = 0
+            AND QUARANTINE <> 1
             """.format(period_for_last_heartbeat),
             engine)
 
