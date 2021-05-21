@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # export GOOGLE_APPLICATION_CREDENTIALS="/Users/msaito/Development/matricis/Baquara/TelegramBot/baquara-ada04c105d60.json"
+# export GOOGLE_APPLICATION_CREDENTIALS="$BABILONIA_HOME/server/app/baquara-1620594501016-8cbc77ce86ff.json"
+
 import os
 import io
 from threading import Thread
