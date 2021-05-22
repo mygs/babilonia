@@ -264,3 +264,8 @@ Node status message capacitive
 ```bash
 mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
 ```
+
+Node Light command
+```bash
+mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-311de9\", \"MESSAGE_ID\": \"test\",\"COMMAND\": {\"LIGHT\": true}}"
+```

@@ -35,6 +35,78 @@
       "plant":""
     }
   },
+  "oasis-392758":{
+    "name": "SARA",
+    "desc": "First home module",
+    "MUX0":{
+      "cod": "H-101",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "H-102",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "H-103",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "H-104",
+      "plant":""
+    },
+    "MUX4":{
+      "cod": "H-105",
+      "plant":""
+    },
+    "MUX5":{
+      "cod": "H-106",
+      "plant":""
+    },
+    "MUX6":{
+      "cod": "H-107",
+      "plant":""
+    },
+    "MUX7":{
+      "cod": "H-108",
+      "plant":""
+    }
+  },
+  "oasis-311de9":{
+    "name": "VANDA",
+    "desc": "The Wall prototype",
+    "MUX0":{
+      "cod": "W-101",
+      "plant":""
+    },
+    "MUX1":{
+      "cod": "W-102",
+      "plant":""
+    },
+    "MUX2":{
+      "cod": "W-103",
+      "plant":""
+    },
+    "MUX3":{
+      "cod": "none",
+      "plant":"none"
+    },
+    "MUX4":{
+      "cod": "none",
+      "plant":"none"
+    },
+    "MUX5":{
+      "cod": "none",
+      "plant":"none"
+    },
+    "MUX6":{
+      "cod": "none",
+      "plant":"none"
+    },
+    "MUX7":{
+      "cod": "none",
+      "plant":"none"
+    }
+  },
   "oasis-3198fc":{
     "name": "MARTIAN",
     "desc": "Local node for Dev",
