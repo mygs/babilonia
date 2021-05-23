@@ -49,7 +49,23 @@ $('#updateNodeModal').on('show.bs.modal', function(event) {
       idx = "A";
       $("#PIN"+idx).val(resp.PIN[idx]);
       $("#QUARANTINE").prop('checked', resp.QUARANTINE);
-
+      $("#light_status").val(resp.LIGHT);
+      if (resp.LIGHT == -1){
+        $('.btn-light').removeClass('btn-danger');
+        $('.btn-light').removeClass('btn-primary');
+        $('.btn-light').addClass('btn-secondary');
+        $(".btn-light").attr("disabled", "disabled");
+      }else{
+        $(".btn-light").removeAttr('disabled');
+        $('.btn-light').removeClass('btn-secondary');
+        if(resp.LIGHT == 0){
+          $('.btn-light').removeClass('btn-danger');
+          $('.btn-light').addClass('btn-primary');
+        }else{
+          $('.btn-light').removeClass('btn-primary');
+          $('.btn-light').addClass('btn-danger');
+        }
+      }
       console.log(resp);
 
     },

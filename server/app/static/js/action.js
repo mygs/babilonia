@@ -144,13 +144,41 @@ function callbackend(command, img, title, text) {
 };
 
 $(".btn-light").on("click", function() {
-  var id = $(this).data('id');
-  var mode = 'light';
-  var param = ($('#light_' + id).html() == "on") ? 0 : 1; /* invert! */
-  var img = '/static/img/light.png';
-  var title = "Turn " + (param == 1 ? "ON" : "OFF") + " the light for " + id + "?";
-  var text = name + " schedule might overwrite your current action";
-  //callbackend(id, mode, param, img, title, text)
+  var id = $("#NODE_ID").val()
+  var light = $('#light_status').val();
+  var status = {
+           "NODE_ID": id,
+        "MESSAGE_ID": UUID(),
+           "COMMAND": {"LIGHT": (light == "1") ? false : true /* invert! */}
+        };
+
+  $.ajax({
+    url: '/command',
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(status),
+    success: function(response) {
+      console.log(response.status);
+      var newValue = (light == "1" ? "0" : "1");
+      $('#light_status').val(newValue);
+      if(newValue == "0"){
+        $('.btn-light').removeClass('btn-danger');
+        $('.btn-light').removeClass('btn-secondary');
+        $('.btn-light').addClass('btn-primary');
+      }else{
+        $('.btn-light').removeClass('btn-primary');
+        $('.btn-light').removeClass('btn-secondary');
+        $('.btn-light').addClass('btn-danger');
+      }
+
+    },
+    error: function(response) {
+      swal(response.status, "XPTO!", "error");
+    }
+  });
+
+
 });
 
 $(".btn-fan").on("click", function() {
