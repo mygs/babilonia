@@ -9,6 +9,7 @@ from threading import Thread
 from difflib import SequenceMatcher
 import json
 import logging
+import logging.config
 import time
 import datetime as dt
 from typing import Dict
@@ -33,16 +34,15 @@ from telegram.ext import (
 BUCKET_NAME = 'bazinga'
 
 class TelegramBot(Thread):
-    def __init__(self, cfg, oasis_props, voice_words, logger = None, mqtt = None, socketio = None):
+    def __init__(self, cfg, oasis_props, voice_words, mqtt = None):
         Thread.__init__(self)
         self.speech_client = speech.SpeechClient()
         self.storage_client = storage.Client()
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
-        self.logger = logger
+        #self.logger = logging.getLogger(__name__)
         self.oasis = self.filter_oasis(oasis_props)
         self.voice_words = voice_words
         self.mqtt = mqtt
-        self.socketio = socketio
 
     def filter_oasis(self, oasis_props):
         result = {}
@@ -177,6 +177,10 @@ if __name__ == '__main__':
 
     with open('../../common/voice_words.json', "r") as voice_words_file:
         voice_words = json.load(voice_words_file)
+
+    with open('logging.json', "r") as logging_json_file:
+        logging_config = json.load(logging_json_file)
+        logging.config.dictConfig(logging_config)
 
     #for meta_vc in voice_words['COMMAND']:
     #    for cmd in voice_words['COMMAND'][meta_vc]:
