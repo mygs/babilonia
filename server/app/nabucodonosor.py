@@ -170,19 +170,28 @@ def load_user(username):
 def login():
     ##print(request.text)
     #print(request.headers)
-    print(request.url)
+    #print(request.url)
     #print(request.body)
-    print(request.headers)
+    #print(request.headers)
     #print(request.remote_addr)
     ##from requests_toolbelt.utils import dump
     ##data = dump.dump_all(request)
     ##print(data.decode('utf-8'))
 
     error = None
+
+    if request.remote_addr not in cfg["FREE_PASS"]:
+        logger.warn("[Free pass credential] %s", request.remote_addr)
+        free_pass_user = User("free_pass_user","free_pass_passwd")
+        print(free_pass_user)
+        login_user(free_pass_user)
+        return redirect('/')
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         registered_user = User.query.filter_by(USERNAME=username,PASSWORD=password).first()
+        print(registered_user)
 
         if registered_user is None:
             logger.warn("[Invalid Credential] username: %s password: %s",username, password)
@@ -692,8 +701,6 @@ if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
 
 sched.start()
 
-#irrigation = Irrigation(logger, cfg, mqtt,socketio, oasis_properties)
-#irrigation.run_smart()
 ###############################################################################
 ##################################  START #####################################
 ###############################################################################
