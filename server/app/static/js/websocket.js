@@ -44,6 +44,7 @@ $(document).ready(function() {
           var level = capacitivemoisture['MUX'+idx];
           if(level <= sma.MUX_PORT_THRESHOLD_OFFLINE){
               field.css('color', 'rgb(128,128,128)');
+              level = "&#10013;"; 
           } else if(level > sma.MUX_PORT_THRESHOLD_OFFLINE && level < sma.MUX_PORT_THRESHOLD_NOSOIL){
               var dry_level = Math.round(255 * (level-sma.MUX_PORT_THRESHOLD_OFFLINE)/sma.MUX_PORT_THRESHOLD_SCALE);
               var wet_level = 255 - dry_level;

@@ -157,10 +157,8 @@ class TelegramBot(Thread):
         dispatcher = self.updater.dispatcher
         voice_handler = MessageHandler(Filters.voice, self.voice_to_text, run_async=True)
         dispatcher.add_handler(voice_handler)
-
         # Start the Bot
         self.updater.start_polling()
-
         # Run the bot until you press Ctrl-C or the process receives SIGINT,
         # SIGTERM or SIGABRT. This should be used most of the time, since
         # start_polling() is non-blocking and will stop the bot gracefully.
@@ -189,6 +187,5 @@ if __name__ == '__main__':
     #        print('[ALL_OASIS] ', meta_all)
 
     bot = TelegramBot(cfg, oasis_properties, voice_words)
-    #bot.filter_oasis(oasis_properties)
+    #print(bot.filter_oasis(oasis_properties))
     bot.start()
-    print("TelegramBot STARTED")
