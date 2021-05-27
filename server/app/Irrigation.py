@@ -144,18 +144,22 @@ class Irrigation:
             if response.status_code != 200:
                 self.logger.info("[irrigation] Water Tank connection http status code: %s!!!", str(response.status_code))
 
-            ### WARM-UP
-            self.logger.info("[irrigation] starting warm-up")
-            for index,node in nodes.iterrows():
-                message = json.dumps({'NODE_ID': node['NODE_ID'], 'MESSAGE_ID':"water_sched_warmup", 'COMMAND':{"WATER": True}})
-                self.logger.info("[irrigation] warm-up >=> %s", message)
-                self.mqtt.publish("/oasis-inbound", message)
-                time.sleep(5)
 
-            time.sleep(self.IRRIGATION_DURATION/2)
-            message = json.dumps({'NODE_ID': 'ALL', 'MESSAGE_ID':"water_sched_warmup", 'COMMAND':{"WATER": False}})
-            self.mqtt.publish("/oasis-inbound", message)
-            self.logger.info("[irrigation] ending warm-up")
+            ### WARM-UP
+            if self.cfg["IRRIGATION"]["WARMUP"]:
+                self.logger.info("[irrigation] starting warm-up")
+                for index,node in nodes.iterrows():
+                    message = json.dumps({'NODE_ID': node['NODE_ID'], 'MESSAGE_ID':"water_sched_warmup", 'COMMAND':{"WATER": True}})
+                    self.logger.info("[irrigation] warm-up >=> %s", message)
+                    self.mqtt.publish("/oasis-inbound", message)
+                    time.sleep(5)
+
+                time.sleep(self.IRRIGATION_DURATION/2)
+                message = json.dumps({'NODE_ID': 'ALL', 'MESSAGE_ID':"water_sched_warmup", 'COMMAND':{"WATER": False}})
+                self.mqtt.publish("/oasis-inbound", message)
+                self.logger.info("[irrigation] ending warm-up")
+            else:
+                self.logger.info("[irrigation] warm-up disabled")
 
             node_id = None
             for index,node in nodes.iterrows():
