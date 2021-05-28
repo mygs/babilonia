@@ -168,22 +168,12 @@ def load_user(username):
 @app.route("/login", methods=["GET", "POST"])
 @check_if_gui_is_enable
 def login():
-    ##print(request.text)
-    #print(request.headers)
-    #print(request.url)
-    #print(request.body)
-    #print(request.headers)
-    #print(request.remote_addr)
-    ##from requests_toolbelt.utils import dump
-    ##data = dump.dump_all(request)
-    ##print(data.decode('utf-8'))
-
+    logger.info("[IP] %s", request.remote_addr)
     error = None
 
-    if request.remote_addr not in cfg["FREE_PASS"]:
-        logger.warn("[Free pass credential] %s", request.remote_addr)
-        free_pass_user = User("free_pass_user","free_pass_passwd")
-        print(free_pass_user)
+    if request.remote_addr in cfg["FREE_PASS"]:
+        logger.warning("[Free pass credential] %s", request.remote_addr)
+        free_pass_user = User(cfg["LOGIN_FREE_PASS"])
         login_user(free_pass_user)
         return redirect('/')
 
@@ -194,7 +184,10 @@ def login():
         print(registered_user)
 
         if registered_user is None:
-            logger.warn("[Invalid Credential] username: %s password: %s",username, password)
+            logger.warning("[Invalid Credential] username: %s password: %s",username, password)
+            error = 'Invalid Credentials. Please try again.'
+        elif registered_user.USERNAME == cfg["LOGIN_FREE_PASS"]:
+            logger.warning("[Invalid Credential] someone else trying to use free pass user")
             error = 'Invalid Credentials. Please try again.'
         else:
             login_user(registered_user)
