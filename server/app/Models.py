@@ -39,10 +39,6 @@ class OasisHeartbeat(DB.Model):
     def quarantine(self):
         return self.QUARANTINE #Python3: False == 0 and True == 1.  Python2.x this is not guaranteed
 
-class Manager(UserMixin):
-    def __init__(self, USERNAME):
-        self.id = USERNAME
-
 class User(DB.Model):
     __tablename__ = 'USER'
     USERNAME = DB.Column(DB.String(8), primary_key=True)

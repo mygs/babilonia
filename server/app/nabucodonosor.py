@@ -168,14 +168,16 @@ def load_user(username):
 @app.route("/login", methods=["GET", "POST"])
 @check_if_gui_is_enable
 def login():
-    logger.info("[IP] %s", request.remote_addr)
+    logger.info("[CLIENT IP] %s", request.remote_addr)
     error = None
 
-    if request.remote_addr in cfg["FREE_PASS"]:
-        logger.warning("[Free pass credential] %s", request.remote_addr)
-        free_pass_user = User(cfg["LOGIN_FREE_PASS"])
+    if cfg["FREE_PASS"]["ACTIVE"] and request.remote_addr in cfg["FREE_PASS"]["IP"]:
+        logger.info("[Free pass] %s", request.remote_addr)
+        free_pass_user = User(cfg["FREE_PASS"]["LOGIN"])
         login_user(free_pass_user)
         return redirect('/')
+    else:
+        logger.info("[Free pass] disabled")
 
     if request.method == 'POST':
         username = request.form['username']
@@ -186,11 +188,11 @@ def login():
         if registered_user is None:
             logger.warning("[Invalid Credential] username: %s password: %s",username, password)
             error = 'Invalid Credentials. Please try again.'
-        elif registered_user.USERNAME == cfg["LOGIN_FREE_PASS"]:
+        elif registered_user.USERNAME == cfg["FREE_PASS"]["LOGIN"]:
             logger.warning("[Invalid Credential] someone else trying to use free pass user")
             error = 'Invalid Credentials. Please try again.'
         else:
-            login_user(registered_user)
+            login_user(registered_user, remember=True)
             browser = request.headers.get('User-Agent')
             if "Lynx" in browser:
                 return redirect('/about')
