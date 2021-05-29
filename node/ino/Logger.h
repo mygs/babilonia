@@ -26,7 +26,8 @@ public:
   void init(unsigned long bootCount);
   void print();
   size_t write(const char* value);
-  size_t readPreviousLog();
+  DynamicJsonDocument readPreviousLog();
+  void readPreviousLog(JsonDocument& response);
   void removeAllLogFiles();
 };
 #endif

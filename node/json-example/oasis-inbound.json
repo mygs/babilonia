@@ -33,5 +33,6 @@
     "REBOOT": true,
     "RESET": true,
   },
-  "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER"]
+  "STATUS": ["NODE", "SOIL", "DHT", "LIGHT", "FAN", "WATER"],
+  "LOG": true,
 }

@@ -83,6 +83,12 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
         status.collect(state, stat, outboundData);
       }
 
+      if(!inboundData[NODE::LOG].isNull()
+          && inboundData[NODE::LOG].as<bool>()){
+        logger.write("[MQTT] log was requested");
+        logger.readPreviousLog(outboundData);
+      }
+
       postResponse(outboundData);
       inboundData.clear();
     }
@@ -334,7 +340,7 @@ void serialCommands() {
           break;
       case 109: //m
           logger.write("[SERIAL] Print last log file:");
-          logger.readPreviousLog();
+          serializeJsonPretty(logger.readPreviousLog(), Serial);
           break;
       case 114: //r
           logger.write("[SERIAL] Rebooting ...");

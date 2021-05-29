@@ -73,18 +73,19 @@ size_t Logger::write(const char* value){
     return len;
 }
 
-size_t Logger::readPreviousLog(){
+DynamicJsonDocument Logger::readPreviousLog(){
     char filePath[32];
     sprintf_P(filePath, _logFilenameFormat, this->_curBootCount-1);
 
-    if (!SPIFFS.exists(filePath))
-        return 0;
+    if (!SPIFFS.exists(filePath)){
+      DynamicJsonDocument message(0);
+      return message;
+    }
 
     File logFile = SPIFFS.open(filePath, "r");
 
     size_t filesize = logFile.size(); //the size of the file in bytes
 
-    char debugLogData[filesize];
     DynamicJsonDocument message(filesize+JSON_LOG_HEADER_SIZE);
     JsonObject logMessage = message.to<JsonObject>();
     JsonArray logLineArray = logMessage.createNestedArray(NODE::LOG);
@@ -94,10 +95,26 @@ size_t Logger::readPreviousLog(){
       line.trim();
       logLineArray.add(line);
     }
-
     logFile.close();
-    
-    serializeJsonPretty(logMessage, Serial);
 
-    return filesize;
+    return message;
+}
+
+void Logger::readPreviousLog(JsonDocument& response){
+    char filePath[32];
+    sprintf_P(filePath, _logFilenameFormat, this->_curBootCount-1);
+
+    if (!SPIFFS.exists(filePath)){
+      return;
+    }
+
+    File logFile = SPIFFS.open(filePath, "r");
+
+    JsonArray logLineArray = response.createNestedArray(NODE::LOG);
+    while(logFile.available()) {
+      String line = logFile.readStringUntil('\n');
+      line.trim();
+      logLineArray.add(line);
+    }
+    logFile.close();
 }
