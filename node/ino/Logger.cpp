@@ -67,8 +67,28 @@ void Logger::removeAllLogFiles(){
 size_t Logger::write(const char* value){
     Serial.println(value);
     int len = sizeof(value);
-    File f = SPIFFS.open(this->_curPath, "a");
-    f.write((uint8_t *)&value, len);
+    File f = SPIFFS.open(this->_curPath, "a"); //append
+    f.println(value);
     f.close();
     return len;
+}
+
+size_t Logger::readPreviousLog(){
+    char filePath[32];
+    sprintf_P(filePath, _logFilenameFormat, this->_curBootCount-1);
+
+    if (!SPIFFS.exists(filePath))
+        return 0;
+
+    File logFile = SPIFFS.open(filePath, "r");
+
+    size_t filesize = logFile.size(); //the size of the file in bytes
+    char debugLogData[filesize];
+    logFile.read((uint8_t *)debugLogData, sizeof(debugLogData));
+
+    logFile.close();
+
+    Serial.println(debugLogData);
+
+    return filesize;
 }

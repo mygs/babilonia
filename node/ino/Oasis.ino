@@ -325,11 +325,16 @@ void serialCommands() {
           Serial.println("'c': setup new WiFi");
           Serial.println("'d': list local files");
           Serial.println("'l': print log configuration");
+          Serial.println("'m': print last log file");
           Serial.println("'r': reboot command");
           break;
       case 108: //l
           logger.write("[SERIAL] Print log config:");
           logger.print();
+          break;
+      case 109: //m
+          logger.write("[SERIAL] Print last log file:");
+          logger.readPreviousLog();
           break;
       case 114: //r
           logger.write("[SERIAL] Rebooting ...");
