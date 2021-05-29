@@ -1,11 +1,15 @@
 #ifndef Logger_h
 #define Logger_h
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <FS.h> // Include the SPIFFS library
+#include "OasisConstants.h"
 
 using namespace std;
 
 #define LOG_DIR "/log"
+#define JSON_LOG_HEADER_SIZE 64
+
 
 class Logger{
 protected:

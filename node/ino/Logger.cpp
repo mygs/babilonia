@@ -83,12 +83,21 @@ size_t Logger::readPreviousLog(){
     File logFile = SPIFFS.open(filePath, "r");
 
     size_t filesize = logFile.size(); //the size of the file in bytes
+
     char debugLogData[filesize];
-    logFile.read((uint8_t *)debugLogData, sizeof(debugLogData));
+    DynamicJsonDocument message(filesize+JSON_LOG_HEADER_SIZE);
+    JsonObject logMessage = message.to<JsonObject>();
+    JsonArray logLineArray = logMessage.createNestedArray(NODE::LOG);
+
+    while(logFile.available()) {
+      String line = logFile.readStringUntil('\n');
+      line.trim();
+      logLineArray.add(line);
+    }
 
     logFile.close();
-
-    Serial.println(debugLogData);
+    
+    serializeJsonPretty(logMessage, Serial);
 
     return filesize;
 }

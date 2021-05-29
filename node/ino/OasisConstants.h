@@ -94,5 +94,6 @@ namespace NODE {
   extern const char* MUX5;
   extern const char* MUX6;
   extern const char* MUX7;
+  extern const char* LOG;
 }
 #endif

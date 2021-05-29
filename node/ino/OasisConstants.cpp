@@ -63,5 +63,6 @@ namespace NODE {
   extern const char* MUX5 = "MUX5";
   extern const char* MUX6 = "MUX6";
   extern const char* MUX7 = "MUX7";
+  extern const char* LOG = "LOG";
 
 }
