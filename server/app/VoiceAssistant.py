@@ -4,15 +4,11 @@
 
 import os
 import io
-from threading import Thread
 from difflib import SequenceMatcher
 import json
 import logging
 import logging.config
-import time
-import datetime as dt
 import requests
-from typing import Dict
 from pymediainfo import MediaInfo
 from google.cloud import (speech, storage)
 from telegram import (  ReplyKeyboardMarkup,
@@ -219,7 +215,7 @@ class VoiceAssistant():
             message = f'Deseja {action} a {oasis} por {duration} segundos?'
         else:
             oasis =  update.message.text
-            oasis = user_data['oasis']
+            user_data['oasis'] = oasis
             self.logger.info('[VoiceAssistant] TBC: User: %s / Action %s / Oasis: %s', user, action, oasis)
 
             message = f'Deseja {action} a {oasis}?'
