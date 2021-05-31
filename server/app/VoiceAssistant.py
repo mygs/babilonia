@@ -47,7 +47,7 @@ class VoiceAssistant:
         #self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
         #self.oasis = self.filter_oasis(oasis_props)
         #self.voice_words = voice_words
-        #self.user_data_cache = {}
+        self.user_data_cache = {}
 
     def filter_oasis(self, oasis_props):
         result = {}
