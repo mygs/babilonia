@@ -37,14 +37,13 @@ NOGO = "Encerrar"
 W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 
 
-class VoiceAssistant():
+class VoiceAssistant:
     def __init__(self, logger, cfg, oasis_props, voice_words):
         self.logger = logger
         self.cfg = cfg
         self.speech_client = speech.SpeechClient()
         self.storage_client = storage.Client()
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
-        #self.logger = logging.getLogger(__name__)
         self.oasis = self.filter_oasis(oasis_props)
         self.voice_words = voice_words
         self.user_data_cache = {}
