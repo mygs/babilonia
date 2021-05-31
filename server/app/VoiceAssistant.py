@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # export GOOGLE_APPLICATION_CREDENTIALS="$BABILONIA_HOME/server/app/baquara-1620594501016-8cbc77ce86ff.json"
-"""
+
 import os
 import io
 from difflib import SequenceMatcher
@@ -10,7 +10,7 @@ import logging
 import logging.config
 import requests
 from pymediainfo import MediaInfo
-from google.cloud import (speech, storage)
+#from google.cloud import (speech, storage)
 from telegram import (  ReplyKeyboardMarkup,
                         ReplyKeyboardRemove,
                         Update,
@@ -27,7 +27,6 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext,
 )
-"""
 BUCKET_NAME = 'bazinga'
 
 ACTION_START = "Irrigar"
