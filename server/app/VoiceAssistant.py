@@ -325,7 +325,7 @@ class VoiceAssistant:
         dispatcher = self.updater.dispatcher
 
         voice_handler = MessageHandler(Filters.voice, self.voice_to_text, run_async=True)
-        dispatcher.add_handler(voice_handler)
+        #dispatcher.add_handler(voice_handler)
         dispatcher.add_handler(ConversationHandler(
             entry_points=[  CommandHandler('iniciar', self.begining),
                             MessageHandler(Filters.text, self.begining)
