@@ -370,6 +370,8 @@ if __name__ == '__main__':
         logging_config = json.load(logging_json_file)
         logging.config.dictConfig(logging_config)
 
-    bot = VoiceAssistant(None, cfg, oasis_properties, voice_words)
+    logger = logging.getLogger(__name__)
+
+    bot = VoiceAssistant(logger, cfg, oasis_properties, voice_words)
     bot.start()
     print("STARTED TelegramBot")
