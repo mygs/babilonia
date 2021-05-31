@@ -361,7 +361,7 @@ def refresh():
     return json.dumps({'status':'Success!'})
 
 @app.route('/command', methods=['POST'])
-@login_required
+#@login_required
 def command():
     message = json.dumps(request.get_json())
     logger.debug("[command] %s", message)

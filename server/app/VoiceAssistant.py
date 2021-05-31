@@ -12,6 +12,7 @@ import logging
 import logging.config
 import time
 import datetime as dt
+import requests
 from typing import Dict
 from pymediainfo import MediaInfo
 from google.cloud import (speech, storage)
@@ -32,13 +33,19 @@ from telegram.ext import (
     CallbackContext,
 )
 BUCKET_NAME = 'bazinga'
+
+ACTION_START = "Irrigar"
+ACTION_STOP = "Suspender irrigação"
+GO = "Prosseguir"
+NOGO = "Encerrar"
 #WORKFLOW STATE ID
-W_OASIS, W_CONFIRMATION, W_BYE = range(3)
+W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 
 
 class VoiceAssistant(Thread):
     def __init__(self, cfg, oasis_props, voice_words):
         Thread.__init__(self)
+        self.cfg = cfg
         self.speech_client = speech.SpeechClient()
         self.storage_client = storage.Client()
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
@@ -157,7 +164,7 @@ class VoiceAssistant(Thread):
     def begining(self, update: Update, context: CallbackContext) -> int:
         user = update.message.from_user.first_name
 
-        keyboard = [["Irrigar", "Suspender irrigação"]]
+        keyboard = [[ACTION_START, ACTION_STOP]]
         reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
         update.message.reply_text(
@@ -181,19 +188,43 @@ class VoiceAssistant(Thread):
             'Qual Oasis?',
             reply_markup=reply_markup,
         )
-        return W_CONFIRMATION
+        if user_data['action'] != ACTION_START:
+            return W_CONFIRMATION
+        else:
+            return W_DURATION
 
-    def confirmation(self, update: Update, context: CallbackContext) -> int:
+    def duration(self, update: Update, context: CallbackContext) -> int:
         user = update.message.from_user.first_name
         oasis =  update.message.text
         user_data = context.user_data
         user_data['oasis'] = oasis
-        action = context.user_data['action']
-        print(f'Confirm => User: {user} Action: {action} Oasis: {oasis}.')
 
-        message = f' Deseja {action} a {oasis} agora?'
+        keyboard = [["30", "60", "120", "180"]]
+        reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
-        keyboard = [["Prosseguir", "Encerrar"]]
+        update.message.reply_text(
+            f'Irrigar por quantos segundos?',
+            reply_markup=reply_markup,)
+        return W_CONFIRMATION
+
+    def confirmation(self, update: Update, context: CallbackContext) -> int:
+        user = update.message.from_user.first_name
+        user_data = context.user_data
+        action = user_data['action']
+
+        if user_data['action'] == ACTION_START:
+            duration =  update.message.text
+            user_data['duration'] = duration
+            oasis = user_data['oasis']
+            print(f'Confirm => User: {user} Action: {action} Oasis: {oasis} Duration: {duration}.')
+            message = f'Deseja {action} a {oasis} por {duration} segundos?'
+        else:
+            oasis =  update.message.text
+            oasis = user_data['oasis']
+            print(f'Confirm => User: {user} Action: {action} Oasis: {oasis}.')
+            message = f'Deseja {action} a {oasis}?'
+
+        keyboard = [[GO, NOGO]]
         reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
         update.message.reply_text(
@@ -204,21 +235,49 @@ class VoiceAssistant(Thread):
 
     def cancel(self, update: Update, _: CallbackContext) -> int:
         user = update.message.from_user
-        print(f'Usuário {user} cancelou a conversa.')
+        print(f'User {user} cancelled chat')
         update.message.reply_text(
             'Tchau! Espero conversar com você em breve', reply_markup=ReplyKeyboardRemove()
         )
         return ConversationHandler.END
 
-    def working(self, update: Update, context: CallbackContext) -> int:
-        user = update.message.from_user
+
+    def send_requests(self, update: Update, context: CallbackContext) -> int:
+        user = update.message.from_user.first_name
         oasis = context.user_data['oasis']
         action = context.user_data['action']
         print(f'Confirmed => User: {user} Action: {action} Oasis: {oasis}.')
-        update.message.reply_text(
-            'Ainda não terminamos essa funcionalidade 😞'
-        )
+
+        value = False
+        message = f'Irrigação suspensa na {oasis} 🚫'
+        if action == ACTION_START:
+            value = True
+            message = f'Irrigação iniciada na {oasis} 💦'
+
+        #self.command_water_tank(value)
+        self.command_oasis(oasis, value)
+
+        update.message.reply_text(message)
         return ConversationHandler.END
+
+    def command_water_tank(self, value) -> int:
+        headers = {'Content-type': 'application/json'}
+        url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
+        json_msg = json.dumps({'DIRECTION':'OUT', 'ACTION':value })
+        response = requests.post(url, data=json_msg, headers=headers)
+        print("[irrigation]  /water-tank service response: %s", response)
+        if response.status_code != 200:
+            print("[irrigation] water-tank service connection http status code: %s!!!", str(response.status_code))
+
+    def command_oasis(self, oasis, value) -> int:
+        headers = {'Content-type': 'application/json'}
+        url = 'http://%s/command'%(self.cfg["BACKEND_SERVER"])
+        json_msg = json.dumps({'NODE_ID': self.oasis[oasis], 'MESSAGE_ID': 'telegram', 'COMMAND':{'WATER':value}})
+        response = requests.post(url, data=json_msg, headers=headers)
+        print("[irrigation]  /command service response: %s", response)
+        if response.status_code != 200:
+            print("[irrigation] /command service connection http status code: %s!!!", str(response.status_code))
+
 
     def run(self) -> None:
         # Get the dispatcher to register handlers
@@ -233,11 +292,13 @@ class VoiceAssistant(Thread):
             states={
                 W_OASIS:[
                         MessageHandler(Filters.text, self.action)],
+                W_DURATION:[
+                        MessageHandler(Filters.text, self.duration)],
                 W_CONFIRMATION:[
                         MessageHandler(Filters.text, self.confirmation)],
                 W_BYE:[
-                        CommandHandler('Prosseguir', self.working),
-                        CommandHandler('Encerrar', self.cancel)],
+                        MessageHandler(Filters.regex("^"+GO+"$"), self.send_requests),
+                        MessageHandler(Filters.regex("^"+NOGO+"$"), self.cancel)],
             },
             fallbacks=[CommandHandler('parar', self.cancel)],
         ))
@@ -267,3 +328,4 @@ if __name__ == '__main__':
 
     bot = VoiceAssistant(cfg, oasis_properties, voice_words)
     bot.start()
+    print("STARTED TelegramBot")
