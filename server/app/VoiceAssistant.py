@@ -38,11 +38,12 @@ W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 
 
 class VoiceAssistant:
+
     def __init__(self, logger, cfg, oasis_props, voice_words):
         self.logger = logger
         self.cfg = cfg
-        self.speech_client = speech.SpeechClient()
-        self.storage_client = storage.Client()
+        #self.speech_client = speech.SpeechClient()
+        #self.storage_client = storage.Client()
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
         self.oasis = self.filter_oasis(oasis_props)
         self.voice_words = voice_words
