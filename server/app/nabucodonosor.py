@@ -16,6 +16,7 @@ from SoilMoistureAnalytics import *
 from Dashboard import *
 from WaterTankManager import *
 from Irrigation import *
+from VoiceAssistant import *
 import simplejson as json
 import requests
 from flask import Flask, make_response, Response, url_for, redirect, render_template, request, session, abort
@@ -65,6 +66,10 @@ isWebEnabled = cfg["MODE"]["WEB"]
 OASIS_PROP_FILE = os.path.join(COMMON_DIR, 'oasis_properties.json')
 with open(OASIS_PROP_FILE, "r") as oasis_prop_file:
     oasis_properties = json.load(oasis_prop_file)
+
+OASIS_VOICE_FILE = os.path.join(COMMON_DIR, 'voice_words.json')
+with open(OASIS_VOICE_FILE, "r") as voice_words_file:
+    voice_words = json.load(voice_words_file)
 ###### Server GPIO setup
 #
 # o V G o X Y o o o o o o o o o o o o o o
@@ -104,6 +109,13 @@ assets = Environment(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 #qrcode = QRcode(app)
+
+if cfg["TELEGRAM"]["ENABLE"]:
+    logger.info("[VOICE_ASSISTANT] enabled")
+    voiceBot = VoiceAssistant(logger, cfg, oasis_properties, voice_words)
+    voiceBot.start()
+else:
+    logger.info("[VOICE_ASSISTANT] disabled")
 
 assets.load_path = [os.path.join(os.path.dirname(__file__), 'static/fonts'),
                     os.path.join(os.path.dirname(__file__), 'static')]

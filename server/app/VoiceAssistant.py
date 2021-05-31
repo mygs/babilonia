@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-# export GOOGLE_APPLICATION_CREDENTIALS="/Users/msaito/Development/matricis/Baquara/TelegramBot/baquara-ada04c105d60.json"
 # export GOOGLE_APPLICATION_CREDENTIALS="$BABILONIA_HOME/server/app/baquara-1620594501016-8cbc77ce86ff.json"
 
 import os
@@ -43,8 +42,9 @@ W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 
 
 class VoiceAssistant(Thread):
-    def __init__(self, cfg, oasis_props, voice_words):
+    def __init__(self, logger, cfg, oasis_props, voice_words):
         Thread.__init__(self)
+        self.logger = logger
         self.cfg = cfg
         self.speech_client = speech.SpeechClient()
         self.storage_client = storage.Client()
@@ -52,6 +52,7 @@ class VoiceAssistant(Thread):
         #self.logger = logging.getLogger(__name__)
         self.oasis = self.filter_oasis(oasis_props)
         self.voice_words = voice_words
+        self.user_data_cache = {}
 
     def filter_oasis(self, oasis_props):
         result = {}
@@ -117,7 +118,7 @@ class VoiceAssistant(Thread):
         update.effective_message.reply_text(message_text)
 
     def process(self, message_text):
-        print('[MENSAGEM]', message_text)
+        self.logger.info('[VoiceAssistant] message received: %s', message_text)
         words = message_text.split()
         oasis_best_ratio = 0
         command_best_ratio = 0
@@ -129,7 +130,7 @@ class VoiceAssistant(Thread):
         if phrase_len != 2 :
             return "Comando não reconhecido. Tente <COMAND> <OASIS>"
         listened_cmd = words[0].upper()
-        print('[LISTENED CMD]',listened_cmd)
+        self.logger.info('[VoiceAssistant] listened command: %s',listened_cmd)
         for meta_data_cmd in self.voice_words['COMMAND']:
             for cmd in self.voice_words['COMMAND'][meta_data_cmd]:
                 cmd = cmd.upper()
@@ -139,7 +140,7 @@ class VoiceAssistant(Thread):
                     command_listen_name = listened_cmd
                     command = meta_data_cmd
         listened_oasis = words[1].upper()
-        print('[LISTENED OASIS]',listened_oasis)
+        self.logger.info('[VoiceAssistant] listened oasis name: %s',listened_oasis)
         for oasis_name in self.oasis:
             oasis_name = oasis_name.upper()
             ratio =  SequenceMatcher(None, listened_oasis, oasis_name).ratio()
@@ -158,12 +159,11 @@ class VoiceAssistant(Thread):
             response = '[OASIS] '+ oasis_listen_name+' '+ oasis+' '+str(oasis_best_ratio) + '\n'
             response = response+'[CMD] '+ command_listen_name+' '+ command+' '+str(command_best_ratio)
 
-            print(response)
             return response
 
     def begining(self, update: Update, context: CallbackContext) -> int:
         user = update.message.from_user.first_name
-
+        self.user_data_cache[update.message.chat_id] = {}
         keyboard = [[ACTION_START, ACTION_STOP]]
         reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
@@ -176,7 +176,7 @@ class VoiceAssistant(Thread):
     def action(self, update: Update, context: CallbackContext) -> int:
         user = update.message.from_user.first_name
         action =  update.message.text
-        print(f'User {user} start chat and wants to {action}.')
+        self.logger.info('[VoiceAssistant] User %s start chat and wants to %s.', user, action)
         user_data = context.user_data
         user_data['action'] = action
         f = lambda A, n=4: [A[i:i+n] for i in range(0, len(A), n)]
@@ -199,7 +199,7 @@ class VoiceAssistant(Thread):
         user_data = context.user_data
         user_data['oasis'] = oasis
 
-        keyboard = [["30", "60", "120", "180"]]
+        keyboard = [["10","30", "60", "120", "180"]]
         reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
         update.message.reply_text(
@@ -216,12 +216,13 @@ class VoiceAssistant(Thread):
             duration =  update.message.text
             user_data['duration'] = duration
             oasis = user_data['oasis']
-            print(f'Confirm => User: {user} Action: {action} Oasis: {oasis} Duration: {duration}.')
+            self.logger.info('[VoiceAssistant] TBC: User: %s / Action %s / Oasis: %s / Duration: %s', user, action, oasis, duration)
             message = f'Deseja {action} a {oasis} por {duration} segundos?'
         else:
             oasis =  update.message.text
             oasis = user_data['oasis']
-            print(f'Confirm => User: {user} Action: {action} Oasis: {oasis}.')
+            self.logger.info('[VoiceAssistant] TBC: User: %s / Action %s / Oasis: %s', user, action, oasis)
+
             message = f'Deseja {action} a {oasis}?'
 
         keyboard = [[GO, NOGO]]
@@ -235,7 +236,8 @@ class VoiceAssistant(Thread):
 
     def cancel(self, update: Update, _: CallbackContext) -> int:
         user = update.message.from_user
-        print(f'User {user} cancelled chat')
+        self.logger.info('[VoiceAssistant] User %s cancelled chat', user)
+
         update.message.reply_text(
             'Tchau! Espero conversar com você em breve', reply_markup=ReplyKeyboardRemove()
         )
@@ -246,37 +248,79 @@ class VoiceAssistant(Thread):
         user = update.message.from_user.first_name
         oasis = context.user_data['oasis']
         action = context.user_data['action']
-        print(f'Confirmed => User: {user} Action: {action} Oasis: {oasis}.')
+        self.logger.info('[VoiceAssistant] Confirmed: User: %s / Action %s / Oasis: %s', user, action, oasis)
 
         value = False
         message = f'Irrigação suspensa na {oasis} 🚫'
         if action == ACTION_START:
             value = True
             message = f'Irrigação iniciada na {oasis} 💦'
+            self.user_data_cache[update.message.chat_id] = context.user_data
+            self.set_timer(update, context)
 
-        #self.command_water_tank(value)
+        self.command_water_tank(value)
         self.command_oasis(oasis, value)
 
         update.message.reply_text(message)
         return ConversationHandler.END
+
+    def remove_job_if_exists(self, name: str, context: CallbackContext) -> bool:
+        """Remove job with given name. Returns whether job was removed."""
+        current_jobs = context.job_queue.get_jobs_by_name(name)
+        if not current_jobs:
+            return False
+        for job in current_jobs:
+            job.schedule_removal()
+        return True
+
+    def set_timer(self, update: Update, context: CallbackContext) -> None:
+        """Add a job to the queue."""
+        chat_id = update.message.chat_id
+        try:
+            due = int(context.user_data['duration'])
+            if due < 0:
+                #update.message.reply_text('Sorry we can not go back to future!')
+                return
+
+            job_removed = self.remove_job_if_exists(str(chat_id), context)
+            context.job_queue.run_once(self.command_stop_irrigation, due, context=chat_id, name=str(chat_id))
+
+            #text = 'Timer successfully set!'
+            #if job_removed:
+            #    text += ' Old one was removed.'
+            #update.message.reply_text(text)
+
+        except (IndexError, ValueError):
+            #update.message.reply_text('Usage: /set <seconds>')
+            update.message.reply_text('Erro ao agendar o desligamento da irrigação 😞')
 
     def command_water_tank(self, value) -> int:
         headers = {'Content-type': 'application/json'}
         url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
         json_msg = json.dumps({'DIRECTION':'OUT', 'ACTION':value })
         response = requests.post(url, data=json_msg, headers=headers)
-        print("[irrigation]  /water-tank service response: %s", response)
+        self.logger.info("[VoiceAssistant] /water-tank service response: %s", response)
         if response.status_code != 200:
-            print("[irrigation] water-tank service connection http status code: %s!!!", str(response.status_code))
+            self.logger.info("[VoiceAssistant] water-tank service connection http status code: %s!!!", str(response.status_code))
 
     def command_oasis(self, oasis, value) -> int:
         headers = {'Content-type': 'application/json'}
-        url = 'http://%s/command'%(self.cfg["BACKEND_SERVER"])
+        url = 'http://%s/command'%(self.cfg["TELEGRAM"]["BACKEND_SERVER"])
         json_msg = json.dumps({'NODE_ID': self.oasis[oasis], 'MESSAGE_ID': 'telegram', 'COMMAND':{'WATER':value}})
         response = requests.post(url, data=json_msg, headers=headers)
-        print("[irrigation]  /command service response: %s", response)
+        self.logger.info("[VoiceAssistant] /command service response: %s", response)
         if response.status_code != 200:
-            print("[irrigation] /command service connection http status code: %s!!!", str(response.status_code))
+            self.logger.info("[VoiceAssistant] /command service connection http status code: %s!!!", str(response.status_code))
+
+    def command_stop_irrigation(self, context):
+        job = context.job
+        chat_id = job.context
+        oasis = self.user_data_cache[chat_id]['oasis']
+        message = f'Irrigação suspensa na {oasis} 🚫'
+        context.bot.send_message(job.context, text=message)
+        self.command_oasis(oasis, False)
+        self.command_water_tank(False)
+        self.user_data_cache[chat_id] = {}
 
 
     def run(self) -> None:
@@ -326,6 +370,6 @@ if __name__ == '__main__':
         logging_config = json.load(logging_json_file)
         logging.config.dictConfig(logging_config)
 
-    bot = VoiceAssistant(cfg, oasis_properties, voice_words)
+    bot = VoiceAssistant(None, cfg, oasis_properties, voice_words)
     bot.start()
     print("STARTED TelegramBot")
