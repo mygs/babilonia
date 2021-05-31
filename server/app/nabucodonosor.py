@@ -16,7 +16,6 @@ from SoilMoistureAnalytics import *
 from Dashboard import *
 from WaterTankManager import *
 from Irrigation import *
-from VoiceAssistant import *
 import simplejson as json
 import requests
 from flask import Flask, make_response, Response, url_for, redirect, render_template, request, session, abort
@@ -112,6 +111,7 @@ login_manager.init_app(app)
 
 if cfg["TELEGRAM"]["ENABLE"]:
     logger.info("[VOICE_ASSISTANT] enabled")
+    from VoiceAssistant import *
     voiceBot = VoiceAssistant(logger, cfg, oasis_properties, voice_words)
     thread = Thread(target=voiceBot.run)
     thread.daemon = True
