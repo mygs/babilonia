@@ -16,6 +16,7 @@ from SoilMoistureAnalytics import *
 from Dashboard import *
 from WaterTankManager import *
 from Irrigation import *
+from VoiceAssistant import *
 import simplejson as json
 import requests
 from flask import Flask, make_response, Response, url_for, redirect, render_template, request, session, abort
@@ -110,10 +111,11 @@ login_manager.init_app(app)
 #qrcode = QRcode(app)
 
 if cfg["TELEGRAM"]["ENABLE"]:
-    from VoiceAssistant import *
     logger.info("[VOICE_ASSISTANT] enabled")
     voiceBot = VoiceAssistant(logger, cfg, oasis_properties, voice_words)
-    voiceBot.start()
+    thread = Thread(target=voiceBot.run)
+    thread.daemon = True
+    thread.start()
 else:
     logger.info("[VOICE_ASSISTANT] disabled")
 

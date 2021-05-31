@@ -41,9 +41,8 @@ NOGO = "Encerrar"
 W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 
 
-class VoiceAssistant(Thread):
+class VoiceAssistant():
     def __init__(self, logger, cfg, oasis_props, voice_words):
-        Thread.__init__(self)
         self.logger = logger
         self.cfg = cfg
         self.speech_client = speech.SpeechClient()
@@ -369,8 +368,7 @@ if __name__ == '__main__':
     with open('logging.json', "r") as logging_json_file:
         logging_config = json.load(logging_json_file)
         logging.config.dictConfig(logging_config)
-
-    logger = logging.getLogger(__name__)
+        logger = logging.getLogger(__name__)
 
     bot = VoiceAssistant(logger, cfg, oasis_properties, voice_words)
     bot.start()
