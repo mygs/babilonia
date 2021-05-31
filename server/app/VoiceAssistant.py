@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # export GOOGLE_APPLICATION_CREDENTIALS="$BABILONIA_HOME/server/app/baquara-1620594501016-8cbc77ce86ff.json"
-
+"""
 import os
 import io
 from difflib import SequenceMatcher
@@ -27,6 +27,7 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext,
 )
+"""
 BUCKET_NAME = 'bazinga'
 
 ACTION_START = "Irrigar"
@@ -40,13 +41,13 @@ W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 class VoiceAssistant:
 
     def __init__(self, logger, cfg, oasis_props, voice_words):
-        #self.logger = logger
-        #self.cfg = cfg
-        #self.speech_client = speech.SpeechClient()
-        #self.storage_client = storage.Client()
-        #self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
-        #self.oasis = self.filter_oasis(oasis_props)
-        #self.voice_words = voice_words
+        self.logger = logger
+        self.cfg = cfg
+        self.speech_client = speech.SpeechClient()
+        self.storage_client = storage.Client()
+        self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
+        self.oasis = self.filter_oasis(oasis_props)
+        self.voice_words = voice_words
         self.user_data_cache = {}
 
     def filter_oasis(self, oasis_props):
