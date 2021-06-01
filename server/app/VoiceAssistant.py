@@ -10,7 +10,7 @@ import logging
 import logging.config
 import requests
 from pymediainfo import MediaInfo
-#from google.cloud import (speech, storage)
+from google.cloud import (speech, storage)
 from telegram import (  ReplyKeyboardMarkup,
                         ReplyKeyboardRemove,
                         Update,
@@ -42,8 +42,8 @@ class VoiceAssistant:
     def __init__(self, logger, cfg, oasis_props, voice_words):
         self.logger = logger
         self.cfg = cfg
-        #self.speech_client = speech.SpeechClient()
-        #self.storage_client = storage.Client()
+        self.speech_client = speech.SpeechClient()
+        self.storage_client = storage.Client()
         self.speech_client = None
         self.storage_client = None
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
