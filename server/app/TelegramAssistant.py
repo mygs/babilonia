@@ -11,7 +11,8 @@ import logging.config
 import requests
 from threading import Thread
 from pymediainfo import MediaInfo
-#from google.cloud import (speech, storage)
+#from google.cloud import speech
+#from google.cloud import storage
 from telegram import (  ReplyKeyboardMarkup,
                         ReplyKeyboardRemove,
                         Update,
@@ -46,9 +47,8 @@ class TelegramAssistant(Thread):
         self.logger = logger
         self.cfg = cfg
         #self.speech_client = speech.SpeechClient()
-        #self.storage_client = storage.Client()
         self.speech_client = None
-        self.storage_client = None
+        #self.storage_client = storage.Client()
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
         self.oasis = self.filter_oasis(oasis_props)
         self.voice_words = voice_words
@@ -80,12 +80,12 @@ class TelegramAssistant(Thread):
 
         try:
             if to_gs:
-                bucket = self.storage_client.get_bucket(bucket_or_name=BUCKET_NAME)
-                blob = bucket.blob(file_name)
-                blob.upload_from_filename(file_name)
+                #bucket = self.storage_client.get_bucket(bucket_or_name=BUCKET_NAME)
+                #blob = bucket.blob(file_name)
+                #blob.upload_from_filename(file_name)
                 audio = speech.RecognitionAudio(uri='gs://%s/%s' % (BUCKET_NAME, file_name))
                 response = self.speech_client.long_running_recognize(config=config, audio=audio).result(timeout=500)
-                blob.delete()
+                #blob.delete()
             else:
                 with io.open(file_name, 'rb') as audio_file:
                     content = audio_file.read()
