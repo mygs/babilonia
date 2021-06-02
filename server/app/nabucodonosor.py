@@ -111,9 +111,9 @@ login_manager.init_app(app)
 
 if cfg["TELEGRAM"]["ENABLE"]:
     logger.info("[VOICE_ASSISTANT] enabled")
-    from VoiceAssistant import *
-    voiceBot = VoiceAssistant(logger, cfg, oasis_properties, voice_words)
-    thread = Thread(target=voiceBot.run)
+    from TelegramAssistant import *
+    telegramBot = TelegramAssistant(logger, cfg, oasis_properties, voice_words)
+    thread = Thread(target=telegramBot.run)
     thread.daemon = True
     thread.start()
 else:

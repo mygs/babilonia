@@ -9,6 +9,7 @@ import json
 import logging
 import logging.config
 import requests
+from threading import Thread
 from pymediainfo import MediaInfo
 #from google.cloud import (speech, storage)
 from telegram import (  ReplyKeyboardMarkup,
@@ -27,6 +28,7 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext,
 )
+
 BUCKET_NAME = 'bazinga'
 
 ACTION_START = "Irrigar"
@@ -37,9 +39,10 @@ NOGO = "Encerrar"
 W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 
 
-class VoiceAssistant:
+class TelegramAssistant(Thread):
 
     def __init__(self, logger, cfg, oasis_props, voice_words):
+        Thread.__init__(self)
         self.logger = logger
         self.cfg = cfg
         #self.speech_client = speech.SpeechClient()
@@ -50,6 +53,7 @@ class VoiceAssistant:
         self.oasis = self.filter_oasis(oasis_props)
         self.voice_words = voice_words
         self.user_data_cache = {}
+        self.TELEGERAM_UPDATER = None
 
     def filter_oasis(self, oasis_props):
         result = {}
@@ -368,6 +372,6 @@ if __name__ == '__main__':
         logging.config.dictConfig(logging_config)
         logger = logging.getLogger(__name__)
 
-    bot = VoiceAssistant(logger, cfg, oasis_properties, voice_words)
+    bot = TelegramAssistant(logger, cfg, oasis_properties, voice_words)
     bot.start()
     print("STARTED TelegramBot")
