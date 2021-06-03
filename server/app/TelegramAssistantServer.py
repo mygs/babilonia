@@ -9,8 +9,6 @@ import json
 import logging
 import logging.config
 import requests
-from threading import Thread
-from pymediainfo import MediaInfo
 from flask import Flask, request
 from telegram import (  ReplyKeyboardMarkup,
                         ReplyKeyboardRemove,
@@ -175,19 +173,12 @@ class TelegramAssistantServer():
         try:
             due = int(context.user_data['duration'])
             if due < 0:
-                #update.message.reply_text('Sorry we can not go back to future!')
                 return
 
             job_removed = self.remove_job_if_exists(str(chat_id), context)
             context.job_queue.run_once(self.command_stop_irrigation, due, context=chat_id, name=str(chat_id))
 
-            #text = 'Timer successfully set!'
-            #if job_removed:
-            #    text += ' Old one was removed.'
-            #update.message.reply_text(text)
-
         except (IndexError, ValueError):
-            #update.message.reply_text('Usage: /set <seconds>')
             update.message.reply_text('Erro ao agendar o desligamento da irrigação 😞')
 
     def command_water_tank(self, value) -> int:
