@@ -11,6 +11,7 @@ import logging.config
 import requests
 from threading import Thread
 from pymediainfo import MediaInfo
+from flask import Flask, request
 from telegram import (  ReplyKeyboardMarkup,
                         ReplyKeyboardRemove,
                         Update,
@@ -36,10 +37,11 @@ NOGO = "Encerrar"
 W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 
 
-class TelegramAssistantServer(Thread):
+class TelegramAssistantServer():
+    app = None
 
     def __init__(self, logger, cfg, oasis_props):
-        Thread.__init__(self)
+        self.app = Flask(self.__class__.__name__)
         self.logger = logger
         self.cfg = cfg
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
@@ -241,10 +243,8 @@ class TelegramAssistantServer(Thread):
 
         # Start the Bot
         self.updater.start_polling()
-        # Run the bot until you press Ctrl-C or the process receives SIGINT,
-        # SIGTERM or SIGABRT. This should be used most of the time, since
-        # start_polling() is non-blocking and will stop the bot gracefully.
-        #self.updater.idle()
+        # Start Flask server
+        self.app.run()
 
 if __name__ == '__main__':
     print("STARTING TelegramAssistantServer")
@@ -262,5 +262,5 @@ if __name__ == '__main__':
         logger = logging.getLogger(__name__)
 
     bot = TelegramAssistantServer(logger, cfg, oasis_properties)
-    bot.start()
+    bot.run()
     print("STARTED TelegramAssistantServer")
