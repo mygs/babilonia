@@ -235,7 +235,15 @@ class TelegramAssistantServer():
         # Start the Bot
         self.updater.start_polling()
         # Start Flask server
+        self.app.add_url_rule('/monitor', methods=['POST'], view_func=self.monitor)
         self.app.run()
+
+
+    #curl -i -H "Content-Type: application/json" -X POST -d '{"MESSAGE":"MESSAGE CONTENT"}' http://localhost:5000/monitor
+    def monitor(self):
+        message = json.dumps(request.get_json())
+        self.logger.info("[monitor] %s", message)
+        return json.dumps({'status':'Success!'})
 
 if __name__ == '__main__':
     print("STARTING TelegramAssistantServer")
