@@ -6,9 +6,15 @@ import os
 import io
 from difflib import SequenceMatcher
 import json
+import pandas
 import logging
 import logging.config
 import requests
+
+from Models import DB, TelegramSession
+from sqlalchemy import create_engine, func, and_
+from sqlalchemy.orm import sessionmaker
+
 from flask import Flask, request
 from telegram import (  ReplyKeyboardMarkup,
                         ReplyKeyboardRemove,
@@ -58,6 +64,7 @@ class TelegramAssistantServer():
         self.logger = logger
         self.cfg = cfg
         self.updater = Updater(cfg["TELEGRAM"]["TOKEN"])
+        self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
         self.oasis = self.filter_oasis(oasis_props)
         self.user_data_cache = {}
         self.TELEGERAM_UPDATER = None
@@ -69,15 +76,28 @@ class TelegramAssistantServer():
                 result[oasis_props[node]['name']] = node
         return result
 
+    def save_chat_id(self, user_name, chat_id):
+
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        session = sessionmaker(bind=engine)()
+        data = TelegramSession( BOT=self.cfg["TELEGRAM"]["BOT"],
+                                USER_NAME=user_name,
+                                CHAT_ID= chat_id
+                             )
+        session.merge(data)
+        session.commit()
 
     def begining(self, update: Update, context: CallbackContext) -> int:
-        user = update.message.from_user.first_name
-        self.user_data_cache[update.message.chat_id] = {}
+        first_name = update.message.chat.first_name
+        chat_id = update.message.chat_id
+        self.save_chat_id(first_name, chat_id)
+        self.user_data_cache[chat_id] = {}
+
         keyboard = [[ACTION_START, ACTION_STOP]]
         reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
         update.message.reply_text(
-            f'Olá, {user}. Tudo bem? eu sou o assistente da babilônia!\n\n'
+            f'Olá, {first_name}. Tudo bem? eu sou o assistente da babilônia!\n\n'
             'O que deseja fazer?',
             reply_markup=reply_markup,)
         return W_OASIS
@@ -256,8 +276,17 @@ class TelegramAssistantServer():
 
     #curl -i -H "Content-Type: application/json" -X POST -d '{"MESSAGE":"MESSAGE CONTENT"}' http://localhost:7171/monitor
     def monitor(self):
-        message = json.dumps(request.get_json())
-        self.logger.info("[monitor] %s", message)
+        message = request.get_json()
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        results = pandas.read_sql_query(
+            """
+            SELECT CHAT_ID FROM TELEGRAM_SESSION WHERE BOT = '{}'
+            """.format(self.cfg["TELEGRAM"]["BOT"]),
+            engine)
+        for index,result in results.iterrows():
+            chat_id = result['CHAT_ID']
+            self.logger.info("[monitor] chat_id=%s, message=%s", chat_id, message["MESSAGE"])
+            self.updater.bot.sendMessage(chat_id=int(chat_id), text=message["MESSAGE"])
         return json.dumps({'status':'Success!'})
 
 if __name__ == '__main__':

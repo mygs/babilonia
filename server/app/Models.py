@@ -81,6 +81,23 @@ class OasisTraining(DB.Model):
                 "TIMESTAMP":self.TIMESTAMP,
                 "DATA":self.DATA}
 
+class TelegramSession(DB.Model):
+    __tablename__ = 'TELEGRAM_SESSION'
+    CHAT_ID = DB.Column(DB.String(32), primary_key=True)
+    BOT = DB.Column(DB.String(32), nullable=False)
+    USER_NAME = DB.Column(DB.String(32), nullable=False)
+
+    def __init__(self, BOT, USER_NAME, CHAT_ID):
+        self.BOT = BOT
+        self.USER_NAME = USER_NAME
+        self.CHAT_ID = CHAT_ID
+    def __repr__(self):
+        return '<TelegramSession bot:{} user:{} chat_id:{}>'.format(self.BOT, self.USER_NAME, self.CHAT_ID)
+    def toJson(self):
+        return {"BOT":self.BOT,
+                "USER_NAME":self.USER_NAME,
+                "CHAT_ID":self.CHAT_ID}
+
 class OasisAnalytic(DB.Model):
     __tablename__ = 'OASIS_ANALYTIC'
     TIMESTAMP = DB.Column(DB.Integer, primary_key=True)
