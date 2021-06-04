@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import subprocess
+import signal
 import json
 import datetime as dt
 import logging
@@ -18,6 +19,7 @@ from WaterTankManager import *
 from Irrigation import *
 import simplejson as json
 import requests
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from flask import Flask, make_response, Response, url_for, redirect, render_template, request, session, abort
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
@@ -66,9 +68,6 @@ OASIS_PROP_FILE = os.path.join(COMMON_DIR, 'oasis_properties.json')
 with open(OASIS_PROP_FILE, "r") as oasis_prop_file:
     oasis_properties = json.load(oasis_prop_file)
 
-OASIS_VOICE_FILE = os.path.join(COMMON_DIR, 'voice_words.json')
-with open(OASIS_VOICE_FILE, "r") as voice_words_file:
-    voice_words = json.load(voice_words_file)
 ###### Server GPIO setup
 #
 # o V G o X Y o o o o o o o o o o o o o o
@@ -110,14 +109,17 @@ login_manager.init_app(app)
 #qrcode = QRcode(app)
 
 if cfg["TELEGRAM"]["ENABLE"]:
-    logger.info("[VOICE_ASSISTANT] enabled")
-    from TelegramAssistant import *
-    telegramBot = TelegramAssistant(logger, cfg, oasis_properties, voice_words)
-    thread = Thread(target=telegramBot.run)
-    thread.daemon = True
-    thread.start()
+    logger.info("[TELEGRAM_ASSISTANT] enabled")
+    telegram = subprocess.Popen(["python3", "TelegramAssistantServer.py"])
+    def stop_telegram(signum, frame):
+        telegram.terminate()
+        logger.info("[TELEGRAM_ASSISTANT] killed")
+        sys.exit(0)
+    signal.signal(signal.SIGINT, stop_telegram)
+    signal.signal(signal.SIGTERM, stop_telegram)
+
 else:
-    logger.info("[VOICE_ASSISTANT] disabled")
+    logger.info("[TELEGRAM_ASSISTANT] disabled")
 
 assets.load_path = [os.path.join(os.path.dirname(__file__), 'static/fonts'),
                     os.path.join(os.path.dirname(__file__), 'static')]

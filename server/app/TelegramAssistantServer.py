@@ -35,10 +35,25 @@ NOGO = "Encerrar"
 W_OASIS, W_DURATION, W_CONFIRMATION, W_BYE = range(4)
 
 
+SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
+COMMON_DIR=os.path.join(SERVER_HOME, '../../common')
+os.chdir(SERVER_HOME) #change directory because of log files
+with open(os.path.join(SERVER_HOME, 'config.json'), "r") as config_json_file:
+    cfg = json.load(config_json_file)
+
+with open(os.path.join(COMMON_DIR, 'oasis_properties.json'), "r") as oasis_prop_file:
+    oasis_props = json.load(oasis_prop_file)
+
+with open(os.path.join(SERVER_HOME, 'logging.json'), "r") as logging_json_file:
+    logging.config.dictConfig(json.load(logging_json_file))
+    logger = logging.getLogger(__name__)
+
+with open( os.path.join(COMMON_DIR, 'voice_words.json'), "r") as voice_words_file:
+    voice_words = json.load(voice_words_file)
+
 class TelegramAssistantServer():
     app = None
-
-    def __init__(self, logger, cfg, oasis_props):
+    def __init__(self):
         self.app = Flask(self.__class__.__name__)
         self.logger = logger
         self.cfg = cfg
@@ -236,10 +251,10 @@ class TelegramAssistantServer():
         self.updater.start_polling()
         # Start Flask server
         self.app.add_url_rule('/monitor', methods=['POST'], view_func=self.monitor)
-        self.app.run()
+        self.app.run(host='0.0.0.0', port=7171)
 
 
-    #curl -i -H "Content-Type: application/json" -X POST -d '{"MESSAGE":"MESSAGE CONTENT"}' http://localhost:5000/monitor
+    #curl -i -H "Content-Type: application/json" -X POST -d '{"MESSAGE":"MESSAGE CONTENT"}' http://localhost:7171/monitor
     def monitor(self):
         message = json.dumps(request.get_json())
         self.logger.info("[monitor] %s", message)
@@ -247,19 +262,6 @@ class TelegramAssistantServer():
 
 if __name__ == '__main__':
     print("STARTING TelegramAssistantServer")
-
-    with open('config.json', "r") as config_json_file:
-        cfg = json.load(config_json_file)
-
-    with open('../../common/oasis_properties.json', "r") as oasis_prop_file:
-        oasis_properties = json.load(oasis_prop_file)
-
-
-    with open('logging.json', "r") as logging_json_file:
-        logging_config = json.load(logging_json_file)
-        logging.config.dictConfig(logging_config)
-        logger = logging.getLogger(__name__)
-
-    bot = TelegramAssistantServer(logger, cfg, oasis_properties)
+    bot = TelegramAssistantServer()
     bot.run()
     print("STARTED TelegramAssistantServer")
