@@ -7,9 +7,9 @@ import logging
 import pandas
 import requests
 from Models import DB, OasisTraining, OasisAnalytic
+from TelegramAssistantServer import *
 from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
-
 HEARTBEAT_PERIOD=5*60 # (seconds) OMG 5 min
 
 class Irrigation:
@@ -78,10 +78,12 @@ class Irrigation:
             nodes_postponed_last_irrigation = []
             nodes_postponed_last_irrigation.extend(self.nodes_postponed_to_next_irrigation)
             self.nodes_postponed_to_next_irrigation = []
-
+            monitor_message = '<b>SMART IRRIGATION</b>\n'
             for node in data['node']:
                 advice = data['node'][node]['advice']
-                self.logger.info("[irrigation] advice %s => %s", self.oasis_properties[node]["name"], advice)
+                node_name = self.oasis_properties[node]["name"]
+                monitor_message = monitor_message +'<b>'+ node_name +'</b>: '+advice+'\n'
+                self.logger.info("[irrigation] advice %s => %s", node_name, advice)
                 if advice == "IRRIGATE":
                     if node not in nodes_to_irrigate:
                         nodes_to_irrigate.append(node)
@@ -89,10 +91,14 @@ class Irrigation:
                     if node not in nodes_postponed_last_irrigation:
                         self.nodes_postponed_to_next_irrigation.append(node)
                     else:
-                        self.logger.info("[irrigation] postponed before, but it will be irrigate this time => %s", self.oasis_properties[node]["name"])
+                        self.logger.info("[irrigation] postponed before, but it will be irrigate this time => %s", node_name)
                         nodes_to_irrigate.append(node)
 
             nodes_df = pandas.DataFrame(nodes_to_irrigate, columns =['NODE_ID'])
+            monitor = {}
+            monitor["SOURCE"] = "IRRIGATION"
+            monitor["MESSAGE"] = monitor_message
+            TelegramAssistantServer.send_monitor_message(monitor)
             self.run(nodes_df)
 
             self.logger.info("[irrigation] ***** ENDING SMART IRRIGATION *****")

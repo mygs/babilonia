@@ -21,7 +21,8 @@ from telegram import (  ReplyKeyboardMarkup,
                         Update,
                         Message,
                         ChatAction,
-                        Voice
+                        Voice,
+                        ParseMode
                      )
 
 from telegram.ext import (
@@ -67,7 +68,8 @@ class TelegramAssistantServer():
         self.SQLALCHEMY_DATABASE_URI =  cfg["SQLALCHEMY_DATABASE_URI"]
         self.oasis = self.filter_oasis(oasis_props)
         self.user_data_cache = {}
-        self.TELEGERAM_UPDATER = None
+        self.logger.info("[TelegramAssistantServer] instantiated")
+
 
     def filter_oasis(self, oasis_props):
         result = {}
@@ -105,7 +107,7 @@ class TelegramAssistantServer():
     def action(self, update: Update, context: CallbackContext) -> int:
         user = update.message.from_user.first_name
         action =  update.message.text
-        self.logger.info('[VoiceAssistant] User %s start chat and wants to %s.', user, action)
+        self.logger.info('[TelegramAssistantServer] User %s start chat and wants to %s.', user, action)
         user_data = context.user_data
         user_data['action'] = action
         f = lambda A, n=4: [A[i:i+n] for i in range(0, len(A), n)]
@@ -145,12 +147,12 @@ class TelegramAssistantServer():
             duration =  update.message.text
             user_data['duration'] = duration
             oasis = user_data['oasis']
-            self.logger.info('[VoiceAssistant] TBC: User: %s / Action %s / Oasis: %s / Duration: %s', user, action, oasis, duration)
+            self.logger.info('[TelegramAssistantServer] TBC: User: %s / Action %s / Oasis: %s / Duration: %s', user, action, oasis, duration)
             message = f'Deseja {action} a {oasis} por {duration} segundos?'
         else:
             oasis =  update.message.text
             user_data['oasis'] = oasis
-            self.logger.info('[VoiceAssistant] TBC: User: %s / Action %s / Oasis: %s', user, action, oasis)
+            self.logger.info('[TelegramAssistantServer] TBC: User: %s / Action %s / Oasis: %s', user, action, oasis)
 
             message = f'Deseja {action} a {oasis}?'
 
@@ -165,7 +167,7 @@ class TelegramAssistantServer():
 
     def cancel(self, update: Update, _: CallbackContext) -> int:
         user = update.message.from_user
-        self.logger.info('[VoiceAssistant] User %s cancelled chat', user)
+        self.logger.info('[TelegramAssistantServer] User %s cancelled chat', user)
 
         update.message.reply_text(
             'Tchau! Espero conversar com você em breve', reply_markup=ReplyKeyboardRemove()
@@ -177,7 +179,7 @@ class TelegramAssistantServer():
         user = update.message.from_user.first_name
         oasis = context.user_data['oasis']
         action = context.user_data['action']
-        self.logger.info('[VoiceAssistant] Confirmed: User: %s / Action %s / Oasis: %s', user, action, oasis)
+        self.logger.info('[TelegramAssistantServer] Confirmed: User: %s / Action %s / Oasis: %s', user, action, oasis)
 
         value = False
         message = f'Irrigação suspensa na {oasis} 🚫'
@@ -221,18 +223,18 @@ class TelegramAssistantServer():
         url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
         json_msg = json.dumps({'DIRECTION':'OUT', 'ACTION':value })
         response = requests.post(url, data=json_msg, headers=headers)
-        self.logger.info("[VoiceAssistant] /water-tank service response: %s", response)
+        self.logger.info("[TelegramAssistantServer] /water-tank service response: %s", response)
         if response.status_code != 200:
-            self.logger.info("[VoiceAssistant] water-tank service connection http status code: %s!!!", str(response.status_code))
+            self.logger.info("[TelegramAssistantServer] water-tank service connection http status code: %s!!!", str(response.status_code))
 
     def command_oasis(self, oasis, value) -> int:
         headers = {'Content-type': 'application/json'}
         url = 'http://%s/command'%(self.cfg["TELEGRAM"]["BACKEND_SERVER"])
         json_msg = json.dumps({'NODE_ID': self.oasis[oasis], 'MESSAGE_ID': 'telegram', 'COMMAND':{'WATER':value}})
         response = requests.post(url, data=json_msg, headers=headers)
-        self.logger.info("[VoiceAssistant] /command service response: %s", response)
+        self.logger.info("[TelegramAssistantServer] /command service response: %s", response)
         if response.status_code != 200:
-            self.logger.info("[VoiceAssistant] /command service connection http status code: %s!!!", str(response.status_code))
+            self.logger.info("[TelegramAssistantServer] /command service connection http status code: %s!!!", str(response.status_code))
 
     def command_stop_irrigation(self, context):
         job = context.job
@@ -274,7 +276,7 @@ class TelegramAssistantServer():
         self.app.run(host='0.0.0.0', port=7171)
 
 
-    #curl -i -H "Content-Type: application/json" -X POST -d '{"MESSAGE":"MESSAGE CONTENT"}' http://localhost:7171/monitor
+    #curl -i -H "Content-Type: application/json" -X POST -d '{"SOURCE":"CURL","MESSAGE":"MESSAGE CONTENT"}' http://localhost:7171/monitor
     def monitor(self):
         message = request.get_json()
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
@@ -285,12 +287,26 @@ class TelegramAssistantServer():
             engine)
         for index,result in results.iterrows():
             chat_id = result['CHAT_ID']
-            self.logger.info("[monitor] chat_id=%s, message=%s", chat_id, message["MESSAGE"])
-            self.updater.bot.sendMessage(chat_id=int(chat_id), text=message["MESSAGE"])
+            self.logger.info("[monitor] chat_id=%s, source=%s, message=%s", chat_id, message["SOURCE"], message["MESSAGE"])
+            self.updater.bot.sendMessage(   chat_id=int(chat_id),
+                                            text=message["MESSAGE"],
+                                            parse_mode=ParseMode.HTML)
+                                            #https://core.telegram.org/bots/api#html-style
         return json.dumps({'status':'Success!'})
 
+    @staticmethod
+    def send_monitor_message(message):
+        monitor_url = cfg["TELEGRAM"]["MONITOR_URL"]
+        headers = {'Content-type': 'application/json'}
+        response = requests.post(monitor_url,data=json.dumps(message), headers=headers)
+        logger.info("[TelegramAssistantServer] send_message response: %s", response)
+
+        if response.status_code != 200:
+            logger.info("[TelegramAssistantServer] send_message http status code: %s!!!", str(response.status_code))
+
 if __name__ == '__main__':
-    print("STARTING TelegramAssistantServer")
+    #print("STARTING TelegramAssistantServer")
+    #TelegramAssistantServer.send_monitor_message('{"SOURCE":"CURL","MESSAGE":"MESSAGE CONTENT"}')
     bot = TelegramAssistantServer()
     bot.run()
-    print("STARTED TelegramAssistantServer")
+    #print("STARTED TelegramAssistantServer")

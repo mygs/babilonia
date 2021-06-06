@@ -14,6 +14,7 @@ from functools import wraps
 from Models import *
 sys.path.insert(1,os.path.join(os.environ["BABILONIA_LIBS"], 'matricis/SmartIrrigation'))
 from SoilMoistureAnalytics import *
+from TelegramAssistantServer import *
 from Dashboard import *
 from WaterTankManager import *
 from Irrigation import *
@@ -726,6 +727,7 @@ if __name__ == '__main__':
     print("")
     logger.info("*** STARTING NABUCODONOSOR SYSTEM ***")
     logger.info("version: %s", VERSION)
+    TelegramAssistantServer.send_monitor_message({'SOURCE': 'NABUCODONOSOR','MESSAGE': 'Starting system at '+os.uname()[1]})
     #from werkzeug.middleware.profiler import ProfilerMiddleware
     #app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[5], profile_dir='./profile')
     user_reload = False # Avoid Bug: TWICE mqtt instances
