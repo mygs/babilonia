@@ -515,11 +515,15 @@ def water_tank():
 @app.route('/irrigation')
 @login_required
 def standard_irrigation():
-    #TODO: Thread
     irrigation = Irrigation(logger, cfg, mqtt, socketio, oasis_properties)
     thread = Thread(target=irrigation.run_standard)
     thread.daemon = True
     thread.start()
+    message={}
+    message['SOURCE'] = 'NABUCODONOSOR'
+    message['MESSAGE'] = 'Irrigação foi iniciada manualmente em <b>'+os.uname()[1]+'</b>'
+    TelegramAssistantServer.send_monitor_message(message)
+
     return json.dumps({'irrigation':'Started'})
 
 @app.route('/quarantine', methods=['POST'])
@@ -541,8 +545,8 @@ def notify_telegram_users():
     message={}
     message['SOURCE'] = 'NABUCODONOSOR'
     startup_time_formatted = dt.datetime.fromtimestamp(startup_time).strftime('%Y-%m-%d %H:%M:%S')
-    message['MESSAGE'] = 'System has been started at <b>'+os.uname()[1] + '</b> at '+ startup_time_formatted
-    message['MESSAGE'] = message['MESSAGE'] + '\nSomeone made the first request at that server right now'
+    message['MESSAGE'] = 'Sistema foi reiniciado no servidor <b>'+os.uname()[1]+'</b> às '+startup_time_formatted
+    #message['MESSAGE'] = message['MESSAGE'] + '\nAlguém fez uma solicitação ao servidor agora mesmo'
     logger.info("[notify_telegram_users] %s", message['MESSAGE'])
     TelegramAssistantServer.send_monitor_message(message)
 
