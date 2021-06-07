@@ -84,7 +84,7 @@ class OasisTraining(DB.Model):
 class TelegramSession(DB.Model):
     __tablename__ = 'TELEGRAM_SESSION'
     CHAT_ID = DB.Column(DB.String(32), primary_key=True)
-    BOT = DB.Column(DB.String(32), nullable=False)
+    BOT = DB.Column(DB.String(32), nullable=False, primary_key=True)
     USER_NAME = DB.Column(DB.String(32), nullable=False)
 
     def __init__(self, BOT, USER_NAME, CHAT_ID):
