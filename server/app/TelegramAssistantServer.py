@@ -309,4 +309,3 @@ if __name__ == '__main__':
     #TelegramAssistantServer.send_monitor_message('{"SOURCE":"CURL","MESSAGE":"MESSAGE CONTENT"}')
     bot = TelegramAssistantServer()
     bot.run()
-    #print("STARTED TelegramAssistantServer")

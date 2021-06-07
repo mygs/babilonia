@@ -118,7 +118,6 @@ if cfg["TELEGRAM"]["ENABLE"]:
         sys.exit(0)
     signal.signal(signal.SIGINT, stop_telegram)
     signal.signal(signal.SIGTERM, stop_telegram)
-
 else:
     logger.info("[TELEGRAM_ASSISTANT] disabled")
 
@@ -535,6 +534,18 @@ def quarantine():
         DB.session.query(OasisHeartbeat).filter(OasisHeartbeat.NODE_ID==id).update({'QUARANTINE': change})
         DB.session.commit()
     return json.dumps({'status':'Success!'})
+
+startup_time = int(time.time())
+@app.before_first_request
+def notify_telegram_users():
+    message={}
+    message['SOURCE'] = 'NABUCODONOSOR'
+    startup_time_formatted = dt.datetime.fromtimestamp(startup_time).strftime('%Y-%m-%d %H:%M:%S')
+    message['MESSAGE'] = 'System has been started at <b>'+os.uname()[1] + '</b> at '+ startup_time_formatted
+    message['MESSAGE'] = message['MESSAGE'] + '\nSomeone made the first request at that server right now'
+    logger.info("[notify_telegram_users] %s", message['MESSAGE'])
+    TelegramAssistantServer.send_monitor_message(message)
+
 ###############################################################################
 ################################# PROCESSORS ##################################
 ###############################################################################
@@ -727,7 +738,6 @@ if __name__ == '__main__':
     print("")
     logger.info("*** STARTING NABUCODONOSOR SYSTEM ***")
     logger.info("version: %s", VERSION)
-    TelegramAssistantServer.send_monitor_message({'SOURCE': 'NABUCODONOSOR','MESSAGE': 'Starting system at '+os.uname()[1]})
     #from werkzeug.middleware.profiler import ProfilerMiddleware
     #app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[5], profile_dir='./profile')
     user_reload = False # Avoid Bug: TWICE mqtt instances
