@@ -36,6 +36,8 @@ class Irrigation:
             """, engine)
         if not analytics.empty:
             self.logger.info("[irrigation] ***** STARTING DUMMY IRRIGATION *****")
+            monitor_message = '<b>DUMMY IRRIGATION</b>\n<pre>'
+
             moisture_analytics_last_calculation = dt.datetime.fromtimestamp(int(analytics['TIMESTAMP'].iloc[0])).strftime('%Y-%m-%d %H:%M:%S')
             data = json.loads(analytics['DATA'].iloc[0])
             self.logger.info("[irrigation] Found moisture analytics calculated in: %s",moisture_analytics_last_calculation)
@@ -47,9 +49,14 @@ class Irrigation:
             nodes_lst = []
             for node in data['node']:
                 advice = data['node'][node]['advice']
-                self.logger.info("[irrigation] %s => %s", self.oasis_properties[node]["name"], advice)
+                node_name = self.oasis_properties[node]["name"]
+                monitor_message += "{0:10} {1}\n".format(node_name,advice)
+                self.logger.info("[irrigation] %s => %s", node_name, advice)
 
-
+            monitor = {}
+            monitor["SOURCE"] = "IRRIGATION"
+            monitor["MESSAGE"] = monitor_message+'</pre>'
+            TelegramAssistantServer.send_monitor_message(monitor)
             self.logger.info("[irrigation] ***** ENDING DUMMY IRRIGATION *****")
         else:
             self.logger.info("[irrigation] Skipping DUMMY IRRIGATION due Moisture analytics not found")
@@ -78,11 +85,11 @@ class Irrigation:
             nodes_postponed_last_irrigation = []
             nodes_postponed_last_irrigation.extend(self.nodes_postponed_to_next_irrigation)
             self.nodes_postponed_to_next_irrigation = []
-            monitor_message = '<b>SMART IRRIGATION</b>\n'
+            monitor_message = '<b>SMART IRRIGATION</b>\n<pre>'
             for node in data['node']:
                 advice = data['node'][node]['advice']
                 node_name = self.oasis_properties[node]["name"]
-                monitor_message += "<b>{0:12}<b>  <i>{1}</i>\n".format(node_name,advice)
+                monitor_message += "{0:10} {1}\n".format(node_name,advice)
                 self.logger.info("[irrigation] advice %s => %s", node_name, advice)
                 if advice == "IRRIGATE":
                     if node not in nodes_to_irrigate:
@@ -97,7 +104,7 @@ class Irrigation:
             nodes_df = pandas.DataFrame(nodes_to_irrigate, columns =['NODE_ID'])
             monitor = {}
             monitor["SOURCE"] = "IRRIGATION"
-            monitor["MESSAGE"] = monitor_message
+            monitor["MESSAGE"] = monitor_message+'</pre>'
             TelegramAssistantServer.send_monitor_message(monitor)
             self.run(nodes_df)
 
