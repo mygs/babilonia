@@ -512,6 +512,14 @@ def water_tank():
 
     return json.dumps({'status':'Success!'})
 
+#curl -X GET http://localhost:8181/water-tank
+@app.route('/water-tank', methods=['GET'])
+def water_tank_status():
+    response = {}
+    if cfg["WATER_TANK"]["MASTER"]:
+        response = wtm.get_current_solenoid_status()
+    return response
+
 @app.route('/irrigation')
 @login_required
 def standard_irrigation():

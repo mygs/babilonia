@@ -142,7 +142,7 @@ class Irrigation:
         self.logger.info("[irrigation] %d nodes will receive water.",nodes_to_irrigate)
 
         if nodes_to_irrigate > 0:
-            url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
+            url = 'http://%s/water-tank'%(self.cfg["WATER_TANK"]["SERVER"])
             headers = {'Content-type': 'application/json'}
             response = requests.post(url,data=json.dumps({'DIRECTION':'OUT', 'ACTION':True }), headers=headers)
             self.logger.info("[irrigation]  Water tank server response: %s", response)
