@@ -82,7 +82,7 @@ class Irrigation:
             for node in data['node']:
                 advice = data['node'][node]['advice']
                 node_name = self.oasis_properties[node]["name"]
-                monitor_message = monitor_message +'<b>'+ node_name +'</b>: '+advice+'\n'
+                monitor_message += "<b>{0:12}<b>  <i>{1}</i>\n".format(node_name,advice)
                 self.logger.info("[irrigation] advice %s => %s", node_name, advice)
                 if advice == "IRRIGATE":
                     if node not in nodes_to_irrigate:

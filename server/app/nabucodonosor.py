@@ -537,14 +537,22 @@ def standard_irrigation():
 @app.route('/quarantine', methods=['POST'])
 @login_required
 def quarantine():
-    message = request.get_json()
-    id = message['NODE_ID']
-    change = message['QUARANTINE']
+    data = request.get_json()
+    id = data['NODE_ID']
+    change = data['QUARANTINE']
 
     logger.info("[quarantine] changing %s to %i", id, change)
     with app.app_context():
         DB.session.query(OasisHeartbeat).filter(OasisHeartbeat.NODE_ID==id).update({'QUARANTINE': change})
         DB.session.commit()
+    message={}
+    message['SOURCE'] = 'NABUCODONOSOR'
+    if change:
+        message['MESSAGE'] = 'Oasis <b>'+oasis_properties[id]["name"]+'</b> entrou em quarentena'
+    else:
+        message['MESSAGE'] = 'Oasis <b>'+oasis_properties[id]["name"]+'</b> saiu de quarentena'
+
+    TelegramAssistantServer.send_monitor_message(message)
     return json.dumps({'status':'Success!'})
 
 startup_time = int(time.time())
@@ -554,7 +562,6 @@ def notify_telegram_users():
     message['SOURCE'] = 'NABUCODONOSOR'
     startup_time_formatted = dt.datetime.fromtimestamp(startup_time).strftime('%Y-%m-%d %H:%M:%S')
     message['MESSAGE'] = 'Sistema foi reiniciado no servidor <b>'+os.uname()[1]+'</b> às '+startup_time_formatted
-    #message['MESSAGE'] = message['MESSAGE'] + '\nAlguém fez uma solicitação ao servidor agora mesmo'
     logger.info("[notify_telegram_users] %s", message['MESSAGE'])
     TelegramAssistantServer.send_monitor_message(message)
 
