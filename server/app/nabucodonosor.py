@@ -18,6 +18,7 @@ from TelegramAssistantServer import *
 from Dashboard import *
 from WaterTankManager import *
 from Irrigation import *
+from Watchdog import *
 import simplejson as json
 import requests
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
@@ -741,8 +742,13 @@ if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
     else:
         sched.add_job(irrigation.run_standard, irrigation_trigger)
 
-sched.start()
+if cfg["SCHEDULE"]["WATCHDOG"] != "never":
+    logger.info("[watchdog] enabled")
+    watchdog_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["WATCHDOG"])
+    watchdog = Watchdog(logger, cfg, oasis_properties)
+    sched.add_job(watchdog.run, watchdog_trigger)
 
+sched.start()
 ###############################################################################
 ##################################  START #####################################
 ###############################################################################
