@@ -19,9 +19,42 @@ class Watchdog:
                 result[node] = {'ONLINE':True,'IRRIGATION':True}
         return result
 
-
     def run(self):
         self.logger.info("[watchdog]  ***** STARTING WATCHDOG *****")
+        self.run_status()
+        self.run_water()
+
+    def run_water(self):
+        now = int(time.time())
+        irrigation_window_time = int(now - self.cfg["WATCHDOG"]["INTERVAL"])
+        number_of_sample_water_on =int(self.cfg["WATCHDOG"]["IRRIGATION_DURATION"]/30)
+        engine = create_engine(self.cfg["SQLALCHEMY_DATABASE_URI"])
+        for cache_node_id in self.nodes:
+            water_data = pandas.read_sql_query(
+                """
+                SELECT IFNULL(sum(DATA->'$.DATA.WATER'=1),0) as WATER_ON_DATA,
+                       COUNT(*) as TOTAL_DATA
+                FROM OASIS_DATA
+                WHERE NODE_ID = '{}'
+                      AND TIMESTAMP >= {}
+                """.format(cache_node_id, irrigation_window_time),
+                engine)
+            oasis_name = self.oasis_properties[cache_node_id]["name"]
+            water_on_data = int(water_data.WATER_ON_DATA.iat[0])
+            total_data = int(water_data.TOTAL_DATA.iat[0])
+            self.logger.info("[watchdog] %s > total_data: %d, water_on_data: %d",oasis_name, total_data, water_on_data)
+            if total_data > 0 and ((total_data == water_on_data) or (water_on_data >= number_of_sample_water_on)):
+                oasis_tot_water_on_min =int(self.cfg["WATCHDOG"]["IRRIGATION_DURATION"]/60)
+                window =int(self.cfg["WATCHDOG"]["INTERVAL"]/60)
+                monitor_message = '⚠️ <b>'+oasis_name+'</b> irrigou por mais de '
+                monitor_message += str(oasis_tot_water_on_min) +' minutos nos últimos '
+                monitor_message += str(window) +' minutos\n'
+                monitor = {}
+                monitor["SOURCE"] = "WATCHDOG"
+                monitor["MESSAGE"] = monitor_message
+                TelegramAssistantServer.send_monitor_message(monitor)
+
+    def run_status(self):
         now = int(time.time())
         offline = int(now - self.cfg["WATCHDOG"]["OFFLINE_TIME"])
         engine = create_engine(self.cfg["SQLALCHEMY_DATABASE_URI"])
@@ -59,12 +92,13 @@ class Watchdog:
         monitor_message=''
         publish = False
         if status_change_nodes_offline:
-            monitor_message += '❌ Ficaram <b>offlines</b>: '
+            time_string = str(int(self.cfg["WATCHDOG"]["OFFLINE_TIME"]/60))
+            monitor_message += '❌ Oasis <b>OFFLINE</b>: '
             monitor_message +=', '.join(map(str, status_change_nodes_offline))
-            monitor_message +='\n'
+            monitor_message +=' por mais de '+time_string+' minutos\n'
             publish = True
         if status_change_nodes_online:
-            monitor_message += '✅ Voltaram a ficar <b>online</b>: '
+            monitor_message += '✅ Voltaram a ficar <b>ONLINE</b>: '
             monitor_message +=', '.join(map(str, status_change_nodes_online))
             monitor_message +='\n'
             publish = True
