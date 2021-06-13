@@ -85,7 +85,7 @@ class ManagementIntentHandler(AbstractRequestHandler):
 
         message['COMMAND'] = action
 
-        r = requests.post('http://amitis.ddns.net:8181/command-alexa', json=json.dumps(message))
+        r = requests.post('http://sumerian.ddns.net:8181/command-alexa', json=json.dumps(message))
         return (
             handler_input.response_builder
                 .speak(speak_output)

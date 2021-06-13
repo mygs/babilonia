@@ -62,6 +62,14 @@ class WaterTankManager:
                 description = "FULL"
         return description
 
+    def fake_data(self):
+        response = {}
+        response['WATER_TANK_IN'] = self.FAKE_WATER_TANK_IN
+        response['WATER_TANK_OUT'] = self.FAKE_WATER_TANK_OUT
+        response['WATER_TANK_IN_DISABLE'] = False
+        response['GUI_DESCRIPTION'] = "FAKE"
+        return response
+
     def get_current_solenoid_status(self):
         response = {}
         if self.cfg["WATER_TANK"]["MASTER"]:
@@ -77,13 +85,16 @@ class WaterTankManager:
                 response['WATER_TANK_IN'] = self.FAKE_WATER_TANK_IN
                 response['WATER_TANK_OUT'] = self.FAKE_WATER_TANK_OUT
                 response['WATER_TANK_IN_DISABLE'] = False
-                response['GUI_DESCRIPTION'] = "HALF"
+                response['GUI_DESCRIPTION'] = "FAKE"
         else:
             url = 'http://%s/water-tank'%(self.cfg["WATER_TANK"]["SERVER"])
-            resp = requests.get(url=url)
-            response = resp.json()
-            self.logger.info("[WaterTankManager] remote solenoid status response %s",response)
-
+            try:
+                resp = requests.get(url=url)
+                response = resp.json()
+                self.logger.info("[WaterTankManager] remote solenoid status response %s",response)
+            except requests.exceptions.RequestException as e:
+                self.logger.error("[WaterTankManager] Ignoring %s",e)
+                response = self.fake_data()
         return response
 
     def monitorTankLevel(self):

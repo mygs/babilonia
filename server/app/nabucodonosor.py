@@ -20,7 +20,6 @@ from WaterTankManager import *
 from Irrigation import *
 from Watchdog import *
 import simplejson as json
-import requests
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from flask import Flask, make_response, Response, url_for, redirect, render_template, request, session, abort
 from flask_mqtt import Mqtt
