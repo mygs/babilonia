@@ -4,7 +4,7 @@
 # Copyright (C) 2015-2020 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
 
 #sudo crontab -e
-#*/1 * * * * /github/babilonia/explorer/Archaeologist.py
+#*/1 * * * * /github/babilonia/utils/reresolve-dns.py
 
 set -e
 shopt -s nocasematch
