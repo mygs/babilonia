@@ -18,8 +18,8 @@ from TelegramAssistantServer import *
 from Dashboard import *
 from WaterTankManager import *
 from Irrigation import *
+from Watchdog import *
 import simplejson as json
-import requests
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from flask import Flask, make_response, Response, url_for, redirect, render_template, request, session, abort
 from flask_mqtt import Mqtt
@@ -512,6 +512,14 @@ def water_tank():
 
     return json.dumps({'status':'Success!'})
 
+#curl -X GET http://localhost:8181/water-tank
+@app.route('/water-tank', methods=['GET'])
+def water_tank_status():
+    response = {}
+    if cfg["WATER_TANK"]["MASTER"]:
+        response = wtm.get_current_solenoid_status()
+    return response
+
 @app.route('/irrigation')
 @login_required
 def standard_irrigation():
@@ -529,14 +537,22 @@ def standard_irrigation():
 @app.route('/quarantine', methods=['POST'])
 @login_required
 def quarantine():
-    message = request.get_json()
-    id = message['NODE_ID']
-    change = message['QUARANTINE']
+    data = request.get_json()
+    id = data['NODE_ID']
+    change = data['QUARANTINE']
 
     logger.info("[quarantine] changing %s to %i", id, change)
     with app.app_context():
         DB.session.query(OasisHeartbeat).filter(OasisHeartbeat.NODE_ID==id).update({'QUARANTINE': change})
         DB.session.commit()
+    message={}
+    message['SOURCE'] = 'NABUCODONOSOR'
+    if change:
+        message['MESSAGE'] = 'Oasis <b>'+oasis_properties[id]["name"]+'</b> entrou em quarentena'
+    else:
+        message['MESSAGE'] = 'Oasis <b>'+oasis_properties[id]["name"]+'</b> saiu de quarentena'
+
+    TelegramAssistantServer.send_monitor_message(message)
     return json.dumps({'status':'Success!'})
 
 startup_time = int(time.time())
@@ -546,7 +562,6 @@ def notify_telegram_users():
     message['SOURCE'] = 'NABUCODONOSOR'
     startup_time_formatted = dt.datetime.fromtimestamp(startup_time).strftime('%Y-%m-%d %H:%M:%S')
     message['MESSAGE'] = 'Sistema foi reiniciado no servidor <b>'+os.uname()[1]+'</b> às '+startup_time_formatted
-    #message['MESSAGE'] = message['MESSAGE'] + '\nAlguém fez uma solicitação ao servidor agora mesmo'
     logger.info("[notify_telegram_users] %s", message['MESSAGE'])
     TelegramAssistantServer.send_monitor_message(message)
 
@@ -726,8 +741,13 @@ if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
     else:
         sched.add_job(irrigation.run_standard, irrigation_trigger)
 
-sched.start()
+if cfg["SCHEDULE"]["WATCHDOG"] != "never":
+    logger.info("[watchdog] enabled")
+    watchdog_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["WATCHDOG"])
+    watchdog = Watchdog(logger, cfg, oasis_properties)
+    sched.add_job(watchdog.run, watchdog_trigger)
 
+sched.start()
 ###############################################################################
 ##################################  START #####################################
 ###############################################################################

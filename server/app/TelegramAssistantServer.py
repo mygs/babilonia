@@ -182,10 +182,10 @@ class TelegramAssistantServer():
         self.logger.info('[TelegramAssistantServer] Confirmed: User: %s / Action %s / Oasis: %s', user, action, oasis)
 
         value = False
-        message = f'Irrigação suspensa na {oasis} 🚫'
+        message = '🚫 Irrigação suspensa na <b>'+oasis+'</b>'
         if action == ACTION_START:
             value = True
-            message = f'Irrigação iniciada na {oasis} 💦'
+            message = '💦 Irrigação iniciada na <b>'+oasis+'</b>'
             self.user_data_cache[update.message.chat_id] = context.user_data
             self.set_timer(update, context)
 
@@ -220,7 +220,7 @@ class TelegramAssistantServer():
 
     def command_water_tank(self, value) -> int:
         headers = {'Content-type': 'application/json'}
-        url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
+        url = 'http://%s/water-tank'%(self.cfg["WATER_TANK"]["SERVER"])
         json_msg = json.dumps({'DIRECTION':'OUT', 'ACTION':value })
         response = requests.post(url, data=json_msg, headers=headers)
         self.logger.info("[TelegramAssistantServer] /water-tank service response: %s", response)
@@ -240,7 +240,7 @@ class TelegramAssistantServer():
         job = context.job
         chat_id = job.context
         oasis = self.user_data_cache[chat_id]['oasis']
-        message = f'Irrigação suspensa na {oasis} 🚫'
+        message = '🚫 Irrigação suspensa na <b>'+oasis+'</b>'
         context.bot.send_message(job.context, text=message)
         self.command_oasis(oasis, False)
         self.command_water_tank(False)

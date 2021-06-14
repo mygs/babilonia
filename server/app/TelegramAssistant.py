@@ -297,7 +297,7 @@ class TelegramAssistant(Thread):
 
     def command_water_tank(self, value) -> int:
         headers = {'Content-type': 'application/json'}
-        url = 'http://%s/water-tank'%(self.cfg["WATER_TANK_SERVER"])
+        url = 'http://%s/water-tank'%(self.cfg["WATER_TANK"]["SERVER"])
         json_msg = json.dumps({'DIRECTION':'OUT', 'ACTION':value })
         response = requests.post(url, data=json_msg, headers=headers)
         self.logger.info("[VoiceAssistant] /water-tank service response: %s", response)
