@@ -31,7 +31,7 @@ class OasisHeartbeat(DB.Model):
     __tablename__ = 'OASIS_HEARTBEAT'
     NODE_ID = DB.Column(DB.String(32), primary_key=True)
     LAST_UPDATE = DB.Column(DB.Integer, nullable=False)
-    QUARANTINE = DB.Column(DB.Boolean, nullable=False)
+    QUARANTINE = DB.Column(DB.Boolean, nullable=False, default=0)
     def __repr__(self):
         return '<OasisHeartbeat id:{} time:{} quarantine:{}>'.format(self.NODE_ID, self.LAST_UPDATE,self.QUARANTINE)
     def toJson(self):
