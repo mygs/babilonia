@@ -16,7 +16,7 @@ INTERFACE="wg0"
 VPN_SERVER="10.6.0.1"
 
 ping_vpn_server() {
-	ping -c1 $VPN_SERVER  &>/dev/null
+	ping -c3 $VPN_SERVER
 }
 
 process_peer() {
