@@ -13,10 +13,12 @@ export LC_ALL=C
 
 CONFIG_FILE="/etc/wireguard/wg0.conf"
 INTERFACE="wg0"
-VPN_SERVER="10.6.0.1"
+VPN_EXTERNAL_URL= "sumerian.ddns.net"
+VPN_INTERNAL="10.6.0.1"
 
 ping_vpn_server() {
-	ping -c3 $VPN_SERVER
+	ping -c1 $VPN_EXTERNAL_URL &>/dev/null
+	ping -c1 $VPN_INTERNAL &>/dev/null
 }
 
 process_peer() {
