@@ -13,6 +13,11 @@ export LC_ALL=C
 
 CONFIG_FILE="/etc/wireguard/wg0.conf"
 INTERFACE="wg0"
+VPN_SERVER="10.6.0.1"
+
+ping_vpn_server() {
+	ping -c1 $VPN_SERVER  &>/dev/null
+}
 
 process_peer() {
 	[[ $PEER_SECTION -ne 1 || -z $PUBLIC_KEY || -z $ENDPOINT ]] && return 0
@@ -42,4 +47,6 @@ while read -r line || [[ -n $line ]]; do
 		esac
 	fi
 done < "$CONFIG_FILE"
+ping_vpn_server
 process_peer
+ping_vpn_server
