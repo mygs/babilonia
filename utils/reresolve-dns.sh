@@ -13,7 +13,7 @@ export LC_ALL=C
 
 CONFIG_FILE="/etc/wireguard/wg0.conf"
 INTERFACE="wg0"
-VPN_EXTERNAL_URL= "sumerian.ddns.net"
+VPN_EXTERNAL_URL="sumerian.ddns.net"
 VPN_INTERNAL="10.6.0.1"
 
 ping_vpn_server() {
