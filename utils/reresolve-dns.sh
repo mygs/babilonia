@@ -11,15 +11,10 @@ shopt -s nocasematch
 shopt -s extglob
 export LC_ALL=C
 
-CONFIG_FILE="/etc/wireguard/wg0.conf"
-INTERFACE="wg0"
-VPN_EXTERNAL_URL="sumerian.ddns.net"
-VPN_INTERNAL="10.6.0.1"
-
-ping_vpn_server() {
-	ping -c1 $VPN_EXTERNAL_URL &>/dev/null
-	ping -c1 $VPN_INTERNAL &>/dev/null
-}
+CONFIG_FILE="wg0"
+[[ $CONFIG_FILE =~ ^[a-zA-Z0-9_=+.-]{1,15}$ ]] && CONFIG_FILE="/etc/wireguard/$CONFIG_FILE.conf"
+[[ $CONFIG_FILE =~ /?([a-zA-Z0-9_=+.-]{1,15})\.conf$ ]]
+INTERFACE="${BASH_REMATCH[1]}"
 
 process_peer() {
 	[[ $PEER_SECTION -ne 1 || -z $PUBLIC_KEY || -z $ENDPOINT ]] && return 0
@@ -49,6 +44,4 @@ while read -r line || [[ -n $line ]]; do
 		esac
 	fi
 done < "$CONFIG_FILE"
-ping_vpn_server
 process_peer
-ping_vpn_server
