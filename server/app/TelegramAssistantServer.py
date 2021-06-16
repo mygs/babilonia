@@ -192,7 +192,7 @@ class TelegramAssistantServer():
         self.command_water_tank(value)
         self.command_oasis(oasis, value)
 
-        update.message.reply_text(message)
+        update.message.reply_text(message, parse_mode=ParseMode.HTML)
         return ConversationHandler.END
 
     def remove_job_if_exists(self, name: str, context: CallbackContext) -> bool:
@@ -241,7 +241,7 @@ class TelegramAssistantServer():
         chat_id = job.context
         oasis = self.user_data_cache[chat_id]['oasis']
         message = '🚫 Irrigação suspensa na <b>'+oasis+'</b>'
-        context.bot.send_message(job.context, text=message)
+        context.bot.send_message(job.context, text=message, parse_mode=ParseMode.HTML)
         self.command_oasis(oasis, False)
         self.command_water_tank(False)
         self.user_data_cache[chat_id] = {}

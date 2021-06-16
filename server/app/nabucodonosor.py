@@ -384,12 +384,26 @@ def command():
     mqtt.publish("/oasis-inbound", message)
     return json.dumps({'status':'Success!'})
 
+#curl -i -H "Content-Type: application/json" -X POST -d '{"COMMAND":"ligar", "DEVICE": "computador"}' http://127.0.0.1:8181/command-alexa
+
 @app.route('/command-alexa', methods=['POST'])
 @check_if_gui_is_enable
 def command_alexa():
     message = request.get_json()
-    logger.debug("[command-alexa] %s", message)
-    mqtt.publish("/oasis-inbound", message)
+    logger.info("[command-alexa] %s", message)
+    if 'NODE_ID' in message:
+        logger.info("[command-alexa] publishing in mqtt ...")
+        mqtt.publish("/oasis-inbound", message)
+    else:
+        if cfg["ALEXA"]["ENABLE"]:
+            logger.info("[command-alexa] customised job enable")
+            command = message['COMMAND'].upper()
+            device = message['DEVICE'].upper()
+            subprocess.check_output(cfg["ALEXA"][command][device])
+
+        else:
+            logger.info("[command-alexa] customised job disable")
+
     return json.dumps({'status':'Success!'})
 
 @app.route('/firmware', methods=['POST'])
