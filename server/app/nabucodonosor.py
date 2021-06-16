@@ -397,9 +397,11 @@ def command_alexa():
     else:
         if cfg["ALEXA"]["ENABLE"]:
             logger.info("[command-alexa] customised job enable")
-            command = message['COMMAND'].upper()
-            device = message['DEVICE'].upper()
-            subprocess.check_output(cfg["ALEXA"][command][device])
+            command = message['COMMAND']
+            device = message['DEVICE']
+            script = cfg["ALEXA"][command.upper()][device.upper()]
+            logger.info("[command-alexa] executing script %s",script)
+            subprocess.check_output(script)
 
         else:
             logger.info("[command-alexa] customised job disable")
