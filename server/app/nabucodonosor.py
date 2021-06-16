@@ -389,7 +389,7 @@ def command():
 @app.route('/command-alexa', methods=['POST'])
 @check_if_gui_is_enable
 def command_alexa():
-    message = request.get_json()
+    message = request.json
     logger.info("[command-alexa] %s", message)
     if 'NODE_ID' in message:
         logger.info("[command-alexa] publishing in mqtt ...")
