@@ -13,5 +13,5 @@ The research project consists of developing a platform for vegetables production
 
 ### Tech notes
 
-* [General configuration]((docs/CONFIGURATION.md)
-* [Troubleshooting messages]((docs/TROUBLESHOOTING.md)
+* [General configuration](docs/CONFIGURATION.md)
+* [Troubleshooting messages](docs/TROUBLESHOOTING.md)
