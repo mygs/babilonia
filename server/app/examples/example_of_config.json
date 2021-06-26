@@ -1,0 +1,85 @@
+{
+    "MODE":{
+      "DEBUG": true,
+        "MQTT":false,
+        "WEB":true,
+	      "AUTO_UPDATE_SERVER": false
+    },
+    "TELEGRAM":{
+      "ENABLE": false,
+      "BOT": "<<BOT_NAME>>",
+      "TOKEN": "<<BOT_TOKEN>>",
+      "BACKEND_SERVER": "<<SERVER_IP>>:8181",
+      "MONITOR_URL": "http://<<SERVER_IP>>:7171/monitor"
+    },
+    "SCHEDULE":{
+      "MOISTURE_MONITOR": "never",
+      "IRRIGATION_BOT": "never",
+      "WATCHDOG": "never"
+    },
+    "IRRIGATION":{
+      "WARMUP": false,
+      "TYPE": "dummy",
+      "DURATION": 5
+    },
+    "MOISTURE_ANALYTICS":{
+      "ROLLING_WINDOW": 30,
+      "RUPTURE_LEVEL_THRESHOLD": 0.015,
+      "PCT_CHANGE_PERIOD": 10,
+      "HEARTBEAT_PERIOD": 300,
+      "MOISTURE_DATA_PERIOD": 10800,
+      "FORECAST_TIME_AHEAD":  21600,
+      "PRECIPITATION_PROBABILITY_THRESHOLD": 0.25,
+      "PRECIPITATION_FORECAST_TIME_AHEAD": 21600,
+      "LATEST_LEVEL_CHECK_WINDOW": 30,
+      "LATEST_LEVEL_CHECK_QUANTILE": 0.5,
+      "LN_SCORE_THRESHOLD": 0.5,
+      "THRESHOLD_UPPER_BAND": 0.05,
+      "PCT_PROBE_TO_IRRIGATE": 0.5
+    },
+    "GIT_BRANCH": "refs/heads/deploy-server",
+    "SECRET_KEY": "<<SECRET_KEY>>",
+    "WEATHER_KEY": "<<WEATHER_KEY>>",
+    "LATITUDE": "-23.535521",
+    "LONGITUDE": "-46.763048",
+    "LOGIN_DISABLED": false,
+    "FREE_PASS":{
+      "ACTIVE": false,
+      "LOGIN": "vip",
+      "IP": ["127.0.0.1", "10.0.0.117"]
+    },
+    "SQLALCHEMY_DATABASE_URI": "mysql://<<USERNAME>>:<PASSWORD>>@<<SERVER_IP>>/farmland",
+    "MQTT":{
+        "BROKER":"<<SERVER_IP>>",
+        "PORT":1883,
+        "KEEPALIVE":60,
+        "MQTT_OASIS_TOPIC_HEARTBEAT": "/oasis-heartbeat",
+        "MQTT_OASIS_TOPIC_INBOUND": "/oasis-inbound",
+        "MQTT_OASIS_TOPIC_OUTBOUND": "/oasis-outbound"
+    },
+    "WATER_TANK":{
+      "MASTER": false,
+      "MONITOR": false,
+      "SERVER": "<<SERVER_IP>>:8181"
+    },
+    "CACHE":{
+      "CACHE_TYPE": "simple",
+      "CACHE_DEFAULT_TIMEOUT": 30
+    },
+    "MUX_PORT_THRESHOLD":{
+      "OFFLINE": 100,
+      "WET": 350,
+      "NOSOIL": 680
+    },
+    "ALEXA":{
+      "ENABLE": true,
+      "LIGAR": {
+        "COMPUTADOR": "/scripts/wake_musashi.sh",
+        "TV": "/scripts/power_tv.sh"
+      },
+      "DESLIGAR": {
+        "COMPUTADOR": "/scripts/shutdown_musashi.sh",
+        "TV": "/scripts/power_tv.sh"
+      }
+    }
+}

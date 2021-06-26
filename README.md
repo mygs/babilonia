@@ -9,3 +9,9 @@ The research project consists of developing a platform for vegetables production
 
 ## The automation technology
 ![technology overview](docs/img/technology_overview.png)
+
+
+### Tech notes
+
+* [General configuration]((docs/CONFIGURATION.md)
+* [Troubleshooting messages]((docs/TROUBLESHOOTING.md)

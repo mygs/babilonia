@@ -56,6 +56,12 @@ git checkout tags/v2.6
 git clone https://github.com/adafruit/DHT-sensor-library.git
 git checkout tags/1.3.7
 ```
+### Code formatting
+
+[Black, the Uncompromising Code Formatter](https://github.com/psf/black)
+```bash
+pip install git+git://github.com/psf/black
+```
 
 
 ### SERVER APPLICATION DEPENDENCIES
@@ -88,7 +94,7 @@ SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add", PROGRAM="/bin/sh -c 'chown ro
 
 ```
 
-### USB rule
+### USB rule (deprecated)
 /etc/udev/rules.d/babilonia.rules
 
 ```bash
@@ -199,78 +205,41 @@ Then, OTA
 ```bash
 espmake ota ESP_ADDR=192.168.2.102
 ```
+### InitialConfiguration
+```c
+#ifndef __INITIALCONFIGURATION_H
+#define __INITIALCONFIGURATION_H
 
+#include "OasisConstants.h"
 
+namespace InitialConfiguration {
+ const char* SSID     = "<WIFI_SSID>>";
+ const char* PASSWORD = "<WIFI_PASSWD>>";
+ const char* MQTT_SERVER = "<<MQTT_SERVER>>";
+ const int   MQTT_PORT = 1883;
+ const char* MQTT_TOPIC_HEARTBEAT = "/oasis-heartbeat";
+ const char* MQTT_TOPIC_INBOUND = "/oasis-inbound";
+ const char* MQTT_TOPIC_OUTBOUND = "/oasis-outbound";
+ const int   SERIAL_BAUDRATE = 115200;
+ const int   OTA_PORT = 8266;
+ //milliseconds
+ const int   HEARTBEAT_PERIOD = 15000;
+ const int   SENSOR_COLLECT_DATA_PERIOD = 30000;
+ const int   RETRY_WIFI_CONN_DELAY = 5000;
 
-# TROUBLESHOOTING
-Node terminal through USB connection
-```bash
-nodemcu-uploader terminal
-```
+ const char* PINA     = NODE::CAPACITIVEMOISTURE;
+ const char* PIN0     = NODE::IDLE;
+ const char* PIN1     = NODE::WATER;  //fixed in shield
+ const char* PIN2     = NODE::IDLE;
+ //const char* PIN2     = NODE::LIGHT;
+ const char* PIN3     = NODE::IDLE;
+ const char* PIN4     = NODE::DHT;   //fixed in shield
+ const char* PIN5     = NODE::CHANNEL_SELECT_A;
+ const char* PIN6     = NODE::CHANNEL_SELECT_B;
+ const char* PIN7     = NODE::CHANNEL_SELECT_C;
+ const char* PIN8     = NODE::IDLE;
+}
 
-Exception decoder
-```bash
-git clone https://github.com/janLo/EspArduinoExceptionDecoder.git
-./decoder.py -e /tmp/mkESP/Oasis_nodemcuv2/Oasis.elf myStackTrace.txt
-```
+#endif // ifndef __INITIALCONFIGURATION_H
 
-Restart server service
-```bash
-sudo service nabucodonosor restart
-```
-
-Subscribe all MQTT topics
-```bash
-mosquitto_sub -h 192.168.2.1 -t "#" -v
-```
-
-
-Node configuration full message
-```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"MESSAGE_ID\": \"a12dc89b\",\"CONFIG\": {\"SSID\": \"babilonia\",\"PASSWORD\": \"secret\",\"MQTT_SERVER\": \"192.168.2.1\",\"MQTT_PORT\": 1883,\"MQTT_TOPIC_INBOUND\": \"\/oasis-inbound\",\"MQTT_TOPIC_OUTBOUND\": \"\/oasis-outbound\",\"PERIOD\": 300,\"PIN\":{\"0\": \"IDLE\",\"1\": \"WATER\", \"2\": \"LIGHT\", \"3\": \"SOIL.X\",\"4\": \"DHT\",\"5\": \"SOIL.1\", \"6\": \"SOIL.2\",\"7\": \"SOIL.3\", \"8\": \"SOIL.4\"}},\"COMMAND\": {\"LIGHT\": true,\"FAN\": true,\"WATER\": true,\"REBOOT\": true},\"STATUS\": [\"NODE\", \"SOIL\", \"DHT\", \"LIGHT\", \"FAN\", \"WATER\"]}"
-```
-
-Node port configuration message
-```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-312193\",\"MESSAGE_ID\": \"a12dc89b\",\"CONFIG\": {\"PIN\":{\"0\": \"WATER\",\"1\": \"IDLE\", \"2\": \"LIGHT\", \"3\": \"SOIL.X\",\"4\": \"DHT\",\"5\": \"SOIL.1\", \"6\": \"SOIL.2\",\"7\": \"SOIL.3\", \"8\": \"SOIL.4\"}}}"
-```
-
-Node frequencies configuration message
-```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-312193\",\"MESSAGE_ID\": \"a12dc89b\",\"CONFIG\": {\"HEARTBEAT_PERIOD\": 31}}"
-
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"ALL\",\"MESSAGE_ID\": \"a12dc89b\",\"CONFIG\": {\"HEARTBEAT_PERIOD\": 3000, \"SENSOR_COLLECT_DATA_PERIOD\": 30000}}"
-
-#ZIBA
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-312209\",\"MESSAGE_ID\": \"fix_conn_issue\",\"CONFIG\": {\"MQTT_SERVER\": \"192.168.0.90\", \"SSID\": \"babilonia-ext\"}}"
-```
-
-Node command and status message
-```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"MESSAGE_ID\": \"a12dc89b\",\"COMMAND\": {\"LIGHT\": true,\"FAN\": true,\"WATER\": true,\"REBOOT\": true},\"STATUS\": [\"NODE\", \"SOIL\", \"DHT\", \"LIGHT\", \"FAN\", \"WATER\"]}"
-```
-
-Node reset command
-```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"ALL\",\"MESSAGE_ID\": \"fix_conn_issue\",\"COMMAND\": {\"RESET\": true}}"
-```
-
-Node status message
-```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-312193\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"NODE\", \"SOIL\", \"DHT\", \"LIGHT\", \"FAN\", \"WATER\"]}"
-```
-
-Node status message capacitive
-```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-397988\", \"MESSAGE_ID\": \"a12dc89b\",\"STATUS\": [\"CAPACITIVEMOISTURE\"]}"
-```
-
-Node Light command
-```bash
-mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-311de9\", \"MESSAGE_ID\": \"test\",\"COMMAND\": {\"LIGHT\": true}}"
-```
-
-Node Log command
-```bash
-mosquitto_pub -h 192.168.0.90 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-ed8653\", \"MESSAGE_ID\": \"log_test\",\"LOG\": true}"
 ```
