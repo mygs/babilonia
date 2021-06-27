@@ -10,13 +10,20 @@ class Watchdog:
         self.logger = logger
         self.cfg = cfg
         self.oasis_properties = oasis_properties
-        self.nodes = self.initialise_cache()
+        self.nodes = self.initialise_node_cache()
+        self.servers = self.initialise_server_cache()
 
-    def initialise_cache(self):
+    def initialise_node_cache(self):
         result = {}
         for node in self.oasis_properties:
             if node != "oasis-undefined":
                 result[node] = {"ONLINE": True, "IRRIGATION": True}
+        return result
+
+    def initialise_server_cache(self):
+        result = {}
+        for server in self.cfg["WATCHDOG"]["SERVERS"]:
+            result[server] = {"ONLINE": True}
         return result
 
     def run(self):
@@ -133,24 +140,45 @@ class Watchdog:
 
 
     def run_servers(self):
-        offline_servers = []
+        change_status_servers_offline = []
+        change_status_servers_online = []
         monitor_message = ""
 
-        for ip in self.cfg["WATCHDOG"]["SERVERS"]:
-            if os.system("ping -c 1 " + ip) != 0:
-                offline_servers.append(ip)
+        for ip in self.servers:
+            host_up  = True if os.system("ping -c 1 " + ip) is 0 else False
+            server = self.servers[ip]
+            if host_up != server["ONLINE"]:
+                if host_up:
+                    change_status_servers_online.append(ip)
+                else:
+                    change_status_servers_offline.append(ip)
 
-        if offline_servers:
-            monitor_message += "❌ Servers <b>OFFLINE</b>: "
-            monitor_message += ", ".join(map(str, offline_servers))
+                server["ONLINE"] = host_up
+                self.logger.info(
+                    "[watchdog] server %s changed its status to %s",
+                    ip,
+                    "ONLINE" if host_up else "OFFLINE"
+                )
+        publish = False
+        if change_status_servers_offline:
+            monitor_message += "❌ Servidores ficaram <b>OFFLINE</b>: "
+            monitor_message += ", ".join(map(str, change_status_servers_offline))
             monitor_message += "\n"
+            publish = True
+        if change_status_servers_online:
+            monitor_message += "✅ Servidores voltaram a ficar <b>ONLINE</b>: "
+            monitor_message += ", ".join(map(str, change_status_servers_online))
+            monitor_message += "\n"
+            publish = True
+
+        if publish:
             monitor = {}
             monitor["SOURCE"] = "WATCHDOG"
             monitor["MESSAGE"] = monitor_message
             TelegramAssistantServer.send_monitor_message(monitor)
         else:
             self.logger.info(
-                "[watchdog] all servers are online"
+                "[watchdog] all servers keep previous status"
             )
 
 if __name__ == "__main__":
