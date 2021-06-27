@@ -21,6 +21,7 @@ class Watchdog:
 
     def run(self):
         self.logger.info("[watchdog]  ***** STARTING WATCHDOG *****")
+        self.run_servers()
         self.run_status()
         self.run_water()
 
@@ -130,6 +131,27 @@ class Watchdog:
             monitor["MESSAGE"] = monitor_message
             TelegramAssistantServer.send_monitor_message(monitor)
 
+
+    def run_servers(self):
+        offline_servers = []
+        monitor_message = ""
+
+        for ip in self.cfg["WATCHDOG"]["SERVERS"]:
+            if os.system("ping -c 1 " + ip) != 0:
+                offline_servers.append(ip)
+
+        if offline_servers:
+            monitor_message += "❌ Servers <b>OFFLINE</b>: "
+            monitor_message += ", ".join(map(str, offline_servers))
+            monitor_message += "\n"
+            monitor = {}
+            monitor["SOURCE"] = "WATCHDOG"
+            monitor["MESSAGE"] = monitor_message
+            TelegramAssistantServer.send_monitor_message(monitor)
+        else:
+            self.logger.info(
+                "[watchdog] all servers are online"
+            )
 
 if __name__ == "__main__":
     SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
