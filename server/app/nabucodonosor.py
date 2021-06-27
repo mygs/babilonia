@@ -6,6 +6,7 @@ import time
 import subprocess
 import signal
 import json
+import requests
 import datetime as dt
 import logging
 import logging.config
@@ -384,7 +385,7 @@ def node_remove():
         DB.session.query(OasisData).filter(OasisData.NODE_ID == id).delete()
         DB.session.query(OasisHeartbeat).filter(OasisHeartbeat.NODE_ID == id).delete()
         DB.session.commit()
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 @app.route("/configuration", methods=["POST"])
@@ -428,7 +429,7 @@ def training():
     message = request.get_json()
     analytics.feedback_online_process(message)
     mqtt.publish("/oasis-inbound", analytics.generate_moisture_req_msg(message))
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 @app.route("/reset-training", methods=["POST"])
@@ -436,7 +437,7 @@ def training():
 def reset_training():
     message = request.get_json()
     analytics.reset_online_process(message)
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 @app.route("/updatecfg", methods=["POST"])
@@ -445,7 +446,7 @@ def updatecfg():
     message = json.dumps(request.get_json())
     logger.debug("[updatecfg] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 @app.route("/reset", methods=["POST"])
@@ -454,7 +455,7 @@ def reset():
     message = json.dumps(request.get_json())
     logger.debug("[reset] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 @app.route("/status", methods=["POST"])
@@ -463,7 +464,7 @@ def refresh():
     message = json.dumps(request.get_json())
     logger.debug("[status] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 @app.route("/command", methods=["POST"])
@@ -472,7 +473,7 @@ def command():
     message = json.dumps(request.get_json())
     logger.debug("[command] %s", message)
     mqtt.publish("/oasis-inbound", message)
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 # curl -i -H "Content-Type: application/json" -X POST -d '{"COMMAND":"ligar", "DEVICE": "computador"}' http://127.0.0.1:8181/command-alexa
@@ -498,7 +499,7 @@ def command_alexa():
         else:
             logger.info("[command-alexa] customised job disable")
 
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 @app.route("/firmware", methods=["POST"])
@@ -647,29 +648,28 @@ def webhook():
 @app.route("/water-tank", methods=["POST"])
 def water_tank():
     message = request.get_json()
-    direction = message["DIRECTION"]  # IN or OUT
-    action = message["ACTION"]  # true or false
-    if wtm is None:
-        logger.info(
-            "[water-tank] Ignoring manually %s command to %s", action, direction
-        )
-    else:
+    if cfg["WATER_TANK"]["MASTER"]:
+        direction = message["DIRECTION"]  # IN or OUT
+        action = message["ACTION"]  # true or false
         logger.info("[water-tank] %s will be %s", direction, action)
         if direction == "OUT":
             wtm.changeStateWaterTankOut(action)
         else:
             wtm.changeStateWaterTankIn(action)
 
-    return json.dumps({"status": "Success!"})
+        return json.dumps({"status": "Success"})
+    else:
+        url = "http://%s/water-tank" % (cfg["WATER_TANK"]["SERVER"])
+        logger.info("[water-tank] remote request. data=%s", message)
+        response = requests.post(url, json=message)
+        return response.json()
 
 
 # curl -X GET http://localhost:8181/water-tank
 @app.route("/water-tank", methods=["GET"])
 def water_tank_status():
-    response = {}
-    if cfg["WATER_TANK"]["MASTER"]:
-        response = wtm.get_current_solenoid_status()
-    return response
+    return wtm.get_current_solenoid_status()
+
 
 
 @app.route("/irrigation")
@@ -714,7 +714,7 @@ def quarantine():
         )
 
     TelegramAssistantServer.send_monitor_message(message)
-    return json.dumps({"status": "Success!"})
+    return json.dumps({"status": "Success"})
 
 
 startup_time = int(time.time())
