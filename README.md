@@ -11,7 +11,7 @@ The research project consists of developing a platform for vegetables production
 ![technology overview](docs/img/technology_overview.png)
 
 ## Experiment area walking tour
-[![Watch the video](docs/imgwalking_tour_thumbnail.jpg)](https://www.youtube.com/embed/4msqJkM3aCQ)
+[![Watch the video](docs/img/walking_tour_thumbnail.jpg)](https://www.youtube.com/embed/4msqJkM3aCQ)
 
 ### Tech notes
 
