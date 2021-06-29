@@ -82,6 +82,14 @@ int State::getWaterStatus(){
   return currentState[NODE::COMMAND][NODE::WATER].as<int>();
 }
 
+int State::getSwitchAStatus(){
+  return currentState[NODE::COMMAND][NODE::SWITCH_A].as<int>();
+}
+
+int State::getSwitchBStatus(){
+  return currentState[NODE::COMMAND][NODE::SWITCH_B].as<int>();
+}
+
 const char* State::diffs(JsonVariant _base, JsonVariant _arrived) {
   const char *arrived = _arrived.as<char *>();
   if ((arrived != NULL) && (arrived[0] != '\0')) {
@@ -160,6 +168,9 @@ void State::mergeState(JsonDocument& arrived) {
     baseCommand[NODE::LIGHT] = diffb(baseCommand[NODE::LIGHT], arrivedCommand[NODE::LIGHT]);
     baseCommand[NODE::FAN] = diffb(baseCommand[NODE::FAN], arrivedCommand[NODE::FAN]);
     baseCommand[NODE::WATER] = diffb(baseCommand[NODE::WATER], arrivedCommand[NODE::WATER]);
+    baseCommand[NODE::SWITCH_A] = diffb(baseCommand[NODE::SWITCH_A], arrivedCommand[NODE::SWITCH_A]);
+    baseCommand[NODE::SWITCH_B] = diffb(baseCommand[NODE::SWITCH_B], arrivedCommand[NODE::SWITCH_B]);
+
   }
 }
 void State::loadDefaultState(){
@@ -194,6 +205,8 @@ void State::loadDefaultState(){
   COMMAND[NODE::LIGHT] = false;
   COMMAND[NODE::FAN] = false;
   COMMAND[NODE::WATER] = false;
+  COMMAND[NODE::SWITCH_A] = false;
+  COMMAND[NODE::SWITCH_B] = false;
 
   Serial.println("[STATE] creating default file");
   saveDefaultState(currentState);

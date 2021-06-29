@@ -3,6 +3,7 @@ log/
 *.Rproj
 *.lc
 InitialConfiguration*.h
+InitialSupportConfiguration*.h
 baquara-*.json
 *.ogg
 config*.json

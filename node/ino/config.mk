@@ -8,9 +8,17 @@ CUSTOM_LIBS =	$(BABILONIA_LIBS)/pubsubclient \
 
 GIT_VERSION := $(shell git describe --tags --always)
 
-BUILD_EXTRA_FLAGS = -DMQTT_MAX_PACKET_SIZE=1024 \
-									 -DFIRMWARE_VERSION=\"$(GIT_VERSION)\"
-#								-Og -ggdb -DDEBUG_ESP_PORT=Serial
+ifeq ($(SUPPORT),)
+    BUILD_EXTRA_FLAGS = -DMQTT_MAX_PACKET_SIZE=1024 \
+									 -DFIRMWARE_VERSION=\"$(GIT_VERSION)\" \
+									 #-Og -ggdb -DDEBUG_ESP_PORT=Serial
+
+else
+    BUILD_EXTRA_FLAGS = -DMQTT_MAX_PACKET_SIZE=1024 \
+									 -DFIRMWARE_VERSION=\"$(GIT_VERSION)\" \
+									 -DSUPPORT=$(SUPPORT)
+									#-Og -ggdb -DDEBUG_ESP_PORT=Serial
+endif
 
 #Board type
 BOARD = nodemcuv2

@@ -6,27 +6,33 @@
 // Use arduinojson.org/assistant to compute the capacity.
 #define JSON_MEMORY_SIZE 1024
 
-#define THRESHOLD_DISABLE_HEARTBEAT 999  // ~ 1 second
+#define THRESHOLD_DISABLE_TICKER 999  // ~ 1 second
 #define MIN_SENSOR_COLLECT_DATA_PERIOD 199  // ~ 1/5 second
 
-#define DEVICE_LENGTH 10
-#define IDX_DEVICE_NODE         0
-#define IDX_DEVICE_SOILX        1
-#define IDX_CHANNEL_SELECT_A    2
-#define IDX_CHANNEL_SELECT_B    3
-#define IDX_CHANNEL_SELECT_C    4
-#define IDX_DEVICE_DHT          5
-#define IDX_DEVICE_LIGHT        6
-#define IDX_DEVICE_FAN          7
-#define IDX_DEVICE_WATER        8
-#define IDX_DEVICE_CAPACITIVEMOISTURE    9
+#define DEVICE_LENGTH 12
+#define IDX_DEVICE_NODE                 0
+#define IDX_DEVICE_SOILX                1
+#define IDX_CHANNEL_SELECT_A            2
+#define IDX_CHANNEL_SELECT_B            3
+#define IDX_CHANNEL_SELECT_C            4
+#define IDX_DEVICE_DHT                  5
+#define IDX_DEVICE_LIGHT                6
+#define IDX_DEVICE_FAN                  7
+#define IDX_DEVICE_WATER                8
+#define IDX_DEVICE_CAPACITIVEMOISTURE   9
+#define IDX_DEVICE_SWITCH_A             10
+#define IDX_DEVICE_SWITCH_B             11
 
-#define CMD_LENGTH 5
+
+#define CMD_LENGTH 7
 #define IDX_ACTION_LIGHT    0
 #define IDX_ACTION_WATER    1
 #define IDX_ACTION_FAN      2
 #define IDX_ACTION_REBOOT   3
 #define IDX_ACTION_RESET    4
+#define IDX_ACTION_SWITCH_A 5
+#define IDX_ACTION_SWITCH_B 6
+
 
 #define PIN_SIZE_DIGITAL 9
 #define PIN_NOT_CONFIGURED -1
@@ -66,6 +72,8 @@ namespace NODE {
   extern const char* COMMAND;
   extern const char* FAN;
   extern const char* WATER;
+  extern const char* SWITCH_A;
+  extern const char* SWITCH_B;
   extern const char* LIGHT;
   extern const char* REBOOT;
   extern const char* RESET;

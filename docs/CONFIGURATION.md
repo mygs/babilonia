@@ -203,7 +203,7 @@ espmake flash
 ```
 Then, OTA
 ```bash
-espmake ota ESP_ADDR=192.168.2.102
+espmake ota ESP_ADDR=10.0.0.10
 ```
 ### InitialConfiguration
 ```c

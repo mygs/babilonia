@@ -19,6 +19,9 @@ void Status::init(){
   DEVICE[IDX_DEVICE_FAN]   = NODE::FAN;
   DEVICE[IDX_DEVICE_WATER] = NODE::WATER;
   DEVICE[IDX_DEVICE_CAPACITIVEMOISTURE] = NODE::CAPACITIVEMOISTURE;
+  DEVICE[IDX_DEVICE_SWITCH_A] = NODE::SWITCH_A;
+  DEVICE[IDX_DEVICE_SWITCH_B] = NODE::SWITCH_B;
+
 }
 
 void Status::updatePorts(State& state){
@@ -70,6 +73,10 @@ void Status::collect(State& state, JsonArray& status, JsonDocument& response){
       collectDHTData(data);
     } else if(checkDev(device, NODE::SOIL, PIN[IDX_DEVICE_SOILX])){
       Serial.println("[STATUS] SOIL !!!");
+    } else if(checkDev(device, NODE::SWITCH_A, PIN[IDX_DEVICE_SWITCH_A])){
+      data[NODE::SWITCH_A] = state.getSwitchAStatus();
+    } else if(checkDev(device, NODE::SWITCH_B, PIN[IDX_DEVICE_SWITCH_B])){
+      data[NODE::SWITCH_B] = state.getSwitchBStatus();
     }
   }
 }

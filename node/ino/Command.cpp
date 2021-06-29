@@ -8,6 +8,8 @@ Command::Command(){
   ACTION[IDX_ACTION_FAN] = NODE::FAN;
   ACTION[IDX_ACTION_REBOOT] = NODE::REBOOT;
   ACTION[IDX_ACTION_RESET] = NODE::RESET;
+  ACTION[IDX_ACTION_SWITCH_A] = NODE::SWITCH_A;
+  ACTION[IDX_ACTION_SWITCH_B] = NODE::SWITCH_B;
 }
 
 void Command::updatePorts(State& state){
@@ -15,8 +17,10 @@ void Command::updatePorts(State& state){
 }
 
 void Command::logAction(int idx, const char* action, int pin, bool value){
-  if( idx == IDX_ACTION_LIGHT ||
-      idx == IDX_ACTION_WATER ||
+  if( idx == IDX_ACTION_LIGHT     ||
+      idx == IDX_ACTION_WATER     ||
+      idx == IDX_ACTION_SWITCH_A  ||
+      idx == IDX_ACTION_SWITCH_B  ||
       idx == IDX_ACTION_FAN){
     if(pin != PIN_NOT_CONFIGURED){
       Serial.printf("[COMMAND] %s[%d] = %d\r\n", action, pin, value);
@@ -40,7 +44,9 @@ void Command::execute(State& state, JsonObject& cmd){
       switch (i) {
         case IDX_ACTION_LIGHT:
         case IDX_ACTION_WATER:
-        case IDX_ACTION_FAN:// ... all previous cases fall here
+        case IDX_ACTION_FAN:
+        case IDX_ACTION_SWITCH_A:
+        case IDX_ACTION_SWITCH_B:// ... all previous cases fall here
           if (PIN[i] != PIN_NOT_CONFIGURED){
             pinMode(PIN[i], OUTPUT);
             if(value){

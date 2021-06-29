@@ -25,7 +25,7 @@ StaticJsonDocument<JSON_MEMORY_SIZE> inboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> outboundData;
 StaticJsonDocument<JSON_MEMORY_SIZE> sensorsTickerData;
 
-Ticker heartBeatTicker;
+Ticker ticker;
 
 State state;
 Status status;
@@ -173,10 +173,24 @@ void setup() {
   status.updatePorts(state);
   command.updatePorts(state);
 
+  #ifdef SUPPORT
+    logger.write("[OASIS] SUPPORT MODE BINARY");
+  #else
+    logger.write("[OASIS] NORMAL MODE BINARY");
+  #endif
+
   JsonObject cmd = state.getCommand();
   if(cmd[NODE::WATER]){
     logger.write("[OASIS] Turn off water for security purpose");
     cmd[NODE::WATER] = false;
+  }
+  if(cmd[NODE::SWITCH_A]){
+    logger.write("[OASIS-SUPPORT] Turn off Switch A for security purpose");
+    cmd[NODE::SWITCH_A] = false;
+  }
+  if(cmd[NODE::SWITCH_B]){
+    logger.write("[OASIS-SUPPORT] Turn off Switch B for security purpose");
+    cmd[NODE::SWITCH_B] = false;
   }
   command.execute(state, cmd);
 
@@ -226,17 +240,29 @@ void setup() {
   mqtt.setCallback(onMqttMessage);
   mqttReconnect();
 
-  // Oasis is up and running, notify first heartbeat
-  char message[HEARTBEAT_MESSAGE_SIZE];
-  sprintf(message, "{\"%s\":\"oasis-%06x\", \"startup\": true}",NODE::NODE_ID,ESP.getChipId());
-  mqtt.publish(state.getMqttHeartBeatTopic(), message);
+  #ifndef SUPPORT
+    // Oasis is up and running, notify first heartbeat
+    char message[HEARTBEAT_MESSAGE_SIZE];
+    sprintf(message, "{\"%s\":\"oasis-%06x\", \"startup\": true}",NODE::NODE_ID,ESP.getChipId());
+    mqtt.publish(state.getMqttHeartBeatTopic(), message);
 
-  // For sure, we do not need short heartbeat
-  if(state.getHeartBeatPeriod() > THRESHOLD_DISABLE_HEARTBEAT){
-    heartBeatTicker.attach_ms(state.getHeartBeatPeriod(), heartBeat);
-  }else{
-    logger.write("[OASIS] HeartBeat not enabled");
-  }
+    // For sure, we do not need short heartbeat
+    if(state.getHeartBeatPeriod() > THRESHOLD_DISABLE_TICKER){
+      ticker.attach_ms(state.getHeartBeatPeriod(), heartBeat);
+    }else{
+      logger.write("[OASIS] HeartBeat not enabled");
+    }
+  #else
+    logger.write("[OASIS-SUPPORT] HeartBeat not supported");
+    // For sure, we do not need short support infos
+    if(state.getSensorCollectDataPeriod() > THRESHOLD_DISABLE_TICKER){
+      ticker.attach_ms(state.getSensorCollectDataPeriod(), collectSensorData);
+    }else{
+      logger.write("[OASIS-SUPPORT] Collect Support Ticker not enabled");
+    }
+    // Support is up and running, publish the first data
+    collectSensorData();
+  #endif
   logger.write("[OASIS] Setup Completed");
   listLocalFiles();
 }
@@ -365,12 +391,15 @@ void loop() {
   } else {
     mqtt.loop();
   }
-  // DHT and Ticker does not work together, so ...
-  unsigned long currentMillis = millis();
-  if(currentMillis - previousMillis > state.getSensorCollectDataPeriod()) {
-    previousMillis = currentMillis;
-    collectSensorData();
-  }
+
+  #ifndef SUPPORT
+    // DHT and Ticker does not work together, so ...
+    unsigned long currentMillis = millis();
+    if(currentMillis - previousMillis > state.getSensorCollectDataPeriod()) {
+      previousMillis = currentMillis;
+      collectSensorData();
+    }
+  #endif
 
   serialCommands();
 }

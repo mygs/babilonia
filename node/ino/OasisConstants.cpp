@@ -35,6 +35,8 @@ namespace NODE {
   extern const char* COMMAND = "COMMAND";
   extern const char* FAN     = "FAN";
   extern const char* WATER   = "WATER";
+  extern const char* SWITCH_A   = "SWITCH_A";
+  extern const char* SWITCH_B   = "SWITCH_B";
   extern const char* LIGHT   = "LIGHT";
   extern const char* REBOOT  = "REBOOT";
   extern const char* RESET   = "RESET";

@@ -17,7 +17,7 @@ sudo service nabucodonosor restart
 
 ## Subscribe all MQTT topics
 ```bash
-mosquitto_sub -h 192.168.2.1 -t "#" -v
+mosquitto_sub -h 10.0.0.30 -t "#" -v
 ```
 
 
@@ -66,7 +66,12 @@ mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-39798
 mosquitto_pub -h 192.168.2.1 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-311de9\", \"MESSAGE_ID\": \"test\",\"COMMAND\": {\"LIGHT\": true}}"
 ```
 
+## Node Switch A command
+```bash
+mosquitto_pub -h 10.0.0.30 -t "/support-inbound" -m "{\"NODE_ID\": \"oasis-31e1e7\", \"MESSAGE_ID\": \"test\",\"COMMAND\": {\"SWITCH_A\": true}}"
+```
+
 ## Node Log command
 ```bash
-mosquitto_pub -h 192.168.0.90 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-ed8653\", \"MESSAGE_ID\": \"log_test\",\"LOG\": true}"
+mosquitto_pub -h 10.0.0.30 -t "/oasis-inbound" -m "{\"NODE_ID\": \"oasis-311de9\", \"MESSAGE_ID\": \"log_test\",\"LOG\": true}"
 ```

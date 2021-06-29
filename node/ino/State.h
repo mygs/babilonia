@@ -43,6 +43,8 @@ public:
   int getFanStatus();
   int getWaterStatus();
   void loadDefaultState();
+  int getSwitchAStatus();
+  int getSwitchBStatus();
 
   //procedures
   void load();
