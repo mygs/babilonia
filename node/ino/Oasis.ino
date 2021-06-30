@@ -173,12 +173,6 @@ void setup() {
   status.updatePorts(state);
   command.updatePorts(state);
 
-  #ifdef SUPPORT
-    logger.write("[OASIS] SUPPORT MODE BINARY");
-  #else
-    logger.write("[OASIS] NORMAL MODE BINARY");
-  #endif
-
   JsonObject cmd = state.getCommand();
   if(cmd[NODE::WATER]){
     logger.write("[OASIS] Turn off water for security purpose");
@@ -203,6 +197,13 @@ void setup() {
   logger.write(logMsg);
   sprintf(logMsg, "[OASIS] Firmware version: %s", FIRMWARE_VERSION);
   logger.write(logMsg);
+
+  #ifdef SUPPORT
+    logger.write("[OASIS] SUPPORT MODE BINARY");
+  #else
+    logger.write("[OASIS] NORMAL MODE BINARY");
+  #endif
+  
   logger.write("[OASIS] Starting Setup");
 
   setupWifi();

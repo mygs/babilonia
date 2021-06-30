@@ -17,6 +17,13 @@
       "IRRIGATION_BOT": "never",
       "WATCHDOG": "never"
     },
+    "WATCHDOG":{
+      "INTERVAL": 600,
+      "OFFLINE_TIME": 3600,
+      "IRRIGATION_DURATION": 300,
+      "WATER_TANK_TIME": 3300,
+      "SERVERS": ["<LIST_OF_SERVERS>"]
+    },
     "IRRIGATION":{
       "WARMUP": false,
       "TYPE": "dummy",
@@ -53,9 +60,11 @@
         "BROKER":"<<SERVER_IP>>",
         "PORT":1883,
         "KEEPALIVE":60,
-        "MQTT_OASIS_TOPIC_HEARTBEAT": "/oasis-heartbeat",
-        "MQTT_OASIS_TOPIC_INBOUND": "/oasis-inbound",
-        "MQTT_OASIS_TOPIC_OUTBOUND": "/oasis-outbound"
+        "OASIS_TOPIC_HEARTBEAT": "/oasis-heartbeat",
+        "OASIS_TOPIC_INBOUND": "/oasis-inbound",
+        "OASIS_TOPIC_OUTBOUND": "/oasis-outbound",
+        "SUPPORT_TOPIC_INBOUND": "/support-inbound",
+        "SUPPORT_TOPIC_OUTBOUND": "/support-outbound"
     },
     "WATER_TANK":{
       "MASTER": false,

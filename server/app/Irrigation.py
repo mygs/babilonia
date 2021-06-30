@@ -202,7 +202,7 @@ class Irrigation:
                         }
                     )
                     self.logger.info("[irrigation] warm-up >=> %s", message)
-                    self.mqtt.publish("/oasis-inbound", message)
+                    self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
                     time.sleep(5)
 
                 time.sleep(self.IRRIGATION_DURATION / 2)
@@ -213,7 +213,7 @@ class Irrigation:
                         "COMMAND": {"WATER": False},
                     }
                 )
-                self.mqtt.publish("/oasis-inbound", message)
+                self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
                 self.logger.info("[irrigation] ending warm-up")
             else:
                 self.logger.info("[irrigation] warm-up disabled")
@@ -229,7 +229,7 @@ class Irrigation:
                     }
                 )
                 self.logger.info("[irrigation] %s", message)
-                self.mqtt.publish("/oasis-inbound", message)
+                self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
                 time.sleep(self.IRRIGATION_DURATION)
                 # message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
                 message = json.dumps(
@@ -239,7 +239,7 @@ class Irrigation:
                         "COMMAND": {"WATER": False},
                     }
                 )
-                self.mqtt.publish("/oasis-inbound", message)
+                self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
                 self.logger.info("[irrigation] %s", message)
 
             message = json.dumps(
@@ -250,7 +250,7 @@ class Irrigation:
                 }
             )
             self.logger.info("[irrigation] %s", message)
-            self.mqtt.publish("/oasis-inbound", message)
+            self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
 
             requests.post(
                 url,

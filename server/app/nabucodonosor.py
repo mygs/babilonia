@@ -428,7 +428,7 @@ def node_config():
 def training():
     message = request.get_json()
     analytics.feedback_online_process(message)
-    mqtt.publish("/oasis-inbound", analytics.generate_moisture_req_msg(message))
+    mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], analytics.generate_moisture_req_msg(message))
     return json.dumps({"status": "Success"})
 
 
@@ -445,7 +445,7 @@ def reset_training():
 def updatecfg():
     message = json.dumps(request.get_json())
     logger.debug("[updatecfg] %s", message)
-    mqtt.publish("/oasis-inbound", message)
+    mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
     return json.dumps({"status": "Success"})
 
 
@@ -454,7 +454,7 @@ def updatecfg():
 def reset():
     message = json.dumps(request.get_json())
     logger.debug("[reset] %s", message)
-    mqtt.publish("/oasis-inbound", message)
+    mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
     return json.dumps({"status": "Success"})
 
 
@@ -463,7 +463,7 @@ def reset():
 def refresh():
     message = json.dumps(request.get_json())
     logger.debug("[status] %s", message)
-    mqtt.publish("/oasis-inbound", message)
+    mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
     return json.dumps({"status": "Success"})
 
 
@@ -472,7 +472,7 @@ def refresh():
 def command():
     message = json.dumps(request.get_json())
     logger.debug("[command] %s", message)
-    mqtt.publish("/oasis-inbound", message)
+    mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
     return json.dumps({"status": "Success"})
 
 
@@ -486,7 +486,7 @@ def command_alexa():
     logger.info("[command-alexa] %s", message)
     if "NODE_ID" in message:
         logger.info("[command-alexa] publishing in mqtt ...")
-        mqtt.publish("/oasis-inbound", message)
+        mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
     else:
         if cfg["ALEXA"]["ENABLE"]:
             logger.info("[command-alexa] customised job enable")
@@ -511,7 +511,7 @@ def firmware_action():
     if action == "backup":
         logger.info("[firmware-action] BACKUP %s", message)
         message = {"NODE_ID": node_id, "MESSAGE_ID": "backup", "STATUS": ["NODE"]}
-        mqtt.publish("/oasis-inbound", json.dumps(message))
+        mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], json.dumps(message))
         return json.dumps(
             {"status": "success", "message": "backup request for " + node_id}
         )
@@ -551,7 +551,7 @@ def firmware_action():
         logger.info(
             "[firmware-restore] TIMESTAMP=%s, CONFIG=%s", config.TIMESTAMP, message
         )
-        mqtt.publish("/oasis-inbound", json.dumps(message))
+        mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], json.dumps(message))
         return json.dumps(
             {"status": "success", "message": "restore request for " + node_id}
         )
@@ -841,8 +841,9 @@ def handle_mqtt_connect(client, userdata, flags, rc):
     logger.info("[MQTT] Connected with result code %s", str(rc))
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"])
-    mqtt.subscribe(cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"])
+    mqtt.subscribe(cfg["MQTT"]["OASIS_TOPIC_HEARTBEAT"])
+    mqtt.subscribe(cfg["MQTT"]["OASIS_TOPIC_OUTBOUND"])
+    mqtt.subscribe(cfg["MQTT"]["SUPPORT_TOPIC_OUTBOUND"])
 
 
 @mqtt.on_unsubscribe()
@@ -863,7 +864,7 @@ def handle_mqtt_message(client, userdata, msg):
     node_id = jmsg["NODE_ID"]
     timestamp = int(time.time())
 
-    if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_HEARTBEAT"]:
+    if topic == cfg["MQTT"]["OASIS_TOPIC_HEARTBEAT"]:
         heartbeat = OasisHeartbeat(NODE_ID=node_id, LAST_UPDATE=timestamp)
         logger.debug("[heartbeat] %s", heartbeat.toJson())
         socketio.emit("ws-oasis-heartbeat", data=heartbeat.toJson())
@@ -871,7 +872,7 @@ def handle_mqtt_message(client, userdata, msg):
             with app.app_context():
                 merged = DB.session.merge(heartbeat)
                 QUARANTINE_CACHE[merged.NODE_ID] = merged.QUARANTINE
-    if topic == cfg["MQTT"]["MQTT_OASIS_TOPIC_OUTBOUND"]:
+    if topic == cfg["MQTT"]["OASIS_TOPIC_OUTBOUND"]:
         data = OasisData(TIMESTAMP=timestamp, NODE_ID=node_id, DATA=jmsg)
         if "DATA" in jmsg:
             if isMqttEnabled and not QUARANTINE_CACHE[node_id]:
@@ -891,7 +892,13 @@ def handle_mqtt_message(client, userdata, msg):
         json_data = data.toJson()
         socketio.emit("ws-oasis-data", data=json_data)
         logger.debug("[data] %s", json_data)
-
+    if topic == cfg["MQTT"]["SUPPORT_TOPIC_OUTBOUND"]:
+        if "DATA" in jmsg:
+            data = SupportData(TIMESTAMP=timestamp, NODE_ID=node_id, DATA=jmsg["DATA"])
+            logger.info("[support-data] %s", data.toJson())
+            if isMqttEnabled:
+                with app.app_context():
+                    merged = DB.session.merge(data)
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):

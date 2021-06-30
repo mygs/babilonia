@@ -7,6 +7,22 @@ from flask_login import UserMixin
 
 DB = SQLAlchemy()
 
+class SupportData(DB.Model):
+    __tablename__ = "SUPPORT"
+    TIMESTAMP = DB.Column(DB.Integer, nullable=True)
+    NODE_ID = DB.Column(DB.String(32), primary_key=True)
+    DATA = DB.Column(DB.JSON, nullable=True)
+
+    def __init__(self, TIMESTAMP, NODE_ID, DATA):
+        self.TIMESTAMP = TIMESTAMP
+        self.NODE_ID = NODE_ID
+        self.DATA = DATA
+
+    def __repr__(self):
+        return "<SupportData id:{} time:{} data:{}>".format(self.NODE_ID, self.TIMESTAMP, self.DATA)
+
+    def toJson(self):
+        return {"TIMESTAMP": self.TIMESTAMP, "NODE_ID": self.NODE_ID, "DATA": self.DATA}
 
 class OasisData(DB.Model):
     __tablename__ = "OASIS_DATA"
