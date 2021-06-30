@@ -68,11 +68,17 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
         status.updatePorts(state);
       }
 
+      #ifdef SUPPORT
+        boolean shouldPublishDataAfterCommand = false;
+      #endif
       JsonObject cmd = inboundData[NODE::COMMAND];
       if(!cmd.isNull()){
         command.execute(state, cmd);
         if (cmd[NODE::RESET].isNull() && cmd[NODE::REBOOT].isNull() ){
           state.save(inboundData);
+          #ifdef SUPPORT
+            shouldPublishDataAfterCommand = true;
+          #endif
         }
         //adding executed  command to response!
         outboundData[NODE::COMMAND] = inboundData[NODE::COMMAND];
@@ -91,6 +97,12 @@ void onMqttMessage(char *topic, byte *payload, unsigned int length) {
 
       postResponse(outboundData);
       inboundData.clear();
+
+      #ifdef SUPPORT
+        if (shouldPublishDataAfterCommand){
+          collectSensorData();
+        }
+      #endif
     }
   }
 }
@@ -203,7 +215,7 @@ void setup() {
   #else
     logger.write("[OASIS] NORMAL MODE BINARY");
   #endif
-  
+
   logger.write("[OASIS] Starting Setup");
 
   setupWifi();
