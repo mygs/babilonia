@@ -895,7 +895,7 @@ def handle_mqtt_message(client, userdata, msg):
     if topic == cfg["MQTT"]["SUPPORT_TOPIC_OUTBOUND"]:
         if "DATA" in jmsg:
             data = SupportData(TIMESTAMP=timestamp, NODE_ID=node_id, DATA=jmsg["DATA"])
-            logger.info("[support-data] %s", data.toJson())
+            logger.debug("[support-data] %s", data.toJson())
             if isMqttEnabled:
                 with app.app_context():
                     merged = DB.session.merge(data)
