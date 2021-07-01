@@ -460,6 +460,13 @@ table.babi-tbl thead th {
     text-align: center;
 }
 
+.water-beat-pulsate  {
+    animation: pulsate 5s ease-out;
+    /*animation-iteration-count: infinite;*/
+    animation-iteration-count: 1;
+    opacity: 0.0;
+}
+
 
 
 table.management {

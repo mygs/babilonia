@@ -89,7 +89,8 @@ $(document).ready(function() {
         $("#switch-water-tank-out-val").val(switch_b);
         $("#switch-water-tank-in").bootstrapSwitch('state', $('#switch-water-tank-in-val').val()==1);
         $("#switch-water-tank-out").bootstrapSwitch('state', $('#switch-water-tank-out-val').val()==1);
-
+        var water_tank = $('#water-support-icon');
+        water_tank.replaceWith(water_tank.clone(true));
         console.log("ws-support-data => TYPE:"+ data['TYPE']+" SWITCH_A:"+switch_a+" SWITCH_B:"+ switch_b);
       }
   });

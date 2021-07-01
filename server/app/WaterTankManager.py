@@ -117,7 +117,7 @@ class WaterTankManager:
         )
         response = {}
         response["WATER_TANK_IN_DISABLE"] = False
-        response["GUI_DESCRIPTION"] = "SUPT"
+        response["GUI_DESCRIPTION"] = "NODE"
         if not switch_status.empty:
             response["WATER_TANK_IN"] =  switch_status["SWITCH_A"].iloc[0]
             response["WATER_TANK_OUT"] = switch_status["SWITCH_B"].iloc[0]
