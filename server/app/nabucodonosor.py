@@ -763,7 +763,7 @@ def notify_telegram_users():
         + startup_time_formatted
     )
     logger.info("[notify_telegram_users] %s", message["MESSAGE"])
-    #TelegramAssistantServer.send_monitor_message(message)
+    TelegramAssistantServer.send_monitor_message(message)
 
 
 ###############################################################################
