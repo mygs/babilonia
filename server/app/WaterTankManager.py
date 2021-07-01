@@ -4,6 +4,9 @@ import os
 from threading import Timer
 from time import sleep
 import requests
+import pandas
+from sqlalchemy import create_engine, func, and_
+from sqlalchemy.orm import sessionmaker
 
 if os.uname()[4].startswith("arm"):  # This module can only be run on a Raspberry Pi!
     import RPi.GPIO as gpio
@@ -98,6 +101,26 @@ class WaterTankManager:
             except requests.exceptions.RequestException as e:
                 self.logger.error("[WaterTankManager] Ignoring %s", e)
                 response = self.fake_data()
+        return response
+
+    def get_current_solenoid_status_from_support(self):
+        engine = create_engine(self.cfg["SQLALCHEMY_DATABASE_URI"])
+        switch_status = pandas.read_sql_query(
+            """
+                SELECT  TIMESTAMP,
+                        DATA->'$.SWITCH_A' AS SWITCH_A,
+                        DATA->'$.SWITCH_B' AS SWITCH_B
+                FROM farmland.SUPPORT
+                WHERE TYPE='WATER_TANK'
+            """,
+            engine,
+        )
+        response = {}
+        response["WATER_TANK_IN_DISABLE"] = False
+        response["GUI_DESCRIPTION"] = "SUPT"
+        if not switch_status.empty:
+            response["WATER_TANK_IN"] =  switch_status["SWITCH_A"].iloc[0]
+            response["WATER_TANK_OUT"] = switch_status["SWITCH_B"].iloc[0]
         return response
 
     def monitorTankLevel(self):

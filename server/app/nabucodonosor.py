@@ -59,6 +59,7 @@ from monitor import monitor
 #################### CONFIGURATION AND INITIALISATION #########################
 ###############################################################################
 QUARANTINE_CACHE = {}
+SUPPORT_CACHE = {}
 
 ###### create console handler and set level to debug
 SERVER_HOME = os.path.dirname(os.path.abspath(__file__))
@@ -287,6 +288,17 @@ def update_quarantine_cache():
         logger.debug("[update_quarantine_cache] %s is %i", hb.NODE_ID, hb.QUARANTINE)
 
 
+def update_support_cache():
+    with app.app_context():
+        SUPPORT_CACHE.clear()
+        supports = DB.session.query(
+            SupportData.NODE_ID, SupportData.TYPE
+        ).all()
+
+    for support in supports:
+        SUPPORT_CACHE[support.NODE_ID] = support.TYPE
+        logger.info("[update_support_cache] %s is %s", support.NODE_ID, support.TYPE)
+
 def get_modules_data(id):
     with app.app_context():
         time_start = dt.datetime.now()
@@ -337,7 +349,10 @@ def index():
     raspberrypi = dashboard.raspberrypi()
     nodes = dashboard.nodes(latest_beat)
     farm = dashboard.farm(modules)
-    water_tank = wtm.get_current_solenoid_status()
+    if cfg["WATER_TANK"]["MODE"] == "support" :
+        water_tank = wtm.get_current_solenoid_status_from_support()
+    else:
+        water_tank = wtm.get_current_solenoid_status()
     logger.debug("[weather] %s", weather)
     logger.debug("[raspberrypi] %s", raspberrypi)
     logger.debug("[nodes] %s", nodes)
@@ -648,21 +663,35 @@ def webhook():
 @app.route("/water-tank", methods=["POST"])
 def water_tank():
     message = request.get_json()
-    if cfg["WATER_TANK"]["MASTER"]:
-        direction = message["DIRECTION"]  # IN or OUT
-        action = message["ACTION"]  # true or false
-        logger.info("[water-tank] %s will be %s", direction, action)
-        if direction == "OUT":
-            wtm.changeStateWaterTankOut(action)
-        else:
-            wtm.changeStateWaterTankIn(action)
+    direction = message["DIRECTION"]  # IN or OUT
+    action = message["ACTION"]  # true or false
 
+    if cfg["WATER_TANK"]["MODE"] == "support" :
+        support_data = DB.session.query(SupportData).filter(SupportData.TYPE == "WATER_TANK").one()
+        #message = json.dumps(request.get_json())
+        switch  =  "SWITCH_A" if direction == "IN"  else "SWITCH_B"
+        message =  json.dumps({
+            "NODE_ID": support_data.node_id(),
+            "MESSAGE_ID": message["MESSAGE_ID"],
+            "COMMAND": {switch : action}
+        })
+        logger.debug("[water-tank command] for %s", message)
+        mqtt.publish(cfg["MQTT"]["SUPPORT_TOPIC_INBOUND"], message)
         return json.dumps({"status": "Success"})
     else:
-        url = "http://%s/water-tank" % (cfg["WATER_TANK"]["SERVER"])
-        logger.info("[water-tank] remote request. data=%s", message)
-        response = requests.post(url, json=message)
-        return response.json()
+        if cfg["WATER_TANK"]["MASTER"]:
+            logger.info("[water-tank] %s will be %s", direction, action)
+            if direction == "OUT":
+                wtm.changeStateWaterTankOut(action)
+            else:
+                wtm.changeStateWaterTankIn(action)
+
+            return json.dumps({"status": "Success"})
+        else:
+            url = "http://%s/water-tank" % (cfg["WATER_TANK"]["SERVER"])
+            logger.info("[water-tank] remote request. data=%s", message)
+            response = requests.post(url, json=message)
+            return response.json()
 
 
 # curl -X GET http://localhost:8181/water-tank
@@ -734,7 +763,7 @@ def notify_telegram_users():
         + startup_time_formatted
     )
     logger.info("[notify_telegram_users] %s", message["MESSAGE"])
-    TelegramAssistantServer.send_monitor_message(message)
+    #TelegramAssistantServer.send_monitor_message(message)
 
 
 ###############################################################################
@@ -895,11 +924,15 @@ def handle_mqtt_message(client, userdata, msg):
     if topic == cfg["MQTT"]["SUPPORT_TOPIC_OUTBOUND"]:
         if "DATA" in jmsg:
             data = SupportData(TIMESTAMP=timestamp, NODE_ID=node_id, DATA=jmsg["DATA"])
-            logger.debug("[support-data] %s", data.toJson())
+
             if isMqttEnabled:
                 with app.app_context():
                     merged = DB.session.merge(data)
+                    SUPPORT_CACHE[merged.NODE_ID] = merged.TYPE
 
+            data.TYPE = SUPPORT_CACHE[data.NODE_ID]
+            logger.info("[support-data] %s", data.toJson())
+            socketio.emit("ws-support-data", data=data.toJson())
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
     logger.debug("[MQTT] %i, %s", level, buf)
@@ -951,6 +984,7 @@ sched.start()
 ##################################  START #####################################
 ###############################################################################
 update_quarantine_cache()
+update_support_cache()
 if __name__ == "__main__":
     print("")
     print("    __            __     _  __               _       ")

@@ -44,7 +44,7 @@ $(document).ready(function() {
           var level = capacitivemoisture['MUX'+idx];
           if(level <= sma.MUX_PORT_THRESHOLD_OFFLINE){
               field.css('color', 'rgb(128,128,128)');
-              level = "&#10013;"; 
+              level = "&#10013;";
           } else if(level > sma.MUX_PORT_THRESHOLD_OFFLINE && level < sma.MUX_PORT_THRESHOLD_NOSOIL){
               var dry_level = Math.round(255 * (level-sma.MUX_PORT_THRESHOLD_OFFLINE)/sma.MUX_PORT_THRESHOLD_SCALE);
               var wet_level = 255 - dry_level;
@@ -79,6 +79,19 @@ $(document).ready(function() {
       Cookies.set('WATER_ALL', '0');
     }
     console.log(data);
+  });
+
+  socket.on('ws-support-data', function(data) {
+      if (data['TYPE'] == "WATER_TANK"){
+        switch_a = data['DATA']['SWITCH_A'];
+        switch_b = data['DATA']['SWITCH_B'];
+        $("#switch-water-tank-in-val").val( switch_a);
+        $("#switch-water-tank-out-val").val(switch_b);
+        $("#switch-water-tank-in").bootstrapSwitch('state', $('#switch-water-tank-in-val').val()==1);
+        $("#switch-water-tank-out").bootstrapSwitch('state', $('#switch-water-tank-out-val').val()==1);
+
+        console.log("ws-support-data => TYPE:"+ data['TYPE']+" SWITCH_A:"+switch_a+" SWITCH_B:"+ switch_b);
+      }
   });
 
 });

@@ -70,6 +70,7 @@ $("#switch-water-tank-in").on("switchChange.bootstrapSwitch", function() {
   $("#switch-water-tank-in-val").val(action? 1:0);
   var message = {
            "DIRECTION": "IN",
+          "MESSAGE_ID": UUID(),
               "ACTION": action
     };
 
@@ -93,6 +94,7 @@ $("#switch-water-tank-out").on("switchChange.bootstrapSwitch", function() {
   $("#switch-water-tank-out-val").val(action? 1:0);
   var message = {
            "DIRECTION": "OUT",
+          "MESSAGE_ID": UUID(),
               "ACTION": action
     };
 
