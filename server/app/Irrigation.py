@@ -175,20 +175,32 @@ class Irrigation:
         self.logger.info("[irrigation] %d nodes will receive water.", nodes_to_irrigate)
 
         if nodes_to_irrigate > 0:
-            url = "http://%s/water-tank" % (self.cfg["WATER_TANK"]["SERVER"])
-            headers = {"Content-type": "application/json"}
-            response = requests.post(
-                url,
-                data=json.dumps({"DIRECTION": "OUT", "ACTION": True}),
-                headers=headers,
-            )
-            self.logger.info("[irrigation]  Water tank server response: %s", response)
 
-            if response.status_code != 200:
-                self.logger.info(
-                    "[irrigation] Water Tank connection http status code: %s!!!",
-                    str(response.status_code),
+            if self.cfg["WATER_TANK"]["MODE"] == "support" :
+                message = json.dumps(
+                    {
+                        "NODE_ID": node["NODE_ID"],
+                        "MESSAGE_ID": "water_sched_init",
+                        "COMMAND": {"SWITCH_B": True},
+                    }
                 )
+                self.logger.info("[irrigation] water tank message >=> %s", message)
+                self.mqtt.publish(self.cfg["MQTT"]["SUPPORT_TOPIC_INBOUND"], message)
+            else:
+                url = "http://%s/water-tank" % (self.cfg["WATER_TANK"]["SERVER"])
+                headers = {"Content-type": "application/json"}
+                response = requests.post(
+                    url,
+                    data=json.dumps({"DIRECTION": "OUT", "ACTION": True}),
+                    headers=headers,
+                )
+                self.logger.info("[irrigation]  Water tank server response: %s", response)
+
+                if response.status_code != 200:
+                    self.logger.info(
+                        "[irrigation] Water Tank connection http status code: %s!!!",
+                        str(response.status_code),
+                    )
 
             ### WARM-UP
             if self.cfg["IRRIGATION"]["WARMUP"]:
@@ -202,7 +214,7 @@ class Irrigation:
                         }
                     )
                     self.logger.info("[irrigation] warm-up >=> %s", message)
-                    self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
+                    self.mqtt.publish(self.cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
                     time.sleep(5)
 
                 time.sleep(self.IRRIGATION_DURATION / 2)
@@ -213,7 +225,7 @@ class Irrigation:
                         "COMMAND": {"WATER": False},
                     }
                 )
-                self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
+                self.mqtt.publish(self.cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
                 self.logger.info("[irrigation] ending warm-up")
             else:
                 self.logger.info("[irrigation] warm-up disabled")
@@ -229,7 +241,7 @@ class Irrigation:
                     }
                 )
                 self.logger.info("[irrigation] %s", message)
-                self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
+                self.mqtt.publish(self.cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
                 time.sleep(self.IRRIGATION_DURATION)
                 # message = json.dumps({'NODE_ID': str(node_id), 'MESSAGE_ID':"water_sched", 'COMMAND':{"WATER": False}})
                 message = json.dumps(
@@ -239,7 +251,7 @@ class Irrigation:
                         "COMMAND": {"WATER": False},
                     }
                 )
-                self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
+                self.mqtt.publish(self.cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
                 self.logger.info("[irrigation] %s", message)
 
             message = json.dumps(
@@ -250,13 +262,24 @@ class Irrigation:
                 }
             )
             self.logger.info("[irrigation] %s", message)
-            self.mqtt.publish(cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
+            self.mqtt.publish(self.cfg["MQTT"]["OASIS_TOPIC_INBOUND"], message)
 
-            requests.post(
-                url,
-                data=json.dumps({"DIRECTION": "OUT", "ACTION": False}),
-                headers=headers,
-            )
+            if self.cfg["WATER_TANK"]["MODE"] == "support" :
+                message = json.dumps(
+                    {
+                        "NODE_ID": node["NODE_ID"],
+                        "MESSAGE_ID": "water_sched_end",
+                        "COMMAND": {"SWITCH_B": False},
+                    }
+                )
+                self.logger.info("[irrigation] water tank message >=> %s", message)
+                self.mqtt.publish(self.cfg["MQTT"]["SUPPORT_TOPIC_INBOUND"], message)
+            else:
+                requests.post(
+                    url,
+                    data=json.dumps({"DIRECTION": "OUT", "ACTION": False}),
+                    headers=headers,
+                )
         else:
             self.logger.info("[irrigation] skip irrigation procedures")
 
