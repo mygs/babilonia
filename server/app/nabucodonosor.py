@@ -931,7 +931,7 @@ def handle_mqtt_message(client, userdata, msg):
                     SUPPORT_CACHE[merged.NODE_ID] = merged.TYPE
 
             data.TYPE = SUPPORT_CACHE[data.NODE_ID]
-            logger.info("[support-data] %s", data.toJson())
+            logger.debug("[support-data] %s", data.toJson())
             socketio.emit("ws-support-data", data=data.toJson())
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
