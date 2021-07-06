@@ -13,6 +13,8 @@ The research project consists of developing a platform for vegetables production
 ## Demonstration of Web application
 [![Watch the video](docs/img/demo_web_gui_thumbnail.png)](https://youtu.be/lZtXV6ir3J8)
 
+## Demonstration of Data Analysis using Jupyter
+[![Watch the video](docs/img/jupyter_thumbnail.png)](https://youtu.be/SYHIABXV2Lc)
 
 ## Experiment area walking tour
 [![Watch the video](docs/img/walking_tour_thumbnail.jpg)](https://www.youtube.com/embed/4msqJkM3aCQ)
