@@ -10,6 +10,10 @@ The research project consists of developing a platform for vegetables production
 ## The automation technology
 ![technology overview](docs/img/technology_overview.png)
 
+## Demonstration of Web application
+[![Watch the video](docs/img/demo_web_gui_thumbnail.png)](https://youtu.be/lZtXV6ir3J8)
+
+
 ## Experiment area walking tour
 [![Watch the video](docs/img/walking_tour_thumbnail.jpg)](https://www.youtube.com/embed/4msqJkM3aCQ)
 
