@@ -12,6 +12,7 @@ class Watchdog:
         self.oasis_properties = oasis_properties
         self.nodes = self.initialise_node_cache()
         self.servers = self.initialise_server_cache()
+        self.water_tank_is_online = True
 
     def initialise_node_cache(self):
         result = {}
@@ -31,6 +32,39 @@ class Watchdog:
         self.run_servers()
         self.run_status()
         self.run_water()
+        self.run_water_tank_node_status()
+
+
+    def run_water_tank_node_status(self):
+        now = int(time.time())
+        offline = int(now - self.cfg["WATCHDOG"]["OFFLINE_TIME"])
+        engine = create_engine(self.cfg["SQLALCHEMY_DATABASE_URI"])
+        water_tank_status_db = pandas.read_sql_query(
+            """
+            SELECT COUNT(*) AS IS_OFFLINE
+            FROM SUPPORT
+            WHERE TIMESTAMP < {}
+            AND TYPE = 'WATER_TANK' 
+            """.format( offline),
+            engine,
+        )
+        is_current_offline = True if not water_tank_status_db.empty and water_tank_status_db["IS_OFFLINE"].iloc[0] > 0 else False
+
+        monitor = {}
+        monitor["SOURCE"] = "WATCHDOG"
+        if is_current_offline:
+            if self.water_tank_is_online:
+                monitor["MESSAGE"] = "❌ Water Tank node ficou <b>OFFLINE</b>"
+                TelegramAssistantServer.send_monitor_message(message)
+                self.water_tank_is_online = False
+            else:
+                self.logger.info("[watchdog] Water Tank node still offline")
+        else:
+            if not self.water_tank_is_online:
+                monitor["MESSAGE"] = "✅ Water Tank node voltou a ficar <b>ONLINE</b>"
+                self.water_tank_is_online = True
+            else:
+                self.logger.debug("[watchdog] Water Tank node still online")
 
     def run_water(self):
         now = int(time.time())
