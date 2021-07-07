@@ -179,7 +179,7 @@ class Irrigation:
             if self.cfg["WATER_TANK"]["MODE"] == "support" :
                 message = json.dumps(
                     {
-                        "NODE_ID": "oasis-31e1e7",
+                        "NODE_ID": self.cfg["WATER_TANK"]["NODE_MANAGER"],
                         "MESSAGE_ID": "water_sched_init",
                         "COMMAND": {"SWITCH_B": True},
                     }
@@ -267,7 +267,7 @@ class Irrigation:
             if self.cfg["WATER_TANK"]["MODE"] == "support" :
                 message = json.dumps(
                     {
-                        "NODE_ID": "oasis-31e1e7",
+                        "NODE_ID": self.cfg["WATER_TANK"]["NODE_MANAGER"],
                         "MESSAGE_ID": "water_sched_end",
                         "COMMAND": {"SWITCH_B": False},
                     }
