@@ -45,7 +45,7 @@ class Watchdog:
             FROM SUPPORT
             WHERE TIMESTAMP < {}
             AND TYPE = 'WATER_TANK' 
-            """.format( offline),
+            """.format(offline),
             engine,
         )
         is_current_offline = True if not water_tank_status_db.empty and water_tank_status_db["IS_OFFLINE"].iloc[0] > 0 else False
@@ -55,13 +55,14 @@ class Watchdog:
         if is_current_offline:
             if self.water_tank_is_online:
                 monitor["MESSAGE"] = "❌ Water Tank node ficou <b>OFFLINE</b>"
-                TelegramAssistantServer.send_monitor_message(message)
+                TelegramAssistantServer.send_monitor_message(monitor)
                 self.water_tank_is_online = False
             else:
                 self.logger.info("[watchdog] Water Tank node still offline")
         else:
             if not self.water_tank_is_online:
                 monitor["MESSAGE"] = "✅ Water Tank node voltou a ficar <b>ONLINE</b>"
+                TelegramAssistantServer.send_monitor_message(monitor)
                 self.water_tank_is_online = True
             else:
                 self.logger.debug("[watchdog] Water Tank node still online")

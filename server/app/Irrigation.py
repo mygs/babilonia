@@ -25,6 +25,81 @@ class Irrigation:
         self.IRRIGATION_DURATION = cfg["IRRIGATION"]["DURATION"]  # seconds
         self.nodes_postponed_to_next_irrigation = []
 
+    def run_inspector(self):
+        ############# get latest moisture analytics result #############
+        engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
+        analytics = pandas.read_sql_query(
+            """
+            SELECT TIMESTAMP, DATA
+            FROM OASIS_ANALYTIC
+            WHERE TYPE='advice'
+            ORDER BY TIMESTAMP DESC LIMIT 1
+            """,
+            engine,
+        )
+        if not analytics.empty:
+            analytic_data = json.loads(analytics["DATA"].iloc[0])
+            analytic_timestamp = int(analytics["TIMESTAMP"].iloc[0])
+            self.logger.info("[inspector] ***** STARTING IRRIGATION INSPECTOR *****")
+            monitor_message = "<b>IRRIGATION INSPECTOR</b>\n<pre>"
+
+            for node in analytic_data["node"]:
+                advice = analytic_data["node"][node]["advice"]
+                if advice == "IRRIGATE":
+                    node_water_median_timestamp = pandas.read_sql_query(
+                        """
+                        SELECT IFNULL(ROUND(AVG(TIMESTAMP),0),0) AS TIMESTAMP
+                        FROM OASIS_DATA 
+                        WHERE 	NODE_ID = '{}'   
+                                AND  json_length(DATA->'$.DATA') > 0 
+                                AND DATA->'$.DATA.WATER' = 1
+                                AND TIMESTAMP > {}
+                        """.format(node, analytic_timestamp), engine)
+                    last_irrigation_timestamp = int(node_water_median_timestamp['TIMESTAMP'].iloc[0])
+
+                    if last_irrigation_timestamp == 0:
+                        result = "❌"
+                    else:
+                        result = "✅⚠️"+last_irrigation_timestamp
+                        
+                    '''
+                    moisture_data_cache = pandas.read_sql_query(
+                        """
+                        SELECT  
+                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0'),0) AS MUX0,
+                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1'),0) AS MUX1,
+                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2'),0) AS MUX2,
+                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3'),0) AS MUX3,
+                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4'),0) AS MUX4,
+                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5'),0) AS MUX5,
+                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6'),0) AS MUX6,
+                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7'),0) AS MUX7
+                        FROM OASIS_DATA
+                        WHERE NODE_ID = '{}'
+                                AND  json_length(DATA->'$.DATA.CAPACITIVEMOISTURE') > 0
+                                AND TIMESTAMP >= {}
+                        ORDER BY TIMESTAMP asc
+                        """.format(node_id, period_for_last_moisture_data),
+                        engine).astype(int)
+
+                    '''
+
+
+
+                    node_name = self.oasis_properties[node]["name"]
+                    monitor_message += "{0:10} {1}\n".format(node_name, result)
+                    self.logger.info("[inspector] %s => %s", node_name, result)
+
+            monitor = {}
+            monitor["SOURCE"] = "INSPECTOR"
+            monitor["MESSAGE"] = monitor_message + "</pre>"
+            TelegramAssistantServer.send_monitor_message(monitor)
+            self.logger.info("[inspector] ***** ENDING IRRIGATION INSPECTOR *****")
+        else:
+            self.logger.info(
+                "[inspector] Skipping IRRIGATION INSPECTOR due Moisture analytics not found"
+            )
+
     def run_dummy(self):
         ############# get latest moisture analytics result #############
         engine = create_engine(self.SQLALCHEMY_DATABASE_URI)
@@ -39,20 +114,21 @@ class Irrigation:
         )
         if not analytics.empty:
             self.logger.info("[irrigation] ***** STARTING DUMMY IRRIGATION *****")
-            monitor_message = "<b>DUMMY IRRIGATION</b>\n<pre>"
 
             moisture_analytics_last_calculation = dt.datetime.fromtimestamp(
                 int(analytics["TIMESTAMP"].iloc[0])
-            ).strftime("%Y-%m-%d %H:%M:%S")
+            ).strftime("%Y-%m-%d %H:%M")
             data = json.loads(analytics["DATA"].iloc[0])
             self.logger.info(
                 "[irrigation] Found moisture analytics calculated in: %s",
                 moisture_analytics_last_calculation,
             )
-            if data["will_rain"]:
-                self.logger.info("[irrigation] Weather forecast says it WILL rain")
-            else:
-                self.logger.info("[irrigation] Weather forecast says it WONT rain")
+
+            monitor_message = "<b>DUMMY IRRIGATION</b>\n<pre>"
+            monitor_message += "<b>Analytics</b>: "+moisture_analytics_last_calculation+"\n"
+            monitor_message += "<b>Will rain</b>: "+"Yes" if data["will_rain"] else "No" +"\n<pre>"
+
+            self.logger.info("[irrigation] Weather forecast says it "+"WILL" if data["will_rain"] else "WONT" +" rain")
 
             nodes_lst = []
             for node in data["node"]:
@@ -85,18 +161,20 @@ class Irrigation:
         )
         if not analytics.empty:
             self.logger.info("[irrigation] ***** STARTING SMART IRRIGATION *****")
+            
             moisture_analytics_last_calculation = dt.datetime.fromtimestamp(
                 int(analytics["TIMESTAMP"].iloc[0])
-            ).strftime("%Y-%m-%d %H:%M:%S")
+            ).strftime("%Y-%m-%d %H:%M")
             data = json.loads(analytics["DATA"].iloc[0])
             self.logger.info(
                 "[irrigation] Found moisture analytics calculated in: %s",
                 moisture_analytics_last_calculation,
             )
-            if data["will_rain"]:
-                self.logger.info("[irrigation] Weather forecast says it WILL rain")
-            else:
-                self.logger.info("[irrigation] Weather forecast says it WONT rain")
+            monitor_message = "<b>SMART IRRIGATION</b>\n"
+            monitor_message += "<b>Analytics</b>: "+moisture_analytics_last_calculation+"\n"
+            monitor_message += "<b>Will rain</b>: "+"Yes" if data["will_rain"] else "No" +"\n<pre>"
+
+            self.logger.info("[irrigation] Weather forecast says it "+"WILL" if data["will_rain"] else "WONT" +" rain")
 
             nodes_to_irrigate = []
             nodes_postponed_last_irrigation = []
@@ -104,7 +182,7 @@ class Irrigation:
                 self.nodes_postponed_to_next_irrigation
             )
             self.nodes_postponed_to_next_irrigation = []
-            monitor_message = "<b>SMART IRRIGATION</b>\n<pre>"
+
             for node in data["node"]:
                 advice = data["node"][node]["advice"]
                 node_name = self.oasis_properties[node]["name"]
