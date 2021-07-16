@@ -203,7 +203,8 @@ class Irrigation:
             )
             monitor_message = "<b>SMART IRRIGATION</b>\n"
             monitor_message += "<b>Analytics</b>: "+moisture_analytics_last_calculation+"\n"
-            monitor_message += "<b>Will rain</b>: "+"Yes" if data["will_rain"] else "No" +"\n<pre>"
+            monitor_message += "<b>Will rain</b>: "
+            monitor_message += "Yes" if data["will_rain"] else "No" +"\n<pre>"
 
             self.logger.info("[irrigation] Weather forecast says it "+"WILL" if data["will_rain"] else "WONT" +" rain")
 
