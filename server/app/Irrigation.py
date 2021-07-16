@@ -12,6 +12,7 @@ from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
 
 HEARTBEAT_PERIOD = 5 * 60  # (seconds) OMG 5 min
+MOISTURE_PROBES = ['MUX0','MUX1','MUX2','MUX3','MUX4','MUX5','MUX6','MUX7']
 
 
 class Irrigation:
@@ -41,8 +42,8 @@ class Irrigation:
             analytic_data = json.loads(analytics["DATA"].iloc[0])
             analytic_timestamp = int(analytics["TIMESTAMP"].iloc[0])
             self.logger.info("[inspector] ***** STARTING IRRIGATION INSPECTOR *****")
-            monitor_message = "<b>IRRIGATION INSPECTOR</b>\n<pre>"
-
+            monitor_message = "<b>IRRIGATION INSPECTOR</b>\n<pre>\n"
+            monitor_message += "{0:10} {1}\n".format("", " 0 1 2 3 4 5 6 7")
             for node in analytic_data["node"]:
                 advice = analytic_data["node"][node]["advice"]
                 if advice == "IRRIGATE":
@@ -55,40 +56,70 @@ class Irrigation:
                                 AND DATA->'$.DATA.WATER' = 1
                                 AND TIMESTAMP > {}
                         """.format(node, analytic_timestamp), engine)
+                    
                     last_irrigation_timestamp = int(node_water_median_timestamp['TIMESTAMP'].iloc[0])
 
                     if last_irrigation_timestamp == 0:
-                        result = "❌"
+                        result += "❌❌❌❌❌❌❌❌"
                     else:
-                        result = "✅⚠️"+last_irrigation_timestamp
-                        
-                    '''
-                    moisture_data_cache = pandas.read_sql_query(
-                        """
-                        SELECT  
-                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0'),0) AS MUX0,
-                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1'),0) AS MUX1,
-                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2'),0) AS MUX2,
-                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3'),0) AS MUX3,
-                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4'),0) AS MUX4,
-                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5'),0) AS MUX5,
-                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6'),0) AS MUX6,
-                            ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7'),0) AS MUX7
-                        FROM OASIS_DATA
-                        WHERE NODE_ID = '{}'
-                                AND  json_length(DATA->'$.DATA.CAPACITIVEMOISTURE') > 0
-                                AND TIMESTAMP >= {}
-                        ORDER BY TIMESTAMP asc
-                        """.format(node_id, period_for_last_moisture_data),
-                        engine).astype(int)
+                        inspection_delta_time = self.cfg["IRRIGATION"]["INSPECTION_SAMPLE_DELTA_TIME"]
+                        end_timestamp_before_irrigation = last_irrigation_timestamp - self.IRRIGATION_DURATION
+                        start_timestamp_before_irrigation = end_timestamp_before_irrigation - inspection_delta_time
+                        start_timestamp_after_irrigation = last_irrigation_timestamp + self.IRRIGATION_DURATION
+                        end_timestamp_after_irrigation = start_timestamp_after_irrigation + inspection_delta_time
+                       
+                        moi_avg_before_irrigation = pandas.read_sql_query(
+                            """
+                            SELECT  
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0'),0) AS MUX0,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1'),0) AS MUX1,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2'),0) AS MUX2,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3'),0) AS MUX3,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4'),0) AS MUX4,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5'),0) AS MUX5,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6'),0) AS MUX6,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7'),0) AS MUX7
+                            FROM OASIS_DATA
+                            WHERE NODE_ID = '{}'
+                                    AND  json_length(DATA->'$.DATA.CAPACITIVEMOISTURE') > 0
+                                    AND TIMESTAMP >= {}
+                                    AND TIMESTAMP < {}
+                            ORDER BY TIMESTAMP asc
+                            """.format(node, start_timestamp_before_irrigation, end_timestamp_before_irrigation),
+                            engine).astype(int)
 
-                    '''
-
-
-
+                        moi_avg_after_irrigation = pandas.read_sql_query(
+                            """
+                            SELECT  
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX0'),0) AS MUX0,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX1'),0) AS MUX1,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX2'),0) AS MUX2,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX3'),0) AS MUX3,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX4'),0) AS MUX4,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX5'),0) AS MUX5,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX6'),0) AS MUX6,
+                                ROUND(AVG(DATA->'$.DATA.CAPACITIVEMOISTURE.MUX7'),0) AS MUX7
+                            FROM OASIS_DATA
+                            WHERE NODE_ID = '{}'
+                                    AND  json_length(DATA->'$.DATA.CAPACITIVEMOISTURE') > 0
+                                    AND TIMESTAMP >= {}
+                                    AND TIMESTAMP < {}
+                            ORDER BY TIMESTAMP asc
+                            """.format(node, start_timestamp_after_irrigation, end_timestamp_after_irrigation),
+                            engine).astype(int)
+                        result = ""
+                        for mux in MOISTURE_PROBES:
+                            diff_moisture = moi_avg_before_irrigation[mux].iloc[0] - moi_avg_after_irrigation[mux].iloc[0]
+                            if diff_moisture > 0:
+                                result += "✅"
+                            elif diff_moisture == 0:
+                                result += "⚠️"
+                            else:
+                                result += "❌"
                     node_name = self.oasis_properties[node]["name"]
                     monitor_message += "{0:10} {1}\n".format(node_name, result)
-                    self.logger.info("[inspector] %s => %s", node_name, result)
+                    self.logger.info("[inspector] before %s => %s", node_name, moi_avg_before_irrigation)
+                    self.logger.info("[inspector]  after %s => %s", node_name, moi_avg_after_irrigation)
 
             monitor = {}
             monitor["SOURCE"] = "INSPECTOR"
