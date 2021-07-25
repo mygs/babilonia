@@ -47,6 +47,9 @@ class Irrigation:
             for node in analytic_data["node"]:
                 advice = analytic_data["node"][node]["advice"]
                 if advice == "IRRIGATE":
+
+                    result = ""
+                    
                     node_water_median_timestamp = pandas.read_sql_query(
                         """
                         SELECT IFNULL(ROUND(AVG(TIMESTAMP),0),0) AS TIMESTAMP
@@ -107,7 +110,7 @@ class Irrigation:
                             ORDER BY TIMESTAMP asc
                             """.format(node, start_timestamp_after_irrigation, end_timestamp_after_irrigation),
                             engine).astype(int)
-                        result = ""
+
                         for mux in MOISTURE_PROBES:
                             diff_moisture = moi_avg_before_irrigation[mux].iloc[0] - moi_avg_after_irrigation[mux].iloc[0]
                             if diff_moisture > 0:
