@@ -893,7 +893,7 @@ def handle_mqtt_message(client, userdata, msg):
     try:
         jmsg = json.loads(msg.payload)
     except:
-        logger.info("[MQTT] Invalid message %s", msg.payload)
+        logger.info("[MQTT] Invalid message format %s", msg.payload)
         return
 
     node_id = jmsg["NODE_ID"]
@@ -946,6 +946,8 @@ def handle_mqtt_message(client, userdata, msg):
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
     logger.debug("[MQTT] %i, %s", level, buf)
+    if level == Mqtt.MQTT_LOG_ERR:
+        logger.error('[MQTT] Error: client:{} userdata:{}  buf:{}'.format(client,userdata, buf))
 
 
 ###############################################################################
