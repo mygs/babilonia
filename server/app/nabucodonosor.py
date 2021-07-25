@@ -892,12 +892,17 @@ def handle_mqtt_message(client, userdata, msg):
 
     try:
         jmsg = json.loads(msg.payload)
-        node_id = jmsg["NODE_ID"]
     except:
         logger.info("[MQTT] Invalid message %s", msg.payload)
         return
-    
+
+    node_id = jmsg["NODE_ID"]
     topic = msg.topic
+
+    if not node_id.startswith("oasis-"):
+        logger.info("[MQTT] Invalid node_id %s in the topic %s. Message: %s", node_id, topic, jmsg)
+        return
+
     if topic == cfg["MQTT"]["OASIS_TOPIC_HEARTBEAT"]:
         heartbeat = OasisHeartbeat(NODE_ID=node_id, LAST_UPDATE=timestamp)
         logger.debug("[heartbeat] %s", heartbeat.toJson())
