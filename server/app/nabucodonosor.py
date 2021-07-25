@@ -888,11 +888,16 @@ def handle_disconnect():
 # The callback for when a PUBLISH message is received from the server.
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, msg):
-    topic = msg.topic
-    jmsg = json.loads(msg.payload)
-    node_id = jmsg["NODE_ID"]
     timestamp = int(time.time())
 
+    try:
+        jmsg = json.loads(msg.payload)
+        node_id = jmsg["NODE_ID"]
+    except:
+        logger.info("[MQTT] Invalid message %s", msg.payload)
+        return
+    
+    topic = msg.topic
     if topic == cfg["MQTT"]["OASIS_TOPIC_HEARTBEAT"]:
         heartbeat = OasisHeartbeat(NODE_ID=node_id, LAST_UPDATE=timestamp)
         logger.debug("[heartbeat] %s", heartbeat.toJson())
