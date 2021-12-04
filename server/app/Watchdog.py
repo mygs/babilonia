@@ -32,7 +32,7 @@ class Watchdog:
         self.run_servers()
         self.run_status()
         self.run_water()
-        self.run_water_tank_node_status()
+        #self.run_water_tank_node_status()
 
 
     def run_water_tank_node_status(self):

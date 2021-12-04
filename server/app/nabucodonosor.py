@@ -986,6 +986,7 @@ if cfg["SCHEDULE"]["IRRIGATION_BOT"] != "never":
         sched.add_job(irrigation.run_standard, irrigation_trigger)
 
     if cfg["SCHEDULE"]["IRRIGATION_INSPECTOR"] != "never":
+        logger.info("[IRRIGATION_INSPECTOR] enabled")
         irrigation_inspector_trigger = CronTrigger.from_crontab(cfg["SCHEDULE"]["IRRIGATION_INSPECTOR"])
         sched.add_job(irrigation.run_inspector, irrigation_inspector_trigger)
 
